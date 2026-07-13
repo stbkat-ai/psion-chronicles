@@ -1,0 +1,901 @@
+
+----- PAGE 1 -----
+. Chapter One
+Character Creation
+In this chapter we will go over the steps that players will follow when creating their
+character. This chapter will also cover the basic information players will need to
+understand when making choices for their character(s). Players are free to follow
+this process in any order they choose so long as they complete each step before
+playing the character in a campaign.
+. Section 1: character Sheet
+The character Sheet is where players will write down and keep track of all their
+characters information. Players may choose to use any piece of paper or notebook
+they may have available in place of a standard PC character Sheet so long as it
+contains all the required information. (Note: a PDF ﬁle of the standard Psion
+Chronicles character Sheet is available for download and print on our website,
+there will also be a link and QR code at the back of this book.)
+The front page of the character Sheet is the most important page. This is where
+players will ﬁnd the character's name, and Psionic Background (see section 3 of
+this chapter), soul level, experience, body, mind, and soul pools, as well as the
+character's attribute scores and modiﬁers. The front page should also contain a
+short list of simple combat actions the character can take for quick reference,
+along with the characters chakra chart, attribute save modiﬁers, and Defense
+Score. (See section 2 of this chapter for information on how to determine attribute
+scores and what they mean.)
+The second page of the character Sheet is the skills page. THis is where players
+will ﬁnd the complete list of skills their character can perform along with spots to
+mark whether or not they are proﬁcient with each skill. The list also shows which
+attribute modiﬁer applies to each skill, and a small section next to each skill to
+write and track the modiﬁer they add for each skill. (See section 4 of this chapter
+for a complete list of skills and an explanation on how they work.)
+The next few pages are the core of character play in Psion Chronicles. This is
+where players will write down and keep track of the Kinetic Techniques the
+
+----- PAGE 2 -----
+character knows and uses (see chapter two full a complete list and breakdown of
+the Kinetic Techniques and how to use them during gameplay). When ﬁlling out this
+list players should include the technique name, which Kinetic it belongs to, and the
+details of the technique's effects and rules.
+Following the KT list the next page of the character Sheet is the character's
+inventory. Here players will keep track of their carry weight, and a list of all the
+items their character has equipped and on the person. The remaining pages of the
+character Sheet are meant for any personal notes the players see ﬁt to write down
+about their character, this may include a description of their appearance, a short
+backstory for their character, or even a journal cataloging the events of the
+campaign.
+The character Sheet is the most important tool a player needs when playing Psion
+Chronicles.
+. Section 2: Attributes
+The Psion Chronicles uses a six attribute system for player characters, NPCs, and
+Monsters. These attributes are Strength (STR), Agility (AGI), Constitution (CON),
+Intelligence (INT), Wisdom (WIS), and Charisma (CHA). These six attributes are
+decided between body and mind with STR, AGI, and CON being the three body
+attributes and INT, WIS, and CHA being the three mind attributes. The total value of
+a characters Body pool is the total value of the three body attribute scores when
+added together, the total value of a characters mind pool is the total value of the
+three mind attribute scores when added together.
+For example a character with 15 STR 12 AGI and 13 CON would have a total body
+pool of 40. A character with 22 INT 18 WIS and 16 CHA would have a total mind
+pool of 56.
+To determine a character's attribute score players roll 8D12 and remove the two
+lowest values, then add ten to each of the remaining values and assign each value
+to an attribute.
+For example
+Dice roll
+
+----- PAGE 3 -----
+12
+8
+10
+11
+5
+2
+7
+1
+Remove the two lowest values
+12
+11
+10
+8
+7
+5
+Then add ten to each value
+22
+21
+20
+18
+17
+15
+
+----- PAGE 4 -----
+Then assign each value to an attribute
+22 STR
+21 AGI
+20 CON
+18 INT
+17 WIS
+15 CHA
+Attribute scores determine the modiﬁer for each attribute, which is the number
+added or subtracted from a roll that is modiﬁed by that attribute. Attributes are soft
+capped at 30, meaning they can't go any higher through traditional leveling, and the
+modiﬁers are on a 3-1 scale with 30 giving a +5 15 giving a 0 and 1 giving a -5. It is
+important to note that some items and techniques can increase an attribute past
+the soft cap of 30 and the modiﬁers will scale accordingly.
+The modiﬁer chart can be seen below
+30=+5
+27-29=+4
+24-26=+3
+21-23=+2
+18-20=+1
+15-16=0
+12-14=-1
+9-11=-2
+6-8=-3
+3-5=-4
+
+----- PAGE 5 -----
+1-2=-5
+Now that we understand attribute scores and their modiﬁers let's go over other key
+functions of speciﬁc attributes.
+Strength (STR)
+Strength is a characters raw physical power. This attribute determines a characters
+unarmed damage, climbing speed, and jump distance. The base climbing speed for
+all characters is 15ft, to determine a character's individual climbing speed add or
+subtract 5ft for each modiﬁer point in STR (for example: a character with a 25 STR
+has a +3 modiﬁer, meaning that we add 5ft times 3 to their climbing speed giving a
+total of 15+15=30 climbing speed. Jump distance works the same way as climbing
+speed with the base being 15ft then adding or subtracting 5ft per modiﬁer point.
+Agility (AGI)
+Agility is a characters speed and reﬂexes, as well as their ﬁner motor skills. This
+attribute determines a character's movement speed, initiative roll, and their
+unarmored defense score (in addition to Constitution). AGI modiﬁes a character's
+movement speed in the same way that STR modiﬁes it a characters jump distance
+and climbing speed, with the bass being 30 ft and either adding or subtracting 5 ft
+each modiﬁer. When rolling for initiative, add your AGI modiﬁer to the dice roll. A
+character's unarmored defense score (DS) is 10 10 plus AGI modiﬁer + CON
+modiﬁer.
+Constitution (CON)
+Constitution is a character's durability, the measure of how much they can
+withstand and how long they can exert themselves. This attribute determines a
+character's swimming speed, carry weight, and their defense score (in addition to
+Agility). Swimming speed is determined in the same method as climbing speed,
+jump distance, and movement speed, with the base being 15 then adding or
+subtracting 5ft for each CON modiﬁer point. A character's carry weight is the
+amount of weight they can hold in their inventory, the base is 100 lb adding or
+subtracting 10 lb per modiﬁer point.
+Intelligence (INT)
+
+----- PAGE 6 -----
+Intelligence is the measure of a characters logic abilities. This attribute determines
+their crafting and repair time.
+Wisdom (WIS)
+Wisdom is a character's understanding of the world around them.
+Charisma (CHA)
+Charisma is a character's ability to charm other characters and creatures.
+. Section 3: Psionic Backgrounds
+A character's Psionic Background is who they were in the old world and serves as a
+launching point for the type of character a player wishes to roleplay. This book
+includes nine Psionic Backgrounds players may choose from, each Background
+grants a character three points in one attribute, or two points in two attributes, as
+well as a boost to either their body pool, mind pool, or both. Each Background also
+grants a character proﬁciency in three skills, two combat proﬁciencies (two
+weapon types, or one weapon type and one technique type), and one free beginner
+level technique.
+Psionic Backgrounds List
+The following is a list of the nine available Psionic Backgrounds with a complete
+breakdown of each.
+Body Builder
+In the old world you were a Gym Rat, you dedicated yourself to building your
+strength and reaching the peak of human physicality. Now in this Post Veil world
+you use your strength to survive by defeating your foes, or defending your allies.
+Body Builders gain the following.
+BodyPool +10
++3 to STR
+Skill Proﬁciencies
+Muscle
+
+----- PAGE 7 -----
+Athletics
+Force
+Combat Proﬁciencies
+Heavy Weapons
+Robukinesis
+Kinetic Technique
+. Ki Strike
+Assassin
+In the old world you were a killer for hire, you knew how to get the job done without
+alerting the wrong people. These days you use your skill and Dexterity to handle the
+more subtle parts of survival.
+Assassin gains the following
+BodyPool+10
++3 to AGI
+Skill Proﬁciencies
+Stealth
+Sleight of hand
+Marksmanship
+Combat Proﬁciencies
+Thrown Weapons
+Umbrakenisis
+Kinetic Technique
+Shroud of Shadows
+
+----- PAGE 8 -----
+Survivalist
+Before the fall of the veil you were an outdoorsman, you spent most of your free
+time out in the wild, camping, hunting, or ﬁshing. Now in this new world those skills
+are put to full use, your resilience and heightened constitution are the key to
+surviving this strange new world.
+Survivalist gains the following
+BodyPool +10
++3 to CON
+Skill Proﬁciencies
+Survival
+Tolerance
+Hardiness
+Combat Proﬁciencies
+Firearms
+Terrakinesis
+Kinetic Technique
+Mud Skin
+Scholar
+In the old world you were a bookworm, spending most of your time gathering
+knowledge on any topic you found interesting. Now all those years of study are
+paying off, your knowledge of old world history and tech are invaluable in
+navigating this new era of humanity.
+Scholar gains the following
+MindPool +10
++3 to INT
+
+----- PAGE 9 -----
+Skill Proﬁciencies
+History
+Language
+Technology
+Combat Proﬁciencies
+Tech weapons
+Chronokinesis
+Kinetic Technique
+Slow Time
+Witch
+In the old world, you often seemed like a cook following a dead religion or
+someone who just really liked Wiccan practices. But in this post-veil world, you are
+a wise practitioner of the mystical arts.
+Witch gains the following:
+MindPool +10
++3 to WIS
+Skill Proﬁciencies
+Paranormal
+Herbalism
+Nature Tools
+Combat Proﬁciencies
+Channel weapons
+Naturakenisis
+
+----- PAGE 10 -----
+Kinetic Technique
+Thistle Bush
+Musician
+In the old world you were a traveling musician, perhaps a guitarist or a singer. In the
+new world, your natural charm is your power, allowing you to inﬂuence or
+manipulate the hearts and minds of others with ease.
+Musician gains the following:
+MindPool +10
++3 to CHA
+Skill Proﬁciencies
+Music
+Persuasion
+Performance
+Combat Proﬁciencies
+Rapiers
+Electrokenisis
+Kinetic Technique
+Static Touch
+Soldier
+In the old world you served in an advanced military or mercenary group. Whether
+you were a frontline grunt or a hired gun, your training has hardened you for the
+dangers of this new era.
+The Soldier gains the following
+BodyPool +5
+
+----- PAGE 11 -----
+MindPool +5
++2 to STR
++1 to INT
+Skill Proﬁciencies
+Laborer’s Tools
+Intimidation
+Medicine
+Combat Proﬁciencies
+Laser guns
+Pyrokinesis
+Kinetic Technique
+Firebolt
+Monk
+In the old world you were a loner and a martial artist, choosing to live a life of quiet
+solitude. Now, your disciplined body and sharpened senses make you a formidable
+force, capable of harnessing the very air around you to strike from the shadows of
+your own silence.
+Monk gains the following
+Body +5
+Mind +5
++2 to AGI
++1 to WIS
+Skill Proﬁciencies
+
+----- PAGE 12 -----
+Acrobatics
+Reﬂex
+Awareness
+Combat Proﬁciencies
+Staffs
+Aerokinesis
+Kinetic Technique
+Gust
+Guru
+In the old world you were considered something of a spiritual leader. Your charm
+and kindness mixed with your vitality drew others to follow you.
+The Guru gains the following
+Body +5
+Mind +5
++2 to CON
++1 to CHA
+Skill Proﬁciencies
+Concentration
+Adrenaline
+Etiquette
+Combat Proﬁciencies
+Handguns
+Spirikenisis
+
+----- PAGE 13 -----
+Kinetic Technique
+Phantom Presence
+Section 4: Skills
+When a Player Character (PC) attempts to perform a task in-game the Game
+Master (GM) may ask the pler to make a skill check for a speciﬁc skill. A skill check
+is made by ﬁrst checking the speciﬁc skill. The GM has asked you to use to see
+which attribute modiﬁes that skill and whether or not you have proﬁciency in the
+skill. The player then rolls a d20, adds the appropriate modiﬁer, and if they have
+proﬁciency in the skill they add their proﬁciency bonus. A PC's proﬁciency bonus is
++3 at level 1 moving up to +4 at level 15 and ﬁnally +5 at level 30.
+In addition to the three skill Proﬁciencies granted by a character's Psionic
+Background players will select two other skills to be proﬁcient in. The following is a
+list of all the skills available to characters in The Psion Chronicles, with a brief
+description of how they work, separated by which attribute modiﬁes the skill check.
+Strength (STR)
+Muscle: Raw physical power used to lift, break, or shove heavy objects.
+Laborer's Tools: Skill in using heavy equipment like hammers, saws, and
+masonry tools.
+Intimidation: Using physical presence or brute force to coerce or scare others.
+Athletics: Proﬁciency in climbing, sprinting swimming, and jumping
+Grapple: The ability to pin, restrain, or wrestle opponents in close combat.
+Force: Applying concentrated power to break through barriers or heavy
+obstacles.
+Agility (AGI)
+Acrobatics: Fluid movement used for balancing, tumbling, and landing safely.
+Stealth: Moving silently and staying hidden from the sight of others.
+
+----- PAGE 14 -----
+Sleight of Hand: Manual dexterity for picking pockets, palming items, or magic
+tricks.
+Deft Tools: Precise control for using lockpicks, glass cutters, or clockwork kits.
+Reﬂex: Quickness in dodging projectiles or reacting to sudden environmental
+hazards.
+Marksmanship: Hand-eye coordination required for steadying and ﬁring ranged
+weapons.
+Constitution (CON)
+Survival: Staying alive in harsh environments through grit and physical
+endurance.
+Adrenaline: Pushing the body past its limits to ignore pain or temporary fatigue.
+Concentration: Maintaining focus on a task despite physical trauma or
+distractions.
+Tolerance: Resisting the effects of toxins, diseases, or extreme temperatures.
+Fortitude: Using sheer toughness to reduce the severity of incoming physical
+blows.
+Hardiness: Recovering more effectively from exhaustion or during periods of
+rest.
+Intelligence (INT)
+Investigation: Piece together clues and deduce information from a scene.
+Medicine: Knowledge of anatomy, surgery, and the treatment of physical
+injuries.
+History: Recalling signiﬁcant past events, ancient cultures, and genealogies.
+Mythology: Understanding the legends, deities, and folklore of the world.
+Technology: Proﬁciency in operating, repairing, or analyzing complex machinery
+and computers.
+
+----- PAGE 15 -----
+Language: The study of linguistics, cyphers, and ancient scripts.
+Wisdom (WIS)
+Paranormal: Sensing spirits, detecting curses, and understanding the occult.
+Herbalism: Identifying plants and using them for remedies or concoctions.
+Zoology: Knowledge of animal behavior, tracking, and taming beasts.
+Awareness: Noticing subtle changes in the environment through sight and
+sound.
+Insight: Reading body language to determine if someone is lying or uneasy.
+Nature Tools: Using primitive gear like ﬁshing kits, tanning tools, or ﬂint-
+knapping.
+Charisma (CHA)
+Music: The ability to play instruments or sing to evoke speciﬁc emotions, as
+well as recognize notes, rhythm, and even voices.
+Persuasion: Inﬂuencing others through honest logic, charm, or diplomacy.
+Deception: Convincingly spinning lies or maintaining a false identity.
+Performance: Entertaining a crowd through acting, storytelling, or dance.
+Etiquette: Navigating social hierarchies and high-society protocols with grace.
+Barter: Negotiating lower prices and securing better deals in trade.
+Section 5: Combat Proﬁciencies Weapon Types
+There are many weapons available to players and NPCs in The Psion Chronicles,
+ranging from swords and bows to ﬁrearms and laser guns, there are also weapons
+like wands and staffs that channel the wielder's Ki into ranged attacks. Every
+weapon in the world is classiﬁed by it's weapon type, and subtype. A character may
+be proﬁcient with a weapon type which includes all weapon subtypes that fall
+under that category, or just a weapon subtype. For example, Heavy Weapon is a
+weapon type and a subtype of a heavy weapon would be a Warhammer. If a
+
+----- PAGE 16 -----
+character has proﬁciency in heavy weapons they have proﬁciency with
+warhammers, however, if a character has proﬁciency with warhammers, they do
+not necessarily have proﬁciency with heavy weapons. After character creation, the
+only way a character can gain proﬁciency in a weapon type is if they gain
+proﬁciency in all subtypes that fall under that weapon type.
+The following is a list of each weapon type and subtype available in The Psion
+Chronicles (for a complete list of available weapons please the Game Master's
+guide).
+Strength Weapon Types
+Heavy Weapons
+Heavy weapons are a melee weapon type deﬁned by their immense mass and the
+crushing force they generate. Because of their weight and size, these armaments
+typically require two hands to wield effectively, sacriﬁcing speed for overwhelming
+impact. In this system, Strength is the primary modiﬁer added to all Heavy Weapon
+damage rolls, representing the raw power required to swing these massive tools
+and drive them through thick defenses.
+Heavy Weapon Subtypes
+Heavy weapons are categorized by their head shape, weight distribution, and
+intended method of destruction:
+Great Hammers: Massive, long-handled tools of destruction designed for
+maximum kinetic impact. They excel at delivering devastating blunt force trauma
+capable of crushing armor and bone alike, making them ideal for shattering the
+most resilient foes.
+Great Swords: Colossal two-handed blades that bridge the gap between a polearm
+and a standard sword. These weapons provide signiﬁcant reach and use their
+extreme weight to shear through targets, offering a versatile mix of cutting power
+and defensive range.
+Great Axes: Top-heavy weapons featuring large, weighted blades. They are
+designed to concentrate all the wielder’s power into a single, high-momentum
+
+----- PAGE 17 -----
+swinging arc to cleave through thick defenses and deliver catastrophic rending
+damage.
+Maces: Durable, high-impact bludgeoning weapons built for eﬃciency. While
+shorter than their "Great" counterparts, they feature weighted heads speciﬁcally
+designed to dent plate armor and transmit bone-breaking force through even the
+thickest protective padding.
+Axes: Sturdy, single-edged hafted weapons built for precise chopping. These
+represent a middle ground in the heavy category, relying on a balanced weight
+distribution to deliver deep, clean wounds while remaining slightly more
+maneuverable than larger cleaving tools.
+Archery
+Archery is a ranged weapon type that focuses on launching projjectiles—such as
+arrows, small rocks, or metal balls—at distant targets. Whether using the
+mechanical tension of a bow or the centrifugal force of a sling, these weapons rely
+on the user's physical power to drive the projectile home. In this system, Strength is
+the primary modiﬁer added to all Archery damage rolls, representing the force
+behind the draw or the speed of the swing.
+Archery Subtypes
+Archery weapons are categorized by their frame, mechanical operation, and
+intended effective range:
+Longbows: Tall, powerful bows—often as tall as the archer—designed for long-
+distance engagements. They require signiﬁcant effort to draw but offer the
+greatest range and piercing power of all handheld bows, making them ideal for
+open-ﬁeld combat.
+Shortbows: Compact and lightweight bows built for mobility. These are designed
+for quick ﬁring in close-quarters skirmishes or for use while mounted on
+horseback. While they have a shorter effective range than longbows, they are much
+easier to handle in cramped environments or on the move.
+Slings: Simple but deadly tools consisting of a ﬂexible strap used to hurl stones or
+lead bullets. By whirling the sling in a circular motion and releasing one cord, the
+
+----- PAGE 18 -----
+user launches the projectile at high velocities. They are prized for being easy to
+conceal and for having readily available ammunition.
+Slingshots: Handheld "Y" shaped frames that use elastic tension to ﬁre small
+projectiles like pellets or stones. Unlike the traditional sling, the slingshot is braced
+by the user’s hand and pulled back directly, offering a more intuitive aiming method
+for mid-range hunting or harassment.
+Fist Weapons
+Fist weapons are specialized gear designed to enhance unarmed combat by
+adding weight, hardness, or cutting edges to the wearer’s natural strikes. Worn over
+the hands rather than held, these weapons allow a combatant to maintain the
+speed and versatility of a brawler while dealing lethal damage. In this system,
+Strength is the primary modiﬁer added to all Fist Weapon damage rolls,
+representing the raw physical power and muscle behind the impact of the strike.
+Fist Weapon Subtypes
+Fist weapons are categorized by their coverage, weight distribution, and the type of
+force they deliver:
+Knuckles: Compact frames of metal or reinforced material that sit across the
+ﬁngers. These are the most discreet ﬁst weapons, designed to focus the force of a
+punch into a small, hard surface area. They favor speed and blunt force, allowing
+the user to break bone without adding signiﬁcant weight or bulk to the arm.
+Full Fists: Heavy, reinforced gloves or gauntlets that cover the entire hand and
+wrist. By adding signiﬁcant mass to the hands, they turn every swing into a
+weighted hammer blow. These provide the highest impact force and often offer
+defensive beneﬁts, allowing the wearer to parry incoming attacks with their
+reinforced forearms.
+Knuckle Blades: Weighted grips or gloves that incorporate perpendicular or
+forward-facing blades. These weapons transform the natural "point-and-strike"
+motion of a punch into a lethal stabbing or slashing attack. They are designed for
+precision, combining the instinct of a brawler with the piercing power of a dagger.
+Agility Weapon Types
+
+----- PAGE 19 -----
+Light Weapons
+Light weapons are small, easily maneuverable tools designed for speed and
+precision rather than raw power. Because these weapons rely on hitting vital spots
+and ﬁnding gaps in armor, you add your Agility modiﬁer to the damage roll instead
+of Strength. Their low weight and ease of use make them the primary choice for
+stealthy characters and those who prefer the rapid-ﬁre nature of dual-wielding.
+Light Weapon Subtypes
+Light weapons are categorized by their length, balance, and intended method of
+deployment:
+Knives: Small, everyday utility blades that are easily concealed on one's person.
+While they have the shortest reach of any blade, they are perfect for surprise
+strikes and are often balanced speciﬁcally for throwing at distant targets.
+Daggers: Purpose-built combat blades featuring double edges and reinforced
+points. These are the gold standard for precision, offering a much higher potential
+for lethal critical hits when striking an unaware foe from the shadows.
+Batons: Short, blunt instruments such as clubs or weighted rods. These allow an
+agile ﬁghter to deliver rapid, bludgeoning strikes to incapacitate or stun opponents
+without having to rely on a sharpened edge.
+Short Swords: The largest weapons in the light category, these balanced blades
+provide a reliable reach in close-quarters combat. They offer a perfect middle
+ground between high-speed offense and the ability to parry for defensive utility.
+Quick Weapons
+Quick weapons are a category of gear designed for speed, precision, and rapid-ﬁre
+utility. Unlike heavy armaments that rely on brute strength, these weapons favor
+high attack frequency and seamless transitions between offense and defense. In
+this system, Agility is the primary modiﬁer added to all Quick Weapon damage rolls,
+representing the wielder's ability to strike vital gaps and utilize momentum rather
+than raw power.
+Quick Weapon Subtypes
+
+----- PAGE 20 -----
+Quick weapons are categorized by their mechanical design, ease of concealment,
+and the ﬂuid nature of their deployment:
+Tonfa: These L-shaped batons are held along the forearm, allowing for ﬂuid
+transitions between blocking and striking. They provide excellent defensive utility
+while remaining lethal in close quarters, utilizing the length of the arm to generate
+swift, swinging force.
+Wrist Blades: Mounted directly to bracers or gauntlets, these blades sit on the
+outside of the arm. This unique design leaves the wearer’s hands free for grappling,
+climbing, or interacting with the environment without having to stow the weapon.
+Hand Crossbows: Compact, one-handed ranged weapons built for "pistol-style"
+skirmishing. They are ideal for rapid deployment during a move and are easily
+concealed compared to their larger counterparts, favoring the mobile marksman.
+Blowguns: Simple but effective tubes used to launch small darts. While they lack
+heavy impact, their high rate of ﬁre and silent operation make them an ideal tool for
+rapid, precise application of various tactical effects from a distance.
+Thrown Weapons
+Thrown weapons are specialized projectiles designed to be launched by hand
+rather than ﬁred from a bow or mechanical device. They rely on aerodynamic
+eﬃciency, weight distribution, and the user’s precision to strike targets at range.
+Unlike bulky melee weapons, these are crafted for balance and ﬂight, allowing a
+combatant to maintain distance while dealing lethal damage. In this system, Agility
+is the primary modiﬁer added to all Thrown Weapon damage rolls, representing the
+precision, ﬂick-of-the-wrist velocity, and perfect timing required to maximize
+aerodynamic force.
+Thrown Weapon Subtypes
+Thrown weapons are categorized by their ﬂight mechanics, weight distribution, and
+intended rate of ﬁre:
+Shuriken: Small, ﬂat, and often multi-pointed projectiles. These are the most
+discreet thrown weapons, designed for rapid-ﬁre deployment and high-volume
+
+----- PAGE 21 -----
+strikes. Their low proﬁle makes them easy to conceal and draw in a split second,
+favoring speed and harassment over heavy impact.
+Throwing Knives: Speciﬁcally weighted blades balanced from hilt to tip. By
+engineering the blade to rotate predictably in the air, these weapons ensure the
+point strikes the target with maximum piercing force even from a signiﬁcant
+distance. They turn a standard throwing motion into a reliable, lethal strike.
+Darts: Aerodynamic, needle-like projectiles often stabilized by small ﬁns or
+feathers. These prioritize speed and accuracy over mass, making them ideal for
+delivering pinpoint strikes to exposed weak points. They are designed for precision,
+allowing the user to bypass heavy defenses through sheer accuracy.
+Constitution Weapon Types
+Firearms
+Firearms represent the pinnacle of high-impact ranged combat, governed by
+precision and disciplined breath control rather than raw manual dexterity. Unlike
+traditional weapons, these mechanical tools require internal stability to harness
+their true lethality. In this system, Constitution (CON) is the primary modiﬁer added
+to all Firearm damage rolls, representing the shooter’s physical stamina to absorb
+recoil, lung capacity to steady aim, and the grit required to maintain a solid
+sightline through the weapon's kick.
+Firearm Subtypes
+Firearms are categorized by their effective range, recoil management, and the
+speciﬁc physical demands they place on the shooter:
+Riﬂes: Designed for long-range engagement and high-velocity impact, riﬂes
+demand total internal stability. These weapons require the shooter to brace their
+entire body against the stock to suppress their heartbeat and hold their breath. A
+high Constitution provides the stillness necessary for lethal accuracy, ensuring that
+kinetic energy is delivered into the target at great distances.
+Handguns: Semi-automatic sidearms that prioritize ﬁre rate and versatility.
+Because these weapons are lighter, they produce a violent "muzzle climb" during
+rapid ﬁre. A high Constitution represents the wrist and forearm endurance needed
+
+----- PAGE 22 -----
+to ﬁght the weapon’s upward jerk, ensuring that every follow-up shot in a sequence
+hits with maximum force and consistency.
+Revolvers: High-pressure mechanical weapons known for their reliability and
+immense stopping power. Without a slide to absorb energy, the raw recoil of a
+revolver is transferred directly into the user’s arm. Constitution acts as the physical
+threshold to withstand this shockwave, allowing the shooter to ﬁre heavy rounds
+that would otherwise cause physical strain or fatigue.
+Explosives
+Explosives are volatile, single-use or tactical armaments designed to deal
+devastating damage over an area. Unlike precision weapons, the effectiveness of
+an explosive is tied to the user’s physical fortitude and steady hand under pressure;
+therefore, Constitution is the primary modiﬁer added to all Explosive damage rolls,
+representing the durability and grit required to handle such unstable payloads.
+Explosive Subtypes
+Explosives are categorized by their deployment method, trigger mechanisms, and
+the tactical role they serve on the battleﬁeld:
+Grenades: Compact, thrown projectiles designed for mid-range engagement. These
+explosives typically trigger on impact or after a short fuse, making them ideal for
+ﬂushing out enemies from cover or clearing small rooms. They offer a versatile
+balance of mobility and immediate destructive potential.
+Mines: Stationary, pressure-sensitive, or proximity-triggered devices. Mines are
+tactical tools used for area denial and ambushes, requiring careful placement to
+catch unsuspecting foes. These represent a more calculated approach to
+demolition, turning the environment itself into a weapon.
+Improvised Explosives: Unconventional, unstable devices cobbled together from
+salvaged components or scrap materials. While often unpredictable, these "jury-
+rigged" explosives provide high-risk, high-reward utility in the ﬁeld. They are the
+weapons of choice for those who favor raw, chaotic power over standard
+engineering.
+Volatile Weapons
+
+----- PAGE 23 -----
+Volatile weapons are high-risk, high-reward tools of destruction that utilize unstable
+energy, pressurized fuel, or reactive chemicals. Designed for maximum
+devastation, these weapons require immense physical endurance to operate safely.
+In this system, Constitution (CON) is the primary modiﬁer added to all Volatile
+Weapon damage rolls, representing the physical grit required to brace against
+violent recoil and maintain steady breathing amidst toxic fumes and searing heat.
+Volatile Weapon Subtypes
+Volatile weapons are categorized by their delivery method, payload type, and the
+nature of the destruction they unleash:
+Flamethrowers: Specialized projectors that emit a constant stream of ignited fuel.
+These weapons excel at area denial and dealing sustained damage over time,
+forcing enemies out of cover as the battleﬁeld heats up. They are designed to
+manage groups of adversaries and control the ﬂow of combat through
+overwhelming thermal energy.
+Rocket Launchers: Heavy ordnance systems engineered for high-impact force
+through self-propelled projectiles. Designed to penetrate reinforced structures, they
+deliver signiﬁcant "burst" damage in a concentrated radius. These favor high-
+stakes strikes, providing the ability to neutralize hardened targets with precision
+blasts.
+Chemical Weapons: Launchers or canisters designed to release payloads such as
+neutralizing acids or debilitating vapors. These focus on lingering environmental
+effects and weakening opponents over time. They are ideal for bypassing
+traditional physical defenses by exposing targets to reactive substances that
+degrade protective plating and lower defensive capabilities.
+Intelligence Weapon Types
+Laser Weapons
+Laser weapons are complex relics of high-tech precision that utilize focused light
+to burn through targets with surgical accuracy. Because their internal matrices are
+volatile and their targeting systems are incredibly dense, only those with signiﬁcant
+academic training can effectively operate them. In this system, Intelligence is the
+primary modiﬁer added to all Laser Weapon damage rolls, representing the user’s
+
+----- PAGE 24 -----
+ability to calculate refraction angles, manage heat sinks, and exploit structural
+vulnerabilities.
+Laser Weapon Subtypes
+Laser weapons are categorized by their beam delivery, containment method, and
+the speciﬁc optical arrays they utilize:
+Blaster Riﬂes: Standard-issue longarms designed for long-range engagement and
+consistent energy output. These weapons focus on "tracking" targets with
+continuous-wave emitters or rapid-ﬁre pulses. They allow the user to maintain a
+steady stream of lethal energy on a single point, rewarding a disciplined mind that
+can calculate how to melt through the toughest defenses over distance.
+Blaster Pistols: Compact and versatile sidearms optimized for short-range mobility.
+These pistols often feature advanced prism-tuning arrays that allow for complex
+ﬁring sequences. A high-Intelligence user can calculate the exact timing required to
+split a single beam into multiple refracted bolts, enabling them to suppress several
+targets simultaneously.
+Laser Swords: Specialized hilts that project "frozen" or looped light contained
+within a magnetic containment ﬁeld. Unlike traditional blades, these require deep
+technical knowledge to keep the energy loop stable. Combatants use their
+analytical skills to adjust the blade’s frequency on the ﬂy, allowing them to identify
+microscopic gaps in armor and bypass physical resistances entirely.
+Plasma Weapons
+DPlasma weaponry represents a tier of heavy ordnance far surpassing standard
+laser technology in both raw power and mechanical complexity. Unlike lasers,
+which focus light, these weapons utilize a sophisticated chemical mixture to
+generate and contain superheated ionized gas. In this system, Intelligence is the
+primary modiﬁer added to all Plasma Weapon damage rolls, representing the
+precision and technical calibration required to maintain the plasma’s stability and
+prevent catastrophic malfunctions.
+Plasma Weapon Subtypes
+
+----- PAGE 25 -----
+Plasma weapons are categorized by their delivery method, thermal concentration,
+and intended engagement range:
+Beam Riﬂes: Sophisticated long-arms designed for mid-to-long-range
+engagements. These riﬂes ﬁre a continuous, concentrated stream of plasma rather
+than individual bolts. They offer a balance of high thermal penetration and
+sustained accuracy, allowing tactical sharpshooters to melt through defenses with
+surgical precision.
+Plasma Cannons: The pinnacle of heavy ordnance, these massive systems ﬁre
+high-density plasma bolts that erupt violently upon impact. By prioritizing mass
+and thermal volume over precision, they serve as the primary choice for anti-armor
+roles or clearing large groups of enemies with signiﬁcant splash damage.
+Plasma Blades: A specialized class of melee weaponry consisting of standard
+frames, such as swords or axes, equipped with magnetic emitters. These emitters
+generate a searing plasma "fringe" along the physical edge of the weapon. This
+allows a combatant to utilize traditional martial techniques while shearing through
+reinforced plating that conventional steel cannot dent.
+Tech Weapons
+Tech weapons represent complex, high-mechanical weaponry salvaged or
+reconstructed from the ruins of the Old World. Because these arms require a deep
+understanding of ancient circuitry and mechanical engineering to maintain and
+operate effectively, Intelligence is the primary modiﬁer added to all Tech Weapon
+damage rolls, representing the technical precision and calculated execution
+required to maximize the weapon's output.
+Tech Weapon Subtypes
+Tech weapons are categorized by their mechanical operation, energy output, and
+the specialized engineering required to wield them:
+Chain Blades: These swords and axes feature motorized, rotating saw-teeth along
+their edges. Operating them requires precise timing and engine management to
+ensure the blades bite deep without stalling. They are designed for sustained
+trauma, using mechanical torque to shred through organic material and light
+plating alike.
+
+----- PAGE 26 -----
+Power Weapons: This classiﬁcation includes swords, axes, hammers, and
+gauntlets equipped with internal generators. Upon impact, they emit a powerful
+electrical ﬁeld that disrupts armor and fries internal systems. They favor high-
+energy bursts, allowing a technician to bypass physical defenses by overloading
+the target’s structural integrity.
+Rocket Weapons: These heavy melee implements use integrated rocket thrusters
+to accelerate the weapon during a swing. The user must calculate the exact
+moment of ignition to slam the weapon into targets with devastating kinetic force.
+They are built for pure impact, turning a standard swing into a high-velocity
+collision that can shatter even the heaviest fortiﬁcations.
+Wisdom Weapon Types
+Channel Weapons
+Channel weapons are specialized conduits designed to harmonize with a
+practitioner’s internal energy. Unlike traditional armaments, these tools allow a user
+to project their Ki into basic attacks without exhausting their personal Ki Point
+reserves. By utilizing the weapon as a focal point, a combatant manifests their
+spiritual power as a consistent offensive force. In this system, Wisdom is the
+primary modiﬁer added to all Channel Weapon damage rolls, representing the
+mental discipline and spiritual attunement required to manifest such energy.
+Channel Weapon Subtypes
+Channel weapons are categorized by their construction, effective range, and the
+way they manifest kinetic energy:
+Staffs: Versatile conduits crafted from sturdy materials that allow for physical and
+spiritual combat. These are the only channel weapons capable of being used as
+melee implements, functioning as both a ranged focal point and a traditional staff.
+They are ideal for practitioners who need a balance between long-distance
+projection and frontline physical defense.
+Wands: Slender tools crafted speciﬁcally for precision and distance. While they
+lack the structural integrity for melee combat, they possess a signiﬁcantly longer
+range than other conduits, allowing the user to snipe enemies from the safety of
+
+----- PAGE 27 -----
+the backline. They are the preferred tool for those who prioritize superior
+positioning and accuracy.
+Amulets: Medallions or charms that radiate energy outward rather than ﬁring
+concentrated bolts. These focus on Area of Effect (AoE) attacks, channeling Ki into
+bursts, cones, or pulses that strike multiple targets simultaneously. While their
+effective range is shorter than a wand, their ability to control the battleﬁeld through
+wide-scale energy release is unmatched.
+Living Weapons
+Living Weapons are not mere tools but biological entities that form a permanent,
+symbiotic bond with their host. This relationship is both psychic and physical; the
+weapon feeds on the wielder’s life energy, while the wielder directs the weapon's
+growth through mental discipline. Because the weapon responds to the wielder’s
+intuition and mental fortitude rather than raw strength, Wisdom is the primary
+modiﬁer added to all Living Weapon damage rolls, representing the clarity and
+willpower required to guide the organism.
+Living Weapon Subtypes
+Living weapons are categorized by their biological makeup, growth patterns, and
+the way they interact with the host:
+Insect Hives: Dormant colonies housed within biological structures like bracers or
+pauldrons. In combat, the wielder releases and directs a swarm of specialized
+drones to harass enemies. These weapons favor battleﬁeld control and multi-target
+strikes, using the collective power of the swarm to overwhelm foes through sheer
+numbers and coordination.
+Sentient Plants: Hyper-adaptive ﬂora—comprised of vines, reinforced bark, and
+hardened thorns—that graft directly into the host's circulatory system. They turn the
+wielder's own body into a source of lash-like growth and rigid defense. These
+weapons provide excellent reach and defensive utility, allowing the wielder to strike
+from a distance or entangle attackers in thorns.
+Living Oozes: Semi-liquid, amorphous organisms contained within ﬂexible
+membranes or held together by the wielder’s sheer force of will. Oozes are highly
+unpredictable, capable of shifting their density and shape in an instant. They excel
+
+----- PAGE 28 -----
+at bypassing heavy armor or ensnaring foes, transforming from a ﬂuid state into a
+crushing weight at the moment of impact.
+Ritual Weapons
+Ritual weapons are implements traditionally used for ceremonies, exorcisms, and
+channeling divine or occult energies. Unlike standard martial arms designed for
+raw physical impact, these weapons are extensions of the wielder’s spiritual
+discipline and mental fortitude. In this system, Wisdom is the primary modiﬁer
+added to all Ritual Weapon damage rolls, representing the wielder's spiritual
+connection rather than brute force.
+Ritual Weapon Subtypes
+Ritual weapons are categorized by their ceremonial function, material composition,
+and the method by which they channel energy.
+Ritual Blades: Ornate daggers, curved knives, or short swords often inscribed with
+protective runes or forged from sacred metals. These are designed for precision
+and the symbolic "cutting" of ethereal bonds or spiritual fabric. They favor a fast,
+precise combat style, often used to bleed an opponent’s spiritual energy or deliver
+a cleansing "ﬁnal blow."
+Incense Flails: Specialized weapons consisting of a weighted, perforated metal
+censer attached to a heavy chain. As the censer is swung, it releases thick clouds
+of sanctiﬁed or caustic smoke. These focus on a defensive, area-of-effect combat
+style, combining blunt force trauma with persistent spiritual effects that linger in
+the air to punish nearby enemies.
+Charisma Weapon Types
+Finesse Weapons
+Finesse weapons are specialized armaments designed for ﬁghters who treat the
+battleﬁeld like a stage. Unlike heavy armaments that rely on brute strength, these
+weapons prioritize precision, ﬂair, and mesmerizing movement to overwhelm foes.
+In this system, Charisma is the primary modiﬁer added to all Finesse Weapon
+damage rolls, representing how a warrior’s conﬁdence, rhythm, and sheer presence
+allow them to exploit gaps in an enemy's resolve and defense.
+
+----- PAGE 29 -----
+Finesse Weapon Subtypes
+Finesse weapons are categorized by their reach, rhythmic ﬂow, and the
+psychological impact they have on an opponent:
+Fencing Swords: Elegant, slender blades built speciﬁcally for the duel. These
+weapons utilize the Panache mechanic, focusing on ﬁnding the "ﬂawless opening"
+through superior technique. A high Charisma modiﬁer reﬂects the wielder's ability
+to outmaneuver an opponent’s guard through feints and style, turning a simple
+thrust into a lethal strike.
+Rope Weapons: Flexible tools such as rope darts, meteor hammers, and whips that
+utilize Flow and Momentum mechanics. The wielder uses Charisma to maintain a
+terrifying, rhythmic orbit or to predict enemy movement with a ﬂourish. These are
+premier tools for crowd control, allowing the user to snare limbs or keep multiple
+enemies at bay through sheer kinetic grace.
+Chakrams: Circular throwing blades that rely on Presence and geometric intuition.
+Instead of raw power, the wielder uses Charisma to calculate complex ricochets
+and trajectory arcs. The hypnotic spinning of the blades can force morale checks
+or deal psychological "Stun" damage as enemies struggle to track the ﬂickering
+steel dancing through the air.
+Art Weapons
+Art weapons are elegant implements designed to blend combat prowess with
+aesthetic mastery. To a practitioner, a duel is more than a struggle—it is a
+choreographed performance. These weapons require ﬂuid grace and a magnetic
+presence to use effectively. In this system, Charisma is the primary modiﬁer added
+to all Art Weapon damage rolls, representing the wielder's ability to utilize ﬂair and
+presence to outmaneuver an opponent's focus.
+Art Weapon Subtypes
+Art weapons are categorized by their aesthetic form, the ﬂow of their movement,
+and the visual techniques they enable:
+Battle Fans: Exquisite silk or paper designs built around reinforced frames. These
+are the most deceptive art weapons, used to deﬂect strikes with a snap of the wrist
+
+----- PAGE 30 -----
+or deliver precise slashing movements. They favor misdirection, turning a
+combatant's defensive stance into a captivating display that masks their true
+intent.
+Hoop Blades: Large, circular edges designed for continuous, rhythmic motion. By
+keeping these blades spinning around the limbs or torso, a practitioner uses
+constant momentum to navigate the battleﬁeld. Mastery of the hoop blade
+resembles a dance, where the weapon functions as a seamless extension of the
+body that remains in constant motion.
+Nunchucku: Weighted handles connected by a ﬂexible chain or cord, optimized for
+high-speed movements and intricate ﬂourishes. These weapons are a test of
+coordination and ﬂair, utilizing rapid arcs to overwhelm an opponent’s guard. They
+are designed for versatility, combining the speed of a performer with the forceful
+impact of a weighted strike.
+Noise Weapons
+Noise Weapons are specialized tools that harness the raw power of sound,
+frequency, and vibration to devastate enemies. Rather than relying on brute
+strength or steady aim, these weapons are extensions of the wielder's presence
+and performance. In this system, Charisma is the primary modiﬁer added to all
+Noise Weapon damage rolls, representing how your force of personality and stage
+presence amplify the weapon's destructive resonance.
+Noise Weapon Subtypes
+Noise weapons are categorized by their acoustic delivery, frequency range, and the
+type of resonance they produce:
+Instrument Weapons: Hybrid armaments that blend traditional musical instruments
+with standard martial weaponry. These allow a combatant to maintain a rhythmic
+performance while engaging in melee or ranged combat. They favor versatility,
+utilizing reinforced bladed edges or modiﬁed woodwinds to ﬁre projectiles without
+interrupting the ﬂow of a song.
+Amp Weapons: High-output devices designed for pure sonic devastation through
+internal power sources or magical conduits. By generating high-decibel blasts, they
+produce sound so intense that the atmospheric pressure alone causes physical
+
+----- PAGE 31 -----
+trauma. These provide the highest acoustic force, shattering bone and rupturing
+armor through sheer localized pressure.
+Percussive Weapons: Specialized tools that focus on impact and kinetic resonance
+to create concussive shockwaves. These weapons deliver damage through
+localized seismic vibrations triggered upon striking a surface or being struck
+themselves. They are designed for penetration, bypassing traditional defenses by
+rattling the target from the inside out.

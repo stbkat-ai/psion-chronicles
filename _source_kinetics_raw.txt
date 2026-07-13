@@ -1,0 +1,97 @@
+
+----- PAGE 1 -----
+Psion Chronicles - Base Kinetics Overview
+Strength
+Attribute Philosophy: Power through raw force and energy.
+Kinetic
+Role
+Domain
+Robukinesis
+Tank
+Raw Ki, life force, martial power
+Pyrokinesis
+Controller
+Fire, heat, combustion
+Electrokinesis
+Healer
+Bioelectricity, lightning, restoring life through electrical energy
+Agility
+Attribute Philosophy: Momentum and Mobility.
+Kinetic
+Role
+Domain
+Aerokinesis
+Tank
+Wind and air
+Umbrakinesis
+Controller
+Shadows and darkness
+Hydrokinesis
+Healer
+Water and restorative flow
+Constitution
+Attribute Philosophy: Endurance and Survival.
+Kinetic
+Role
+Domain
+Terrakinesis
+Tank
+Earth and stone
+Cryokinesis
+Controller
+Ice, cold, preservation
+Vitakinesis
+Healer
+Vitality, life force, renewal
+Intelligence
+Attribute Philosophy: Knowledge and Understanding.
+Kinetic
+Role
+Domain
+Gravikinesis
+Tank
+Gravity
+Chronokinesis
+Controller
+Time
+Biokinesis
+Healer
+Biology, living tissue
+Wisdom
+Attribute Philosophy: Harmony and Insight.
+Kinetic
+Role
+Domain
+Demokinesis
+Tank
+Demonic power
+Naturakinesis
+Controller
+Plants and nature
+Holykinesis
+Healer
+Holy and angelic power
+Charisma
+Attribute Philosophy: Presence and Influence.
+
+
+----- PAGE 2 -----
+Kinetic
+Role
+Domain
+Sonikinesis
+Tank
+Sound and resonance
+Lumokinesis
+Controller
+Light
+Spirikinesis
+Healer
+Spirits and the afterlife
+Complete Base Kinetic Roster
+ Strength: Robukinesis, Pyrokinesis, Electrokinesis
+ Agility: Aerokinesis, Umbrakinesis, Hydrokinesis
+ Constitution: Terrakinesis, Cryokinesis, Vitakinesis
+ Intelligence: Gravikinesis, Chronokinesis, Biokinesis
+ Wisdom: Demokinesis, Naturakinesis, Holykinesis
+ Charisma: Sonikinesis, Lumokinesis, Spirikinesis

@@ -1,0 +1,32 @@
+
+----- PAGE 1 -----
+Robukinesis (STR) (Core Chakra)
+Beginner
+Ki Strike (3 KP) (Action)
+Charge your weapon or unarmed strike with kinetic energy.
+-Add 1D4 +STR modiﬁer of force damage to damage roll for melee attack.
+Ki Bolt (4 KP) (Action)
+Hurl a bolt of kinetic energy at your tarr of r the get.
+-range 30 feet, deal 1D6 force damage +STR modiﬁer.gttccfrr
+Ki Shield (2KP+1KP for each turn after activation) (Bonus Action)
+Envelope your body in a shield of kinetic energy.
+-Add your STR modiﬁer to your DS.
+Focus Ki (1KP) (1 whole Turn)
+Focus your Ki to heal small wounds
+-heal 1D4+STR modiﬁer
+Share Ki (5KP) (Reaction)
+Gift an Ally some of your kinetic energy.
+-Grant 1D4+STR modiﬁer KP to ally within melee range.
+Ki Flame (6KP+3KP for each turn after activation) (Bonus Action)
+Envelope your body in a ﬂaming aura of kinetic energy, enhancing all your
+physical attributes.
+-+3 to STR, DEX, and CON while active (note: this technique may raise attributes
+past 30, all affects apply.)
+Ki Blast (7KP) (Action)
+
+----- PAGE 2 -----
+Blast a target with kinetic energy.
+-range 50 feet deal 1D8 force damage +STR modiﬁer
+Ki Volley (8KP) (Action)
+-blast A. 50-ft cone of key blasts dealing 1d 6. Force damage plus strength
+modiﬁer to each Target hit.
