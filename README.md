@@ -4,6 +4,15 @@ A digital companion for the **Psion Chronicles** TTRPG (like D&D Beyond, but for
 Built with Luke. Everything you'd track on paper — character sheet, HP, KP, chakras, skills,
 techniques — lives in the app.
 
+## Saving & versions (Git)
+This project is a **Git repository** — every revision is tracked so you can roll back or compare.
+- **After making changes**, save a version by committing (ask Claude, or run in the `Luke` folder):
+  `git add -A && git commit -m "describe what changed"`
+- **See history:** `git log --oneline` · **Compare current changes:** `git diff` · **Roll back a file:**
+  `git checkout -- path/to/file`
+- Want cloud backup / to share the source? We can push to GitHub later.
+- To share a *playable* copy (not for editing), we can also export a single-file build / publish an Artifact.
+
 ## How to open it
 **Just double-click `app/index.html`** — it opens in your web browser (Chrome, Edge, etc.).
 No install, no internet needed. Works on computer and phone.
