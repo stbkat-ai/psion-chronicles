@@ -47,6 +47,7 @@
       chosenSkills: [],       // player-chosen (2), beyond background's 3
       chosenTechniques: [],   // player-chosen (2), beyond background's free technique
       equipmentChoices: [],   // selected option index per background equipment choice group
+      startWeapon: null,      // chosen starting weapon name (from proficient weapon type)
       chakraHits: { STR: 0, AGI: 0, CON: 0, INT: 0, WIS: 0, CHA: 0 },
       notes: "",
       createdAt: new Date().toISOString(),
@@ -64,10 +65,37 @@
   // Equipment choice groups for the current background (supports {fixed,choices} shape).
   function bgChoices() { const b = bg(); return b && b.equipment && Array.isArray(b.equipment.choices) ? b.equipment.choices : []; }
   function bgFixedEquip() { const b = bg(); return b && b.equipment && Array.isArray(b.equipment.fixed) ? b.equipment.fixed : []; }
-  // Resolve the final item list from fixed gear + the selected option per choice group.
+  // A choice group that offers weapons is replaced by the dynamic starting-weapon picker.
+  function isWeaponGroup(grp) {
+    return grp && grp.options && grp.options[0] && grp.options[0].items && grp.options[0].items[0] && grp.options[0].items[0].category === "Weapon";
+  }
+  // Resolve a background's proficient weapon *type* (combat[0]; if it's a subtype, map to its parent type).
+  function weaponTypeFor(b) {
+    if (!b || !b.combat) return null;
+    const c = b.combat[0];
+    if (PC.WEAPON_TYPES.some((w) => w.name === c)) return c;
+    const parent = PC.WEAPON_TYPES.find((w) => (w.subtypes || []).indexOf(c) > -1);
+    return parent ? parent.name : c;
+  }
+  // Every catalog weapon of the current background's proficient weapon type.
+  function eligibleStartWeapons() {
+    const wt = weaponTypeFor(bg());
+    return (window.PC.ITEMS || []).filter((it) => it.category === "Weapon" && it.weaponType === wt);
+  }
+  // The chosen starting weapon as an equipped, proficient inventory item.
+  function chosenStartWeaponItem() {
+    const list = eligibleStartWeapons();
+    if (!list.length) return null;
+    const it = list.find((w) => w.name === state.startWeapon) || list[0];
+    return Object.assign({}, it, { qty: 1, equipped: true, proficient: true });
+  }
+  // Resolve the final item list: fixed gear + chosen starting weapon + selected option per non-weapon group.
   function resolveEquipment() {
     const out = bgFixedEquip().slice();
+    const sw = chosenStartWeaponItem();
+    if (sw) out.push(sw);
     bgChoices().forEach((grp, gi) => {
+      if (isWeaponGroup(grp)) return; // replaced by the dynamic starting-weapon picker
       const idx = (state.equipmentChoices && state.equipmentChoices[gi] != null) ? state.equipmentChoices[gi] : 0;
       const opt = grp.options[idx] || grp.options[0];
       if (opt && Array.isArray(opt.items)) opt.items.forEach((it) => out.push(it));
@@ -239,7 +267,9 @@
       if (b.equipment) {
         const eqp = el("div", "bg-equip");
         const lines = [];
+        lines.push(`<div><b>Weapon:</b> any ${weaponTypeFor(b)}</div>`);
         (b.equipment.choices || []).forEach((grp) => {
+          if (isWeaponGroup(grp)) return; // shown as the dynamic weapon line above
           lines.push(`<div><b>${grp.label}:</b> ${grp.options.map((o) => o.label).join(" / ")}</div>`);
         });
         const fixedNames = (b.equipment.fixed || []).map((i) => i.name + (i.qty > 1 ? " ×" + i.qty : "")).join(", ");
@@ -253,8 +283,9 @@
         // technique that equals this background's free one (avoid duplicates).
         state.chosenSkills = (state.chosenSkills || []).filter((s) => !b.skills.includes(s));
         if (b.freeTech) state.chosenTechniques = (state.chosenTechniques || []).filter((t) => t !== b.freeTech);
-        // default each equipment choice group to its first option
+        // default each equipment choice group to its first option; reset the starting weapon
         state.equipmentChoices = (b.equipment && b.equipment.choices ? b.equipment.choices : []).map(() => 0);
+        state.startWeapon = null;
         render();
       };
       grid.appendChild(card);
@@ -282,7 +313,20 @@
           bgFixedEquip().forEach((it) => fx.appendChild(el("span", "pill", it.name + (it.qty > 1 ? " ×" + it.qty : ""))));
           eq.appendChild(fx);
         }
+        // Starting weapon — any weapon of the background's proficient weapon type.
+        const wt = weaponTypeFor(b);
+        const eligible = eligibleStartWeapons();
+        if (eligible.length) {
+          eq.appendChild(el("div", "eq-choice-label", `Starting weapon — any ${wt} (you're proficient)`));
+          const wsel = el("select"); wsel.className = "inv-cat"; wsel.style.maxWidth = "340px";
+          const chosen = state.startWeapon && eligible.some((w) => w.name === state.startWeapon) ? state.startWeapon : eligible[0].name;
+          wsel.innerHTML = eligible.map((w) => `<option value="${w.name}" ${w.name === chosen ? "selected" : ""}>${w.name} (${w.damage})</option>`).join("");
+          wsel.onchange = () => { state.startWeapon = wsel.value; render(); };
+          eq.appendChild(wsel);
+        }
+        // Remaining (non-weapon) choice groups.
         bgChoices().forEach((grp, gi) => {
+          if (isWeaponGroup(grp)) return; // replaced by the starting-weapon dropdown above
           eq.appendChild(el("div", "eq-choice-label", grp.label));
           const chips = el("div", "chips");
           grp.options.forEach((opt, oi) => {

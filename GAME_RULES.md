@@ -332,8 +332,11 @@ Each attribute has a guiding philosophy:
 | **Spirikinesis** | Healer | Spirits and the afterlife |
 
 ### Starting Equipment by Background (CONFIRMED Luke)
-Each background grants **fixed gear** plus **choice groups** (usually a proficient weapon + armor) the
-player picks from at creation. The chosen primary weapon is equipped and proficient; chosen armor is equipped.
+Each background grants **fixed gear**, a **starting weapon of the player's choice from ANY weapon in their
+proficient weapon type** (a dropdown of every catalog weapon of that type — e.g. a Body Builder picks any
+Heavy Weapon), plus other **choice groups** (armor, instrument, focus…). The chosen weapon is equipped and
+proficient; chosen armor is equipped. *(Guru's Handguns-subtype proficiency resolves to the Firearms type
+for this picker, so Guru may start with any firearm.)*
 
 | Background | Fixed | Weapon choice | Armor / other choice |
 |---|---|---|---|
