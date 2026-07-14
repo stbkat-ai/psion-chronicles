@@ -17,6 +17,10 @@ This project is a **Git repository** — every revision is tracked so you can ro
 **Just double-click `app/index.html`** — it opens in your web browser (Chrome, Edge, etc.).
 No install, no internet needed. Works on computer and phone.
 
+> **After an update, hard-refresh** (`Ctrl`+`Shift`+`R`) so the browser loads the new code instead of a
+> cached copy. The app's scripts are versioned (`?v=…` in index.html) to reduce stale-cache issues — bump
+> that number when JS/CSS changes if a hard refresh isn't enough.
+
 > If you ever want to test it on your phone on the same Wi-Fi, run a local server from the `app`
 > folder: `python -m http.server 8777` then visit `http://<your-computer-ip>:8777` on your phone.
 
@@ -59,9 +63,10 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     (tap to toggle manually for feats/abilities that grant extras).
   - **Kinetics tab** — all known techniques with their Use/Attack/Activate buttons.
   - **Skills tab** — all 36 skills, tap to roll.
-  - **Inventory tab** — **browse/search the item catalog** (220+ weapons, armor, consumables, tools, gear)
-    and add any of them (weapons arrive attack-ready with type + damage die); add custom items too; plus
-    carry weight, equip, item actions, and config.
+  - **Inventory tab** — carry weight, carried items (equip, actions, config), a custom-item form, and a
+    **🔍 Browse Item Catalog** button that opens a dedicated **catalog screen**: search/filter the 220+
+    item catalog (weapons, armor, consumables, tools, gear) and Add any of them (weapons arrive attack-ready
+    with type + damage die). A **← Inventory** button returns.
   - **Sheet tab** — the core overview:
   - HP & KP bars with damage/heal/spend controls (quick ±1/±5 or type an amount)
   - **Interactive Chakra Chart** — click pips to add hits; penalties auto-apply to that attribute's

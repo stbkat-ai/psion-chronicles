@@ -18,6 +18,7 @@
   let curId = null;        // track which character is open (reset tab on switch)
   let invSearchQ = "";     // inventory catalog search query
   let invSearchCat = "All"; // inventory catalog category filter
+  let catalogOpen = false; // whether the item-catalog sub-screen is open (from the Inventory tab)
   const refresh = () => App.render();
 
   const bg = () => PC.background(rec.background);
@@ -441,7 +442,7 @@
 
   /* ---------- render ---------- */
   function render(container, id) {
-    if (id !== curId) { activeTab = "sheet"; expandedItem = null; curId = id; }
+    if (id !== curId) { activeTab = "sheet"; expandedItem = null; catalogOpen = false; curId = id; }
     rec = App.loadRoster().find((c) => c.id === id);
     if (!rec) { App.goHome(); return; }
     ensurePlay();
@@ -458,7 +459,7 @@
       case "limbs": body = buildLimbsTab(); break;
       case "kinetics": body = buildKineticsTab(); break;
       case "skills": body = buildSkillsTab(); break;
-      case "inventory": body = buildInventoryTab(); break;
+      case "inventory": body = catalogOpen ? buildCatalogScreen() : buildInventoryTab(); break;
       default: body = buildSheetTab();
     }
     root.appendChild(body);
@@ -482,7 +483,7 @@
     const bar = el("div", "play-tabs");
     [["sheet", "Sheet"], ["combat", "⚔ Combat"], ["limbs", "Limbs"], ["kinetics", "Kinetics"], ["skills", "Skills"], ["inventory", "Inventory"]].forEach((pair) => {
       const b = el("button", "play-tab" + (activeTab === pair[0] ? " active" : ""), pair[1]);
-      b.onclick = () => { activeTab = pair[0]; refresh(); };
+      b.onclick = () => { activeTab = pair[0]; catalogOpen = false; refresh(); };
       bar.appendChild(b);
     });
     return bar;
@@ -876,6 +877,65 @@
   }
 
   /* ---------- Inventory tab ---------- */
+  /* ---------- Item Catalog (sub-screen of the Inventory tab) ---------- */
+  function buildCatalogScreen() {
+    const root = el("div");
+    const panel = el("div", "panel");
+
+    const headRow = el("div", "catalog-head");
+    const back = el("button", "btn small ghost", "← Inventory");
+    back.onclick = () => { catalogOpen = false; refresh(); };
+    headRow.appendChild(back);
+    headRow.appendChild(el("div", "section-label", "Item Catalog"));
+    const cw = el("span", "muted"); cw.style.marginLeft = "auto";
+    cw.textContent = `Carry ${carryUsed()} / ${carryCapacity()} lb`;
+    headRow.appendChild(cw);
+    panel.appendChild(headRow);
+
+    panel.appendChild(el("p", "hint", "Search the full game catalog and tap <b>Add</b> to put an item in your inventory. Weapons arrive attack-ready (type + damage set)."));
+
+    const searchRow = el("div", "inv-form");
+    const search = el("input"); search.type = "text"; search.placeholder = "Search items (e.g. rifle, staff, stimpak)…"; search.value = invSearchQ; search.className = "inv-name";
+    const catFilter = el("select"); catFilter.className = "inv-cat";
+    ["All", "Weapon", "Armor", "Consumable", "Tool", "Misc"].forEach((c) => { const o = el("option", null, c); o.value = c; catFilter.appendChild(o); });
+    catFilter.value = invSearchCat;
+    searchRow.appendChild(search); searchRow.appendChild(catFilter);
+    panel.appendChild(searchRow);
+
+    const results = el("div", "catalog-results catalog-full");
+    panel.appendChild(results);
+    function renderResults() {
+      const q = invSearchQ.trim().toLowerCase();
+      const cat = invSearchCat;
+      let matches = (PC.ITEMS || []).filter((it) =>
+        (cat === "All" || it.category === cat) &&
+        (!q || it.name.toLowerCase().indexOf(q) > -1 || (it.weaponType && it.weaponType.toLowerCase().indexOf(q) > -1) || (it.note && it.note.toLowerCase().indexOf(q) > -1)));
+      results.innerHTML = "";
+      if (!matches.length) { results.appendChild(el("div", "muted", "No items match. Try another search.")); return; }
+      const total = matches.length;
+      matches = matches.slice(0, 80);
+      matches.forEach((it) => {
+        const row = el("div", "catalog-row");
+        let meta = it.category;
+        if (it.category === "Weapon") meta += ` · ${it.weaponType} · ${it.damage}`;
+        else if (it.category === "Armor") meta += ` · +${it.dsBonus} DS`;
+        else if (it.note) meta += ` · ${it.note}`;
+        row.innerHTML = `<div class="cat-info"><span class="cat-name">${it.name}</span><span class="cat-meta">${meta}</span></div><span class="cat-wt">${it.weight} lb</span>`;
+        const add = el("button", "btn small primary", "＋ Add");
+        add.onclick = () => addCatalogItem(it);
+        row.appendChild(add);
+        results.appendChild(row);
+      });
+      if (total > 80) results.appendChild(el("div", "muted", `Showing 80 of ${total} — refine your search.`));
+    }
+    search.oninput = () => { invSearchQ = search.value; renderResults(); };
+    catFilter.onchange = () => { invSearchCat = catFilter.value; renderResults(); };
+    renderResults();
+
+    root.appendChild(panel);
+    return root;
+  }
+
   function buildInventoryTab() {
     const root = el("div");
     const inv = el("div", "panel");
@@ -893,44 +953,11 @@
     if (over) cw.appendChild(el("div", "rest-note", "Over capacity — encumbrance rules TBD; flagged for the GM."));
     inv.appendChild(cw);
 
-    // ---- browse / search the item catalog ----
-    inv.appendChild(el("div", "section-label", "Browse & Search Items"));
-    const searchRow = el("div", "inv-form");
-    const search = el("input"); search.type = "text"; search.placeholder = "Search items (e.g. rifle, healing, staff)…"; search.value = invSearchQ; search.className = "inv-name";
-    const catFilter = el("select"); catFilter.className = "inv-cat";
-    ["All", "Weapon", "Armor", "Consumable", "Tool", "Misc"].forEach((c) => { const o = el("option", null, c); o.value = c; catFilter.appendChild(o); });
-    catFilter.value = invSearchCat;
-    searchRow.appendChild(search); searchRow.appendChild(catFilter);
-    inv.appendChild(searchRow);
-    const results = el("div", "catalog-results");
-    inv.appendChild(results);
-    function renderResults() {
-      const q = invSearchQ.trim().toLowerCase();
-      const cat = invSearchCat;
-      let matches = (PC.ITEMS || []).filter((it) =>
-        (cat === "All" || it.category === cat) &&
-        (!q || it.name.toLowerCase().indexOf(q) > -1 || (it.weaponType && it.weaponType.toLowerCase().indexOf(q) > -1) || (it.note && it.note.toLowerCase().indexOf(q) > -1)));
-      results.innerHTML = "";
-      if (!matches.length) { results.appendChild(el("div", "muted", "No items match. Try another search, or add a custom item below.")); return; }
-      const total = matches.length;
-      matches = matches.slice(0, 60);
-      matches.forEach((it) => {
-        const row = el("div", "catalog-row");
-        let meta = it.category;
-        if (it.category === "Weapon") meta += ` · ${it.weaponType} · ${it.damage}`;
-        else if (it.category === "Armor") meta += ` · +${it.dsBonus} DS`;
-        else if (it.note) meta += ` · ${it.note}`;
-        row.innerHTML = `<div class="cat-info"><span class="cat-name">${it.name}</span><span class="cat-meta">${meta}</span></div><span class="cat-wt">${it.weight} lb</span>`;
-        const add = el("button", "btn small primary", "＋ Add");
-        add.onclick = () => addCatalogItem(it);
-        row.appendChild(add);
-        results.appendChild(row);
-      });
-      if (total > 60) results.appendChild(el("div", "muted", `Showing 60 of ${total} — refine your search.`));
-    }
-    search.oninput = () => { invSearchQ = search.value; renderResults(); };
-    catFilter.onchange = () => { invSearchCat = catFilter.value; renderResults(); };
-    renderResults();
+    // ---- open the item catalog (separate screen) ----
+    const browseBtn = el("button", "btn small primary", "🔍 Browse & Search Item Catalog");
+    browseBtn.style.margin = "4px 0 8px";
+    browseBtn.onclick = () => { catalogOpen = true; refresh(); };
+    inv.appendChild(browseBtn);
 
     // ---- custom item ----
     inv.appendChild(el("div", "section-label", "Add a Custom Item"));
