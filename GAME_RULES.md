@@ -92,6 +92,26 @@ Both **HP (Body Pool)** and **KP (Mind Pool)** recover the same ways:
 ### Defense Score (DS)
 - Unarmored **DS = 10 + AGI mod + CON mod** (armor rules TBD).
 
+### Limb Damage (CONFIRMED Luke) — called-shot / crippling system
+A third tracking system (Fallout-style). Every character/monster has **6 limbs**, each with its own limb-HP.
+- **Limb HP** = a fraction of max HP: **Head ¼ · Torso ½ · each Arm ¼ · each Leg ¼** (rounded up; scales with max HP).
+- **Called shots** (e.g. **Marksmanship**, or special attacks) target a specific limb. The damage is applied
+  to **both the limb AND main HP, capped at the limb's current HP** — any **excess is lost** (you can't
+  overkill a small limb to bypass HP). Untargeted attacks hit HP normally and don't touch limbs.
+- At **0 limb HP the limb is Crippled**:
+  | Limb | Crippled effect |
+  |---|---|
+  | Head | Concussed — disadvantage on Mind (INT/WIS/CHA) checks & technique attacks |
+  | Torso | Grievously wounded — Weakened; bleed 1d4 HP at start of each turn |
+  | Arm (one) | Disadvantage on weapon attacks; no two-handed weapons |
+  | Both Arms | Cannot make weapon attacks |
+  | Leg (one) | Movement halved |
+  | Both Legs | Movement 0 (prone/crawl) |
+- **Healing:** long rest fully restores all limbs; short rest restores half of each limb's max; Medicine /
+  healing techniques can also restore limb HP.
+- *App:* the **Limbs tab** tracks all six; leg/arm/head crippled effects auto-apply to movement and to
+  attack/skill/technique rolls (disadvantage/blocked); torso bleed/Weakened is shown as a GM note.
+
 ### Chakra Chart (CONFIRMED Luke) — a separate health system
 A **second health track**, independent of HP. There are **6 chakra points**, one tied to each attribute.
 **Each chakra can take up to 4 hits**, with escalating penalties to *everything that uses that attribute*

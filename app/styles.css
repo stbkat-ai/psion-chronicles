@@ -340,6 +340,15 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 .skill-row.locked { opacity: .4; cursor: not-allowed; }
 .skill-row .skmod { font-weight: 700; color: var(--psi-bright); }
 
+/* limbs */
+.limb-box { background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
+.limb-box.crippled { border-color: var(--danger); box-shadow: inset 3px 0 0 var(--danger); }
+.bar-fill.limb { background: linear-gradient(90deg, #8a6d2f, var(--gold)); }
+.limb-box.crippled .bar-fill.limb { background: var(--danger); }
+.limb-box .poolbar-num { color: var(--gold); font-weight: 700; }
+.limb-box.crippled .poolbar-num { color: var(--danger); }
+.limb-effect { color: var(--danger); font-size: .82rem; margin: 8px 0 2px; }
+
 /* inventory */
 .carry-box { margin-bottom: 14px; }
 .carry-box.over .poolbar-num { color: var(--danger); }

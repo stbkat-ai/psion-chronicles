@@ -42,6 +42,16 @@
     // If attributes were edited, current HP/KP may exceed new maxes — clamp.
     play.hp = Math.min(play.hp, maxHP);
     play.kp = Math.min(play.kp, maxKP);
+    // Limb HP (called-shot / crippling system). Current per limb; max derives from maxHP.
+    if (!play.limbs) {
+      play.limbs = {};
+      PC.LIMBS.forEach((L) => { play.limbs[L.key] = Math.ceil(maxHP * L.frac); });
+    }
+    PC.LIMBS.forEach((L) => {
+      const m = Math.ceil(maxHP * L.frac);
+      if (typeof play.limbs[L.key] !== "number") play.limbs[L.key] = m;
+      play.limbs[L.key] = Math.min(play.limbs[L.key], m); // clamp to max if maxHP dropped
+    });
     // Inventory lives on the character record (persistent gear, not session state).
     if (!Array.isArray(rec.inventory)) rec.inventory = [];
   }
@@ -71,6 +81,43 @@
   function adjMod(attr) { return PC.chakraEffect(chakraOf(attr)).effMod(baseMod(attr)); } // after chakra
   function isDisadv(attr) { return chakraOf(attr) >= 1; }
   function isLocked(attr) { return chakraOf(attr) >= 4; }
+
+  /* ---------- limbs ---------- */
+  function limbDef(key) { return PC.LIMBS.find((L) => L.key === key); }
+  function limbMaxFor(key) { return Math.ceil(maxHP() * limbDef(key).frac); }
+  function limbCurrent(key) { return play.limbs[key] != null ? play.limbs[key] : limbMaxFor(key); }
+  function limbCrippled(key) { return limbCurrent(key) <= 0; }
+  function anyArmCrippled() { return limbCrippled("larm") || limbCrippled("rarm"); }
+  function bothArmsCrippled() { return limbCrippled("larm") && limbCrippled("rarm"); }
+  function crippledLegs() { return (limbCrippled("lleg") ? 1 : 0) + (limbCrippled("rleg") ? 1 : 0); }
+  function headCrippled() { return limbCrippled("head"); }
+  const MIND = ["INT", "WIS", "CHA"];
+  function effectiveMovement() {
+    let m = PC.derive(liveScores(), rec.level).movement;
+    const legs = crippledLegs();
+    if (legs >= 2) return 0;
+    if (legs === 1) return Math.floor(m / 2);
+    return m;
+  }
+  // A called shot: damage the limb AND main HP, capped at the limb's current HP (excess is lost).
+  function calledShot(key, amount) {
+    const cur = limbCurrent(key);
+    const applied = Math.min(Math.max(0, amount), cur);
+    play.limbs[key] = cur - applied;
+    play.hp = clamp(play.hp - applied, 0, maxHP());
+    const nowCrippled = play.limbs[key] <= 0 && cur > 0;
+    const excess = Math.max(0, amount - cur);
+    let msg = `Called shot — ${limbDef(key).name}: ${amount} dmg → ${applied} to HP & limb`;
+    if (excess > 0) msg += ` (${excess} excess lost)`;
+    if (nowCrippled) msg += ` · ${limbDef(key).name} CRIPPLED!`;
+    logLine(msg);
+    if (nowCrippled) App.toast(`${limbDef(key).name} crippled!`);
+    save(); refresh();
+  }
+  function healLimb(key, amount) {
+    play.limbs[key] = clamp(limbCurrent(key) + amount, 0, limbMaxFor(key));
+    save(); refresh();
+  }
 
   function defenseScore() {
     let ds = PC.RULES.BASE_DS + adjMod("AGI") + adjMod("CON");
@@ -146,7 +193,9 @@
   function shortRest() {
     let healed = 0;
     PC.ATTRS.forEach((a) => { if (play.chakraHits[a] > 0) { play.chakraHits[a] = Math.max(0, play.chakraHits[a] - 1); healed++; } });
-    logLine(`Short rest — healed 1 hit on ${healed} chakra${healed === 1 ? "" : "s"}.`);
+    // Short rest restores half of each limb's max.
+    PC.LIMBS.forEach((L) => { play.limbs[L.key] = Math.min(limbMaxFor(L.key), limbCurrent(L.key) + Math.ceil(limbMaxFor(L.key) / 2)); });
+    logLine(`Short rest — healed 1 hit on ${healed} chakra${healed === 1 ? "" : "s"}; limbs +½ each.`);
     App.toast("Short rest taken.");
     save(); refresh();
   }
@@ -154,7 +203,8 @@
     PC.ATTRS.forEach((a) => { if (play.chakraHits[a] > 0) play.chakraHits[a] = Math.max(0, play.chakraHits[a] - 2); });
     play.hp = maxHP(); play.kp = maxKP(); play.active = []; play.turn = 1;
     play.econ = { action: false, bonus: false, reaction: false, move: false };
-    logLine("Long rest — HP & KP fully restored, chakras +2, sustained techniques ended.");
+    PC.LIMBS.forEach((L) => { play.limbs[L.key] = limbMaxFor(L.key); }); // limbs fully restored
+    logLine("Long rest — HP & KP fully restored, chakras +2, limbs fully healed, sustained techniques ended.");
     App.toast("Long rest — fully restored.");
     save(); refresh();
   }
@@ -187,7 +237,8 @@
     play.kp -= t.kp; consumeEcon(t.action);
     const prof = proficientWithKinetic(t);
     const mod = adjMod(t.attr) + (prof ? PC.profBonus(rec.level) : 0);
-    const r = PC.rollCheck(mod, isDisadv(t.attr) ? "dis" : "normal");
+    // Head crippled → disadvantage on technique attacks.
+    const r = PC.rollCheck(mod, (isDisadv(t.attr) || headCrippled()) ? "dis" : "normal");
     const dis = r.mode === "dis" ? ` (disadv [${r.d20s.join(",")}]→${r.picked})` : "";
     announce(r.total, `${t.name} attack: d20${dis}${PC.fmtMod(mod)} = ${r.total} to hit${prof ? " ✓prof" : ""} (−${t.kp} KP; roll Damage if it hits)`);
     save(); refresh();
@@ -260,7 +311,8 @@
     if (isLocked(skill.attr)) { App.toast(`${PC.CHAKRAS[skill.attr].name} chakra locked — can't use ${skill.attr} skills.`); return; }
     const proficient = bg().skills.includes(skill.name) || (rec.chosenSkills || []).includes(skill.name);
     const mod = adjMod(skill.attr) + (proficient ? PC.profBonus(rec.level) : 0);
-    const mode = isDisadv(skill.attr) ? "dis" : "normal";
+    // Head crippled → disadvantage on Mind (INT/WIS/CHA) checks.
+    const mode = (isDisadv(skill.attr) || (headCrippled() && MIND.indexOf(skill.attr) > -1)) ? "dis" : "normal";
     const r = PC.rollCheck(mod, mode);
     const dis = mode === "dis" ? ` (disadvantage: [${r.d20s.join(",")}]→${r.picked})` : "";
     announce(r.total, `${skill.name} check: d20${dis}${PC.fmtMod(mod)} = ${r.total}`);
@@ -318,11 +370,13 @@
     const attr = weaponAttr(it);
     if (!attr) { App.toast("Set this weapon's type first."); return; }
     if (isLocked(attr)) { App.toast(`${PC.CHAKRAS[attr].name} chakra locked — can't attack with ${attr}.`); return; }
+    if (bothArmsCrippled()) { App.toast("Both arms are crippled — you can't make weapon attacks."); return; }
     if (econBlocked("Action")) { App.toast("You've already used your Action this turn."); return; }
     consumeEcon("Action");
     const prof = proficientWithType(it);
     const mod = adjMod(attr) + (prof ? PC.profBonus(rec.level) : 0);
-    const mode = isDisadv(attr) ? "dis" : "normal";
+    // Crippled arm → disadvantage on weapon attacks.
+    const mode = (isDisadv(attr) || anyArmCrippled()) ? "dis" : "normal";
     const r = PC.rollCheck(mod, mode);
     const dis = mode === "dis" ? ` (disadv [${r.d20s.join(",")}]→${r.picked})` : "";
     announce(r.total, `${it.name} attack: d20${dis}${PC.fmtMod(mod)} = ${r.total}${prof ? " ✓prof" : ""} (vs Defense Score)`);
@@ -388,6 +442,7 @@
     let body;
     switch (activeTab) {
       case "combat": body = buildCombat(); break;
+      case "limbs": body = buildLimbsTab(); break;
       case "kinetics": body = buildKineticsTab(); break;
       case "skills": body = buildSkillsTab(); break;
       case "inventory": body = buildInventoryTab(); break;
@@ -412,7 +467,7 @@
 
   function buildTabBar() {
     const bar = el("div", "play-tabs");
-    [["sheet", "Sheet"], ["combat", "⚔ Combat"], ["kinetics", "Kinetics"], ["skills", "Skills"], ["inventory", "Inventory"]].forEach((pair) => {
+    [["sheet", "Sheet"], ["combat", "⚔ Combat"], ["limbs", "Limbs"], ["kinetics", "Kinetics"], ["skills", "Skills"], ["inventory", "Inventory"]].forEach((pair) => {
       const b = el("button", "play-tab" + (activeTab === pair[0] ? " active" : ""), pair[1]);
       b.onclick = () => { activeTab = pair[0]; refresh(); };
       bar.appendChild(b);
@@ -443,7 +498,7 @@
     const tiles = el("div", "tile-row");
     const d = PC.derive(liveScores(), rec.level);
     tiles.appendChild(tile("Defense Score", defenseScore()));
-    tiles.appendChild(tile("Movement", d.movement + " ft"));
+    tiles.appendChild(tile("Movement", effectiveMovement() + " ft" + (crippledLegs() ? " ⚠" : "")));
     tiles.appendChild(tileRoll("Initiative", "d20 " + PC.fmtMod(adjMod("AGI")), () => {
       const r = PC.rollCheck(adjMod("AGI"), isDisadv("AGI") ? "dis" : "normal");
       announce(r.total, `Initiative: d20${PC.fmtMod(adjMod("AGI"))} = ${r.total}`); save(); refresh();
@@ -726,6 +781,41 @@
     t.title = "Click to roll";
     t.onclick = onclick;
     return t;
+  }
+
+  /* ---------- Limbs tab ---------- */
+  function buildLimbsTab() {
+    const root = el("div");
+    const p = el("div", "panel");
+    p.appendChild(el("div", "section-label", "Limb Damage — called shots"));
+    p.appendChild(el("p", "hint", "A <b>called shot</b> (e.g. Marksmanship) damages a limb <b>and</b> your HP, capped at the limb's current HP — excess is lost. At 0 HP a limb is <b>crippled</b>. Long rest fully heals limbs; short rest restores half each."));
+    PC.LIMBS.forEach((L) => {
+      const cur = limbCurrent(L.key), max = limbMaxFor(L.key);
+      const crippled = cur <= 0;
+      const box = el("div", "limb-box" + (crippled ? " crippled" : ""));
+      const head = el("div", "poolbar-head");
+      head.innerHTML = `<span>${L.name}</span><span class="poolbar-num">${cur} / ${max}${crippled ? " · CRIPPLED" : ""}</span>`;
+      box.appendChild(head);
+      const track = el("div", "bar-track");
+      const fill = el("div", "bar-fill limb"); fill.style.width = (max > 0 ? (cur / max) * 100 : 0) + "%";
+      track.appendChild(fill); box.appendChild(track);
+      if (crippled) box.appendChild(el("div", "limb-effect", "⚠ " + L.crippled));
+      // controls
+      const ctl = el("div", "adjust-row");
+      const inp = el("input"); inp.type = "number"; inp.placeholder = "#"; inp.className = "adjust-input";
+      const hit = el("button", "btn small", "⊕ Called Shot");
+      hit.title = "Apply damage to this limb and HP (capped at limb HP)";
+      hit.onclick = () => { const v = parseInt(inp.value, 10); if (v) calledShot(L.key, Math.abs(v)); };
+      const heal = el("button", "btn small ghost", "Heal");
+      heal.onclick = () => { const v = parseInt(inp.value, 10); if (v) healLimb(L.key, Math.abs(v)); };
+      const full = el("button", "btn small ghost", "Full");
+      full.onclick = () => healLimb(L.key, max);
+      ctl.appendChild(inp); ctl.appendChild(hit); ctl.appendChild(heal); ctl.appendChild(full);
+      box.appendChild(ctl);
+      p.appendChild(box);
+    });
+    root.appendChild(p);
+    return root;
   }
 
   /* ---------- Kinetics tab ---------- */

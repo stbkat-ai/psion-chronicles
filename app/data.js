@@ -723,6 +723,18 @@ PC.TECHNIQUES = [
   { name: "Soul Tether ×10", kinetic: "Spirikinesis", attr: "CHA", tier: "Master", kp: 26, action: "Action", desc: "Signature capstone — call back a soul.", effect: "Journey to the afterlife and call back a fallen ally — fully resurrect them to full HP/KP. Self-cost: you are Stunned your next turn, and your Throat chakra takes 2 hits." },
 ];
 
+/* --- Limbs (called-shot / crippling system) ----------------------------- */
+/* Each limb has its own HP = ceil(maxHP × frac). A called shot deals damage to the limb AND to main HP,
+   capped at the limb's current HP (excess is lost). At 0 the limb is Crippled with the listed effect. */
+PC.LIMBS = [
+  { key: "head",  name: "Head",      frac: 0.25, crippled: "Concussed — disadvantage on Mind (INT/WIS/CHA) checks and technique attacks." },
+  { key: "torso", name: "Torso",     frac: 0.5,  crippled: "Grievously wounded — Weakened, and bleed 1d4 HP at the start of each turn." },
+  { key: "larm",  name: "Left Arm",  frac: 0.25, crippled: "Disadvantage on weapon attacks; can't use two-handed weapons." },
+  { key: "rarm",  name: "Right Arm", frac: 0.25, crippled: "Disadvantage on weapon attacks; can't use two-handed weapons." },
+  { key: "lleg",  name: "Left Leg",  frac: 0.25, crippled: "Movement halved." },
+  { key: "rleg",  name: "Right Leg", frac: 0.25, crippled: "Movement halved." },
+];
+
 /* --- Constants ----------------------------------------------------------- */
 PC.RULES = {
   LEVEL_CAP: 30,

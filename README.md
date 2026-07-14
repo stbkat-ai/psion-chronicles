@@ -45,7 +45,12 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     Otherkin unlocks at 15.
 
 - **Live Play Sheet** (▶ Play on a character) — the at-the-table screen, organized into tabs so there's
-  little scrolling: **Sheet · ⚔ Combat · Kinetics · Skills · Inventory**.
+  little scrolling: **Sheet · ⚔ Combat · Limbs · Kinetics · Skills · Inventory**.
+  - **Limbs tab** — Fallout-style called-shot damage: 6 limbs each with their own HP (Head ¼, Torso ½,
+    Arms/Legs ¼ of max HP). A called shot damages the limb and HP, capped at the limb's HP (excess lost);
+    at 0 the limb is crippled. Crippled effects auto-apply — legs cut movement, a crippled arm gives
+    weapon-attack disadvantage (both block attacks), a crippled head gives disadvantage on technique attacks
+    & Mind checks. Long rest fully heals limbs; short rest restores half.
   - **⚔ Combat tab** — everything you can do this turn, grouped by action economy: **Actions** (equipped-weapon
     attack/damage/augments + Action techniques), **Bonus Actions**, **Reactions**, and **Full-Turn & Other** —
     plus a compact HP/KP/Defense/Turn strip, Roll Initiative, End Turn, active effects, and the log.
