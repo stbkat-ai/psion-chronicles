@@ -16,6 +16,8 @@
   let expandedItem = null; // inventory item id whose detail/actions are open
   let activeTab = "sheet"; // "sheet" | "combat"
   let curId = null;        // track which character is open (reset tab on switch)
+  let invSearchQ = "";     // inventory catalog search query
+  let invSearchCat = "All"; // inventory catalog category filter
   const refresh = () => App.render();
 
   const bg = () => PC.background(rec.background);
@@ -332,6 +334,17 @@
       category: category || "Misc",
     });
     logLine(`Picked up ${qty > 1 ? qty + "× " : ""}${name}.`);
+    save(); refresh();
+  }
+  // Add a catalog item (from the browse/search list) to the character's inventory.
+  function addCatalogItem(item) {
+    const copy = Object.assign({}, item, {
+      qty: 1,
+      id: "it_" + Date.now().toString(36) + "_" + item.name.replace(/\s+/g, "").slice(0, 6),
+    });
+    rec.inventory.push(copy);
+    logLine(`Added ${item.name} to inventory.`);
+    App.toast(`Added ${item.name}.`);
     save(); refresh();
   }
   function removeItem(idx) {
@@ -880,7 +893,47 @@
     if (over) cw.appendChild(el("div", "rest-note", "Over capacity — encumbrance rules TBD; flagged for the GM."));
     inv.appendChild(cw);
 
-    // add-item form
+    // ---- browse / search the item catalog ----
+    inv.appendChild(el("div", "section-label", "Browse & Search Items"));
+    const searchRow = el("div", "inv-form");
+    const search = el("input"); search.type = "text"; search.placeholder = "Search items (e.g. rifle, healing, staff)…"; search.value = invSearchQ; search.className = "inv-name";
+    const catFilter = el("select"); catFilter.className = "inv-cat";
+    ["All", "Weapon", "Armor", "Consumable", "Tool", "Misc"].forEach((c) => { const o = el("option", null, c); o.value = c; catFilter.appendChild(o); });
+    catFilter.value = invSearchCat;
+    searchRow.appendChild(search); searchRow.appendChild(catFilter);
+    inv.appendChild(searchRow);
+    const results = el("div", "catalog-results");
+    inv.appendChild(results);
+    function renderResults() {
+      const q = invSearchQ.trim().toLowerCase();
+      const cat = invSearchCat;
+      let matches = (PC.ITEMS || []).filter((it) =>
+        (cat === "All" || it.category === cat) &&
+        (!q || it.name.toLowerCase().indexOf(q) > -1 || (it.weaponType && it.weaponType.toLowerCase().indexOf(q) > -1) || (it.note && it.note.toLowerCase().indexOf(q) > -1)));
+      results.innerHTML = "";
+      if (!matches.length) { results.appendChild(el("div", "muted", "No items match. Try another search, or add a custom item below.")); return; }
+      const total = matches.length;
+      matches = matches.slice(0, 60);
+      matches.forEach((it) => {
+        const row = el("div", "catalog-row");
+        let meta = it.category;
+        if (it.category === "Weapon") meta += ` · ${it.weaponType} · ${it.damage}`;
+        else if (it.category === "Armor") meta += ` · +${it.dsBonus} DS`;
+        else if (it.note) meta += ` · ${it.note}`;
+        row.innerHTML = `<div class="cat-info"><span class="cat-name">${it.name}</span><span class="cat-meta">${meta}</span></div><span class="cat-wt">${it.weight} lb</span>`;
+        const add = el("button", "btn small primary", "＋ Add");
+        add.onclick = () => addCatalogItem(it);
+        row.appendChild(add);
+        results.appendChild(row);
+      });
+      if (total > 60) results.appendChild(el("div", "muted", `Showing 60 of ${total} — refine your search.`));
+    }
+    search.oninput = () => { invSearchQ = search.value; renderResults(); };
+    catFilter.onchange = () => { invSearchCat = catFilter.value; renderResults(); };
+    renderResults();
+
+    // ---- custom item ----
+    inv.appendChild(el("div", "section-label", "Add a Custom Item"));
     const form = el("div", "inv-form");
     const nameI = el("input"); nameI.type = "text"; nameI.placeholder = "Item name"; nameI.className = "inv-name";
     const wtI = el("input"); wtI.type = "number"; wtI.placeholder = "lb"; wtI.min = 0; wtI.step = "0.1"; wtI.className = "inv-wt";
@@ -897,7 +950,8 @@
     inv.appendChild(form);
 
     // item list
-    if (!rec.inventory.length) inv.appendChild(el("div", "muted", "No items yet. Add gear, weapons, and supplies above."));
+    inv.appendChild(el("div", "section-label", "Carried Items"));
+    if (!rec.inventory.length) inv.appendChild(el("div", "muted", "No items yet. Search the catalog or add a custom item above."));
     else {
       const list = el("div", "inv-list");
       rec.inventory.forEach((it, idx) => { list.appendChild(inventoryItem(it, idx)); });

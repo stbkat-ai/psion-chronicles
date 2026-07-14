@@ -59,7 +59,9 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     (tap to toggle manually for feats/abilities that grant extras).
   - **Kinetics tab** — all known techniques with their Use/Attack/Activate buttons.
   - **Skills tab** — all 36 skills, tap to roll.
-  - **Inventory tab** — carry weight + items (equip, actions, config).
+  - **Inventory tab** — **browse/search the item catalog** (220+ weapons, armor, consumables, tools, gear)
+    and add any of them (weapons arrive attack-ready with type + damage die); add custom items too; plus
+    carry weight, equip, item actions, and config.
   - **Sheet tab** — the core overview:
   - HP & KP bars with damage/heal/spend controls (quick ±1/±5 or type an amount)
   - **Interactive Chakra Chart** — click pips to add hits; penalties auto-apply to that attribute's
