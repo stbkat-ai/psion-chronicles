@@ -158,6 +158,13 @@
   }
   function toggleEconSlot(slot) { play.econ[slot] = !play.econ[slot]; save(); refresh(); }
 
+  function knownCombatSkills() {
+    const names = [];
+    const h = PC.heritage(rec.heritage);
+    if (h) h.combatSkills.forEach((n) => { if (names.indexOf(n) < 0) names.push(n); });
+    (rec.learnedCombatSkills || []).forEach((n) => { if (names.indexOf(n) < 0) names.push(n); });
+    return names;
+  }
   function knownTechniques() {
     const names = [];
     if (bg().freeTech) names.push(bg().freeTech);
@@ -1049,6 +1056,26 @@
     const std = ["Action", "Bonus Action", "Reaction"];
     const other = known.filter((t) => !isAug(t) && std.indexOf(t.action) < 0);
     if (other.length) root.appendChild(actionGroup("⏳ Full-Turn & Other", other.map(makeTechCard)));
+
+    // 🎖 Combat Skills (from Regional Heritage + learned) — reference, grouped by action type
+    const csNames = knownCombatSkills();
+    if (csNames.length) {
+      const csPanel = el("div", "panel");
+      csPanel.appendChild(el("div", "section-label", "🎖 Combat Skills"));
+      const order = ["Action", "Bonus Action", "Reaction", "Passive"];
+      const cs = csNames.map((n) => PC.combatSkill(n)).filter(Boolean);
+      order.forEach((act) => {
+        const inAct = cs.filter((c) => c.action === act);
+        if (!inAct.length) return;
+        csPanel.appendChild(el("div", "skill-attr-label", act === "Passive" ? "Passive" : act));
+        inAct.forEach((c) => {
+          const card = el("div", "tech-card");
+          card.innerHTML = `<div class="thead"><span class="tname">${c.name}</span><span class="tmeta">${c.action}</span></div><div class="teff">▸ ${c.effect}</div>`;
+          csPanel.appendChild(card);
+        });
+      });
+      root.appendChild(csPanel);
+    }
 
     // log
     const logPanel = el("div", "panel");

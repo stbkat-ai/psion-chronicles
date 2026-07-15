@@ -15,7 +15,7 @@ Post-apocalyptic "Post-Veil" world. Characters awaken psionic/kinetic powers. Th
 ## Chapter One — Character Creation
 
 ### The Character Sheet (what the app must hold)
-- **Page 1 (front):** name, Psionic Background, **Soul Level**, experience, **Body / Mind / Soul pools**, attribute scores + modifiers, quick-reference combat actions, **chakra chart**, attribute save modifiers, **Defense Score**.
+- **Page 1 (front):** name, Psionic Background, **Regional Heritage** (+ its Combat Skills & Traits), **Soul Level**, experience, **Body / Mind / Soul pools**, attribute scores + modifiers, quick-reference combat actions, **chakra chart**, attribute save modifiers, **Defense Score**.
 - **Page 2:** Skills list — proficiency checkbox per skill, which attribute modifies it, the tracked modifier.
 - **Core pages:** **Kinetic Techniques (KT)** the character knows — name, which Kinetic it belongs to, effects & rules.
 - **Inventory:** carry weight + equipped/carried items.
@@ -171,9 +171,10 @@ that attribute's rolls **and** all its Kinetics.
 - Techniques come in tiers, starting at **Beginner** (higher tiers exist — names TBD).
 - A character's **Soul Level gates which tier they may learn/buy.** *(Exact tier→level gates TBD.)*
 
-### Two point currencies — keep separate!
+### Three point currencies — keep separate!
 - **KP = Ki Points** — the **Mana** bar (= Mind Pool). Spent to *use* techniques in play; recovers via rest/items/etc.
 - **TP = Technique Points** — earned **+1 per level**. Spent to *permanently learn* techniques (1 TP each). Not a combat resource.
+- **CSP = Combat Skill Points** — earned **+1 every 5th level** (5/10/15/20/25/30). Spent to *permanently learn* Combat Skills (1 CSP each) from the Regional Heritage master list. See Section 3b.
 
 ### Otherkin System (unlocks at Soul Level 15)
 - Your **Soul Creature** — a being that has lived in your soul since creation.
@@ -201,6 +202,58 @@ type and/or Kinetic type), and **1 free beginner Kinetic Technique**.
 | **Guru** | Spiritual leader | +2 CON, +1 CHA | Body +5, Mind +5 | Concentration, Adrenaline, Etiquette | Handguns, **Spirikinesis** | Phantom Presence |
 
 \* "Rapiers" listed under Musician; note the CHA weapon types in Section 5 are Finesse/Art/Noise — reconcile with Luke.
+
+---
+
+## Section 3b — Regional Heritage (CONFIRMED Luke)
+
+Where the **Psionic Background** replaces a *class* system, **Regional Heritage** replaces a *race*
+system. It is chosen at creation **before Attributes** (creator step 2) and represents your character's
+old-world ancestry, grouped into **8 broad regions**.
+
+**Heritage grants — and only grants:**
+- **2 Combat Skills** (from the shared master list, below) — no attribute changes, ever.
+- **2 Traits** — always-on roleplay/utility perks (advantage on certain checks, an extra language, etc.).
+
+Heritage never touches attribute scores or pools. Two characters of the same Background differ by the
+Combat Skills and Traits their Heritage opened up.
+
+### The 8 Heritages
+| Heritage | Combat Skills | Traits |
+|---|---|---|
+| **North America** | Marksmanship, Ambusher | Frontier Grit, Scavenger |
+| **South America** | Dodge Roll, Combat Roll | Jungle-Born, Herbal Lore |
+| **Europe** | Riposte, Power Attack | Martial Heritage, Old-World Scholar |
+| **United Kingdom** | Parry, Feint | Stiff Upper Lip, Composed |
+| **Africa** | Guardian, Tough | Enduring, Kinship |
+| **Middle East** | Disarm, Counter-Fire | Shrewd Trader, Desert-Hardened |
+| **East Asia** | Extra Attack, Quick Draw | Inner Focus, Disciplined |
+| **Oceania** | Fleet-Footed, Aim | Seafarer, Adaptable |
+
+### Combat Skills (the new mechanic)
+Combat Skills are martial maneuvers **any** character can perform — they are a **shared master list**,
+not tied to a Background or Kinetic. Your Heritage just gives you a starting **2**; you learn more as you
+level (below).
+
+- **Combat Skills cost no resource** (no KP) — they only consume **action economy**.
+- Each skill is one of **Action**, **Bonus Action**, **Reaction**, or **Passive**.
+- **Design rule (Luke):** any Combat Skill that adds to a base attack (e.g. Marksmanship, Power Attack,
+  Feint, Aim, Quick Draw) is a **Bonus Action**, so it layers onto a weapon attack the same turn.
+- **Passive econ-boosters** (Extra Attack, +1 Bonus Action, an extra Reaction, etc.) are listed as text
+  for now; their mechanics are wired into the action-economy tracker later.
+
+**Master list (21):**
+- **Actions:** Cleave, Grapple, Suppressing Fire, Disarm
+- **Bonus Actions:** Marksmanship, Power Attack, Feint, Aim, Quick Draw, Combat Roll
+- **Reactions:** Parry, Riposte, Counter-Fire, Dodge Roll, Guardian
+- **Passives:** Extra Attack, Combat Reflexes, Fleet-Footed, Adrenaline Surge, Tough, Ambusher
+
+### Combat Skill Points (CSP) — learning more (CONFIRMED Luke)
+Combat Skills use their **own** currency, separate from Technique Points and attribute points:
+- You earn **+1 Combat Skill Point every 5th Soul Level** — at levels **5, 10, 15, 20, 25, 30** (6 total by cap).
+- Spend **1 CSP** to learn any Combat Skill from the master list you don't already know.
+- Your Heritage's two starting skills are **free and permanent** (they don't cost CSP and can't be unlearned).
+- Spent CSP can be refunded by unlearning a learned skill on the Level-Up screen.
 
 ---
 

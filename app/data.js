@@ -735,6 +735,75 @@ PC.LIMBS = [
   { key: "rleg",  name: "Right Leg", frac: 0.25, crippled: "Movement halved." },
 ];
 
+/* --- Combat Skills (master list) ---------------------------------------- */
+/* Special combat abilities used via the action economy (no resource cost).
+   Rule: any skill that adds onto a base attack (e.g. Marksmanship) is a Bonus Action.
+   Heritages grant 2 to start; more are learned later with Combat Skill Points. */
+PC.COMBAT_SKILLS = [
+  // ⚡ Actions — standalone maneuvers
+  { name: "Cleave", action: "Action", effect: "Make a melee weapon attack against every enemy within your reach." },
+  { name: "Grapple", action: "Action", effect: "Contested check to restrain a foe within reach — it is Rooted while grappled." },
+  { name: "Suppressing Fire", action: "Action", effect: "Rake a 15-ft area with ranged fire; enemies there have disadvantage on attacks until your next turn." },
+  { name: "Disarm", action: "Action", effect: "Contested attack to knock a weapon from a target's hand; it drops its weapon." },
+  // ✦ Bonus Actions — attack-augments & quick maneuvers
+  { name: "Marksmanship", action: "Bonus Action", effect: "After a ranged attack hits, make a called shot to a limb for crippling damage." },
+  { name: "Power Attack", action: "Bonus Action", effect: "Enhance a weapon attack you make this turn: +1 damage die at −2 to hit." },
+  { name: "Feint", action: "Bonus Action", effect: "Your next weapon attack this turn is made with advantage." },
+  { name: "Aim", action: "Bonus Action", effect: "Your next ranged attack this turn is made with advantage." },
+  { name: "Quick Draw", action: "Bonus Action", effect: "Draw or swap a weapon and make a quick weapon attack with it." },
+  { name: "Combat Roll", action: "Bonus Action", effect: "Move up to half your speed without provoking opportunity attacks." },
+  // ↩ Reactions
+  { name: "Parry", action: "Reaction", effect: "When hit by a melee attack, reduce its damage by your weapon die + relevant mod." },
+  { name: "Riposte", action: "Reaction", effect: "When a melee attack misses you, make a weapon attack against the attacker." },
+  { name: "Counter-Fire", action: "Reaction", effect: "When a creature you can see makes a ranged attack, make a ranged attack against it." },
+  { name: "Dodge Roll", action: "Reaction", effect: "Impose disadvantage on one attack made against you." },
+  { name: "Guardian", action: "Reaction", effect: "When an ally within reach is hit, take the attack's damage in their place (or halve it)." },
+  // ★ Passives (always-on; econ-boosters shown as text — wired later)
+  { name: "Extra Attack", action: "Passive", effect: "When you take the Attack action, make one additional weapon attack." },
+  { name: "Combat Reflexes", action: "Passive", effect: "You gain an additional Reaction each round." },
+  { name: "Fleet-Footed", action: "Passive", effect: "You gain an additional Bonus Action each turn." },
+  { name: "Adrenaline Surge", action: "Passive", effect: "Once per combat, take an additional Action on your turn." },
+  { name: "Tough", action: "Passive", effect: "Gain temp HP equal to your CON mod at the start of each combat; +1 to Defense Score." },
+  { name: "Ambusher", action: "Passive", effect: "Advantage on attack rolls during the first round of combat." },
+];
+
+/* --- Regional Heritages (old-world ancestry; replaces a race system) ---- */
+/* Grants 2 combat skills + 2 roleplay traits. No attribute changes. Chosen before Attributes. */
+PC.HERITAGES = [
+  { name: "North America", blurb: "Rugged frontier stock — self-reliant survivors of the wild expanse.",
+    combatSkills: ["Marksmanship", "Ambusher"],
+    traits: [ { name: "Frontier Grit", desc: "Advantage on Survival checks in the wilderness." },
+              { name: "Scavenger", desc: "Advantage on checks to jury-rig or repair with salvaged parts." } ] },
+  { name: "South America", blurb: "Jungle-forged and resourceful, at home in dense, untamed country.",
+    combatSkills: ["Dodge Roll", "Combat Roll"],
+    traits: [ { name: "Jungle-Born", desc: "Advantage on Acrobatics and moving through natural difficult terrain." },
+              { name: "Herbal Lore", desc: "Advantage on Herbalism; identify plants and toxins at a glance." } ] },
+  { name: "Europe", blurb: "Heirs to a long, disciplined martial tradition.",
+    combatSkills: ["Riposte", "Power Attack"],
+    traits: [ { name: "Martial Heritage", desc: "You gain one additional weapon-type proficiency." },
+              { name: "Old-World Scholar", desc: "You speak an extra old-world language; advantage on Etiquette." } ] },
+  { name: "United Kingdom", blurb: "Stoic and tactical, unshaken under pressure.",
+    combatSkills: ["Parry", "Feint"],
+    traits: [ { name: "Stiff Upper Lip", desc: "Advantage on checks and saves to resist Fear." },
+              { name: "Composed", desc: "Advantage on Insight to read a tense situation." } ] },
+  { name: "Africa", blurb: "Enduring and community-strong, forged by hardship and kinship.",
+    combatSkills: ["Guardian", "Tough"],
+    traits: [ { name: "Enduring", desc: "Advantage on Hardiness and checks to resist exhaustion." },
+              { name: "Kinship", desc: "Advantage on Persuasion within a community; rally to stabilize a downed ally." } ] },
+  { name: "Middle East", blurb: "Resilient warrior-traders, sharp of eye and tongue.",
+    combatSkills: ["Disarm", "Counter-Fire"],
+    traits: [ { name: "Shrewd Trader", desc: "Advantage on Barter." },
+              { name: "Desert-Hardened", desc: "Resist extreme heat and thirst; advantage on Tolerance vs. environment." } ] },
+  { name: "East Asia", blurb: "Honed by generations of martial discipline and focus.",
+    combatSkills: ["Extra Attack", "Quick Draw"],
+    traits: [ { name: "Inner Focus", desc: "Advantage on Concentration checks." },
+              { name: "Disciplined", desc: "You speak an extra language; advantage on precise, patient tasks." } ] },
+  { name: "Oceania", blurb: "Seafaring and adaptable, thriving between island and open water.",
+    combatSkills: ["Fleet-Footed", "Aim"],
+    traits: [ { name: "Seafarer", desc: "Advantage to swim, sail, or navigate water; hold your breath long." },
+              { name: "Adaptable", desc: "You gain one extra skill proficiency of your choice." } ] },
+];
+
 /* --- Constants ----------------------------------------------------------- */
 PC.RULES = {
   LEVEL_CAP: 30,

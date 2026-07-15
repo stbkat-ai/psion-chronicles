@@ -120,3 +120,5 @@ PC.skill = function (name) { return PC.SKILLS.find((s) => s.name === name) || nu
 PC.kinetic = function (name) { return PC.KINETICS.find((k) => k.name === name) || null; };
 PC.technique = function (name) { return PC.TECHNIQUES.find((t) => t.name === name) || null; };
 PC.skillsByAttr = function (attr) { return PC.SKILLS.filter((s) => s.attr === attr); };
+PC.heritage = function (name) { return (PC.HERITAGES || []).find((h) => h.name === name) || null; };
+PC.combatSkill = function (name) { return (PC.COMBAT_SKILLS || []).find((s) => s.name === name) || null; };

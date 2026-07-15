@@ -31,7 +31,7 @@
   }
 
   /* ---------- creator state ---------- */
-  const STEPS = ["Identity", "Attributes", "Skills", "Techniques", "Review"];
+  const STEPS = ["Identity", "Heritage", "Attributes", "Skills", "Techniques", "Review"];
   let state, step, rolled;
   let playId = null; // when set, we're in the live play sheet for this character id
   let levelUpId = null; // when set, we're in the level-up screen for this character id
@@ -43,6 +43,8 @@
       player: "",
       level: 1,
       background: null,
+      heritage: null,           // regional heritage (grants combat skills + traits)
+      learnedCombatSkills: [],  // combat skills bought later with Combat Skill Points
       baseScores: { STR: null, AGI: null, CON: null, INT: null, WIS: null, CHA: null },
       chosenSkills: [],       // player-chosen (2), beyond background's 3
       chosenTechniques: [],   // player-chosen (2), beyond background's free technique
@@ -180,6 +182,7 @@
     if (!Array.isArray(state.chosenSkills)) state.chosenSkills = [];
     if (!Array.isArray(state.chosenTechniques)) state.chosenTechniques = [];
     if (!Array.isArray(state.equipmentChoices)) state.equipmentChoices = [];
+    if (!Array.isArray(state.learnedCombatSkills)) state.learnedCombatSkills = [];
     if (!state.chakraHits) state.chakraHits = { STR: 0, AGI: 0, CON: 0, INT: 0, WIS: 0, CHA: 0 };
     state._editing = true;
     playId = null; step = 0; rolled = null;
@@ -199,8 +202,9 @@
     return s;
   }
   function canReach(i) {
-    if (i <= 1) return true;
-    if (i >= 2 && !(state.background && allScoresAssigned())) return false;
+    if (i <= 1) return true; // Identity, Heritage
+    if (!(state.background && state.heritage)) return false;
+    if (i >= 3 && !allScoresAssigned()) return false;
     return true;
   }
 
@@ -208,10 +212,11 @@
   function renderStep() {
     switch (step) {
       case 0: return stepIdentity();
-      case 1: return stepAttributes();
-      case 2: return stepSkills();
-      case 3: return stepTechniques();
-      case 4: return stepReview();
+      case 1: return stepHeritage();
+      case 2: return stepAttributes();
+      case 3: return stepSkills();
+      case 4: return stepTechniques();
+      case 5: return stepReview();
     }
   }
 
@@ -348,6 +353,44 @@
     return p;
   }
 
+  /* ---------- STEP: Heritage ---------- */
+  function stepHeritage() {
+    const p = el("div", "panel");
+    p.appendChild(el("h2", null, 'Regional Heritage <span class="sub">— where your family hails from</span>'));
+    p.appendChild(el("p", "hint", "Your old-world ancestry (the Post-Veil equivalent of a race). It grants <b>2 combat skills</b> and <b>2 traits</b> — no attribute changes. You'll learn more combat skills as you level."));
+    const grid = el("div", "bg-grid");
+    PC.HERITAGES.forEach((h) => {
+      const card = el("div", "bg-card" + (state.heritage === h.name ? " selected" : ""));
+      card.appendChild(el("h3", null, h.name));
+      card.appendChild(el("div", "blurb", h.blurb));
+      const meta = el("div", "meta");
+      h.combatSkills.forEach((cs) => meta.appendChild(el("span", "badge psi", cs)));
+      card.appendChild(meta);
+      const tr = el("div", "bg-equip");
+      tr.innerHTML = h.traits.map((t) => `<div><b>${t.name}:</b> ${t.desc}</div>`).join("");
+      card.appendChild(tr);
+      card.onclick = () => { state.heritage = h.name; render(); };
+      grid.appendChild(card);
+    });
+    p.appendChild(grid);
+    if (state.heritage) {
+      const h = PC.heritage(state.heritage);
+      const d = el("div"); d.style.marginTop = "16px";
+      d.appendChild(el("div", "section-label", `${h.name} — combat skills`));
+      h.combatSkills.forEach((cs) => {
+        const c = PC.combatSkill(cs);
+        if (c) d.appendChild(el("div", "inv-note", `<b>${cs}</b> <span class="tag">${c.action}</span> — ${c.effect}`));
+      });
+      d.appendChild(el("div", "section-label", "Traits"));
+      const tl = el("div", "pill-list");
+      h.traits.forEach((t) => tl.appendChild(el("span", "pill", t.name)));
+      d.appendChild(tl);
+      p.appendChild(d);
+    }
+    p.appendChild(navRow(() => { step = 0; render(); }, () => { step = 2; render(); }, "Next →", !!state.heritage));
+    return p;
+  }
+
   /* ---------- STEP 2: Attributes ---------- */
   function stepAttributes() {
     // When editing an existing character (scores already set, no active roll),
@@ -445,7 +488,7 @@
       p.appendChild(livePreview(eff));
     }
 
-    p.appendChild(navRow(() => { step = 0; render(); }, () => { step = 2; render(); }, "Next →", allScoresAssigned()));
+    p.appendChild(navRow(() => { step = 1; render(); }, () => { step = 3; render(); }, "Next →", allScoresAssigned()));
     return p;
   }
 
@@ -528,7 +571,7 @@
 
     updateCounter();
     p.appendChild(counter);
-    p.appendChild(navRow(() => { step = 1; render(); }, () => { step = 3; render(); }, "Next →", state.chosenSkills.length === 2));
+    p.appendChild(navRow(() => { step = 2; render(); }, () => { step = 4; render(); }, "Next →", state.chosenSkills.length === 2));
     return p;
   }
 
@@ -590,7 +633,7 @@
     note.innerHTML = "All 18 Kinetics' <b>Beginner</b> techniques are available — pick any 2 from any school. (Higher tiers unlock as you level up, once that system is added.)";
     p.appendChild(note);
 
-    p.appendChild(navRow(() => { step = 2; render(); }, () => { step = 4; render(); }, "Review →", state.chosenTechniques.length === 2));
+    p.appendChild(navRow(() => { step = 3; render(); }, () => { step = 5; render(); }, "Review →", state.chosenTechniques.length === 2));
     return p;
   }
 
@@ -620,7 +663,7 @@
 
     const head = el("div");
     head.innerHTML = `<h3 style="margin:0;font-size:1.4rem">${state.name || "Unnamed"}</h3>
-      <div style="color:var(--text-dim)">${state.background} · Soul Level ${state.level}${state.player ? " · Player: " + state.player : ""}</div>`;
+      <div style="color:var(--text-dim)">${state.background}${state.heritage ? " · " + state.heritage : ""} · Soul Level ${state.level}${state.player ? " · Player: " + state.player : ""}</div>`;
     p.appendChild(head);
 
     // pools
@@ -678,6 +721,20 @@
     b.combat.forEach((c) => cp.appendChild(el("span", "pill psi", c)));
     p.appendChild(cp);
 
+    // heritage — combat skills + traits
+    const h = state.heritage ? PC.heritage(state.heritage) : null;
+    if (h) {
+      p.appendChild(el("div", "section-label", `Heritage: ${h.name} — Combat Skills`));
+      h.combatSkills.forEach((cs) => {
+        const c = PC.combatSkill(cs);
+        if (c) p.appendChild(el("div", "inv-note", `<b>${cs}</b> <span class="tag">${c.action}</span> — ${c.effect}`));
+      });
+      p.appendChild(el("div", "section-label", "Traits"));
+      const tl = el("div", "pill-list");
+      h.traits.forEach((t) => { const pill = el("span", "pill", t.name); pill.title = t.desc; tl.appendChild(pill); });
+      p.appendChild(tl);
+    }
+
     // starting equipment (new characters only; editing keeps the character's own inventory)
     if (!state._editing) {
       const resolved = resolveEquipment();
@@ -710,7 +767,7 @@
     // save
     const row = el("div", "nav-row");
     const back = el("button", "btn ghost", "← Back");
-    back.onclick = () => { step = 3; render(); };
+    back.onclick = () => { step = 4; render(); };
     const save = el("button", "btn primary", state._editing ? "✓ Update Character" : "✓ Save Character");
     save.onclick = () => {
       const list = loadRoster();
@@ -782,6 +839,11 @@
     const spentAttr = PC.ATTRS.reduce((s, a) => s + (rec.levelAttr[a] || 0), 0);
     const earnedAttr = Math.floor((level - 1) / 2);
     const availAttr = earnedAttr - spentAttr;
+    if (!Array.isArray(rec.learnedCombatSkills)) rec.learnedCombatSkills = [];
+    const earnedCSP = Math.floor(level / 5); // +1 Combat Skill Point every 5th level
+    const availCSP = earnedCSP - rec.learnedCombatSkills.length;
+    const heritageSkills = (PC.heritage(rec.heritage) || { combatSkills: [] }).combatSkills;
+    const knownCS = heritageSkills.concat(rec.learnedCombatSkills);
     const tierGate = { Beginner: 1, Adept: 8, Expert: 15, Master: 22 };
     const prevTier = { Adept: "Beginner", Expert: "Adept", Master: "Expert" };
     const tierUnlocked = (tier) => level >= (tierGate[tier] || 99);
@@ -823,6 +885,7 @@
     const tr = el("div", "tile-row");
     tr.appendChild(tileEl("Technique Points", availTP + " / " + earnedTP));
     tr.appendChild(tileEl("Attribute Points", availAttr + " / " + earnedAttr));
+    tr.appendChild(tileEl("Combat Skill Points", availCSP + " / " + earnedCSP));
     pts.appendChild(tr);
     if (level >= 15) pts.appendChild(el("p", "hint", "★ <b>Otherkin unlocked</b> — your Soul Creature awakens (mechanics coming soon)."));
     wrap.appendChild(pts);
@@ -905,6 +968,47 @@
       }
     }
     wrap.appendChild(tp);
+
+    // learn combat skills (from Regional Heritage system)
+    const cp = el("div", "panel");
+    cp.appendChild(el("div", "section-label", `Combat Skills — ${availCSP} CSP available (1 each)`));
+    cp.appendChild(el("p", "hint", "You earn <b>+1 Combat Skill Point every 5th Soul Level</b> (5, 10, 15, 20, 25, 30). Your Regional Heritage's two skills are free and always known; spend CSP to learn any skill from the master list."));
+
+    cp.appendChild(el("div", "eq-choice-label", "Known combat skills"));
+    const csKnownList = el("div", "pill-list");
+    knownCS.forEach((n) => {
+      const fromHeritage = heritageSkills.indexOf(n) >= 0;
+      const pill = el("span", "pill" + (fromHeritage ? "" : " psi"), n + (fromHeritage ? " ★" : " ✕"));
+      if (fromHeritage) { pill.title = "Granted by " + rec.heritage + " heritage"; }
+      else { pill.style.cursor = "pointer"; pill.title = "Unlearn (refund 1 CSP)"; pill.onclick = () => { rec.learnedCombatSkills = rec.learnedCombatSkills.filter((x) => x !== n); persist(); }; }
+      csKnownList.appendChild(pill);
+    });
+    cp.appendChild(csKnownList);
+
+    cp.appendChild(el("div", "eq-choice-label", "Learnable"));
+    if (availCSP <= 0) cp.appendChild(el("div", "muted", "No Combat Skill Points available — reach the next 5th level to earn one."));
+    else {
+      const order = ["Action", "Bonus Action", "Reaction", "Passive"];
+      const learnableCS = (PC.COMBAT_SKILLS || []).filter((s) => knownCS.indexOf(s.name) < 0);
+      order.forEach((act) => {
+        const inAct = learnableCS.filter((s) => s.action === act);
+        if (!inAct.length) return;
+        cp.appendChild(el("div", "skill-attr-label", act === "Passive" ? "Passive" : act));
+        inAct.forEach((s) => {
+          const card = el("div", "tech-card");
+          const head = el("div", "thead");
+          head.innerHTML = `<span class="tname">${s.name}</span><span class="tmeta">${s.action}</span>`;
+          card.appendChild(head);
+          card.appendChild(el("div", "teff", "▸ " + s.effect));
+          const btn = el("button", "btn small primary", "Learn (1 CSP)");
+          btn.style.marginTop = "8px";
+          btn.onclick = () => { rec.learnedCombatSkills.push(s.name); persist(); };
+          card.appendChild(btn);
+          cp.appendChild(card);
+        });
+      });
+    }
+    wrap.appendChild(cp);
     return wrap;
   }
 
