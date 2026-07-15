@@ -194,12 +194,12 @@ type and/or Kinetic type), and **1 free beginner Kinetic Technique**.
 | **Body Builder** | Gym rat | +3 STR | Body +10 | Muscle, Athletics, Force | Heavy Weapons, **Robukinesis** | Ki Strike |
 | **Assassin** | Killer for hire | +3 AGI | Body +10 | Stealth, Sleight of Hand, Escape Artist | Thrown Weapons, **Umbrakinesis** | Shroud of Shadows |
 | **Survivalist** | Outdoorsman | +3 CON | Body +10 | Survival, Tolerance, Hardiness | Firearms, **Terrakinesis** | Mud Skin |
-| **Scholar** | Bookworm | +3 INT | Mind +10 | History, Language, Technology | Tech Weapons, **Chronokinesis** | Slow Time |
+| **Scholar** | Bookworm | +3 INT | Mind +10 | History, Language, Technology | Plasma Weapons, **Chronokinesis** | Slow Time |
 | **Witch** | Wiccan/mystic | +3 WIS | Mind +10 | Paranormal, Herbalism, Nature Tools | Channel Weapons, **Naturakinesis** | Thistle Bush |
 | **Musician** | Traveling musician | +3 CHA | Mind +10 | Music, Persuasion, Performance | Rapiers*, **Sonikinesis** | *(TBD — Sonikinesis beginner; old "Static Touch" was Electro, retired)* |
 | **Soldier** | Military/mercenary | +2 STR, +1 INT | Body +5, Mind +5 | Laborer's Tools, Intimidation, Medicine | Laser Guns, **Pyrokinesis** | Firebolt |
 | **Monk** | Loner martial artist | +2 AGI, +1 WIS | Body +5, Mind +5 | Acrobatics, Reflex, Awareness | Staffs, **Aerokinesis** | Gust |
-| **Guru** | Spiritual leader | +2 CON, +1 CHA | Body +5, Mind +5 | Concentration, Adrenaline, Etiquette | Handguns, **Spirikinesis** | Phantom Presence |
+| **Guru** | Spiritual leader | +2 CON, +1 CHA | Body +5, Mind +5 | Concentration, Adrenaline, Etiquette | Volatile Weapons, **Spirikinesis** | Phantom Presence |
 
 \* "Rapiers" listed under Musician; note the CHA weapon types in Section 5 are Finesse/Art/Noise — reconcile with Luke.
 
@@ -390,20 +390,20 @@ Each attribute has a guiding philosophy:
 Each background grants **fixed gear**, a **starting weapon of the player's choice from ANY weapon in their
 proficient weapon type** (a dropdown of every catalog weapon of that type — e.g. a Body Builder picks any
 Heavy Weapon), plus other **choice groups** (armor, instrument, focus…). The chosen weapon is equipped and
-proficient; chosen armor is equipped. *(Guru's Handguns-subtype proficiency resolves to the Firearms type
-for this picker, so Guru may start with any firearm.)*
+proficient; chosen armor is equipped. *(If a background's proficiency is a weapon **subtype**, the picker
+resolves it to the parent weapon type; all current backgrounds use full weapon types.)*
 
 | Background | Fixed | Weapon choice | Armor / other choice |
 |---|---|---|---|
 | **Body Builder** | Trail Rations ×3 | Warhammer 2d6 / Great Axe 1d12 / Battleaxe 1d8 | Reinforced Vest +2 / Heavy Plating +3 |
 | **Assassin** | Combat Knife, Lockpicks | Throwing Knives ×6 / Shuriken ×8 / Throwing Darts ×6 (1d4) | Shadowed Leathers +2 / Padded Cloak +1 |
 | **Survivalist** | Hatchet, Survival Kit, Rations ×3 | Hunting Rifle 1d10 / Revolver 1d10 / Pump Shotgun 1d12 | Weathered Leathers +2 / Camo Poncho +1 |
-| **Scholar** | Datapad, Engineer's Tools | Shock Maul / Chain Blade (1d10) / Power Fist 1d8 | Reinforced Coat +1 / Lab Exosuit +2 |
+| **Scholar** | Datapad, Engineer's Tools | any Plasma Weapon — e.g. Plasma Sword 1d10 / Ion Beam Rifle 1d12 / Fusion Cutter 1d10 | Reinforced Coat +1 / Lab Exosuit +2 |
 | **Witch** | Herbalism Kit, Component Pouch | Rune Staff / Spirit Wand / Warding Amulet (1d6) | Traveling Robes +1 / Enchanted Shawl +2 |
 | **Musician** | Fine Clothes (+1 DS) | Rapier 1d8 / Whip 1d6 / Chakram 1d6 | Instrument: Lute / Flute / War Drum |
 | **Soldier** | Combat Knife, Medkit | Blaster Rifle 1d10 / Blaster Pistol 1d8 / Laser Sword 1d10 | Kevlar Vest +3 / Combat Fatigues +1 |
 | **Monk** | Monk's Wraps (+1 DS), Rations ×2 | Bo Staff / Quarterstaff / Warding Wand (1d6) | Focus: Prayer Beads / Incense Kit / Meditation Stone |
-| **Guru** | Walking Cane 1d6, Holy Charm | Sidearm 1d8 / Revolver 1d10 / Derringer 1d6 | Fine Robes +1 / Ceremonial Vestments +2 |
+| **Guru** | Walking Cane 1d6, Holy Charm | any Volatile Weapon — e.g. Acid Sprayer 1d8 / Flamethrower 2d6 / Rocket Launcher 3d6 | Fine Robes +1 / Ceremonial Vestments +2 |
 
 *(Weapon dice and armor DS bonuses are placeholders — tunable in playtest.)*
 

@@ -177,17 +177,17 @@ PC.BACKGROUNDS = [
     } },
   { name: "Scholar", blurb: "A bookworm whose knowledge of old-world history and tech is invaluable in the new era.",
     boosts: { INT: 3 }, pool: { body: 0, mind: 10 },
-    skills: ["History","Language","Technology"], combat: ["Tech Weapons","Chronokinesis"], freeTech: "Slow Time",
+    skills: ["History","Language","Technology"], combat: ["Plasma Weapons","Chronokinesis"], freeTech: "Slow Time",
     equipment: {
       fixed: [
         { name: "Old-World Datapad", category: "Tool", weight: 1, qty: 1 },
         { name: "Engineer's Tools", category: "Tool", weight: 4, qty: 1 },
       ],
       choices: [
-        { label: "Tech weapon", options: [
-          { label: "Shock Maul (1d10)", items: [{ name: "Shock Maul", category: "Weapon", weight: 6, qty: 1, weaponType: "Tech Weapons", damage: "1d10", equipped: true, proficient: true }] },
-          { label: "Chain Blade (1d10)", items: [{ name: "Chain Blade", category: "Weapon", weight: 6, qty: 1, weaponType: "Tech Weapons", damage: "1d10", equipped: true, proficient: true }] },
-          { label: "Power Fist (1d8)", items: [{ name: "Power Fist", category: "Weapon", weight: 4, qty: 1, weaponType: "Tech Weapons", damage: "1d8", equipped: true, proficient: true }] },
+        { label: "Plasma weapon", options: [
+          { label: "Plasma Sword (1d10)", items: [{ name: "Plasma Sword", category: "Weapon", weight: 3, qty: 1, weaponType: "Plasma Weapons", damage: "1d10", equipped: true, proficient: true }] },
+          { label: "Ion Beam Rifle (1d12)", items: [{ name: "Ion Beam Rifle", category: "Weapon", weight: 11, qty: 1, weaponType: "Plasma Weapons", damage: "1d12", equipped: true, proficient: true }] },
+          { label: "Fusion Cutter (1d10)", items: [{ name: "Fusion Cutter", category: "Weapon", weight: 3, qty: 1, weaponType: "Plasma Weapons", damage: "1d10", equipped: true, proficient: true }] },
         ] },
         { label: "Armor", options: [
           { label: "Reinforced Coat (+1 DS)", items: [{ name: "Reinforced Coat", category: "Armor", weight: 6, qty: 1, dsBonus: 1, equipped: true }] },
@@ -276,17 +276,17 @@ PC.BACKGROUNDS = [
     } },
   { name: "Guru", blurb: "A spiritual leader whose charm, kindness, and vitality drew others to follow.",
     boosts: { CON: 2, CHA: 1 }, pool: { body: 5, mind: 5 },
-    skills: ["Concentration","Adrenaline","Etiquette"], combat: ["Handguns","Spirikinesis"], freeTech: "Phantom Presence",
+    skills: ["Concentration","Adrenaline","Etiquette"], combat: ["Volatile Weapons","Spirikinesis"], freeTech: "Phantom Presence",
     equipment: {
       fixed: [
         { name: "Walking Cane", category: "Weapon", weight: 3, qty: 1, weaponType: "Light Weapons", damage: "1d6" },
         { name: "Holy Charm", category: "Misc", weight: 1, qty: 1 },
       ],
       choices: [
-        { label: "Handgun", options: [
-          { label: "Sidearm (1d8)", items: [{ name: "Sidearm", category: "Weapon", weight: 2, qty: 1, weaponType: "Firearms", damage: "1d8", equipped: true, proficient: true }] },
-          { label: "Revolver (1d10)", items: [{ name: "Revolver", category: "Weapon", weight: 3, qty: 1, weaponType: "Firearms", damage: "1d10", equipped: true, proficient: true }] },
-          { label: "Derringer (1d6, tiny)", items: [{ name: "Derringer", category: "Weapon", weight: 1, qty: 1, weaponType: "Firearms", damage: "1d6", equipped: true, proficient: true }] },
+        { label: "Volatile weapon", options: [
+          { label: "Acid Sprayer (1d8)", items: [{ name: "Acid Sprayer", category: "Weapon", weight: 8, qty: 1, weaponType: "Volatile Weapons", damage: "1d8", equipped: true, proficient: true }] },
+          { label: "Flamethrower (2d6)", items: [{ name: "Flamethrower", category: "Weapon", weight: 12, qty: 1, weaponType: "Volatile Weapons", damage: "2d6", equipped: true, proficient: true }] },
+          { label: "Rocket Launcher (3d6)", items: [{ name: "Rocket Launcher", category: "Weapon", weight: 15, qty: 1, weaponType: "Volatile Weapons", damage: "3d6", equipped: true, proficient: true }] },
         ] },
         { label: "Armor", options: [
           { label: "Fine Robes (+1 DS)", items: [{ name: "Fine Robes", category: "Armor", weight: 3, qty: 1, dsBonus: 1, equipped: true }] },
