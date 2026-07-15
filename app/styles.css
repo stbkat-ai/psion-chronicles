@@ -288,6 +288,8 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 .econ-chip.used:hover { box-shadow: none; }
 .combat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
 .combat-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; align-items: center; }
+/* Opportunity-attack source label sits before its Attack/Damage buttons */
+.oa-src { font-size: .8rem; font-weight: 600; color: var(--text-dim); margin-right: 2px; min-width: 92px; }
 
 /* HP/KP bars */
 .poolbar { margin-bottom: 16px; }

@@ -62,9 +62,12 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     weapon-attack disadvantage (both block attacks), a crippled head gives disadvantage on technique attacks
     & Mind checks. Long rest fully heals limbs; short rest restores half.
   - **⚔ Combat tab** — everything you can do this turn, grouped by action economy: **Actions** (equipped-weapon
-    attack/damage/augments + Action techniques), **Bonus Actions**, **Reactions**, and **Full-Turn & Other** —
-    plus a **🎖 Combat Skills** panel listing your Heritage + learned Combat Skills (grouped by action type,
-    with effects), a compact HP/KP/Defense/Turn strip, Roll Initiative, End Turn, active effects, and the log.
+    attack/damage/augments, a universal **👊 Unarmed Strike** — d20+STR+prof to hit, 1d4+STR damage — and
+    Action techniques), **Bonus Actions**, **Reactions** (a universal **↩ Opportunity Attack** — one melee
+    attack with any melee weapon or unarmed when an enemy enters/leaves your reach, once between turns — plus
+    Reaction techniques), and **Full-Turn & Other** — plus a **🎖 Combat Skills** panel listing your Heritage +
+    learned Combat Skills (grouped by action type, with effects), a compact HP/KP/Defense/Turn strip, Roll
+    Initiative, End Turn, active effects, and the log.
   - **Action economy enforced** — one Move / Action / Bonus Action per turn (Reaction once between turns). Spending
     a slot disables all other options of that type until **End Turn**; a "This Turn" tracker shows what's used
     (tap to toggle manually for feats/abilities that grant extras).

@@ -387,20 +387,42 @@
   // weapon helpers
   function weaponAttr(it) { const w = PC.WEAPON_TYPES.find((x) => x.name === it.weaponType); return w ? w.attr : null; }
   function proficientWithType(it) { return !!it.proficient || (it.weaponType && bg().combat.indexOf(it.weaponType) > -1); }
-  function attackWith(it) {
+  // econType: which action-economy slot the swing spends — "Action" for a normal attack,
+  // "Reaction" for an Opportunity Attack. Defaults to "Action".
+  function attackWith(it, econType) {
+    econType = econType || "Action";
     const attr = weaponAttr(it);
     if (!attr) { App.toast("Set this weapon's type first."); return; }
     if (isLocked(attr)) { App.toast(`${PC.CHAKRAS[attr].name} chakra locked — can't attack with ${attr}.`); return; }
     if (bothArmsCrippled()) { App.toast("Both arms are crippled — you can't make weapon attacks."); return; }
-    if (econBlocked("Action")) { App.toast("You've already used your Action this turn."); return; }
-    consumeEcon("Action");
+    if (econBlocked(econType)) { App.toast(`You've already used your ${econName(econType)} this turn.`); return; }
+    consumeEcon(econType);
     const prof = proficientWithType(it);
     const mod = adjMod(attr) + (prof ? PC.profBonus(rec.level) : 0);
     // Crippled arm → disadvantage on weapon attacks.
     const mode = (isDisadv(attr) || anyArmCrippled()) ? "dis" : "normal";
     const r = PC.rollCheck(mod, mode);
     const dis = mode === "dis" ? ` (disadv [${r.d20s.join(",")}]→${r.picked})` : "";
-    announce(r.total, `${it.name} attack: d20${dis}${PC.fmtMod(mod)} = ${r.total}${prof ? " ✓prof" : ""} (vs Defense Score)`);
+    const oa = econType === "Reaction" ? " (Opportunity)" : "";
+    announce(r.total, `${it.name} attack${oa}: d20${dis}${PC.fmtMod(mod)} = ${r.total}${prof ? " ✓prof" : ""} (vs Defense Score)`);
+    save(); refresh();
+  }
+
+  // Unarmed Strike — a punch or kick anyone can throw. STR-based melee, 1d4 + STR mod,
+  // proficient by default (it's your own body). econType lets it double as an Opportunity Attack.
+  const UNARMED = { name: "Unarmed Strike", damage: "1d4" }; // no weaponType → damageWith uses STR
+  function unarmedAttack(econType) {
+    econType = econType || "Action";
+    const attr = "STR";
+    if (isLocked(attr)) { App.toast(`${PC.CHAKRAS[attr].name} chakra locked — can't strike.`); return; }
+    if (econBlocked(econType)) { App.toast(`You've already used your ${econName(econType)} this turn.`); return; }
+    consumeEcon(econType);
+    const mod = adjMod(attr) + PC.profBonus(rec.level);
+    const mode = isDisadv(attr) ? "dis" : "normal";
+    const r = PC.rollCheck(mod, mode);
+    const dis = mode === "dis" ? ` (disadv [${r.d20s.join(",")}]→${r.picked})` : "";
+    const oa = econType === "Reaction" ? " (Opportunity)" : "";
+    announce(r.total, `Unarmed Strike attack${oa}: d20${dis}${PC.fmtMod(mod)} = ${r.total} ✓prof (vs Defense Score)`);
     save(); refresh();
   }
   function damageWith(it, augmentName) {
@@ -1039,18 +1061,18 @@
     const byAction = (act) => known.filter((t) => !isAug(t) && t.action === act);
     const equipped = (rec.inventory || []).filter((it) => it.equipped && it.category === "Weapon");
 
-    // ⚡ Actions — equipped weapons + Action-type techniques
+    // ⚡ Actions — equipped weapons + universal Unarmed Strike + Action-type techniques
     const actionCards = [];
     equipped.forEach((it) => actionCards.push(weaponActionCard(it)));
+    actionCards.push(unarmedStrikeCard()); // basic action anyone can take
     byAction("Action").forEach((t) => actionCards.push(makeTechCard(t)));
-    root.appendChild(actionGroup("⚡ Actions", actionCards,
-      equipped.length ? "No actions available." : "Equip a weapon (Sheet ▸ Inventory) to attack from here."));
+    root.appendChild(actionGroup("⚡ Actions", actionCards));
 
     // ✦ Bonus Actions
     root.appendChild(actionGroup("✦ Bonus Actions", byAction("Bonus Action").map(makeTechCard)));
 
-    // ↩ Reactions
-    root.appendChild(actionGroup("↩ Reactions", byAction("Reaction").map(makeTechCard)));
+    // ↩ Reactions — universal Opportunity Attack + Reaction-type techniques
+    root.appendChild(actionGroup("↩ Reactions", [opportunityAttackCard()].concat(byAction("Reaction").map(makeTechCard))));
 
     // ⏳ Full-Turn & Other (any non-standard action type)
     const std = ["Action", "Bonus Action", "Reaction"];
@@ -1109,6 +1131,59 @@
       }
     }
     card.appendChild(row);
+    return card;
+  }
+
+  // 👊 Unarmed Strike — a basic Action anyone can take (a punch or kick).
+  function unarmedStrikeCard() {
+    const card = el("div", "tech-card");
+    const m = adjMod("STR");
+    card.innerHTML =
+      `<div class="thead"><span class="tname">👊 Unarmed Strike</span><span class="tmeta">Action · STR · 1d4</span></div>` +
+      `<div class="teff">▸ A punch or kick — melee attack for 1d4${PC.fmtMod(m)} damage.</div>`;
+    const row = el("div", "combat-actions");
+    const atk = el("button", "btn small primary", "⚔ Attack");
+    atk.disabled = econBlocked("Action");
+    if (atk.disabled) atk.title = "Action already used this turn";
+    atk.onclick = () => unarmedAttack("Action");
+    const dmg = el("button", "btn small", "🎲 Damage");
+    dmg.onclick = () => damageWith(UNARMED);
+    row.appendChild(atk); row.appendChild(dmg);
+    card.appendChild(row);
+    return card;
+  }
+
+  // ↩ Opportunity Attack — a basic Reaction: one melee attack (any melee weapon or unarmed)
+  // when an enemy enters or leaves your reach. Once before your next turn (spends your Reaction).
+  function opportunityAttackCard() {
+    const card = el("div", "tech-card");
+    card.innerHTML =
+      `<div class="thead"><span class="tname">↩ Opportunity Attack</span><span class="tmeta">Reaction · melee</span></div>` +
+      `<div class="teff">▸ When an enemy enters or leaves your reach, make one melee attack. Once before your next turn.</div>`;
+    const blocked = econBlocked("Reaction");
+    const sources = (rec.inventory || []).filter((it) => it.equipped && it.category === "Weapon" && weaponIsMelee(it) && it.weaponType && it.damage);
+    // Each source: an attack button (spends the Reaction) + a damage button.
+    sources.forEach((it) => {
+      const row = el("div", "combat-actions");
+      row.appendChild(el("span", "oa-src", it.name));
+      const atk = el("button", "btn small primary", "⚔ Attack");
+      atk.disabled = blocked; if (blocked) atk.title = "Reaction already used this turn";
+      atk.onclick = () => attackWith(it, "Reaction");
+      const dmg = el("button", "btn small", "🎲 Damage");
+      dmg.onclick = () => damageWith(it);
+      row.appendChild(atk); row.appendChild(dmg);
+      card.appendChild(row);
+    });
+    // Unarmed is always a melee option.
+    const urow = el("div", "combat-actions");
+    urow.appendChild(el("span", "oa-src", "👊 Unarmed (1d4)"));
+    const uatk = el("button", "btn small primary", "⚔ Attack");
+    uatk.disabled = blocked; if (blocked) uatk.title = "Reaction already used this turn";
+    uatk.onclick = () => unarmedAttack("Reaction");
+    const udmg = el("button", "btn small", "🎲 Damage");
+    udmg.onclick = () => damageWith(UNARMED);
+    urow.appendChild(uatk); urow.appendChild(udmg);
+    card.appendChild(urow);
     return card;
   }
 

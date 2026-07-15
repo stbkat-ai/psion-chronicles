@@ -326,6 +326,14 @@ next turn (once between your turns).
 - *App:* once you spend a slot, all other options of that type disable until **End Turn** refreshes them.
   A "This Turn" tracker (Action · Bonus · Reaction · Move) shows what's used and can be toggled manually.
 
+#### Basic actions everyone has (CONFIRMED Luke)
+Available to any character on the Combat tab regardless of Background, Heritage, or gear:
+- **Unarmed Strike** *(Action)* — a punch or kick. Melee attack: **d20 + STR mod + proficiency** to hit;
+  **1d4 + STR mod** damage. Everyone is proficient with their own body.
+- **Opportunity Attack** *(Reaction)* — when an enemy **enters or leaves your reach**, make **one melee
+  attack of any kind** (an equipped melee weapon or Unarmed). **Once before your next turn** — it spends
+  your Reaction, so it can't be used again until your Reaction refreshes at the start of your next turn.
+
 ### Attack-modifying maneuvers → Combat Skills (CONFIRMED Luke)
 Maneuvers that *alter* an attack (rather than just resolve a d20 check) now live in the **Combat Skills**
 system (Section 3b), not the regular skills list.
