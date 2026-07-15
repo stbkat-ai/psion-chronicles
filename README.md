@@ -77,9 +77,12 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
   - **Kinetics tab** — all known techniques with their Use/Attack/Activate buttons.
   - **Skills tab** — all 36 skills, tap to roll.
   - **Inventory tab** — carry weight, carried items (equip, actions, config), a custom-item form, and a
-    **🔍 Browse Item Catalog** button that opens a dedicated **catalog screen**: search/filter the 220+
-    item catalog (weapons, armor, consumables, tools, gear) and Add any of them (weapons arrive attack-ready
-    with type + damage die). A **← Inventory** button returns.
+    **🔍 Browse Item Catalog** button that opens a dedicated **catalog screen**: search/filter the item
+    catalog (194 weapons + armor, consumables, tools, gear) and Add any of them (weapons arrive attack-ready
+    with type + damage die). Each weapon shows whether it's **one- or two-handed** (matters for dual-wielding)
+    and its **rarity** — Common · Uncommon · Rare · Very Rare · Legendary. Only **Common** weapons are offered
+    as starting gear; higher-rarity weapons (bigger dice + special properties) are found in play. A
+    **← Inventory** button returns.
   - **Sheet tab** — the core overview:
   - HP & KP bars with damage/heal/spend controls (quick ±1/±5 or type an amount)
   - **Interactive Chakra Chart** — click pips to add hits; penalties auto-apply to that attribute's

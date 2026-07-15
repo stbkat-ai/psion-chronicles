@@ -321,6 +321,18 @@ CON = Firearms/Explosives/Volatile, INT = Laser/Plasma/Tech, WIS = Channel/Livin
 - **Attack roll (CONFIRMED Luke):** D&D-style — **d20 + governing attribute mod + proficiency (if proficient
   with the weapon) vs. the target's Defense Score.**
 
+### Weapon properties — hands & rarity (CONFIRMED Luke)
+Every catalog weapon records two extra properties:
+- **Hands — one-handed or two-handed.** Matters for dual-wielding: the *Two-Weapon Fighting* passive and the
+  *Twin Fang* combat skills require a **one-handed weapon in each hand**. The app tags each weapon 1H/2H on
+  the catalog and on the equipped-weapon combat card.
+- **Rarity — D&D-style tiers:** **Common · Uncommon · Rare · Very Rare · Legendary.** Only **Common** weapons
+  are offered as **starting gear** at character creation; higher-rarity weapons are found/earned in play (loot,
+  rewards, purchases). Higher rarities hit harder (bigger damage dice) and usually carry a **special property**
+  (e.g. *Heartpiercer* crits on 19–20; *Worldbreaker* knocks nearby enemies prone on a crit; *Skypiercer*
+  ignores cover). The catalog (194 weapons) is browsable/searchable on the Inventory tab; `app/items.js`
+  (`PC.ITEMS`) is the source of truth for each weapon's die, hands, rarity, and special note.
+
 ### Action Economy (CONFIRMED Luke)
 On your turn you may take **one Move, one Action, and one Bonus Action** — each once per turn unless a
 feat/ability says otherwise. A **Reaction** is used *outside* your turn and refreshes at the start of your

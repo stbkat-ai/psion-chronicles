@@ -79,10 +79,11 @@
     const parent = PC.WEAPON_TYPES.find((w) => (w.subtypes || []).indexOf(c) > -1);
     return parent ? parent.name : c;
   }
-  // Every catalog weapon of the current background's proficient weapon type.
+  // Every *Common* catalog weapon of the current background's proficient weapon type.
+  // Higher-rarity weapons exist in the catalog but are never offered as starting gear.
   function eligibleStartWeapons() {
     const wt = weaponTypeFor(bg());
-    return (window.PC.ITEMS || []).filter((it) => it.category === "Weapon" && it.weaponType === wt);
+    return (window.PC.ITEMS || []).filter((it) => it.category === "Weapon" && it.weaponType === wt && (it.rarity || "Common") === "Common");
   }
   // The chosen starting weapon as an equipped, proficient inventory item.
   function chosenStartWeaponItem() {

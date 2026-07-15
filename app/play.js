@@ -936,7 +936,7 @@
       const cat = invSearchCat;
       let matches = (PC.ITEMS || []).filter((it) =>
         (cat === "All" || it.category === cat) &&
-        (!q || it.name.toLowerCase().indexOf(q) > -1 || (it.weaponType && it.weaponType.toLowerCase().indexOf(q) > -1) || (it.note && it.note.toLowerCase().indexOf(q) > -1)));
+        (!q || it.name.toLowerCase().indexOf(q) > -1 || (it.weaponType && it.weaponType.toLowerCase().indexOf(q) > -1) || (it.rarity && it.rarity.toLowerCase().indexOf(q) > -1) || (it.note && it.note.toLowerCase().indexOf(q) > -1)));
       results.innerHTML = "";
       if (!matches.length) { results.appendChild(el("div", "muted", "No items match. Try another search.")); return; }
       const total = matches.length;
@@ -944,10 +944,16 @@
       matches.forEach((it) => {
         const row = el("div", "catalog-row");
         let meta = it.category;
-        if (it.category === "Weapon") meta += ` · ${it.weaponType} · ${it.damage}`;
+        if (it.category === "Weapon") {
+          meta += ` · ${it.weaponType} · ${it.damage} · ${it.hands === 2 ? "two-handed" : "one-handed"}`;
+          if (it.note) meta += ` · ${it.note}`;
+        }
         else if (it.category === "Armor") meta += ` · +${it.dsBonus} DS`;
         else if (it.note) meta += ` · ${it.note}`;
-        row.innerHTML = `<div class="cat-info"><span class="cat-name">${it.name}</span><span class="cat-meta">${meta}</span></div><span class="cat-wt">${it.weight} lb</span>`;
+        // Rarity tag for weapons (Common shown muted; higher rarities colored).
+        const rarityTag = it.category === "Weapon" && it.rarity
+          ? `<span class="rarity-tag rarity-${it.rarity.toLowerCase().replace(/\s+/g, "-")}">${it.rarity}</span>` : "";
+        row.innerHTML = `<div class="cat-info"><span class="cat-name">${it.name}${rarityTag}</span><span class="cat-meta">${meta}</span></div><span class="cat-wt">${it.weight} lb</span>`;
         const add = el("button", "btn small primary", "＋ Add");
         add.onclick = () => addCatalogItem(it);
         row.appendChild(add);
@@ -1111,7 +1117,7 @@
     const attr = weaponAttr(it);
     const card = el("div", "tech-card");
     card.innerHTML =
-      `<div class="thead"><span class="tname">⚔ ${it.name}</span><span class="tmeta">${it.weaponType || "no type"}${attr ? " · " + attr : ""}${it.damage ? " · " + it.damage : ""}</span></div>`;
+      `<div class="thead"><span class="tname">⚔ ${it.name}</span><span class="tmeta">${it.weaponType || "no type"}${attr ? " · " + attr : ""}${it.damage ? " · " + it.damage : ""}${it.hands ? " · " + (it.hands === 2 ? "2H" : "1H") : ""}</span></div>`;
     const row = el("div", "combat-actions");
     if (!it.weaponType || !it.damage) {
       row.appendChild(el("span", "muted", "Set weapon type & damage die in Inventory to enable rolls."));

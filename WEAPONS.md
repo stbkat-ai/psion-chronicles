@@ -9,6 +9,11 @@
 > Governing attribute per type: **STR** = Heavy/Archery/Fist · **AGI** = Light/Quick/Thrown ·
 > **CON** = Firearms/Explosives/Volatile · **INT** = Laser/Plasma/Tech · **WIS** = Channel/Living/Ritual ·
 > **CHA** = Finesse/Art/Noise.
+>
+> Each weapon in the app also carries **hands** (one- or two-handed — dual-wielding needs a one-handed weapon
+> in each hand) and a **rarity** (Common · Uncommon · Rare · Very Rare · Legendary). Only Common weapons are
+> starting gear; higher rarities have bigger dice + special properties and are found in play. See
+> `app/items.js` (`PC.ITEMS`) for the authoritative per-weapon stats.
 
 ---
 
