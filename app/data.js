@@ -735,71 +735,138 @@ PC.LIMBS = [
   { key: "rleg",  name: "Right Leg", frac: 0.25, crippled: "Movement halved." },
 ];
 
-/* --- Combat Skills (master list) ---------------------------------------- */
-/* Special combat abilities used via the action economy (no resource cost).
-   Rule: any skill that adds onto a base attack (e.g. Marksmanship) is a Bonus Action.
-   Heritages grant 2 to start; more are learned later with Combat Skill Points. */
-PC.COMBAT_SKILLS = [
-  // ⚡ Actions — standalone maneuvers
-  { name: "Cleave", action: "Action", effect: "Make a melee weapon attack against every enemy within your reach." },
-  { name: "Grapple", action: "Action", effect: "Contested check to restrain a foe within reach — it is Rooted while grappled." },
-  { name: "Suppressing Fire", action: "Action", effect: "Rake a 15-ft area with ranged fire; enemies there have disadvantage on attacks until your next turn." },
-  { name: "Disarm", action: "Action", effect: "Contested attack to knock a weapon from a target's hand; it drops its weapon." },
-  // ✦ Bonus Actions — attack-augments & quick maneuvers
-  { name: "Marksmanship", action: "Bonus Action", effect: "After a ranged attack hits, make a called shot to a limb for crippling damage." },
-  { name: "Power Attack", action: "Bonus Action", effect: "Enhance a weapon attack you make this turn: +1 damage die at −2 to hit." },
-  { name: "Feint", action: "Bonus Action", effect: "Your next weapon attack this turn is made with advantage." },
-  { name: "Aim", action: "Bonus Action", effect: "Your next ranged attack this turn is made with advantage." },
-  { name: "Quick Draw", action: "Bonus Action", effect: "Draw or swap a weapon and make a quick weapon attack with it." },
-  { name: "Combat Roll", action: "Bonus Action", effect: "Move up to half your speed without provoking opportunity attacks." },
-  // ↩ Reactions
-  { name: "Parry", action: "Reaction", effect: "When hit by a melee attack, reduce its damage by your weapon die + relevant mod." },
-  { name: "Riposte", action: "Reaction", effect: "When a melee attack misses you, make a weapon attack against the attacker." },
-  { name: "Counter-Fire", action: "Reaction", effect: "When a creature you can see makes a ranged attack, make a ranged attack against it." },
-  { name: "Dodge Roll", action: "Reaction", effect: "Impose disadvantage on one attack made against you." },
-  { name: "Guardian", action: "Reaction", effect: "When an ally within reach is hit, take the attack's damage in their place (or halve it)." },
-  // ★ Passives (always-on; econ-boosters shown as text — wired later)
-  { name: "Extra Attack", action: "Passive", effect: "When you take the Attack action, make one additional weapon attack." },
-  { name: "Combat Reflexes", action: "Passive", effect: "You gain an additional Reaction each round." },
-  { name: "Fleet-Footed", action: "Passive", effect: "You gain an additional Bonus Action each turn." },
-  { name: "Adrenaline Surge", action: "Passive", effect: "Once per combat, take an additional Action on your turn." },
-  { name: "Tough", action: "Passive", effect: "Gain temp HP equal to your CON mod at the start of each combat; +1 to Defense Score." },
-  { name: "Ambusher", action: "Passive", effect: "Advantage on attack rolls during the first round of combat." },
+/* --- Fighting Styles (combat-skill "schools", tied to a region) --------- */
+/* Combat Skills are organized into Fighting Styles the way Techniques are organized
+   into Kinetics. Each style is a category of skills PLUS one signature Passive buff.
+   No resource cost — skills only consume the action economy.
+   Rule: any skill that rides onto / augments a base attack is a Bonus Action.
+   A character's Regional Heritage grants ONE style, 2 active skills from it, and the
+   style's Passive. Any skill or passive from ANY style can be learned later with CSP. */
+PC.FIGHTING_STYLES = [
+  { name: "Frontier Gunslinging", heritage: "North America",
+    blurb: "Frontier shooting — patience, cover, and a called shot when it counts.",
+    skills: [
+      { name: "Marksmanship", action: "Bonus Action", effect: "After a ranged attack hits, make a called shot to a limb for crippling damage." },
+      { name: "Suppressing Fire", action: "Action", effect: "Rake a 15-ft area with fire; enemies there have disadvantage on attacks until your next turn." },
+      { name: "Quick Draw", action: "Bonus Action", effect: "Draw or holster a weapon for free, then make a ranged attack with it." },
+      { name: "Counter-Fire", action: "Reaction", effect: "When a creature you can see makes a ranged attack, make a ranged attack against it." },
+      { name: "Trick Shot", action: "Action", effect: "A ranged attack that, on a hit, also disarms the target or knocks it prone." },
+      { name: "Deadeye", action: "Passive", effect: "Once per turn you may reroll one ranged damage die showing 1 or 2, and your ranged attacks ignore half cover." },
+    ] },
+  { name: "Flowing Movement", heritage: "South America",
+    blurb: "Jungle-forged agility — never where the blow lands, always moving.",
+    skills: [
+      { name: "Combat Roll", action: "Bonus Action", effect: "Move up to half your speed without provoking opportunity attacks." },
+      { name: "Dodge Roll", action: "Reaction", effect: "Impose disadvantage on one attack against you and shift 5 ft." },
+      { name: "Vault Strike", action: "Action", effect: "Leap off terrain or a foe into a melee attack made with advantage." },
+      { name: "Tumble", action: "Bonus Action", effect: "Move through an enemy's space; your next attack this turn ignores its shield/cover bonus." },
+      { name: "Leg Sweep", action: "Action", effect: "Melee attack that knocks the target prone on a hit." },
+      { name: "Momentum", action: "Passive", effect: "If you move at least 15 ft before attacking, that attack deals +2 damage." },
+    ] },
+  { name: "Chivalric Swordplay", heritage: "Europe",
+    blurb: "A long, disciplined melee tradition — pressure, reach, and the counter.",
+    skills: [
+      { name: "Riposte", action: "Reaction", effect: "When a melee attack misses you, make a melee attack against the attacker." },
+      { name: "Power Attack", action: "Bonus Action", effect: "Enhance a weapon attack this turn: +1 damage die at −2 to hit." },
+      { name: "Cleave", action: "Action", effect: "Make a melee weapon attack against every enemy within your reach." },
+      { name: "Lunge", action: "Bonus Action", effect: "Extend your melee reach by 5 ft for one attack this turn." },
+      { name: "Shield Bash", action: "Action", effect: "Melee attack that, on a hit, staggers the target — it loses its next reaction." },
+      { name: "Second Strike", action: "Passive", effect: "When you take the Attack action with a melee weapon, make one additional melee attack." },
+    ] },
+  { name: "Fencing", heritage: "United Kingdom",
+    blurb: "Precise, composed bladework — parry, feint, and the perfect thrust.",
+    skills: [
+      { name: "Parry", action: "Reaction", effect: "When hit by a melee attack, reduce its damage by your weapon die + relevant mod." },
+      { name: "Feint", action: "Bonus Action", effect: "Your next weapon attack this turn is made with advantage." },
+      { name: "Disarm", action: "Action", effect: "Contested attack to knock a weapon from a target's hand; it drops its weapon." },
+      { name: "Bind Blade", action: "Reaction", effect: "When a melee attack misses you, the attacker can't attack with that weapon on its next turn." },
+      { name: "Precise Thrust", action: "Bonus Action", effect: "Your next melee attack this turn ignores the target's armor Defense bonus." },
+      { name: "En Garde", action: "Passive", effect: "While wielding a one-handed melee weapon and no shield, gain +1 to your Defense Score." },
+    ] },
+  { name: "Warden's Bulwark", heritage: "Africa",
+    blurb: "Community-strong defense — hold the line and shield your kin.",
+    skills: [
+      { name: "Guardian", action: "Reaction", effect: "When an ally within reach is hit, take the attack's damage in their place (or halve it)." },
+      { name: "Bracing Stance", action: "Bonus Action", effect: "Until your next turn, reduce forced movement against you to 0 and gain advantage to resist being knocked prone." },
+      { name: "Grapple", action: "Action", effect: "Contested check to restrain a foe within reach — it is Rooted while grappled." },
+      { name: "Intercept", action: "Reaction", effect: "When an enemy moves within your reach, move up to 5 ft to block it and make a melee attack." },
+      { name: "Rallying Strike", action: "Action", effect: "Melee attack; on a hit, an ally within 15 ft gains temp HP equal to your Soul Level." },
+      { name: "Ironhide", action: "Passive", effect: "At the start of each combat gain temp HP equal to your CON mod, and +1 to your Defense Score." },
+    ] },
+  { name: "Desert Whirlwind", heritage: "Middle East",
+    blurb: "Sweeping curved-blade work — one motion, many foes.",
+    skills: [
+      { name: "Spinning Cut", action: "Action", effect: "One melee attack roll resolved against two enemies within your reach." },
+      { name: "Deflecting Slash", action: "Reaction", effect: "When hit by a melee attack, reduce its damage by your weapon die; if reduced to 0, make a free melee attack against the attacker." },
+      { name: "Crescent Strike", action: "Bonus Action", effect: "A melee attack that, on a hit, pushes the target 5 ft and lets you move with it." },
+      { name: "Sand Veil", action: "Bonus Action", effect: "Kick up dust; the next attack against you this round has disadvantage." },
+      { name: "Sweeping Charge", action: "Action", effect: "Move up to your speed in a line and make a melee attack against each enemy you pass." },
+      { name: "Whirlwind", action: "Passive", effect: "Once per turn, when you hit with a melee attack, deal your weapon mod as damage to another enemy within reach." },
+    ] },
+  { name: "Way of the Open Hand", heritage: "East Asia",
+    blurb: "Unarmed martial discipline — the body itself is the weapon.",
+    skills: [
+      { name: "Palm Strike", action: "Action", effect: "Unarmed melee attack that pushes the target 10 ft on a hit." },
+      { name: "Deflect", action: "Reaction", effect: "When hit by a ranged weapon attack, reduce the damage by 1d10 + AGI mod; if reduced to 0, catch the projectile." },
+      { name: "Stunning Blow", action: "Bonus Action", effect: "After an unarmed hit this turn, the target can't take reactions until your next turn." },
+      { name: "Pressure Point", action: "Action", effect: "Unarmed attack; on a hit, the target has disadvantage on its next attack roll." },
+      { name: "Step of the Wind", action: "Bonus Action", effect: "Take the Dash or Disengage action; your jump distance is doubled this turn." },
+      { name: "Flurry", action: "Passive", effect: "When you take the Attack action with an unarmed strike, make one additional unarmed strike." },
+    ] },
+  { name: "Twin Fang", heritage: "Oceania",
+    blurb: "Island dual-wielding — a weapon in each hand, twice the openings.",
+    skills: [
+      { name: "Twin Strike", action: "Action", effect: "Attack a single target with both of your equipped one-handed weapons." },
+      { name: "Rapid Slash", action: "Bonus Action", effect: "Make one attack with your off-hand one-handed weapon." },
+      { name: "Cross Parry", action: "Reaction", effect: "While dual-wielding, when hit by a melee attack reduce its damage by both weapon dice." },
+      { name: "Whirl of Steel", action: "Action", effect: "Attack every enemy within your reach with your off-hand weapon." },
+      { name: "Flourish", action: "Bonus Action", effect: "Feint with one weapon; your next attack with the other has advantage." },
+      { name: "Two-Weapon Fighting", action: "Passive", effect: "While holding a one-handed weapon in each hand, when you take the Attack action you may make one additional attack with your off-hand weapon." },
+    ] },
 ];
 
+/* Flattened master list — every combat skill across all styles, tagged with its style.
+   Kept for name lookups (PC.combatSkill) and for the play-sheet / level-up UIs. */
+PC.COMBAT_SKILLS = PC.FIGHTING_STYLES.reduce(function (all, st) {
+  return all.concat(st.skills.map(function (sk) {
+    return { name: sk.name, action: sk.action, effect: sk.effect, style: st.name };
+  }));
+}, []);
+
 /* --- Regional Heritages (old-world ancestry; replaces a race system) ---- */
-/* Grants 2 combat skills + 2 roleplay traits. No attribute changes. Chosen before Attributes. */
+/* Grants ONE Fighting Style, 2 active combat skills from it, that style's Passive,
+   and 2 roleplay traits. No attribute changes. Chosen before Attributes. */
 PC.HERITAGES = [
   { name: "North America", blurb: "Rugged frontier stock — self-reliant survivors of the wild expanse.",
-    combatSkills: ["Marksmanship", "Ambusher"],
+    fightingStyle: "Frontier Gunslinging", combatSkills: ["Marksmanship", "Suppressing Fire"],
     traits: [ { name: "Frontier Grit", desc: "Advantage on Survival checks in the wilderness." },
               { name: "Scavenger", desc: "Advantage on checks to jury-rig or repair with salvaged parts." } ] },
   { name: "South America", blurb: "Jungle-forged and resourceful, at home in dense, untamed country.",
-    combatSkills: ["Dodge Roll", "Combat Roll"],
+    fightingStyle: "Flowing Movement", combatSkills: ["Combat Roll", "Dodge Roll"],
     traits: [ { name: "Jungle-Born", desc: "Advantage on Acrobatics and moving through natural difficult terrain." },
               { name: "Herbal Lore", desc: "Advantage on Herbalism; identify plants and toxins at a glance." } ] },
   { name: "Europe", blurb: "Heirs to a long, disciplined martial tradition.",
-    combatSkills: ["Riposte", "Power Attack"],
+    fightingStyle: "Chivalric Swordplay", combatSkills: ["Riposte", "Power Attack"],
     traits: [ { name: "Martial Heritage", desc: "You gain one additional weapon-type proficiency." },
               { name: "Old-World Scholar", desc: "You speak an extra old-world language; advantage on Etiquette." } ] },
   { name: "United Kingdom", blurb: "Stoic and tactical, unshaken under pressure.",
-    combatSkills: ["Parry", "Feint"],
+    fightingStyle: "Fencing", combatSkills: ["Parry", "Feint"],
     traits: [ { name: "Stiff Upper Lip", desc: "Advantage on checks and saves to resist Fear." },
               { name: "Composed", desc: "Advantage on Insight to read a tense situation." } ] },
   { name: "Africa", blurb: "Enduring and community-strong, forged by hardship and kinship.",
-    combatSkills: ["Guardian", "Tough"],
+    fightingStyle: "Warden's Bulwark", combatSkills: ["Guardian", "Bracing Stance"],
     traits: [ { name: "Enduring", desc: "Advantage on Hardiness and checks to resist exhaustion." },
               { name: "Kinship", desc: "Advantage on Persuasion within a community; rally to stabilize a downed ally." } ] },
   { name: "Middle East", blurb: "Resilient warrior-traders, sharp of eye and tongue.",
-    combatSkills: ["Disarm", "Counter-Fire"],
+    fightingStyle: "Desert Whirlwind", combatSkills: ["Spinning Cut", "Deflecting Slash"],
     traits: [ { name: "Shrewd Trader", desc: "Advantage on Barter." },
               { name: "Desert-Hardened", desc: "Resist extreme heat and thirst; advantage on Tolerance vs. environment." } ] },
   { name: "East Asia", blurb: "Honed by generations of martial discipline and focus.",
-    combatSkills: ["Extra Attack", "Quick Draw"],
+    fightingStyle: "Way of the Open Hand", combatSkills: ["Palm Strike", "Deflect"],
     traits: [ { name: "Inner Focus", desc: "Advantage on Concentration checks." },
               { name: "Disciplined", desc: "You speak an extra language; advantage on precise, patient tasks." } ] },
   { name: "Oceania", blurb: "Seafaring and adaptable, thriving between island and open water.",
-    combatSkills: ["Fleet-Footed", "Aim"],
+    fightingStyle: "Twin Fang", combatSkills: ["Twin Strike", "Rapid Slash"],
     traits: [ { name: "Seafarer", desc: "Advantage to swim, sail, or navigate water; hold your breath long." },
               { name: "Adaptable", desc: "You gain one extra skill proficiency of your choice." } ] },
 ];

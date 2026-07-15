@@ -29,9 +29,11 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
 ## What works today
 - **Character Creator** — full step-by-step flow:
   1. Identity + Psionic Background (all 9)
-  2. **Regional Heritage** — pick 1 of **8 old-world regions** (replaces a race system). Grants **2 Combat
-     Skills** (from a shared 21-skill master list) + **2 Traits** — *no* attribute changes. Combat Skills
-     cost no KP; they only use action economy (Action / Bonus Action / Reaction / Passive).
+  2. **Regional Heritage** — pick 1 of **8 old-world regions** (replaces a race system). Each grants a
+     region-tied **Fighting Style** — and from it **2 Combat Skills + the style's signature Passive** — plus
+     **2 Traits**. *No* attribute changes. Combat Skills are organized into Fighting Styles the way
+     techniques are organized into Kinetics (48 skills across 8 styles); they cost no KP and only use action
+     economy (Action / Bonus Action / Reaction / Passive).
   3. Attributes — roll 8d12 (drop 2 lowest, +10) or enter manually, then assign
   4. Skills — background gives 3, choose 2 more
   5. Techniques — background's free one + choose 2 from any school (all 18 Kinetics' **Beginner** techniques
@@ -50,8 +52,9 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     (5/10/15/20/25/30). Spend attribute points (cap 30) and Technique Points to learn new techniques. All
     **360 techniques** (18 Kinetics × 4 tiers) are in the app, gated two ways: by **Soul Level** (Adept @8,
     Expert @15, Master @22) **and** by requiring **≥3 techniques from that Kinetic's previous tier** to
-    unlock its next tier. Spend **Combat Skill Points** to learn more **Combat Skills** from the shared
-    master list (your Heritage's two are free and permanent). Proficiency and pools update automatically;
+    unlock its next tier. Spend **Combat Skill Points** to learn more **Combat Skills** from **any Fighting
+    Style** (grouped by style, your own first; a style's signature Passive is learnable too). Your Heritage's
+    2 starters + its style Passive are free and permanent. Proficiency and pools update automatically;
     Otherkin unlocks at 15.
 
 - **Live Play Sheet** (▶ Play on a character) — the at-the-table screen, organized into tabs so there's
@@ -65,9 +68,9 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     attack/damage/augments, a universal **👊 Unarmed Strike** — d20+STR+prof to hit, 1d4+STR damage — and
     Action techniques), **Bonus Actions**, **Reactions** (a universal **↩ Opportunity Attack** — one melee
     attack with any melee weapon or unarmed when an enemy enters/leaves your reach, once between turns — plus
-    Reaction techniques), and **Full-Turn & Other** — plus a **🎖 Combat Skills** panel listing your Heritage +
-    learned Combat Skills (grouped by action type, with effects), a compact HP/KP/Defense/Turn strip, Roll
-    Initiative, End Turn, active effects, and the log.
+    Reaction techniques), and **Full-Turn & Other** — plus a **🎖 Combat Skills** panel (titled with your
+    Fighting Style) listing your granted + learned Combat Skills grouped by action type, each tagged with its
+    origin style, a compact HP/KP/Defense/Turn strip, Roll Initiative, End Turn, active effects, and the log.
   - **Action economy enforced** — one Move / Action / Bonus Action per turn (Reaction once between turns). Spending
     a slot disables all other options of that type until **End Turn**; a "This Turn" tracker shows what's used
     (tap to toggle manually for feats/abilities that grant extras).

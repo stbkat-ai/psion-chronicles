@@ -122,3 +122,23 @@ PC.technique = function (name) { return PC.TECHNIQUES.find((t) => t.name === nam
 PC.skillsByAttr = function (attr) { return PC.SKILLS.filter((s) => s.attr === attr); };
 PC.heritage = function (name) { return (PC.HERITAGES || []).find((h) => h.name === name) || null; };
 PC.combatSkill = function (name) { return (PC.COMBAT_SKILLS || []).find((s) => s.name === name) || null; };
+PC.fightingStyle = function (name) { return (PC.FIGHTING_STYLES || []).find((s) => s.name === name) || null; };
+/* The Fighting Style granted by a heritage. */
+PC.styleForHeritage = function (heritageName) {
+  const h = PC.heritage(heritageName);
+  return h ? PC.fightingStyle(h.fightingStyle) : null;
+};
+/* A style's signature Passive skill (the one skill with action "Passive"). */
+PC.stylePassive = function (styleName) {
+  const s = PC.fightingStyle(styleName);
+  return s ? (s.skills.find((k) => k.action === "Passive") || null) : null;
+};
+/* Every combat skill a heritage grants at creation: its 2 active starters + the style's Passive. */
+PC.heritageGrantedSkills = function (heritageName) {
+  const h = PC.heritage(heritageName);
+  if (!h) return [];
+  const names = (h.combatSkills || []).slice();
+  const p = PC.stylePassive(h.fightingStyle);
+  if (p && names.indexOf(p.name) < 0) names.push(p.name);
+  return names;
+};

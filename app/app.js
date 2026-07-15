@@ -357,14 +357,17 @@
   function stepHeritage() {
     const p = el("div", "panel");
     p.appendChild(el("h2", null, 'Regional Heritage <span class="sub">— where your family hails from</span>'));
-    p.appendChild(el("p", "hint", "Your old-world ancestry (the Post-Veil equivalent of a race). It grants <b>2 combat skills</b> and <b>2 traits</b> — no attribute changes. You'll learn more combat skills as you level."));
+    p.appendChild(el("p", "hint", "Your old-world ancestry (the Post-Veil equivalent of a race). It grants a <b>Fighting Style</b> — <b>2 combat skills</b> from that style plus the style's signature <b>passive</b> — and <b>2 traits</b>. No attribute changes. You'll learn more combat skills (from any style) as you level."));
     const grid = el("div", "bg-grid");
     PC.HERITAGES.forEach((h) => {
       const card = el("div", "bg-card" + (state.heritage === h.name ? " selected" : ""));
       card.appendChild(el("h3", null, h.name));
       card.appendChild(el("div", "blurb", h.blurb));
+      const passive = PC.stylePassive(h.fightingStyle);
       const meta = el("div", "meta");
+      meta.appendChild(el("span", "badge", "⚔ " + h.fightingStyle));
       h.combatSkills.forEach((cs) => meta.appendChild(el("span", "badge psi", cs)));
+      if (passive) meta.appendChild(el("span", "badge gold", "★ " + passive.name));
       card.appendChild(meta);
       const tr = el("div", "bg-equip");
       tr.innerHTML = h.traits.map((t) => `<div><b>${t.name}:</b> ${t.desc}</div>`).join("");
@@ -375,12 +378,20 @@
     p.appendChild(grid);
     if (state.heritage) {
       const h = PC.heritage(state.heritage);
+      const style = PC.fightingStyle(h.fightingStyle);
+      const passive = PC.stylePassive(h.fightingStyle);
       const d = el("div"); d.style.marginTop = "16px";
-      d.appendChild(el("div", "section-label", `${h.name} — combat skills`));
+      d.appendChild(el("div", "section-label", `Fighting Style: ${h.fightingStyle}`));
+      if (style) d.appendChild(el("p", "hint", style.blurb));
+      d.appendChild(el("div", "eq-choice-label", "Starting combat skills"));
       h.combatSkills.forEach((cs) => {
         const c = PC.combatSkill(cs);
         if (c) d.appendChild(el("div", "inv-note", `<b>${cs}</b> <span class="tag">${c.action}</span> — ${c.effect}`));
       });
+      if (passive) {
+        d.appendChild(el("div", "eq-choice-label", "Signature passive"));
+        d.appendChild(el("div", "inv-note", `<b>★ ${passive.name}</b> <span class="tag">Passive</span> — ${passive.effect}`));
+      }
       d.appendChild(el("div", "section-label", "Traits"));
       const tl = el("div", "pill-list");
       h.traits.forEach((t) => tl.appendChild(el("span", "pill", t.name)));
@@ -721,14 +732,16 @@
     b.combat.forEach((c) => cp.appendChild(el("span", "pill psi", c)));
     p.appendChild(cp);
 
-    // heritage — combat skills + traits
+    // heritage — fighting style, combat skills + passive + traits
     const h = state.heritage ? PC.heritage(state.heritage) : null;
     if (h) {
-      p.appendChild(el("div", "section-label", `Heritage: ${h.name} — Combat Skills`));
+      const passive = PC.stylePassive(h.fightingStyle);
+      p.appendChild(el("div", "section-label", `Heritage: ${h.name} — ${h.fightingStyle}`));
       h.combatSkills.forEach((cs) => {
         const c = PC.combatSkill(cs);
         if (c) p.appendChild(el("div", "inv-note", `<b>${cs}</b> <span class="tag">${c.action}</span> — ${c.effect}`));
       });
+      if (passive) p.appendChild(el("div", "inv-note", `<b>★ ${passive.name}</b> <span class="tag">Passive</span> — ${passive.effect}`));
       p.appendChild(el("div", "section-label", "Traits"));
       const tl = el("div", "pill-list");
       h.traits.forEach((t) => { const pill = el("span", "pill", t.name); pill.title = t.desc; tl.appendChild(pill); });
@@ -842,7 +855,7 @@
     if (!Array.isArray(rec.learnedCombatSkills)) rec.learnedCombatSkills = [];
     const earnedCSP = Math.floor(level / 5); // +1 Combat Skill Point every 5th level
     const availCSP = earnedCSP - rec.learnedCombatSkills.length;
-    const heritageSkills = (PC.heritage(rec.heritage) || { combatSkills: [] }).combatSkills;
+    const heritageSkills = PC.heritageGrantedSkills(rec.heritage); // 2 active starters + style passive (all free/locked)
     const knownCS = heritageSkills.concat(rec.learnedCombatSkills);
     const tierGate = { Beginner: 1, Adept: 8, Expert: 15, Master: 22 };
     const prevTier = { Adept: "Beginner", Expert: "Adept", Master: "Expert" };
@@ -971,33 +984,41 @@
 
     // learn combat skills (from Regional Heritage system)
     const cp = el("div", "panel");
+    const ownStyle = PC.styleForHeritage(rec.heritage);
     cp.appendChild(el("div", "section-label", `Combat Skills — ${availCSP} CSP available (1 each)`));
-    cp.appendChild(el("p", "hint", "You earn <b>+1 Combat Skill Point every 5th Soul Level</b> (5, 10, 15, 20, 25, 30). Your Regional Heritage's two skills are free and always known; spend CSP to learn any skill from the master list."));
+    cp.appendChild(el("p", "hint", `You earn <b>+1 Combat Skill Point every 5th Soul Level</b> (5, 10, 15, 20, 25, 30). Your Heritage's <b>Fighting Style</b>${ownStyle ? " (" + ownStyle.name + ")" : ""} grants 2 skills + its passive free and always known. Combat skills are organized into Fighting Styles like techniques into Kinetics — spend CSP to learn any skill from <b>any</b> style, including its passive buff.`));
 
     cp.appendChild(el("div", "eq-choice-label", "Known combat skills"));
     const csKnownList = el("div", "pill-list");
     knownCS.forEach((n) => {
       const fromHeritage = heritageSkills.indexOf(n) >= 0;
       const pill = el("span", "pill" + (fromHeritage ? "" : " psi"), n + (fromHeritage ? " ★" : " ✕"));
-      if (fromHeritage) { pill.title = "Granted by " + rec.heritage + " heritage"; }
+      if (fromHeritage) { pill.title = "Granted by your " + rec.heritage + " Fighting Style"; }
       else { pill.style.cursor = "pointer"; pill.title = "Unlearn (refund 1 CSP)"; pill.onclick = () => { rec.learnedCombatSkills = rec.learnedCombatSkills.filter((x) => x !== n); persist(); }; }
       csKnownList.appendChild(pill);
     });
     cp.appendChild(csKnownList);
 
-    cp.appendChild(el("div", "eq-choice-label", "Learnable"));
+    cp.appendChild(el("div", "eq-choice-label", "Learnable — by Fighting Style"));
     if (availCSP <= 0) cp.appendChild(el("div", "muted", "No Combat Skill Points available — reach the next 5th level to earn one."));
     else {
-      const order = ["Action", "Bonus Action", "Reaction", "Passive"];
-      const learnableCS = (PC.COMBAT_SKILLS || []).filter((s) => knownCS.indexOf(s.name) < 0);
-      order.forEach((act) => {
-        const inAct = learnableCS.filter((s) => s.action === act);
-        if (!inAct.length) return;
-        cp.appendChild(el("div", "skill-attr-label", act === "Passive" ? "Passive" : act));
-        inAct.forEach((s) => {
+      // Group learnable skills by Fighting Style; list the character's own style first.
+      const styles = (PC.FIGHTING_STYLES || []).slice().sort((a, b) => {
+        if (ownStyle && a.name === ownStyle.name) return -1;
+        if (ownStyle && b.name === ownStyle.name) return 1;
+        return 0;
+      });
+      let anyLearnable = false;
+      styles.forEach((st) => {
+        const learnable = st.skills.filter((s) => knownCS.indexOf(s.name) < 0);
+        if (!learnable.length) return;
+        anyLearnable = true;
+        const isOwn = ownStyle && st.name === ownStyle.name;
+        cp.appendChild(el("div", "skill-attr-label", "⚔ " + st.name + (isOwn ? " (your style)" : "")));
+        learnable.forEach((s) => {
           const card = el("div", "tech-card");
           const head = el("div", "thead");
-          head.innerHTML = `<span class="tname">${s.name}</span><span class="tmeta">${s.action}</span>`;
+          head.innerHTML = `<span class="tname">${s.action === "Passive" ? "★ " : ""}${s.name}</span><span class="tmeta">${s.action}</span>`;
           card.appendChild(head);
           card.appendChild(el("div", "teff", "▸ " + s.effect));
           const btn = el("button", "btn small primary", "Learn (1 CSP)");
@@ -1007,6 +1028,7 @@
           cp.appendChild(card);
         });
       });
+      if (!anyLearnable) cp.appendChild(el("div", "muted", "You already know every combat skill."));
     }
     wrap.appendChild(cp);
     return wrap;

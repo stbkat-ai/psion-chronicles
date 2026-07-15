@@ -174,7 +174,7 @@ that attribute's rolls **and** all its Kinetics.
 ### Three point currencies — keep separate!
 - **KP = Ki Points** — the **Mana** bar (= Mind Pool). Spent to *use* techniques in play; recovers via rest/items/etc.
 - **TP = Technique Points** — earned **+1 per level**. Spent to *permanently learn* techniques (1 TP each). Not a combat resource.
-- **CSP = Combat Skill Points** — earned **+1 every 5th level** (5/10/15/20/25/30). Spent to *permanently learn* Combat Skills (1 CSP each) from the Regional Heritage master list. See Section 3b.
+- **CSP = Combat Skill Points** — earned **+1 every 5th level** (5/10/15/20/25/30). Spent to *permanently learn* Combat Skills (1 CSP each) from any **Fighting Style**. See Section 3b.
 
 ### Otherkin System (unlocks at Soul Level 15)
 - Your **Soul Creature** — a being that has lived in your soul since creation.
@@ -212,48 +212,52 @@ system. It is chosen at creation **before Attributes** (creator step 2) and repr
 old-world ancestry, grouped into **8 broad regions**.
 
 **Heritage grants — and only grants:**
-- **2 Combat Skills** (from the shared master list, below) — no attribute changes, ever.
+- **1 Fighting Style** (below), and from it **2 Combat Skills** + the style's **signature Passive**.
 - **2 Traits** — always-on roleplay/utility perks (advantage on certain checks, an extra language, etc.).
 
 Heritage never touches attribute scores or pools. Two characters of the same Background differ by the
-Combat Skills and Traits their Heritage opened up.
+Fighting Style, Combat Skills, and Traits their Heritage opened up.
 
-### The 8 Heritages
-| Heritage | Combat Skills | Traits |
-|---|---|---|
-| **North America** | Marksmanship, Ambusher | Frontier Grit, Scavenger |
-| **South America** | Dodge Roll, Combat Roll | Jungle-Born, Herbal Lore |
-| **Europe** | Riposte, Power Attack | Martial Heritage, Old-World Scholar |
-| **United Kingdom** | Parry, Feint | Stiff Upper Lip, Composed |
-| **Africa** | Guardian, Tough | Enduring, Kinship |
-| **Middle East** | Disarm, Counter-Fire | Shrewd Trader, Desert-Hardened |
-| **East Asia** | Extra Attack, Quick Draw | Inner Focus, Disciplined |
-| **Oceania** | Fleet-Footed, Aim | Seafarer, Adaptable |
-
-### Combat Skills (the new mechanic)
-Combat Skills are martial maneuvers **any** character can perform — they are a **shared master list**,
-not tied to a Background or Kinetic. Your Heritage just gives you a starting **2**; you learn more as you
-level (below).
+### Fighting Styles & Combat Skills (the mechanic)
+Combat Skills work like Kinetic Techniques: there are **many**, organized into categories called
+**Fighting Styles** (the combat-skill equivalent of the Kinetics). Each Fighting Style is **tied to a
+region** and contains a handful of Action / Bonus Action / Reaction skills **plus one signature Passive
+buff** unique to that style (e.g. Twin Fang's *Two-Weapon Fighting* — attack again with an off-hand weapon
+while dual-wielding).
 
 - **Combat Skills cost no resource** (no KP) — they only consume **action economy**.
 - Each skill is one of **Action**, **Bonus Action**, **Reaction**, or **Passive**.
-- **Design rule (Luke):** any Combat Skill that adds to a base attack (e.g. Marksmanship, Power Attack,
-  Feint, Aim, Quick Draw) is a **Bonus Action**, so it layers onto a weapon attack the same turn.
-- **Passive econ-boosters** (Extra Attack, +1 Bonus Action, an extra Reaction, etc.) are listed as text
-  for now; their mechanics are wired into the action-economy tracker later.
+- **Design rule (Luke):** any Combat Skill that adds to / rides onto a base attack (Marksmanship, Power
+  Attack, Feint, Quick Draw, Rapid Slash, Precise Thrust, Crescent Strike, Lunge, Stunning Blow, Flourish)
+  is a **Bonus Action**, so it layers onto a weapon attack the same turn. Skills that *are* the attack
+  (Cleave, Twin Strike, Spinning Cut, Palm Strike…) are **Actions**.
+- **Passive buffs** (each style's signature) are always-on; a few are econ-boosters (Second Strike, Flurry,
+  Two-Weapon Fighting) whose extra-attack mechanics are described in text and wired into the tracker later.
+- A style's Passive **can be learned by any character** with CSP, regardless of Heritage — as can any other
+  style's skills.
 
-**Master list (21):**
-- **Actions:** Cleave, Grapple, Suppressing Fire, Disarm
-- **Bonus Actions:** Marksmanship, Power Attack, Feint, Aim, Quick Draw, Combat Roll
-- **Reactions:** Parry, Riposte, Counter-Fire, Dodge Roll, Guardian
-- **Passives:** Extra Attack, Combat Reflexes, Fleet-Footed, Adrenaline Surge, Tough, Ambusher
+### The 8 Heritages → Fighting Styles
+| Heritage | Fighting Style | Starting Combat Skills | Signature Passive | Traits |
+|---|---|---|---|---|
+| **North America** | Frontier Gunslinging | Marksmanship, Suppressing Fire | Deadeye | Frontier Grit, Scavenger |
+| **South America** | Flowing Movement | Combat Roll, Dodge Roll | Momentum | Jungle-Born, Herbal Lore |
+| **Europe** | Chivalric Swordplay | Riposte, Power Attack | Second Strike | Martial Heritage, Old-World Scholar |
+| **United Kingdom** | Fencing | Parry, Feint | En Garde | Stiff Upper Lip, Composed |
+| **Africa** | Warden's Bulwark | Guardian, Bracing Stance | Ironhide | Enduring, Kinship |
+| **Middle East** | Desert Whirlwind | Spinning Cut, Deflecting Slash | Whirlwind | Shrewd Trader, Desert-Hardened |
+| **East Asia** | Way of the Open Hand | Palm Strike, Deflect | Flurry | Inner Focus, Disciplined |
+| **Oceania** | Twin Fang | Twin Strike, Rapid Slash | Two-Weapon Fighting | Seafarer, Adaptable |
+
+Each style holds **5 active skills + 1 Passive** (48 combat skills total). Full skill text lives in
+`app/data.js` (`PC.FIGHTING_STYLES`); the app is the source of truth for exact effects.
 
 ### Combat Skill Points (CSP) — learning more (CONFIRMED Luke)
 Combat Skills use their **own** currency, separate from Technique Points and attribute points:
 - You earn **+1 Combat Skill Point every 5th Soul Level** — at levels **5, 10, 15, 20, 25, 30** (6 total by cap).
-- Spend **1 CSP** to learn any Combat Skill from the master list you don't already know.
-- Your Heritage's two starting skills are **free and permanent** (they don't cost CSP and can't be unlearned).
+- Spend **1 CSP** to learn any Combat Skill from **any** Fighting Style you don't already know (its Passive included).
+- Your Heritage's 2 starting skills **and its style's Passive** are **free and permanent** (no CSP, can't be unlearned).
 - Spent CSP can be refunded by unlearning a learned skill on the Level-Up screen.
+- The Level-Up screen groups learnable skills **by Fighting Style**, your own style listed first.
 
 ---
 
