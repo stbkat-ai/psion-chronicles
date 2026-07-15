@@ -35,13 +35,17 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
      techniques are organized into Kinetics (48 skills across 8 styles); they cost no KP and only use action
      economy (Action / Bonus Action / Reaction / Passive).
   3. Attributes — roll 8d12 (drop 2 lowest, +10) or enter manually, then assign
-  4. Skills — background gives 3, choose 2 more
+  4. Skills — background gives 3, choose 2 more (**+1 per skill-proficiency grant** from your Heritage —
+     e.g. Oceania's *Adaptable* makes it 3)
   5. Techniques — background's free one + choose 2 from any school (all 18 Kinetics' **Beginner** techniques
      are in the app — 90 total; higher tiers arrive with the level-up system)
-  6. Review & Save — full computed sheet + your **Heritage** (Combat Skills w/ action tags + Traits) +
-     **starting equipment**: each background lists its gear right on its selection card, and you **choose
-     your loadout** (a proficient weapon + armor/other options) which auto-populates the new character's
-     inventory, pre-equipped and ready to roll
+  6. **Equipment** (chosen **last**, so Heritage proficiencies count) — if a choice grants an extra
+     proficiency you **pick what it is**: a weapon-proficiency grant (e.g. Europe's *Martial Heritage*) adds
+     a **bonus weapon-type** selector here, and your starting-weapon list then spans **every** type you're
+     proficient with (background + bonus). Choose a proficient weapon + armor/other options; it auto-populates
+     the new character's inventory, pre-equipped and ready to roll
+  7. Review & Save — full computed sheet + your **Heritage** (Fighting Style, Combat Skills, passive, Traits),
+     combat proficiencies (incl. any bonus), and starting loadout
 - Auto-calculates HP, KP, all 6 chakras, Defense Score, speeds, carry weight, modifiers, proficiency
 - **Roster** — saved characters on the home screen; **Edit**, Play, and delete
   - **Edit** reopens a character in the creator with everything prefilled; change anything (name, stats,

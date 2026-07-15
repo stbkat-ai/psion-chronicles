@@ -384,7 +384,12 @@
   }
   // weapon helpers
   function weaponAttr(it) { const w = PC.WEAPON_TYPES.find((x) => x.name === it.weaponType); return w ? w.attr : null; }
-  function proficientWithType(it) { return !!it.proficient || (it.weaponType && bg().combat.indexOf(it.weaponType) > -1); }
+  function proficientWithType(it) {
+    if (it.proficient) return true;
+    if (!it.weaponType) return false;
+    if (bg().combat.indexOf(it.weaponType) > -1) return true;
+    return (rec.bonusWeaponProfs || []).indexOf(it.weaponType) > -1; // extra proficiency from a heritage grant
+  }
   // econType: which action-economy slot the swing spends — "Action" for a normal attack,
   // "Reaction" for an Opportunity Attack. Defaults to "Action".
   function attackWith(it, econType) {

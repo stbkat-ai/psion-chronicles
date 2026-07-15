@@ -847,7 +847,7 @@ PC.HERITAGES = [
               { name: "Herbal Lore", desc: "Advantage on Herbalism; identify plants and toxins at a glance." } ] },
   { name: "Europe", blurb: "Heirs to a long, disciplined martial tradition.",
     fightingStyle: "Chivalric Swordplay", combatSkills: ["Riposte", "Power Attack"],
-    traits: [ { name: "Martial Heritage", desc: "You gain one additional weapon-type proficiency." },
+    traits: [ { name: "Martial Heritage", desc: "You gain one additional weapon-type proficiency.", grant: { kind: "weapon" } },
               { name: "Old-World Scholar", desc: "You speak an extra old-world language; advantage on Etiquette." } ] },
   { name: "United Kingdom", blurb: "Stoic and tactical, unshaken under pressure.",
     fightingStyle: "Fencing", combatSkills: ["Parry", "Feint"],
@@ -868,7 +868,7 @@ PC.HERITAGES = [
   { name: "Oceania", blurb: "Seafaring and adaptable, thriving between island and open water.",
     fightingStyle: "Twin Fang", combatSkills: ["Twin Strike", "Rapid Slash"],
     traits: [ { name: "Seafarer", desc: "Advantage to swim, sail, or navigate water; hold your breath long." },
-              { name: "Adaptable", desc: "You gain one extra skill proficiency of your choice." } ] },
+              { name: "Adaptable", desc: "You gain one extra skill proficiency of your choice.", grant: { kind: "skill" } } ] },
 ];
 
 /* --- Constants ----------------------------------------------------------- */

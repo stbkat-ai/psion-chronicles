@@ -31,7 +31,7 @@
   }
 
   /* ---------- creator state ---------- */
-  const STEPS = ["Identity", "Heritage", "Attributes", "Skills", "Techniques", "Review"];
+  const STEPS = ["Identity", "Heritage", "Attributes", "Skills", "Techniques", "Equipment", "Review"];
   let state, step, rolled;
   let playId = null; // when set, we're in the live play sheet for this character id
   let levelUpId = null; // when set, we're in the level-up screen for this character id
@@ -50,6 +50,7 @@
       chosenTechniques: [],   // player-chosen (2), beyond background's free technique
       equipmentChoices: [],   // selected option index per background equipment choice group
       startWeapon: null,      // chosen starting weapon name (from proficient weapon type)
+      bonusWeaponProfs: [],   // extra weapon-type proficiencies chosen from grants (e.g. Martial Heritage)
       chakraHits: { STR: 0, AGI: 0, CON: 0, INT: 0, WIS: 0, CHA: 0 },
       notes: "",
       createdAt: new Date().toISOString(),
@@ -79,11 +80,30 @@
     const parent = PC.WEAPON_TYPES.find((w) => (w.subtypes || []).indexOf(c) > -1);
     return parent ? parent.name : c;
   }
-  // Every *Common* catalog weapon of the current background's proficient weapon type.
+  // Heritage traits that grant a choosable proficiency, by kind.
+  function heritageWeaponGrants() {
+    const h = state.heritage ? PC.heritage(state.heritage) : null;
+    return h ? (h.traits || []).filter((t) => t.grant && t.grant.kind === "weapon") : [];
+  }
+  function skillGrantCount() {
+    const h = state.heritage ? PC.heritage(state.heritage) : null;
+    return h ? (h.traits || []).filter((t) => t.grant && t.grant.kind === "skill").length : 0;
+  }
+  // All weapon TYPES the character is proficient with: background's + any chosen bonus profs.
+  function proficientWeaponTypes() {
+    const types = [];
+    const bgt = weaponTypeFor(bg());
+    if (bgt) types.push(bgt);
+    (state.bonusWeaponProfs || []).forEach((t) => { if (t && types.indexOf(t) < 0) types.push(t); });
+    return types;
+  }
+  // Total skills the player chooses at creation: 2 base + 1 per skill-proficiency grant.
+  function skillsToChoose() { return 2 + skillGrantCount(); }
+  // Every *Common* catalog weapon of ANY proficient weapon type (background + bonus profs).
   // Higher-rarity weapons exist in the catalog but are never offered as starting gear.
   function eligibleStartWeapons() {
-    const wt = weaponTypeFor(bg());
-    return (window.PC.ITEMS || []).filter((it) => it.category === "Weapon" && it.weaponType === wt && (it.rarity || "Common") === "Common");
+    const types = proficientWeaponTypes();
+    return (window.PC.ITEMS || []).filter((it) => it.category === "Weapon" && types.indexOf(it.weaponType) > -1 && (it.rarity || "Common") === "Common");
   }
   // The chosen starting weapon as an equipped, proficient inventory item.
   function chosenStartWeaponItem() {
@@ -184,6 +204,7 @@
     if (!Array.isArray(state.chosenTechniques)) state.chosenTechniques = [];
     if (!Array.isArray(state.equipmentChoices)) state.equipmentChoices = [];
     if (!Array.isArray(state.learnedCombatSkills)) state.learnedCombatSkills = [];
+    if (!Array.isArray(state.bonusWeaponProfs)) state.bonusWeaponProfs = [];
     if (!state.chakraHits) state.chakraHits = { STR: 0, AGI: 0, CON: 0, INT: 0, WIS: 0, CHA: 0 };
     state._editing = true;
     playId = null; step = 0; rolled = null;
@@ -217,7 +238,8 @@
       case 2: return stepAttributes();
       case 3: return stepSkills();
       case 4: return stepTechniques();
-      case 5: return stepReview();
+      case 5: return stepEquipment();
+      case 6: return stepReview();
     }
   }
 
@@ -308,43 +330,8 @@
       b.combat.forEach((c) => list.appendChild(el("span", "pill psi", c)));
       if (b.freeTech) list.appendChild(el("span", "pill", "Free: " + b.freeTech));
       detail.appendChild(list);
+      detail.appendChild(el("p", "hint", "You'll choose your <b>starting gear last</b> — after Heritage, so any weapon proficiency your Heritage grants is included in the options."));
       p.appendChild(detail);
-
-      // Starting equipment chooser (new characters pick their loadout; editing keeps existing inventory)
-      if (!state._editing && (bgFixedEquip().length || bgChoices().length)) {
-        const eq = el("div"); eq.style.marginTop = "16px";
-        eq.appendChild(el("div", "section-label", "Starting Equipment — choose your loadout"));
-        if (bgFixedEquip().length) {
-          const fx = el("div", "pill-list"); fx.style.marginBottom = "10px";
-          bgFixedEquip().forEach((it) => fx.appendChild(el("span", "pill", it.name + (it.qty > 1 ? " ×" + it.qty : ""))));
-          eq.appendChild(fx);
-        }
-        // Starting weapon — any weapon of the background's proficient weapon type.
-        const wt = weaponTypeFor(b);
-        const eligible = eligibleStartWeapons();
-        if (eligible.length) {
-          eq.appendChild(el("div", "eq-choice-label", `Starting weapon — any ${wt} (you're proficient)`));
-          const wsel = el("select"); wsel.className = "inv-cat"; wsel.style.maxWidth = "340px";
-          const chosen = state.startWeapon && eligible.some((w) => w.name === state.startWeapon) ? state.startWeapon : eligible[0].name;
-          wsel.innerHTML = eligible.map((w) => `<option value="${w.name}" ${w.name === chosen ? "selected" : ""}>${w.name} (${w.damage})</option>`).join("");
-          wsel.onchange = () => { state.startWeapon = wsel.value; render(); };
-          eq.appendChild(wsel);
-        }
-        // Remaining (non-weapon) choice groups.
-        bgChoices().forEach((grp, gi) => {
-          if (isWeaponGroup(grp)) return; // replaced by the starting-weapon dropdown above
-          eq.appendChild(el("div", "eq-choice-label", grp.label));
-          const chips = el("div", "chips");
-          grp.options.forEach((opt, oi) => {
-            const sel = (state.equipmentChoices[gi] != null ? state.equipmentChoices[gi] : 0) === oi;
-            const chip = el("div", "chip" + (sel ? " selected" : ""), opt.label);
-            chip.onclick = () => { state.equipmentChoices[gi] = oi; render(); };
-            chips.appendChild(chip);
-          });
-          eq.appendChild(chips);
-        });
-        p.appendChild(eq);
-      }
     }
 
     p.appendChild(navRow(() => { state = null; render(); }, () => { step = 1; render(); }, "Next →", !!(state.name.trim() && state.background)));
@@ -373,7 +360,16 @@
       const tr = el("div", "bg-equip");
       tr.innerHTML = h.traits.map((t) => `<div><b>${t.name}:</b> ${t.desc}</div>`).join("");
       card.appendChild(tr);
-      card.onclick = () => { state.heritage = h.name; render(); };
+      card.onclick = () => {
+        state.heritage = h.name;
+        // Reset bonus weapon-prof slots to match this heritage's weapon grants (fresh, unchosen).
+        const wg = (h.traits || []).filter((t) => t.grant && t.grant.kind === "weapon").length;
+        state.bonusWeaponProfs = new Array(wg).fill("");
+        // Trim chosen skills if the new heritage grants fewer skill picks.
+        const max = 2 + (h.traits || []).filter((t) => t.grant && t.grant.kind === "skill").length;
+        if (state.chosenSkills && state.chosenSkills.length > max) state.chosenSkills = state.chosenSkills.slice(0, max);
+        render();
+      };
       grid.appendChild(card);
     });
     p.appendChild(grid);
@@ -395,8 +391,20 @@
       }
       d.appendChild(el("div", "section-label", "Traits"));
       const tl = el("div", "pill-list");
-      h.traits.forEach((t) => tl.appendChild(el("span", "pill", t.name)));
+      h.traits.forEach((t) => {
+        const pill = el("span", "pill" + (t.grant ? " prof" : ""), t.name + (t.grant ? " ＋" : ""));
+        pill.title = t.desc;
+        tl.appendChild(pill);
+      });
       d.appendChild(tl);
+      const wg = h.traits.filter((t) => t.grant && t.grant.kind === "weapon").length;
+      const sg = h.traits.filter((t) => t.grant && t.grant.kind === "skill").length;
+      if (wg || sg) {
+        const notes = [];
+        if (wg) notes.push(`<b>+${wg} weapon proficiency</b> — pick it on the <b>Equipment</b> step (it widens your starting-gear choices)`);
+        if (sg) notes.push(`<b>+${sg} skill proficiency</b> — choose ${2 + sg} skills on the <b>Skills</b> step`);
+        d.appendChild(el("p", "hint", "This heritage grants " + notes.join("; ") + "."));
+      }
       p.appendChild(d);
     }
     p.appendChild(navRow(() => { step = 0; render(); }, () => { step = 2; render(); }, "Next →", !!state.heritage));
@@ -541,20 +549,24 @@
 
   /* ---------- STEP 3: Skills ---------- */
   function stepSkills() {
+    const need = skillsToChoose();
+    // Safety: if heritage changed and reduced the allowance, trim extras.
+    if (state.chosenSkills.length > need) state.chosenSkills = state.chosenSkills.slice(0, need);
     const p = el("div", "panel");
-    p.appendChild(el("h2", null, 'Skill Proficiencies <span class="sub">— choose 2 more</span>'));
-    p.appendChild(el("p", "hint", "Your Background already granted 3 skill proficiencies. Choose 2 additional skills to be proficient in. Proficient skills add your proficiency bonus to their checks."));
+    p.appendChild(el("h2", null, `Skill Proficiencies <span class="sub">— choose ${need} more</span>`));
+    const extra = skillGrantCount();
+    p.appendChild(el("p", "hint", `Your Background granted 3 skill proficiencies. Choose <b>${need}</b> additional skills` + (extra ? ` (2 base + ${extra} from your Heritage's proficiency grant)` : "") + ". Proficient skills add your proficiency bonus to their checks."));
 
     const granted = bgSkills();
     const counter = el("div", "counter");
-    const updateCounter = () => counter.innerHTML = `Chosen: <b>${state.chosenSkills.length}</b> / 2`;
+    const updateCounter = () => counter.innerHTML = `Chosen: <b>${state.chosenSkills.length}</b> / ${need}`;
 
     p.appendChild(el("div", "section-label", "From your Background (locked in)"));
     const glist = el("div", "pill-list");
     granted.forEach((s) => glist.appendChild(el("span", "pill prof", s + " ✓")));
     p.appendChild(glist);
 
-    p.appendChild(el("div", "section-label", "Choose 2 more"));
+    p.appendChild(el("div", "section-label", `Choose ${need} more`));
     PC.ATTRS.forEach((attr) => {
       const grp = PC.skillsByAttr(attr);
       const label = el("div"); label.style.margin = "10px 0 6px"; label.style.color = "var(--text-dim)"; label.style.fontSize = ".8rem";
@@ -571,8 +583,8 @@
           chip.onclick = () => {
             const i = state.chosenSkills.indexOf(s.name);
             if (i > -1) state.chosenSkills.splice(i, 1);
-            else if (state.chosenSkills.length < 2) state.chosenSkills.push(s.name);
-            else { toast("You can only choose 2 extra skills. Deselect one first."); return; }
+            else if (state.chosenSkills.length < need) state.chosenSkills.push(s.name);
+            else { toast(`You can only choose ${need} extra skills. Deselect one first.`); return; }
             render();
           };
         }
@@ -583,7 +595,7 @@
 
     updateCounter();
     p.appendChild(counter);
-    p.appendChild(navRow(() => { step = 2; render(); }, () => { step = 4; render(); }, "Next →", state.chosenSkills.length === 2));
+    p.appendChild(navRow(() => { step = 2; render(); }, () => { step = 4; render(); }, "Next →", state.chosenSkills.length === need));
     return p;
   }
 
@@ -645,7 +657,7 @@
     note.innerHTML = "All 18 Kinetics' <b>Beginner</b> techniques are available — pick any 2 from any school. (Higher tiers unlock as you level up, once that system is added.)";
     p.appendChild(note);
 
-    p.appendChild(navRow(() => { step = 3; render(); }, () => { step = 5; render(); }, "Review →", state.chosenTechniques.length === 2));
+    p.appendChild(navRow(() => { step = 3; render(); }, () => { step = 5; render(); }, "Next →", state.chosenTechniques.length === 2));
     return p;
   }
 
@@ -661,7 +673,116 @@
     return card;
   }
 
-  /* ---------- STEP 5: Review ---------- */
+  /* ---------- STEP 5: Equipment (last selection — reflects background + heritage profs) ---------- */
+  function stepEquipment() {
+    const p = el("div", "panel");
+    p.appendChild(el("h2", null, 'Starting Equipment <span class="sub">— your loadout</span>'));
+
+    // Editing keeps the character's existing inventory; nothing to pick here.
+    if (state._editing) {
+      p.appendChild(el("p", "hint", "Editing an existing character keeps its current inventory. Manage items on the Play sheet's Inventory tab."));
+      p.appendChild(navRow(() => { step = 4; render(); }, () => { step = 6; render(); }, "Review →", true));
+      return p;
+    }
+
+    p.appendChild(el("p", "hint", "Chosen last so your Heritage's proficiencies count: pick a bonus weapon proficiency (if your Heritage grants one), then a starting weapon from ANY type you're proficient with, plus armor / other options."));
+
+    const b = bg();
+
+    // Bonus weapon proficiencies (from grants like Europe's Martial Heritage).
+    const wGrants = heritageWeaponGrants();
+    if (wGrants.length) {
+      p.appendChild(el("div", "section-label", "Bonus weapon proficiency"));
+      const bgType = weaponTypeFor(b);
+      wGrants.forEach((t, gi) => {
+        p.appendChild(el("div", "eq-choice-label", `${t.name} — choose an extra weapon type`));
+        const sel = el("select"); sel.className = "inv-cat"; sel.style.maxWidth = "340px";
+        const cur = state.bonusWeaponProfs[gi] || "";
+        // Options: any weapon type except the background's own and other bonus picks.
+        const taken = state.bonusWeaponProfs.filter((x, i) => x && i !== gi);
+        let opts = `<option value="">— choose a weapon type —</option>`;
+        PC.WEAPON_TYPES.forEach((w) => {
+          if (w.name === bgType || taken.indexOf(w.name) > -1) return;
+          opts += `<option value="${w.name}" ${w.name === cur ? "selected" : ""}>${w.name} (${w.attr})</option>`;
+        });
+        sel.innerHTML = opts;
+        sel.onchange = () => {
+          state.bonusWeaponProfs[gi] = sel.value;
+          // If the current starting weapon is no longer eligible, reset it.
+          if (state.startWeapon && !eligibleStartWeapons().some((w) => w.name === state.startWeapon)) state.startWeapon = null;
+          render();
+        };
+        p.appendChild(sel);
+      });
+    }
+
+    // Fixed gear.
+    if (bgFixedEquip().length) {
+      p.appendChild(el("div", "section-label", "Fixed gear"));
+      const fx = el("div", "pill-list");
+      bgFixedEquip().forEach((it) => fx.appendChild(el("span", "pill", it.name + (it.qty > 1 ? " ×" + it.qty : ""))));
+      p.appendChild(fx);
+    }
+
+    // Starting weapon — any Common weapon of any proficient type (grouped by type).
+    const eligible = eligibleStartWeapons();
+    const profTypes = proficientWeaponTypes();
+    p.appendChild(el("div", "section-label", "Starting weapon"));
+    if (!eligible.length) {
+      p.appendChild(el("div", "muted", "No eligible weapons found for your proficiencies."));
+    } else {
+      p.appendChild(el("div", "eq-choice-label", `Any weapon you're proficient with — ${profTypes.join(" or ")}`));
+      const wsel = el("select"); wsel.className = "inv-cat"; wsel.style.maxWidth = "360px";
+      const chosen = state.startWeapon && eligible.some((w) => w.name === state.startWeapon) ? state.startWeapon : eligible[0].name;
+      // Group options by weapon type (optgroup) when more than one proficient type.
+      let html = "";
+      profTypes.forEach((wt) => {
+        const inType = eligible.filter((w) => w.weaponType === wt);
+        if (!inType.length) return;
+        html += profTypes.length > 1 ? `<optgroup label="${wt}">` : "";
+        inType.forEach((w) => { html += `<option value="${w.name}" ${w.name === chosen ? "selected" : ""}>${w.name} (${w.damage}, ${w.hands === 2 ? "2H" : "1H"})</option>`; });
+        html += profTypes.length > 1 ? `</optgroup>` : "";
+      });
+      wsel.innerHTML = html;
+      if (state.startWeapon !== chosen) state.startWeapon = chosen;
+      wsel.onchange = () => { state.startWeapon = wsel.value; render(); };
+      p.appendChild(wsel);
+    }
+
+    // Non-weapon choice groups (armor, instrument, focus…).
+    bgChoices().forEach((grp, gi) => {
+      if (isWeaponGroup(grp)) return; // weapons handled by the dropdown above
+      p.appendChild(el("div", "eq-choice-label", grp.label));
+      const chips = el("div", "chips");
+      grp.options.forEach((opt, oi) => {
+        const sel = (state.equipmentChoices[gi] != null ? state.equipmentChoices[gi] : 0) === oi;
+        const chip = el("div", "chip" + (sel ? " selected" : ""), opt.label);
+        chip.onclick = () => { state.equipmentChoices[gi] = oi; render(); };
+        chips.appendChild(chip);
+      });
+      p.appendChild(chips);
+    });
+
+    // Loadout preview.
+    const resolved = resolveEquipment();
+    if (resolved.length) {
+      p.appendChild(el("div", "section-label", "Your loadout"));
+      const eq = el("div", "pill-list");
+      resolved.forEach((it) => {
+        const qty = it.qty > 1 ? ` ×${it.qty}` : "";
+        eq.appendChild(el("span", "pill", `${it.name}${qty}${it.equipped ? " ✓" : ""}`));
+      });
+      p.appendChild(eq);
+    }
+
+    // Require any weapon-grant slots to be filled before proceeding.
+    const grantsFilled = !wGrants.length || state.bonusWeaponProfs.slice(0, wGrants.length).every((x) => !!x);
+    p.appendChild(navRow(() => { step = 4; render(); }, () => { step = 6; render(); }, "Review →", grantsFilled));
+    if (!grantsFilled) p.appendChild(el("p", "hint", "Choose your bonus weapon proficiency to continue."));
+    return p;
+  }
+
+  /* ---------- STEP 6: Review ---------- */
   function stepReview() {
     const p = el("div", "panel");
     p.appendChild(el("h2", null, state._editing
@@ -727,10 +848,11 @@
     state.chosenSkills.forEach((s) => sk.appendChild(el("span", "pill prof", s)));
     p.appendChild(sk);
 
-    // combat profs
+    // combat profs (background's + any bonus weapon proficiency from a heritage grant)
     p.appendChild(el("div", "section-label", "Combat Proficiencies"));
     const cp = el("div", "pill-list");
     b.combat.forEach((c) => cp.appendChild(el("span", "pill psi", c)));
+    (state.bonusWeaponProfs || []).forEach((wt) => { if (wt) cp.appendChild(el("span", "pill psi", wt + " ＋")); });
     p.appendChild(cp);
 
     // heritage — fighting style, combat skills + passive + traits
@@ -781,7 +903,7 @@
     // save
     const row = el("div", "nav-row");
     const back = el("button", "btn ghost", "← Back");
-    back.onclick = () => { step = 4; render(); };
+    back.onclick = () => { step = 5; render(); };
     const save = el("button", "btn primary", state._editing ? "✓ Update Character" : "✓ Save Character");
     save.onclick = () => {
       const list = loadRoster();

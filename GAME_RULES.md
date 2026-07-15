@@ -215,6 +215,15 @@ old-world ancestry, grouped into **8 broad regions**.
 - **1 Fighting Style** (below), and from it **2 Combat Skills** + the style's **signature Passive**.
 - **2 Traits** — always-on roleplay/utility perks (advantage on certain checks, an extra language, etc.).
 
+**Choosable proficiency grants (CONFIRMED Luke).** Some traits grant an *extra proficiency the player picks*:
+- **Weapon-proficiency grant** (e.g. Europe's *Martial Heritage*) → choose **one extra weapon type**. This is
+  picked on the **Equipment** step, and your starting-weapon options then span **every** type you're proficient
+  with (background + bonus).
+- **Skill-proficiency grant** (e.g. Oceania's *Adaptable*) → choose **one extra skill** — the Skills step's
+  "choose N" simply increases by 1.
+> Because a weapon-proficiency grant changes what gear you can wield, **starting-equipment selection is the
+> last step of creation** (after Heritage), so the grant is already chosen when you pick your loadout.
+
 Heritage never touches attribute scores or pools. Two characters of the same Background differ by the
 Fighting Style, Combat Skills, and Traits their Heritage opened up.
 
