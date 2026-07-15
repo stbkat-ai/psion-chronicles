@@ -61,7 +61,7 @@ PC.SKILLS = [
   { name: "Sleight of Hand",attr: "AGI", desc: "Manual dexterity for picking pockets or palming items." },
   { name: "Deft Tools",     attr: "AGI", desc: "Precise control for lockpicks, glass cutters, clockwork kits." },
   { name: "Reflex",         attr: "AGI", desc: "Quickness dodging projectiles or sudden hazards." },
-  { name: "Marksmanship",   attr: "AGI", desc: "Hand-eye coordination to steady and fire ranged weapons.", combat: "After landing a ranged attack, target the enemy's limbs for crippling damage." },
+  { name: "Escape Artist",  attr: "AGI", desc: "Slipping restraints, grapples, and squeezing through tight spaces." },
   // CON
   { name: "Survival",       attr: "CON", desc: "Staying alive in harsh environments through grit and endurance." },
   { name: "Adrenaline",     attr: "CON", desc: "Pushing past limits to ignore pain or temporary fatigue." },
@@ -136,7 +136,7 @@ PC.BACKGROUNDS = [
     } },
   { name: "Assassin", blurb: "A killer for hire who gets the job done quietly. Skill and dexterity handle survival's subtler parts.",
     boosts: { AGI: 3 }, pool: { body: 10, mind: 0 },
-    skills: ["Stealth","Sleight of Hand","Marksmanship"], combat: ["Thrown Weapons","Umbrakinesis"], freeTech: "Shroud of Shadows",
+    skills: ["Stealth","Sleight of Hand","Escape Artist"], combat: ["Thrown Weapons","Umbrakinesis"], freeTech: "Shroud of Shadows",
     equipment: {
       fixed: [
         { name: "Combat Knife", category: "Weapon", weight: 1, qty: 1, weaponType: "Light Weapons", damage: "1d4" },

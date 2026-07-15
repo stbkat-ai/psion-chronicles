@@ -192,7 +192,7 @@ type and/or Kinetic type), and **1 free beginner Kinetic Technique**.
 | Background | Old-world identity | Attr boost | Pool boost | Skill profs | Combat profs | Free KT |
 |---|---|---|---|---|---|---|
 | **Body Builder** | Gym rat | +3 STR | Body +10 | Muscle, Athletics, Force | Heavy Weapons, **Robukinesis** | Ki Strike |
-| **Assassin** | Killer for hire | +3 AGI | Body +10 | Stealth, Sleight of Hand, Marksmanship | Thrown Weapons, **Umbrakinesis** | Shroud of Shadows |
+| **Assassin** | Killer for hire | +3 AGI | Body +10 | Stealth, Sleight of Hand, Escape Artist | Thrown Weapons, **Umbrakinesis** | Shroud of Shadows |
 | **Survivalist** | Outdoorsman | +3 CON | Body +10 | Survival, Tolerance, Hardiness | Firearms, **Terrakinesis** | Mud Skin |
 | **Scholar** | Bookworm | +3 INT | Mind +10 | History, Language, Technology | Tech Weapons, **Chronokinesis** | Slow Time |
 | **Witch** | Wiccan/mystic | +3 WIS | Mind +10 | Paranormal, Herbalism, Nature Tools | Channel Weapons, **Naturakinesis** | Thistle Bush |
@@ -263,7 +263,7 @@ Skill check = roll **d20 + governing-attribute mod** (+ proficiency bonus if pro
 Backgrounds grant 3 skill profs; player picks **2 more** at creation.
 
 **STR:** Muscle, Laborer's Tools, Intimidation, Athletics, Grapple, Force
-**AGI:** Acrobatics, Stealth, Sleight of Hand, Deft Tools, Reflex, Marksmanship
+**AGI:** Acrobatics, Stealth, Sleight of Hand, Deft Tools, Reflex, Escape Artist
 **CON:** Survival, Adrenaline, Concentration, Tolerance, Fortitude, Hardiness
 **INT:** Investigation, Medicine, History, Mythology, Technology, Language
 **WIS:** Paranormal, Herbalism, Zoology, Awareness, Insight, Nature Tools
@@ -326,12 +326,14 @@ next turn (once between your turns).
 - *App:* once you spend a slot, all other options of that type disable until **End Turn** refreshes them.
   A "This Turn" tracker (Action · Bonus · Reaction · Move) shows what's used and can be toggled manually.
 
-### Skills can modify attacks (CONFIRMED Luke)
-Some skills have **active combat applications** that alter an attack, not just passive checks.
-- *Example:* **Marksmanship** — after landing a ranged attack, spend/use the skill to **target the
-  original target's limbs for crippling damage.**
-- App: skills with a combat use should surface that use (a note/action on the skill), separate from the
-  plain d20 skill check. *[Full list of which skills modify attacks, and how — TBD.]*
+### Attack-modifying maneuvers → Combat Skills (CONFIRMED Luke)
+Maneuvers that *alter* an attack (rather than just resolve a d20 check) now live in the **Combat Skills**
+system (Section 3b), not the regular skills list.
+- *Example:* **Marksmanship** is a **Combat Skill** (Bonus Action) — after a ranged attack hits, make a
+  called shot to a limb for crippling damage. It was moved off the AGI skills list and replaced there by
+  **Escape Artist**.
+- Regular skills (Section 4) are now purely **d20 checks**; anything that layers onto an attack is a
+  Combat Skill, gained from your Regional Heritage or learned with Combat Skill Points.
 
 ---
 
@@ -442,7 +444,7 @@ Chapter Two, which isn't in the file I have. **This is the biggest missing piece
 3. **XP thresholds** per level (being tuned).
 4. **Otherkin mechanics** — what the Soul Creature grants / how it's used.
 5. **Weapon damage-die table** — each weapon/subtype's die; unarmed (STR) damage die.
-6. **Which skills modify attacks**, and how (beyond Marksmanship→limbs).
+6. *(Resolved)* Attack-modifying maneuvers are the **Combat Skills** system (Section 3b), not regular skills.
 7. **INT crafting/repair** scaling; **WIS/CHA** any extra mechanics.
 8. **Musician's "Rapiers"** vs. CHA weapon types (Finesse/Art/Noise).
 9. **Armor** — how worn armor changes Defense Score.
