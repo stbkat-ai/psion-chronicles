@@ -1068,40 +1068,41 @@
     tp.appendChild(kl);
 
     tp.appendChild(el("p", "hint", "To unlock a Kinetic's next tier you must reach its level gate <b>and</b> already know at least <b>3 techniques from that Kinetic's previous tier</b>."));
-    tp.appendChild(el("div", "eq-choice-label", "Learnable"));
-    if (availTP <= 0) tp.appendChild(el("div", "muted", "No Technique Points available — level up to earn more."));
-    else {
-      const learnable = PC.TECHNIQUES.filter((t) => tierUnlocked(t.tier) && tierPrereqMet(t) && knownNames.indexOf(t.name) < 0);
-      const byKin = {};
-      learnable.forEach((t) => { (byKin[t.kinetic] = byKin[t.kinetic] || []).push(t); });
-      if (!Object.keys(byKin).length) tp.appendChild(el("div", "muted", "Nothing learnable right now — reach a tier's level gate and know 3 from the prior tier to open the next."));
-      Object.keys(byKin).forEach((kin) => {
-        tp.appendChild(el("div", "skill-attr-label", kin));
-        byKin[kin].forEach((t) => tp.appendChild(techLearnCard(t, () => { rec.learnedTechniques.push(t.name); persist(); }, false)));
+    // Unlocked techniques are ALWAYS shown (even with 0 TP) so a met requirement never *looks* unmet —
+    // when you can't afford them yet, the Learn button is just disabled.
+    const noTP = availTP <= 0;
+    tp.appendChild(el("div", "eq-choice-label", "Unlocked — learnable" + (noTP ? " (no Technique Points to spend yet)" : "")));
+    if (noTP) tp.appendChild(el("div", "muted", "You have no Technique Points right now. Anything you've unlocked is listed below — level up to earn a point and learn it."));
+    const learnable = PC.TECHNIQUES.filter((t) => tierUnlocked(t.tier) && tierPrereqMet(t) && knownNames.indexOf(t.name) < 0);
+    const byKin = {};
+    learnable.forEach((t) => { (byKin[t.kinetic] = byKin[t.kinetic] || []).push(t); });
+    if (!Object.keys(byKin).length) tp.appendChild(el("div", "muted", "Nothing unlocked yet — reach a tier's level gate and know 3 from the prior tier to open the next."));
+    Object.keys(byKin).forEach((kin) => {
+      tp.appendChild(el("div", "skill-attr-label", kin));
+      byKin[kin].forEach((t) => tp.appendChild(techLearnCard(t, () => { rec.learnedTechniques.push(t.name); persist(); }, noTP)));
+    });
+    // Show which higher tiers are close but locked, and why (always visible, regardless of TP).
+    const lockNotes = [];
+    ["Adept", "Expert", "Master"].forEach((tier) => {
+      const kins = {};
+      PC.TECHNIQUES.forEach((t) => { if (t.tier === tier) kins[t.kinetic] = true; });
+      Object.keys(kins).forEach((kin) => {
+        const haveAny = known().some((n) => { const k = PC.technique(n); return k && k.kinetic === kin; });
+        if (!haveAny) return; // only nag about kinetics the character is pursuing
+        const needLevel = !tierUnlocked(tier);
+        const needPrereq = countKnownIn(kin, prevTier[tier]) < 3;
+        if (needLevel || needPrereq) {
+          const why = [];
+          if (needLevel) why.push("Soul Level " + tierGate[tier]);
+          if (needPrereq) why.push((3 - countKnownIn(kin, prevTier[tier])) + " more " + prevTier[tier] + " " + kin);
+          lockNotes.push(`<b>${kin} ${tier}</b>: needs ${why.join(" + ")}`);
+        }
       });
-      // Show which higher tiers are close but locked, and why.
-      const lockNotes = [];
-      ["Adept", "Expert", "Master"].forEach((tier) => {
-        const kins = {};
-        PC.TECHNIQUES.forEach((t) => { if (t.tier === tier) kins[t.kinetic] = true; });
-        Object.keys(kins).forEach((kin) => {
-          const haveAny = known().some((n) => { const k = PC.technique(n); return k && k.kinetic === kin; });
-          if (!haveAny) return; // only nag about kinetics the character is pursuing
-          const needLevel = !tierUnlocked(tier);
-          const needPrereq = countKnownIn(kin, prevTier[tier]) < 3;
-          if (needLevel || needPrereq) {
-            const why = [];
-            if (needLevel) why.push("Soul Level " + tierGate[tier]);
-            if (needPrereq) why.push((3 - countKnownIn(kin, prevTier[tier])) + " more " + prevTier[tier] + " " + kin);
-            lockNotes.push(`<b>${kin} ${tier}</b>: needs ${why.join(" + ")}`);
-          }
-        });
-      });
-      if (lockNotes.length) {
-        tp.appendChild(el("div", "eq-choice-label", "Locked (for Kinetics you're pursuing)"));
-        const ln = el("div", "hint"); ln.innerHTML = "🔒 " + lockNotes.join(" · ");
-        tp.appendChild(ln);
-      }
+    });
+    if (lockNotes.length) {
+      tp.appendChild(el("div", "eq-choice-label", "Locked (for Kinetics you're pursuing)"));
+      const ln = el("div", "hint"); ln.innerHTML = "🔒 " + lockNotes.join(" · ");
+      tp.appendChild(ln);
     }
     wrap.appendChild(tp);
 
