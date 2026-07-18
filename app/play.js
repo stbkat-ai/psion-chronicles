@@ -84,6 +84,8 @@
   function adjMod(attr) { return PC.chakraEffect(chakraOf(attr)).effMod(baseMod(attr)); } // after chakra
   function isDisadv(attr) { return chakraOf(attr) >= 1; }
   function isLocked(attr) { return chakraOf(attr) >= 4; }
+  // If the attribute's chakra is locked out (4 hits), a reason string for disabling its rolls; else null.
+  function lockReason(attr) { return attr && isLocked(attr) ? `${PC.CHAKRAS[attr].name} chakra locked out — no ${attr} rolls` : null; }
 
   /* ---------- limbs ---------- */
   function limbDef(key) { return PC.LIMBS.find((L) => L.key === key); }
@@ -279,6 +281,7 @@
     if (t.sustained) { toggleSustained(t); return; }
     if (techniqueIsAoE(t)) { castAoE(t); return; }
     if (techniqueNeedsToHit(t)) { attackTechnique(t); return; }
+    if (isLocked(t.attr)) { App.toast(`${PC.CHAKRAS[t.attr].name} chakra locked — can't use ${t.kinetic}.`); return; }
     if (econBlocked(t.action)) { App.toast(`You've already used your ${econName(t.action)} this turn.`); return; }
     if (play.kp < t.kp) { App.toast(`Not enough KP (need ${t.kp}).`); return; }
     play.kp -= t.kp; consumeEcon(t.action);
@@ -307,6 +310,7 @@
     const i = play.active.indexOf(t.name);
     if (i > -1) { play.active.splice(i, 1); logLine(`${t.name} ended.`); } // ending is free
     else {
+      if (isLocked(t.attr)) { App.toast(`${PC.CHAKRAS[t.attr].name} chakra locked — can't use ${t.kinetic}.`); return; }
       if (econBlocked(t.action)) { App.toast(`You've already used your ${econName(t.action)} this turn.`); return; }
       if (play.kp < t.kp) { App.toast(`Not enough KP (need ${t.kp}).`); return; }
       play.kp -= t.kp; play.active.push(t.name); consumeEcon(t.action);
@@ -708,19 +712,21 @@
         actions.appendChild(eq);
       }
       if (it.category === "Weapon") {
+        const lk = lockReason(weaponAttr(it));
         const atk = el("button", "btn small", "⚔ Attack");
-        atk.disabled = econBlocked("Action");
-        if (atk.disabled) atk.title = "Action already used this turn";
+        atk.disabled = !!lk || econBlocked("Action");
+        atk.title = lk || (atk.disabled ? "Action already used this turn" : "");
         atk.onclick = () => attackWith(it);
         const dmg = el("button", "btn small", "🎲 Damage");
+        dmg.disabled = !!lk; if (lk) dmg.title = lk;
         dmg.onclick = () => damageWith(it);
         actions.appendChild(atk); actions.appendChild(dmg);
         // On-hit melee augments (e.g. Ki Strike): roll weapon damage + augment together, spend its KP.
         if (weaponIsMelee(it)) {
           knownMeleeAugments().forEach((t) => {
             const b = el("button", "btn small", `+${t.name} (${t.kp} KP)`);
-            b.title = `On a hit: roll ${it.name} damage + ${t.name} (${t.effect})`;
-            b.disabled = play.kp < t.kp;
+            b.title = lk || `On a hit: roll ${it.name} damage + ${t.name} (${t.effect})`;
+            b.disabled = !!lk || play.kp < t.kp;
             b.onclick = () => damageWith(it, t.name);
             actions.appendChild(b);
           });
@@ -794,22 +800,26 @@
       // single-target ranged: roll to-hit (spends KP + Action), then damage if it hits
       const row = el("div", "combat-actions");
       const blocked = econBlocked(t.action);
+      const lk = lockReason(t.attr);
       const atk = el("button", "btn small primary", `⚔ Attack (−${t.kp} KP)`);
-      atk.disabled = !afford || blocked;
-      atk.title = blocked ? `${econName(t.action)} already used this turn` : "d20 + attr mod + proficiency to hit";
+      atk.disabled = !!lk || !afford || blocked;
+      atk.title = lk || (blocked ? `${econName(t.action)} already used this turn` : "d20 + attr mod + proficiency to hit");
       atk.onclick = () => attackTechnique(t);
       const dmg = el("button", "btn small", "🎲 Damage");
-      dmg.title = "Roll damage if the attack hits";
+      dmg.disabled = !!lk;
+      dmg.title = lk || "Roll damage if the attack hits";
       dmg.onclick = () => damageTechnique(t);
       row.appendChild(atk); row.appendChild(dmg);
       c.appendChild(row);
     } else {
       const btnLabel = t.sustained ? (active ? "End" : "Activate") : (techniqueIsAoE(t) ? "Use — auto-hit AoE" : "Use");
       const btn = el("button", "btn small " + (active ? "" : "primary"), btnLabel);
-      // Ending a sustained technique is always allowed; everything else is gated by KP + action economy.
+      // Ending a sustained technique is always allowed (even when locked); everything else is
+      // gated by KP + action economy, and by the governing chakra's lockout.
       const blocked = econBlocked(t.action);
-      btn.disabled = active ? false : (!afford || blocked);
-      if (!active && blocked) btn.title = `${econName(t.action)} already used this turn`;
+      const lk = active ? null : lockReason(t.attr);
+      btn.disabled = active ? false : (!!lk || !afford || blocked);
+      if (!active) btn.title = lk || (blocked ? `${econName(t.action)} already used this turn` : "");
       btn.style.marginTop = "8px";
       btn.onclick = () => useTechnique(t);
       c.appendChild(btn);
@@ -1127,15 +1137,18 @@
     if (!it.weaponType || !it.damage) {
       row.appendChild(el("span", "muted", "Set weapon type & damage die in Inventory to enable rolls."));
     } else {
+      const lk = lockReason(attr);
       const atk = el("button", "btn small primary", "⚔ Attack"); atk.onclick = () => attackWith(it);
-      atk.disabled = econBlocked("Action");
-      if (atk.disabled) atk.title = "Action already used this turn";
+      atk.disabled = !!lk || econBlocked("Action");
+      atk.title = lk || (atk.disabled ? "Action already used this turn" : "");
       const dmg = el("button", "btn small", "🎲 Damage"); dmg.onclick = () => damageWith(it);
+      dmg.disabled = !!lk; if (lk) dmg.title = lk;
       row.appendChild(atk); row.appendChild(dmg);
       if (weaponIsMelee(it)) {
         knownMeleeAugments().forEach((t) => {
           const b = el("button", "btn small", `+${t.name} (${t.kp} KP)`);
-          b.disabled = play.kp < t.kp;
+          b.disabled = !!lk || play.kp < t.kp;
+          if (lk) b.title = lk;
           b.onclick = () => damageWith(it, t.name);
           row.appendChild(b);
         });
@@ -1153,11 +1166,13 @@
       `<div class="thead"><span class="tname">👊 Unarmed Strike</span><span class="tmeta">Action · STR · 1d4</span></div>` +
       `<div class="teff">▸ A punch or kick — melee attack for 1d4${PC.fmtMod(m)} damage.</div>`;
     const row = el("div", "combat-actions");
+    const lk = lockReason("STR");
     const atk = el("button", "btn small primary", "⚔ Attack");
-    atk.disabled = econBlocked("Action");
-    if (atk.disabled) atk.title = "Action already used this turn";
+    atk.disabled = !!lk || econBlocked("Action");
+    atk.title = lk || (atk.disabled ? "Action already used this turn" : "");
     atk.onclick = () => unarmedAttack("Action");
     const dmg = el("button", "btn small", "🎲 Damage");
+    dmg.disabled = !!lk; if (lk) dmg.title = lk;
     dmg.onclick = () => damageWith(UNARMED);
     row.appendChild(atk); row.appendChild(dmg);
     card.appendChild(row);
@@ -1177,10 +1192,13 @@
     sources.forEach((it) => {
       const row = el("div", "combat-actions");
       row.appendChild(el("span", "oa-src", it.name));
+      const lk = lockReason(weaponAttr(it));
       const atk = el("button", "btn small primary", "⚔ Attack");
-      atk.disabled = blocked; if (blocked) atk.title = "Reaction already used this turn";
+      atk.disabled = !!lk || blocked;
+      atk.title = lk || (blocked ? "Reaction already used this turn" : "");
       atk.onclick = () => attackWith(it, "Reaction");
       const dmg = el("button", "btn small", "🎲 Damage");
+      dmg.disabled = !!lk; if (lk) dmg.title = lk;
       dmg.onclick = () => damageWith(it);
       row.appendChild(atk); row.appendChild(dmg);
       card.appendChild(row);
@@ -1188,10 +1206,13 @@
     // Unarmed is always a melee option.
     const urow = el("div", "combat-actions");
     urow.appendChild(el("span", "oa-src", "👊 Unarmed (1d4)"));
+    const ulk = lockReason("STR");
     const uatk = el("button", "btn small primary", "⚔ Attack");
-    uatk.disabled = blocked; if (blocked) uatk.title = "Reaction already used this turn";
+    uatk.disabled = !!ulk || blocked;
+    uatk.title = ulk || (blocked ? "Reaction already used this turn" : "");
     uatk.onclick = () => unarmedAttack("Reaction");
     const udmg = el("button", "btn small", "🎲 Damage");
+    udmg.disabled = !!ulk; if (ulk) udmg.title = ulk;
     udmg.onclick = () => damageWith(UNARMED);
     urow.appendChild(uatk); urow.appendChild(udmg);
     card.appendChild(urow);
