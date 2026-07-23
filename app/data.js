@@ -746,7 +746,7 @@ PC.FIGHTING_STYLES = [
   { name: "Frontier Gunslinging", heritage: "North America",
     blurb: "Frontier shooting — patience, cover, and a called shot when it counts.",
     skills: [
-      { name: "Marksmanship", action: "Bonus Action", effect: "After a ranged attack hits, make a called shot to a limb for crippling damage." },
+      { name: "Marksmanship", action: "Bonus Action", calledShot: true, effect: "After you make a ranged attack (weapon or technique), but before rolling its damage, spend your Bonus Action to aim a called shot at one of the target's limbs. Roll a skill check using that attack's attribute (+ proficiency); the GM sets the DC by the target's size and difficulty. On a success the shot strikes the chosen limb — apply the attack's damage there." },
       { name: "Suppressing Fire", action: "Action", effect: "Rake a 15-ft area with fire; enemies there have disadvantage on attacks until your next turn." },
       { name: "Quick Draw", action: "Bonus Action", effect: "Draw or holster a weapon for free, then make a ranged attack with it." },
       { name: "Counter-Fire", action: "Reaction", effect: "When a creature you can see makes a ranged attack, make a ranged attack against it." },
@@ -829,7 +829,8 @@ PC.FIGHTING_STYLES = [
    Kept for name lookups (PC.combatSkill) and for the play-sheet / level-up UIs. */
 PC.COMBAT_SKILLS = PC.FIGHTING_STYLES.reduce(function (all, st) {
   return all.concat(st.skills.map(function (sk) {
-    return { name: sk.name, action: sk.action, effect: sk.effect, style: st.name };
+    // Carry every field on the skill (name/action/effect + flags like calledShot), tagging its style.
+    return Object.assign({}, sk, { style: st.name });
   }));
 }, []);
 

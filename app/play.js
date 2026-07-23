@@ -329,6 +329,32 @@
     save(); refresh();
   }
 
+  // Attack sources for a Marksmanship-style called shot: equipped weapons + single-target attack
+  // techniques. Each carries the governing attribute and whether the character is proficient, so the
+  // called-shot check rolls with "the attack's attribute + proficiency".
+  function calledShotSources() {
+    const src = [];
+    (rec.inventory || []).filter((it) => it.equipped && it.category === "Weapon" && it.weaponType && it.damage)
+      .forEach((it) => { const a = weaponAttr(it); src.push({ label: `${it.name} (${a})`, attr: a, prof: proficientWithType(it) }); });
+    knownTechniques().map((n) => PC.technique(n)).filter(Boolean).filter(techniqueNeedsToHit)
+      .forEach((t) => src.push({ label: `${t.name} (${t.attr})`, attr: t.attr, prof: proficientWithKinetic(t) }));
+    return src;
+  }
+  // Roll the called-shot skill check for a Marksmanship-style combat skill, using the chosen attack's
+  // attribute (+ proficiency). Spends the skill's action slot; the GM adjudicates the result vs the DC.
+  function rollCalledShot(c, source) {
+    if (!source) { App.toast("Pick the ranged attack you made first."); return; }
+    if (isLocked(source.attr)) { App.toast(`${PC.CHAKRAS[source.attr].name} chakra locked — can't aim with ${source.attr}.`); return; }
+    if (econBlocked(c.action)) { App.toast(`You've already used your ${econName(c.action)} this turn.`); return; }
+    consumeEcon(c.action);
+    const mod = adjMod(source.attr) + (source.prof ? PC.profBonus(rec.level) : 0);
+    const mode = isDisadv(source.attr) ? "dis" : "normal";
+    const r = PC.rollCheck(mod, mode);
+    const dis = mode === "dis" ? ` (disadv [${r.d20s.join(",")}]→${r.picked})` : "";
+    announce(r.total, `🎖 ${c.name} called shot: d20${dis}${PC.fmtMod(mod)} = ${r.total}${source.prof ? " ✓prof" : ""} — vs the GM's DC (target size/difficulty). On a success, apply your ${source.label} damage to the called limb.`);
+    save(); refresh();
+  }
+
   function rollSkill(skill) {
     if (isLocked(skill.attr)) { App.toast(`${PC.CHAKRAS[skill.attr].name} chakra locked — can't use ${skill.attr} skills.`); return; }
     const proficient = bg().skills.includes(skill.name) || (rec.chosenSkills || []).includes(skill.name);
@@ -848,6 +874,24 @@
       `<div class="thead"><span class="tname">🎖 ${c.name}</span><span class="tmeta">${c.action}${c.style ? " · " + c.style : ""}</span></div>` +
       `<div class="teff">▸ ${c.effect}</div>`;
     const blocked = econBlocked(c.action);
+    // Called-shot skills (Marksmanship): pick the ranged attack you made, then roll the check with its attribute.
+    if (c.calledShot) {
+      const sources = calledShotSources();
+      const row = el("div", "combat-actions"); row.style.marginTop = "8px";
+      if (!sources.length) {
+        row.appendChild(el("span", "muted", "Equip a weapon or learn an attack technique to aim a called shot."));
+      } else {
+        const sel = el("select", "adjust-input"); sel.title = "The ranged attack you just made";
+        sources.forEach((s, i) => { const o = el("option", null, s.label); o.value = String(i); sel.appendChild(o); });
+        const btn = el("button", "btn small primary", "🎯 Called Shot");
+        btn.disabled = blocked;
+        btn.title = blocked ? `${econName(c.action)} already used this turn` : "Roll the called-shot check (spends your Bonus Action)";
+        btn.onclick = () => rollCalledShot(c, calledShotSources()[parseInt(sel.value, 10) || 0]);
+        row.appendChild(sel); row.appendChild(btn);
+      }
+      card.appendChild(row);
+      return card;
+    }
     const btn = el("button", "btn small primary", "Use");
     btn.disabled = blocked;
     btn.title = blocked ? `${econName(c.action)} already used this turn` : `Spends your ${econName(c.action)}`;

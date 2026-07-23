@@ -362,9 +362,12 @@ Available to any character on the Combat tab regardless of Background, Heritage,
 ### Attack-modifying maneuvers → Combat Skills (CONFIRMED Luke)
 Maneuvers that *alter* an attack (rather than just resolve a d20 check) now live in the **Combat Skills**
 system (Section 3b), not the regular skills list.
-- *Example:* **Marksmanship** is a **Combat Skill** (Bonus Action) — after a ranged attack hits, make a
-  called shot to a limb for crippling damage. It was moved off the AGI skills list and replaced there by
-  **Escape Artist**.
+- *Example:* **Marksmanship** is a **Combat Skill** (Bonus Action). After you make a ranged attack (weapon
+  **or** technique), but *before* rolling its damage, spend your Bonus Action to aim a called shot at one of
+  the target's limbs. Roll a skill check using **that attack's attribute** (+ proficiency); the **GM sets the
+  DC** by the target's size and difficulty. On a success the shot strikes the chosen limb — apply the attack's
+  damage there (as a called shot, per Section 2 limb rules). It was moved off the AGI skills list and replaced
+  there by **Escape Artist**.
 - Regular skills (Section 4) are now purely **d20 checks**; anything that layers onto an attack is a
   Combat Skill, gained from your Regional Heritage or learned with Combat Skill Points.
 
