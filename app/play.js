@@ -319,6 +319,16 @@
     save(); refresh();
   }
 
+  // 🎖 Combat skill — costs no KP, only an action-economy slot (Action / Bonus / Reaction). Spending
+  // the slot logs the effect; the roll/adjudication itself is up to the table, like a non-damage technique.
+  function useCombatSkill(c) {
+    if (econBlocked(c.action)) { App.toast(`You've already used your ${econName(c.action)} this turn.`); return; }
+    consumeEcon(c.action);
+    logLine(`🎖 ${c.name} (${econName(c.action)})${c.style ? " · " + c.style : ""} — ${c.effect}`);
+    App.toast(`${c.name} used — spent your ${econName(c.action)}.`);
+    save(); refresh();
+  }
+
   function rollSkill(skill) {
     if (isLocked(skill.attr)) { App.toast(`${PC.CHAKRAS[skill.attr].name} chakra locked — can't use ${skill.attr} skills.`); return; }
     const proficient = bg().skills.includes(skill.name) || (rec.chosenSkills || []).includes(skill.name);
@@ -831,6 +841,21 @@
     c.innerHTML = `<div class="thead"><span class="tname">${n}</span><span class="cost">—</span></div><div class="tdesc">Details not in the library yet.</div>`;
     return c;
   }
+  // Clickable combat-skill card for the Combat tab's action groups (Action / Bonus / Reaction).
+  function makeCombatSkillCard(c) {
+    const card = el("div", "tech-card");
+    card.innerHTML =
+      `<div class="thead"><span class="tname">🎖 ${c.name}</span><span class="tmeta">${c.action}${c.style ? " · " + c.style : ""}</span></div>` +
+      `<div class="teff">▸ ${c.effect}</div>`;
+    const blocked = econBlocked(c.action);
+    const btn = el("button", "btn small primary", "Use");
+    btn.disabled = blocked;
+    btn.title = blocked ? `${econName(c.action)} already used this turn` : `Spends your ${econName(c.action)}`;
+    btn.style.marginTop = "8px";
+    btn.onclick = () => useCombatSkill(c);
+    card.appendChild(btn);
+    return card;
+  }
   function tileRoll(label, val, onclick) {
     const t = tile(label, val);
     t.classList.add("clickable");
@@ -1080,42 +1105,41 @@
     const byAction = (act) => known.filter((t) => !isAug(t) && t.action === act);
     const equipped = (rec.inventory || []).filter((it) => it.equipped && it.category === "Weapon");
 
-    // ⚡ Actions — equipped weapons + universal Unarmed Strike + Action-type techniques
+    // Combat skills the character knows, grouped by action type (Passives handled separately below).
+    const csAll = knownCombatSkills().map((n) => PC.combatSkill(n)).filter(Boolean);
+    const csByAction = (act) => csAll.filter((c) => c.action === act);
+
+    // ⚡ Actions — equipped weapons + universal Unarmed Strike + Action techniques + Action combat skills
     const actionCards = [];
     equipped.forEach((it) => actionCards.push(weaponActionCard(it)));
     actionCards.push(unarmedStrikeCard()); // basic action anyone can take
     byAction("Action").forEach((t) => actionCards.push(makeTechCard(t)));
+    csByAction("Action").forEach((c) => actionCards.push(makeCombatSkillCard(c)));
     root.appendChild(actionGroup("⚡ Actions", actionCards));
 
-    // ✦ Bonus Actions
-    root.appendChild(actionGroup("✦ Bonus Actions", byAction("Bonus Action").map(makeTechCard)));
+    // ✦ Bonus Actions — Bonus techniques + Bonus combat skills
+    root.appendChild(actionGroup("✦ Bonus Actions",
+      byAction("Bonus Action").map(makeTechCard).concat(csByAction("Bonus Action").map(makeCombatSkillCard))));
 
-    // ↩ Reactions — universal Opportunity Attack + Reaction-type techniques
-    root.appendChild(actionGroup("↩ Reactions", [opportunityAttackCard()].concat(byAction("Reaction").map(makeTechCard))));
+    // ↩ Reactions — universal Opportunity Attack + Reaction techniques + Reaction combat skills
+    root.appendChild(actionGroup("↩ Reactions",
+      [opportunityAttackCard()].concat(byAction("Reaction").map(makeTechCard)).concat(csByAction("Reaction").map(makeCombatSkillCard))));
 
     // ⏳ Full-Turn & Other (any non-standard action type)
     const std = ["Action", "Bonus Action", "Reaction"];
     const other = known.filter((t) => !isAug(t) && std.indexOf(t.action) < 0);
     if (other.length) root.appendChild(actionGroup("⏳ Full-Turn & Other", other.map(makeTechCard)));
 
-    // 🎖 Combat Skills (Fighting Style starters + learned) — reference, grouped by action type
-    const csNames = knownCombatSkills();
-    if (csNames.length) {
+    // 🎖 Fighting Style Passives (always-on — reference only; the active skills live in the groups above)
+    const passives = csByAction("Passive");
+    if (passives.length) {
       const csPanel = el("div", "panel");
       const style = PC.styleForHeritage(rec.heritage);
-      csPanel.appendChild(el("div", "section-label", "🎖 Combat Skills" + (style ? " — " + style.name : "")));
-      const order = ["Action", "Bonus Action", "Reaction", "Passive"];
-      const cs = csNames.map((n) => PC.combatSkill(n)).filter(Boolean);
-      order.forEach((act) => {
-        const inAct = cs.filter((c) => c.action === act);
-        if (!inAct.length) return;
-        csPanel.appendChild(el("div", "skill-attr-label", act === "Passive" ? "Passive" : act));
-        inAct.forEach((c) => {
-          const card = el("div", "tech-card");
-          const meta = c.style ? `${c.action} · ${c.style}` : c.action;
-          card.innerHTML = `<div class="thead"><span class="tname">${c.name}</span><span class="tmeta">${meta}</span></div><div class="teff">▸ ${c.effect}</div>`;
-          csPanel.appendChild(card);
-        });
+      csPanel.appendChild(el("div", "section-label", "🎖 Combat Skill Passives" + (style ? " — " + style.name : "")));
+      passives.forEach((c) => {
+        const card = el("div", "tech-card");
+        card.innerHTML = `<div class="thead"><span class="tname">${c.name}</span><span class="tmeta">Passive${c.style ? " · " + c.style : ""}</span></div><div class="teff">▸ ${c.effect}</div>`;
+        csPanel.appendChild(card);
       });
       root.appendChild(csPanel);
     }

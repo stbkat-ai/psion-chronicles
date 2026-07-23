@@ -72,9 +72,11 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     attack/damage/augments, a universal **👊 Unarmed Strike** — d20+STR+prof to hit, 1d4+STR damage — and
     Action techniques), **Bonus Actions**, **Reactions** (a universal **↩ Opportunity Attack** — one melee
     attack with any melee weapon or unarmed when an enemy enters/leaves your reach, once between turns — plus
-    Reaction techniques), and **Full-Turn & Other** — plus a **🎖 Combat Skills** panel (titled with your
-    Fighting Style) listing your granted + learned Combat Skills grouped by action type, each tagged with its
-    origin style, a compact HP/KP/Defense/Turn strip, Roll Initiative, End Turn, active effects, and the log.
+    Reaction techniques), and **Full-Turn & Other**. Your **🎖 Combat Skills** (granted + learned) are folded
+    right into those same groups as **clickable 🎖 cards** — using one spends its action-economy slot and logs
+    the effect, exactly like a weapon or technique; each is tagged with its origin Fighting Style. Your style's
+    always-on **Passive** stays in a separate reference panel below (nothing to click). Plus a compact
+    HP/KP/Defense/Turn strip, Roll Initiative, End Turn, active effects, and the log.
   - **Action economy enforced** — one Move / Action / Bonus Action per turn (Reaction once between turns). Spending
     a slot disables all other options of that type until **End Turn**; a "This Turn" tracker shows what's used
     (tap to toggle manually for feats/abilities that grant extras).
