@@ -49,7 +49,9 @@
       chosenSkills: [],       // player-chosen (2), beyond background's 3
       chosenTechniques: [],   // player-chosen (2), beyond background's free technique
       equipmentChoices: [],   // selected option index per background equipment choice group
-      startWeapon: null,      // chosen starting weapon name (from proficient weapon type)
+      startWeapon: null,      // chosen starting weapon name (primary)
+      startWeapon2: null,     // off-hand weapon name (two-weapon-fighting heritages only)
+      startWeaponMode: null,  // "single" | "dual" for two-weapon-fighting heritages
       bonusWeaponProfs: [],   // extra weapon-type proficiencies chosen from grants (e.g. Martial Heritage)
       chakraHits: { STR: 0, AGI: 0, CON: 0, INT: 0, WIS: 0, CHA: 0 },
       notes: "",
@@ -97,26 +99,50 @@
     (state.bonusWeaponProfs || []).forEach((t) => { if (t && types.indexOf(t) < 0) types.push(t); });
     return types;
   }
+  // The Fighting Style (from Heritage). Its startWeaponTypes widen your STARTING-GEAR options only
+  // (you may begin with one of these weapons, but you are NOT proficient with it unless a
+  // background/grant also covers it). twoWeapon marks styles that pick 1×two-handed or 2×one-handed.
+  function heritageStyle() { return state.heritage ? PC.styleForHeritage(state.heritage) : null; }
+  function heritageTwoWeapon() { const st = heritageStyle(); return !!(st && st.twoWeapon); }
+  // Weapon types the Heritage's style opens for starting gear, minus those already granted as proficient.
+  function startOnlyWeaponTypes() {
+    const st = heritageStyle();
+    const focus = st && Array.isArray(st.startWeaponTypes) ? st.startWeaponTypes : [];
+    const prof = proficientWeaponTypes();
+    return focus.filter((t) => prof.indexOf(t) < 0);
+  }
+  // Every weapon TYPE offered in the starting-gear picker: proficient types first, then heritage start-only.
+  function allStartWeaponTypes() { return proficientWeaponTypes().concat(startOnlyWeaponTypes()); }
+  function isProficientType(wt) { return proficientWeaponTypes().indexOf(wt) > -1; }
   // Total skills the player chooses at creation: 2 base + 1 per skill-proficiency grant.
   function skillsToChoose() { return 2 + skillGrantCount(); }
-  // Every *Common* catalog weapon of ANY proficient weapon type (background + bonus profs).
+  // Every *Common* catalog weapon of any offered type (proficient + heritage start-only).
   // Higher-rarity weapons exist in the catalog but are never offered as starting gear.
   function eligibleStartWeapons() {
-    const types = proficientWeaponTypes();
+    const types = allStartWeaponTypes();
     return (window.PC.ITEMS || []).filter((it) => it.category === "Weapon" && types.indexOf(it.weaponType) > -1 && (it.rarity || "Common") === "Common");
   }
-  // The chosen starting weapon as an equipped, proficient inventory item.
-  function chosenStartWeaponItem() {
+  // Build an equipped inventory item from a chosen weapon name; proficient only if its type is proficient.
+  function startWeaponItem(name) {
+    const it = eligibleStartWeapons().find((w) => w.name === name);
+    if (!it) return null;
+    return Object.assign({}, it, { qty: 1, equipped: true, proficient: isProficientType(it.weaponType) });
+  }
+  // The chosen starting weapon(s) — an array (two entries for a two-weapon-fighting dual pick).
+  function chosenStartWeaponItems() {
     const list = eligibleStartWeapons();
-    if (!list.length) return null;
-    const it = list.find((w) => w.name === state.startWeapon) || list[0];
-    return Object.assign({}, it, { qty: 1, equipped: true, proficient: true });
+    if (!list.length) return [];
+    if (heritageTwoWeapon() && state.startWeaponMode === "dual") {
+      const a = startWeaponItem(state.startWeapon), b = startWeaponItem(state.startWeapon2);
+      return [a, b].filter(Boolean);
+    }
+    const one = startWeaponItem(state.startWeapon) || Object.assign({}, list[0], { qty: 1, equipped: true, proficient: isProficientType(list[0].weaponType) });
+    return one ? [one] : [];
   }
   // Resolve the final item list: fixed gear + chosen starting weapon + selected option per non-weapon group.
   function resolveEquipment() {
     const out = bgFixedEquip().slice();
-    const sw = chosenStartWeaponItem();
-    if (sw) out.push(sw);
+    chosenStartWeaponItems().forEach((sw) => { if (sw) out.push(sw); });
     bgChoices().forEach((grp, gi) => {
       if (isWeaponGroup(grp)) return; // replaced by the dynamic starting-weapon picker
       const idx = (state.equipmentChoices && state.equipmentChoices[gi] != null) ? state.equipmentChoices[gi] : 0;
@@ -365,6 +391,10 @@
         // Reset bonus weapon-prof slots to match this heritage's weapon grants (fresh, unchosen).
         const wg = (h.traits || []).filter((t) => t.grant && t.grant.kind === "weapon").length;
         state.bonusWeaponProfs = new Array(wg).fill("");
+        // Heritage changes what weapons are on offer — clear the starting-weapon picks so they re-resolve.
+        state.startWeapon = null; state.startWeapon2 = null;
+        const st = PC.styleForHeritage(h.name);
+        state.startWeaponMode = st && st.twoWeapon ? "dual" : "single";
         // Trim chosen skills if the new heritage grants fewer skill picks.
         const max = 2 + (h.traits || []).filter((t) => t.grant && t.grant.kind === "skill").length;
         if (state.chosenSkills && state.chosenSkills.length > max) state.chosenSkills = state.chosenSkills.slice(0, max);
@@ -724,29 +754,71 @@
       p.appendChild(fx);
     }
 
-    // Starting weapon — any Common weapon of any proficient type (grouped by type).
+    // Starting weapon — Common weapons of any offered type (proficient + heritage start-only).
     const eligible = eligibleStartWeapons();
     const profTypes = proficientWeaponTypes();
+    const startOnly = startOnlyWeaponTypes();
+    const offeredTypes = allStartWeaponTypes();
     p.appendChild(el("div", "section-label", "Starting weapon"));
-    if (!eligible.length) {
-      p.appendChild(el("div", "muted", "No eligible weapons found for your proficiencies."));
-    } else {
-      p.appendChild(el("div", "eq-choice-label", `Any weapon you're proficient with — ${profTypes.join(" or ")}`));
-      const wsel = el("select"); wsel.className = "inv-cat"; wsel.style.maxWidth = "360px";
-      const chosen = state.startWeapon && eligible.some((w) => w.name === state.startWeapon) ? state.startWeapon : eligible[0].name;
-      // Group options by weapon type (optgroup) when more than one proficient type.
+
+    // Build a <select> of eligible weapons matching `filter`, grouped by type (proficient types first),
+    // tagging heritage start-only types "not proficient". Defaults to a proficient weapon when possible.
+    const buildWeaponSelect = (filter, current, onPick) => {
+      const list = eligible.filter(filter);
+      const sel = el("select"); sel.className = "inv-cat"; sel.style.maxWidth = "360px";
+      const profFirst = list.filter((w) => isProficientType(w.weaponType));
+      const pool = profFirst.length ? profFirst : list;
+      const chosen = current && list.some((w) => w.name === current) ? current : (pool[0] && pool[0].name) || null;
       let html = "";
-      profTypes.forEach((wt) => {
-        const inType = eligible.filter((w) => w.weaponType === wt);
+      offeredTypes.forEach((wt) => {
+        const inType = list.filter((w) => w.weaponType === wt);
         if (!inType.length) return;
-        html += profTypes.length > 1 ? `<optgroup label="${wt}">` : "";
+        const tag = isProficientType(wt) ? "" : " — not proficient";
+        html += `<optgroup label="${wt}${tag}">`;
         inType.forEach((w) => { html += `<option value="${w.name}" ${w.name === chosen ? "selected" : ""}>${w.name} (${w.damage}, ${w.hands === 2 ? "2H" : "1H"})</option>`; });
-        html += profTypes.length > 1 ? `</optgroup>` : "";
+        html += `</optgroup>`;
       });
-      wsel.innerHTML = html;
-      if (state.startWeapon !== chosen) state.startWeapon = chosen;
-      wsel.onchange = () => { state.startWeapon = wsel.value; render(); };
-      p.appendChild(wsel);
+      sel.innerHTML = html;
+      sel.onchange = () => { onPick(sel.value); render(); };
+      return { sel, chosen };
+    };
+
+    if (!eligible.length) {
+      p.appendChild(el("div", "muted", "No eligible weapons found."));
+    } else if (heritageTwoWeapon()) {
+      // Two-weapon fighting (e.g. Twin Fang): one two-handed weapon OR two one-handed weapons.
+      const twoH = eligible.filter((w) => w.hands === 2);
+      const oneH = eligible.filter((w) => w.hands !== 2);
+      const mode = state.startWeaponMode === "single" ? "single" : "dual";
+      p.appendChild(el("div", "eq-choice-label", `${heritageStyle().name} — one two-handed weapon, or two one-handed weapons`));
+      const modes = el("div", "chips");
+      [["dual", "Two one-handed"], ["single", "One two-handed"]].forEach((m) => {
+        const chip = el("div", "chip" + (mode === m[0] ? " selected" : ""), m[1]);
+        chip.onclick = () => { state.startWeaponMode = m[0]; render(); };
+        modes.appendChild(chip);
+      });
+      p.appendChild(modes);
+      const profTxt = profTypes.length ? profTypes.join(", ") : "none";
+      p.appendChild(el("div", "hint", `Proficient: ${profTxt}${startOnly.length ? `; Heritage also opens ${startOnly.join(", ")} (not proficient)` : ""}.`));
+      if (mode === "single") {
+        state.startWeapon2 = null;
+        if (!twoH.length) p.appendChild(el("div", "muted", "No two-handed weapon available — switch to two one-handed."));
+        else { const w = buildWeaponSelect((x) => x.hands === 2, state.startWeapon, (v) => { state.startWeapon = v; }); state.startWeapon = w.chosen; p.appendChild(w.sel); }
+      } else {
+        if (!oneH.length) p.appendChild(el("div", "muted", "No one-handed weapons available."));
+        else {
+          p.appendChild(el("div", "eq-choice-label", "Main hand"));
+          const w1 = buildWeaponSelect((x) => x.hands !== 2, state.startWeapon, (v) => { state.startWeapon = v; }); state.startWeapon = w1.chosen; p.appendChild(w1.sel);
+          p.appendChild(el("div", "eq-choice-label", "Off hand"));
+          const w2 = buildWeaponSelect((x) => x.hands !== 2, state.startWeapon2, (v) => { state.startWeapon2 = v; }); state.startWeapon2 = w2.chosen; p.appendChild(w2.sel);
+        }
+      }
+    } else {
+      state.startWeapon2 = null;
+      const profTxt = profTypes.length ? profTypes.join(" or ") : "none";
+      const extra = startOnly.length ? ` — your Heritage also lets you start with ${startOnly.join(", ")} (not proficient)` : "";
+      p.appendChild(el("div", "eq-choice-label", `Any weapon you're proficient with — ${profTxt}${extra}`));
+      const w = buildWeaponSelect(() => true, state.startWeapon, (v) => { state.startWeapon = v; }); state.startWeapon = w.chosen; p.appendChild(w.sel);
     }
 
     // Non-weapon choice groups (armor, instrument, focus…).

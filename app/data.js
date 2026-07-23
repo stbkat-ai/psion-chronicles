@@ -745,6 +745,7 @@ PC.LIMBS = [
 PC.FIGHTING_STYLES = [
   { name: "Frontier Gunslinging", heritage: "North America",
     blurb: "Frontier shooting — patience, cover, and a called shot when it counts.",
+    startWeaponTypes: ["Archery", "Firearms", "Explosives", "Volatile Weapons"], // ranged-focused
     skills: [
       { name: "Marksmanship", action: "Bonus Action", calledShot: true, effect: "After you make a ranged attack (weapon or technique), but before rolling its damage, spend your Bonus Action to aim a called shot at one of the target's limbs. Roll a skill check using that attack's attribute (+ proficiency); the GM sets the DC by the target's size and difficulty. On a success the shot strikes the chosen limb — apply the attack's damage there." },
       { name: "Suppressing Fire", action: "Action", effect: "Rake a 15-ft area with fire; enemies there have disadvantage on attacks until your next turn." },
@@ -755,6 +756,7 @@ PC.FIGHTING_STYLES = [
     ] },
   { name: "Flowing Movement", heritage: "South America",
     blurb: "Jungle-forged agility — never where the blow lands, always moving.",
+    startWeaponTypes: ["Light Weapons", "Quick Weapons", "Thrown Weapons"], // agile
     skills: [
       { name: "Combat Roll", action: "Bonus Action", effect: "Move up to half your speed without provoking opportunity attacks." },
       { name: "Dodge Roll", action: "Reaction", effect: "Impose disadvantage on one attack against you and shift 5 ft." },
@@ -765,6 +767,7 @@ PC.FIGHTING_STYLES = [
     ] },
   { name: "Chivalric Swordplay", heritage: "Europe",
     blurb: "A long, disciplined melee tradition — pressure, reach, and the counter.",
+    startWeaponTypes: ["Heavy Weapons", "Light Weapons"], // knightly melee
     skills: [
       { name: "Riposte", action: "Reaction", effect: "When a melee attack misses you, make a melee attack against the attacker." },
       { name: "Power Attack", action: "Bonus Action", effect: "Enhance a weapon attack this turn: +1 damage die at −2 to hit." },
@@ -775,6 +778,7 @@ PC.FIGHTING_STYLES = [
     ] },
   { name: "Fencing", heritage: "United Kingdom",
     blurb: "Precise, composed bladework — parry, feint, and the perfect thrust.",
+    startWeaponTypes: ["Finesse Weapons", "Light Weapons"], // finesse blades
     skills: [
       { name: "Parry", action: "Reaction", effect: "When hit by a melee attack, reduce its damage by your weapon die + relevant mod." },
       { name: "Feint", action: "Bonus Action", effect: "Your next weapon attack this turn is made with advantage." },
@@ -785,6 +789,7 @@ PC.FIGHTING_STYLES = [
     ] },
   { name: "Warden's Bulwark", heritage: "Africa",
     blurb: "Community-strong defense — hold the line and shield your kin.",
+    startWeaponTypes: ["Heavy Weapons", "Fist Weapons"], // bulwark
     skills: [
       { name: "Guardian", action: "Reaction", effect: "When an ally within reach is hit, take the attack's damage in their place (or halve it)." },
       { name: "Bracing Stance", action: "Bonus Action", effect: "Until your next turn, reduce forced movement against you to 0 and gain advantage to resist being knocked prone." },
@@ -795,6 +800,7 @@ PC.FIGHTING_STYLES = [
     ] },
   { name: "Desert Whirlwind", heritage: "Middle East",
     blurb: "Sweeping curved-blade work — one motion, many foes.",
+    startWeaponTypes: ["Light Weapons", "Finesse Weapons"], // curved blades
     skills: [
       { name: "Spinning Cut", action: "Action", effect: "One melee attack roll resolved against two enemies within your reach." },
       { name: "Deflecting Slash", action: "Reaction", effect: "When hit by a melee attack, reduce its damage by your weapon die; if reduced to 0, make a free melee attack against the attacker." },
@@ -805,6 +811,7 @@ PC.FIGHTING_STYLES = [
     ] },
   { name: "Way of the Open Hand", heritage: "East Asia",
     blurb: "Unarmed martial discipline — the body itself is the weapon.",
+    startWeaponTypes: ["Fist Weapons"], // unarmed
     skills: [
       { name: "Palm Strike", action: "Action", effect: "Unarmed melee attack that pushes the target 10 ft on a hit." },
       { name: "Deflect", action: "Reaction", effect: "When hit by a ranged weapon attack, reduce the damage by 1d10 + AGI mod; if reduced to 0, catch the projectile." },
@@ -815,6 +822,8 @@ PC.FIGHTING_STYLES = [
     ] },
   { name: "Twin Fang", heritage: "Oceania",
     blurb: "Island dual-wielding — a weapon in each hand, twice the openings.",
+    startWeaponTypes: ["Light Weapons", "Quick Weapons", "Finesse Weapons"], // one-handed friendly
+    twoWeapon: true, // starting gear: one two-handed weapon OR two one-handed weapons
     skills: [
       { name: "Twin Strike", action: "Action", effect: "Attack a single target with both of your equipped one-handed weapons." },
       { name: "Rapid Slash", action: "Bonus Action", effect: "Make one attack with your off-hand one-handed weapon." },

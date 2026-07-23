@@ -39,11 +39,14 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
      e.g. Oceania's *Adaptable* makes it 3)
   5. Techniques — background's free one + choose 2 from any school (all 18 Kinetics' **Beginner** techniques
      are in the app — 90 total; higher tiers arrive with the level-up system)
-  6. **Equipment** (chosen **last**, so Heritage proficiencies count) — if a choice grants an extra
-     proficiency you **pick what it is**: a weapon-proficiency grant (e.g. Europe's *Martial Heritage*) adds
-     a **bonus weapon-type** selector here, and your starting-weapon list then spans **every** type you're
-     proficient with (background + bonus). Choose a proficient weapon + armor/other options; it auto-populates
-     the new character's inventory, pre-equipped and ready to roll
+  6. **Equipment** (chosen **last**, so Heritage counts) — your starting-weapon options come from **three**
+     sources: (a) your background's weapon proficiency; (b) any **bonus proficiency** a Heritage grants — e.g.
+     Europe's *Martial Heritage* adds a **bonus weapon-type** selector here, and both count as proficient; and
+     (c) your Heritage's **Fighting Style weapon focus**, which lets you **start with** weapons of its flavor
+     even though you're **not proficient** with them (tagged *"not proficient"* in the picker) — so a
+     melee-background gunslinger (North America) can still begin with a rifle. Two-weapon-fighting Heritages
+     (Oceania's *Twin Fang*) instead offer a choice: **one two-handed weapon _or_ two one-handed weapons**.
+     Your picks auto-populate the new character's inventory, pre-equipped and ready to roll
   7. Review & Save — full computed sheet + your **Heritage** (Fighting Style, Combat Skills, passive, Traits),
      combat proficiencies (incl. any bonus), and starting loadout
 - Auto-calculates HP, KP, all 6 chakras, Defense Score, speeds, carry weight, modifiers, proficiency

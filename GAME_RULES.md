@@ -260,6 +260,15 @@ while dual-wielding).
 Each style holds **5 active skills + 1 Passive** (48 combat skills total). Full skill text lives in
 `app/data.js` (`PC.FIGHTING_STYLES`); the app is the source of truth for exact effects.
 
+**Heritage & starting gear (CONFIRMED Luke).** A Fighting Style also flavors your **starting-weapon
+options**. Each style lists `startWeaponTypes` — weapon types you may **begin play with even if you're not
+proficient** (they don't grant proficiency; a background/grant does). So a melee-proficient character with a
+ranged Heritage (Frontier Gunslinging → Archery/Firearms/Explosives/Volatile) can start with a ranged weapon,
+picking one that suits their attributes — or stick to their proficient type. This stacks with (a) the
+background's weapon proficiency and (b) any Heritage **bonus proficiency** (Europe's *Martial Heritage* — a
+chosen extra type, which **is** proficient). Two-weapon-fighting Heritages (Oceania's *Twin Fang*, flagged
+`twoWeapon`) instead pick **one two-handed weapon _or_ two one-handed weapons** at creation.
+
 ### Combat Skill Points (CSP) — learning more (CONFIRMED Luke)
 Combat Skills use their **own** currency, separate from Technique Points and attribute points:
 - You earn **+1 Combat Skill Point every 5th Soul Level** — at levels **5, 10, 15, 20, 25, 30** (6 total by cap).
