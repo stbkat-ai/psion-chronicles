@@ -358,6 +358,7 @@
       b.combat.forEach((c) => list.appendChild(el("span", "pill psi", c)));
       if (b.freeTech) list.appendChild(el("span", "pill", "Free: " + b.freeTech));
       detail.appendChild(list);
+      if (b.flaw) detail.appendChild(el("div", "flaw-note", `<span class="flaw-tag">⚠ Flaw</span> <b>${b.flaw.name}</b> — ${b.flaw.desc}`));
       detail.appendChild(el("p", "hint", "You'll choose your <b>starting gear last</b> — after Heritage, so any weapon proficiency your Heritage grants is included in the options."));
       p.appendChild(detail);
     }
@@ -429,6 +430,7 @@
         tl.appendChild(pill);
       });
       d.appendChild(tl);
+      if (h.flaw) d.appendChild(el("div", "flaw-note", `<span class="flaw-tag">⚠ Flaw</span> <b>${h.flaw.name}</b> — ${h.flaw.desc}`));
       const wg = h.traits.filter((t) => t.grant && t.grant.kind === "weapon").length;
       const sg = h.traits.filter((t) => t.grant && t.grant.kind === "skill").length;
       if (wg || sg) {
@@ -975,6 +977,12 @@
     (state.bonusWeaponProfs || []).forEach((wt) => { if (wt) cp.appendChild(el("span", "pill psi", wt + " ＋")); });
     p.appendChild(cp);
 
+    // background flaw (negative trait)
+    if (b.flaw) {
+      p.appendChild(el("div", "section-label", "Flaw"));
+      p.appendChild(el("div", "flaw-note", `<span class="flaw-tag">⚠</span> <b>${b.flaw.name}</b> — ${b.flaw.desc}`));
+    }
+
     // heritage — fighting style, combat skills + passive + traits
     const h = state.heritage ? PC.heritage(state.heritage) : null;
     if (h) {
@@ -989,6 +997,7 @@
       const tl = el("div", "pill-list");
       h.traits.forEach((t) => { const pill = el("span", "pill", t.name); pill.title = t.desc; tl.appendChild(pill); });
       p.appendChild(tl);
+      if (h.flaw) p.appendChild(el("div", "flaw-note", `<span class="flaw-tag">⚠ Flaw</span> <b>${h.flaw.name}</b> — ${h.flaw.desc}`));
     }
 
     // starting equipment (new characters only; editing keeps the character's own inventory)

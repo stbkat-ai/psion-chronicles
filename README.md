@@ -28,12 +28,15 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
 
 ## What works today
 - **Character Creator** — full step-by-step flow:
-  1. Identity + Psionic Background (all 9)
+  1. Identity + Psionic Background (all 9). Each background also carries **one flaw** — a whole-attribute
+     disadvantage on a stat the archetype doesn't lean on (e.g. Body Builder → *All Brawn*: disadvantage on
+     Intelligence-based skills & Kinetic techniques). Flaws are flavor with a light bite, never build-breaking.
   2. **Regional Heritage** — pick 1 of **8 old-world regions** (replaces a race system). Each grants a
      region-tied **Fighting Style** — and from it **2 Combat Skills + the style's signature Passive** — plus
-     **2 Traits**. *No* attribute changes. Combat Skills are organized into Fighting Styles the way
-     techniques are organized into Kinetics (48 skills across 8 styles); they cost no KP and only use action
-     economy (Action / Bonus Action / Reaction / Passive).
+     **2 Traits** and **one flaw** (a narrow, situational disadvantage on a single skill — e.g. North America →
+     *Rough Around the Edges*: disadvantage on Etiquette). *No* attribute changes. Combat Skills are organized
+     into Fighting Styles the way techniques are organized into Kinetics (48 skills across 8 styles); they cost
+     no KP and only use action economy (Action / Bonus Action / Reaction / Passive).
   3. Attributes — roll 8d12 (drop 2 lowest, +10) or enter manually, then assign
   4. Skills — background gives 3, choose 2 more (**+1 per skill-proficiency grant** from your Heritage —
      e.g. Oceania's *Adaptable* makes it 3)
@@ -70,7 +73,7 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     and, for Kinetics you're pursuing, spells out what's still needed to unlock its next tier.
 
 - **Live Play Sheet** (▶ Play on a character) — the at-the-table screen, organized into tabs so there's
-  little scrolling: **Sheet · ⚔ Combat · Limbs · Kinetics · Skills · Inventory**.
+  little scrolling: **Sheet · ⚔ Combat · Limbs · Kinetics · Skills · Traits · Inventory**.
   - **Limbs tab** — Fallout-style called-shot damage: 6 limbs each with their own HP (Head ¼, Torso ½,
     Arms/Legs ¼ of max HP). A called shot damages the limb and HP, capped at the limb's HP (excess lost);
     at 0 the limb is crippled. Crippled effects auto-apply — legs cut movement, a crippled arm gives
@@ -89,7 +92,10 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     a slot disables all other options of that type until **End Turn**; a "This Turn" tracker shows what's used
     (tap to toggle manually for feats/abilities that grant extras).
   - **Kinetics tab** — all known techniques with their Use/Attack/Activate buttons.
-  - **Skills tab** — all 36 skills, tap to roll.
+  - **Skills tab** — all 36 skills, tap to roll. Skills under a **flaw** are tagged ⚠ and roll with disadvantage.
+  - **Traits tab** — your Heritage's positive **traits**, plus your two **flaws** (negative traits): the
+    **background** flaw (disadvantage on a whole attribute's skills & Kinetic technique attacks) and the
+    **heritage** flaw (disadvantage on one specific skill). Both apply automatically at the table.
   - **Inventory tab** — carry weight, carried items (equip, actions, config), a custom-item form, and a
     **🔍 Browse Item Catalog** button that opens a dedicated **catalog screen**: search/filter the item
     catalog (194 weapons + armor, consumables, tools, gear) and Add any of them (weapons arrive attack-ready

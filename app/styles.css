@@ -436,6 +436,18 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 .inv-note { font-size: .78rem; color: var(--text-dim); margin-top: 8px; }
 .inv-note b { color: var(--psi-bright); }
 
+/* negative traits (flaws) */
+.flaw-note {
+  font-size: .82rem; color: var(--text); margin-top: 8px;
+  padding: 8px 11px; border-radius: 8px;
+  background: rgba(255,92,114,.09); border: 1px solid rgba(255,92,114,.35);
+  border-left: 3px solid var(--danger);
+}
+.flaw-note b { color: var(--hp); }
+.flaw-tag { color: var(--hp); font-weight: 700; font-size: .72rem; text-transform: uppercase; letter-spacing: .5px; margin-right: 4px; }
+.tag.flaw { color: var(--hp); }
+.skill-row.flawed { border-left: 3px solid var(--danger); }
+
 /* dice + log */
 .dice-btns { display: flex; flex-wrap: wrap; gap: 8px; }
 .roll-log { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; max-height: 240px; overflow-y: auto; font-size: .85rem; }

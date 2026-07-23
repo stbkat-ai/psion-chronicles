@@ -120,6 +120,7 @@ PC.BACKGROUNDS = [
   { name: "Body Builder", blurb: "A gym rat who reached the peak of human physicality; now survives by raw strength.",
     boosts: { STR: 3 }, pool: { body: 10, mind: 0 },
     skills: ["Muscle","Athletics","Force"], combat: ["Heavy Weapons","Robukinesis"], freeTech: "Ki Strike",
+    flaw: { name: "All Brawn", desc: "Never had the patience for books or gadgets. Disadvantage on Intelligence-based skills and Kinetic techniques.", disadvAttr: "INT" },
     equipment: {
       fixed: [ { name: "Trail Rations", category: "Consumable", weight: 2, qty: 3 } ],
       choices: [
@@ -137,6 +138,7 @@ PC.BACKGROUNDS = [
   { name: "Assassin", blurb: "A killer for hire who gets the job done quietly. Skill and dexterity handle survival's subtler parts.",
     boosts: { AGI: 3 }, pool: { body: 10, mind: 0 },
     skills: ["Stealth","Sleight of Hand","Escape Artist"], combat: ["Thrown Weapons","Umbrakinesis"], freeTech: "Shroud of Shadows",
+    flaw: { name: "Cold Read", desc: "Warmth never came naturally to a killer. Disadvantage on Charisma-based skills and Kinetic techniques.", disadvAttr: "CHA" },
     equipment: {
       fixed: [
         { name: "Combat Knife", category: "Weapon", weight: 1, qty: 1, weaponType: "Light Weapons", damage: "1d4" },
@@ -157,6 +159,7 @@ PC.BACKGROUNDS = [
   { name: "Survivalist", blurb: "An outdoorsman whose resilience and heightened constitution are the key to surviving the new world.",
     boosts: { CON: 3 }, pool: { body: 10, mind: 0 },
     skills: ["Survival","Tolerance","Hardiness"], combat: ["Firearms","Terrakinesis"], freeTech: "Mud Skin",
+    flaw: { name: "Self-Taught", desc: "The wild was your only teacher — not the classroom. Disadvantage on Intelligence-based skills and Kinetic techniques.", disadvAttr: "INT" },
     equipment: {
       fixed: [
         { name: "Hatchet", category: "Weapon", weight: 3, qty: 1, weaponType: "Heavy Weapons", damage: "1d8" },
@@ -178,6 +181,7 @@ PC.BACKGROUNDS = [
   { name: "Scholar", blurb: "A bookworm whose knowledge of old-world history and tech is invaluable in the new era.",
     boosts: { INT: 3 }, pool: { body: 0, mind: 10 },
     skills: ["History","Language","Technology"], combat: ["Plasma Weapons","Chronokinesis"], freeTech: "Slow Time",
+    flaw: { name: "Ivory Tower", desc: "A lifetime spent reading, not lifting. Disadvantage on Strength-based skills and Kinetic techniques.", disadvAttr: "STR" },
     equipment: {
       fixed: [
         { name: "Old-World Datapad", category: "Tool", weight: 1, qty: 1 },
@@ -198,6 +202,7 @@ PC.BACKGROUNDS = [
   { name: "Witch", blurb: "Once dismissed as following a dead religion; now a wise practitioner of the mystical arts.",
     boosts: { WIS: 3 }, pool: { body: 0, mind: 10 },
     skills: ["Paranormal","Herbalism","Nature Tools"], combat: ["Channel Weapons","Naturakinesis"], freeTech: "Thistle Bush",
+    flaw: { name: "Frail Vessel", desc: "The body was always a poor match for the spirit. Disadvantage on Strength-based skills and Kinetic techniques.", disadvAttr: "STR" },
     equipment: {
       fixed: [
         { name: "Herbalism Kit", category: "Tool", weight: 3, qty: 1 },
@@ -218,6 +223,7 @@ PC.BACKGROUNDS = [
   { name: "Musician", blurb: "A traveling musician whose natural charm influences the hearts and minds of others.",
     boosts: { CHA: 3 }, pool: { body: 0, mind: 10 },
     skills: ["Music","Persuasion","Performance"], combat: ["Finesse Weapons","Sonikinesis"], freeTech: "Resonant Pulse",
+    flaw: { name: "Delicate Constitution", desc: "An artist's body, not a laborer's. Disadvantage on Constitution-based skills and Kinetic techniques.", disadvAttr: "CON" },
     equipment: {
       fixed: [ { name: "Fine Clothes", category: "Armor", weight: 3, qty: 1, dsBonus: 1, equipped: true } ],
       choices: [
@@ -236,6 +242,7 @@ PC.BACKGROUNDS = [
   { name: "Soldier", blurb: "Served in an advanced military or mercenary group; training hardened them for danger.",
     boosts: { STR: 2, INT: 1 }, pool: { body: 5, mind: 5 },
     skills: ["Laborer's Tools","Intimidation","Medicine"], combat: ["Laser Weapons","Pyrokinesis"], freeTech: "Fire Bolt",
+    flaw: { name: "Blunt Instrument", desc: "Trained to command, never to charm. Disadvantage on Charisma-based skills and Kinetic techniques.", disadvAttr: "CHA" },
     equipment: {
       fixed: [
         { name: "Combat Knife", category: "Weapon", weight: 1, qty: 1, weaponType: "Light Weapons", damage: "1d4" },
@@ -256,6 +263,7 @@ PC.BACKGROUNDS = [
   { name: "Monk", blurb: "A loner and martial artist; disciplined body and sharpened senses harness the very air.",
     boosts: { AGI: 2, WIS: 1 }, pool: { body: 5, mind: 5 },
     skills: ["Acrobatics","Reflex","Awareness"], combat: ["Channel Weapons","Aerokinesis"], freeTech: "Gust",
+    flaw: { name: "Ascetic", desc: "Withdrawn from the world's social games. Disadvantage on Charisma-based skills and Kinetic techniques.", disadvAttr: "CHA" },
     equipment: {
       fixed: [
         { name: "Monk's Wraps", category: "Armor", weight: 2, qty: 1, dsBonus: 1, equipped: true },
@@ -277,6 +285,7 @@ PC.BACKGROUNDS = [
   { name: "Guru", blurb: "A spiritual leader whose charm, kindness, and vitality drew others to follow.",
     boosts: { CON: 2, CHA: 1 }, pool: { body: 5, mind: 5 },
     skills: ["Concentration","Adrenaline","Etiquette"], combat: ["Volatile Weapons","Spirikinesis"], freeTech: "Phantom Presence",
+    flaw: { name: "Faith Over Fact", desc: "You trust the spirit, never the schematic. Disadvantage on Intelligence-based skills and Kinetic techniques.", disadvAttr: "INT" },
     equipment: {
       fixed: [
         { name: "Walking Cane", category: "Weapon", weight: 3, qty: 1, weaponType: "Light Weapons", damage: "1d6" },
@@ -850,35 +859,43 @@ PC.HERITAGES = [
   { name: "North America", blurb: "Rugged frontier stock — self-reliant survivors of the wild expanse.",
     fightingStyle: "Frontier Gunslinging", combatSkills: ["Marksmanship", "Suppressing Fire"],
     traits: [ { name: "Frontier Grit", desc: "Advantage on Survival checks in the wilderness." },
-              { name: "Scavenger", desc: "Advantage on checks to jury-rig or repair with salvaged parts." } ] },
+              { name: "Scavenger", desc: "Advantage on checks to jury-rig or repair with salvaged parts." } ],
+    flaw: { name: "Rough Around the Edges", desc: "Frontier manners grate on polished company. Disadvantage on Etiquette.", disadvSkill: "Etiquette" } },
   { name: "South America", blurb: "Jungle-forged and resourceful, at home in dense, untamed country.",
     fightingStyle: "Flowing Movement", combatSkills: ["Combat Roll", "Dodge Roll"],
     traits: [ { name: "Jungle-Born", desc: "Advantage on Acrobatics and moving through natural difficult terrain." },
-              { name: "Herbal Lore", desc: "Advantage on Herbalism; identify plants and toxins at a glance." } ] },
+              { name: "Herbal Lore", desc: "Advantage on Herbalism; identify plants and toxins at a glance." } ],
+    flaw: { name: "Untamed", desc: "Old-world machinery is alien to you. Disadvantage on Technology.", disadvSkill: "Technology" } },
   { name: "Europe", blurb: "Heirs to a long, disciplined martial tradition.",
     fightingStyle: "Chivalric Swordplay", combatSkills: ["Riposte", "Power Attack"],
     traits: [ { name: "Martial Heritage", desc: "You gain one additional weapon-type proficiency.", grant: { kind: "weapon" } },
-              { name: "Old-World Scholar", desc: "You speak an extra old-world language; advantage on Etiquette." } ] },
+              { name: "Old-World Scholar", desc: "You speak an extra old-world language; advantage on Etiquette." } ],
+    flaw: { name: "Rigid Form", desc: "Disciplined stances resist improvisation. Disadvantage on Acrobatics.", disadvSkill: "Acrobatics" } },
   { name: "United Kingdom", blurb: "Stoic and tactical, unshaken under pressure.",
     fightingStyle: "Fencing", combatSkills: ["Parry", "Feint"],
     traits: [ { name: "Stiff Upper Lip", desc: "Advantage on checks and saves to resist Fear." },
-              { name: "Composed", desc: "Advantage on Insight to read a tense situation." } ] },
+              { name: "Composed", desc: "Advantage on Insight to read a tense situation." } ],
+    flaw: { name: "Too Polite", desc: "You'd sooner reason than menace. Disadvantage on Intimidation.", disadvSkill: "Intimidation" } },
   { name: "Africa", blurb: "Enduring and community-strong, forged by hardship and kinship.",
     fightingStyle: "Warden's Bulwark", combatSkills: ["Guardian", "Bracing Stance"],
     traits: [ { name: "Enduring", desc: "Advantage on Hardiness and checks to resist exhaustion." },
-              { name: "Kinship", desc: "Advantage on Persuasion within a community; rally to stabilize a downed ally." } ] },
+              { name: "Kinship", desc: "Advantage on Persuasion within a community; rally to stabilize a downed ally." } ],
+    flaw: { name: "Immovable", desc: "Built to hold ground, not to slink past it. Disadvantage on Stealth.", disadvSkill: "Stealth" } },
   { name: "Middle East", blurb: "Resilient warrior-traders, sharp of eye and tongue.",
     fightingStyle: "Desert Whirlwind", combatSkills: ["Spinning Cut", "Deflecting Slash"],
     traits: [ { name: "Shrewd Trader", desc: "Advantage on Barter." },
-              { name: "Desert-Hardened", desc: "Resist extreme heat and thirst; advantage on Tolerance vs. environment." } ] },
+              { name: "Desert-Hardened", desc: "Resist extreme heat and thirst; advantage on Tolerance vs. environment." } ],
+    flaw: { name: "Eye for the Deal", desc: "You weigh profit before portents. Disadvantage on Paranormal.", disadvSkill: "Paranormal" } },
   { name: "East Asia", blurb: "Honed by generations of martial discipline and focus.",
     fightingStyle: "Way of the Open Hand", combatSkills: ["Palm Strike", "Deflect"],
     traits: [ { name: "Inner Focus", desc: "Advantage on Concentration checks." },
-              { name: "Disciplined", desc: "You speak an extra language; advantage on precise, patient tasks." } ] },
+              { name: "Disciplined", desc: "You speak an extra language; advantage on precise, patient tasks." } ],
+    flaw: { name: "Reserved", desc: "Discipline over showmanship. Disadvantage on Performance.", disadvSkill: "Performance" } },
   { name: "Oceania", blurb: "Seafaring and adaptable, thriving between island and open water.",
     fightingStyle: "Twin Fang", combatSkills: ["Twin Strike", "Rapid Slash"],
     traits: [ { name: "Seafarer", desc: "Advantage to swim, sail, or navigate water; hold your breath long." },
-              { name: "Adaptable", desc: "You gain one extra skill proficiency of your choice.", grant: { kind: "skill" } } ] },
+              { name: "Adaptable", desc: "You gain one extra skill proficiency of your choice.", grant: { kind: "skill" } } ],
+    flaw: { name: "Far From the Archives", desc: "Island life kept the old-world academies at arm's length. Disadvantage on History.", disadvSkill: "History" } },
 ];
 
 /* --- Constants ----------------------------------------------------------- */

@@ -86,6 +86,12 @@
   function adjMod(attr) { return PC.chakraEffect(chakraOf(attr)).effMod(baseMod(attr)); } // after chakra
   function isDisadv(attr) { return chakraOf(attr) >= 1; }
   function isLocked(attr) { return chakraOf(attr) >= 4; }
+  // Negative traits: a background flaw = disadvantage on a whole attribute's skills & techniques;
+  // a heritage flaw = disadvantage on one specific skill.
+  function bgFlaw() { const b = bg(); return b && b.flaw ? b.flaw : null; }
+  function heritageFlaw() { const h = PC.heritage(rec.heritage); return h && h.flaw ? h.flaw : null; }
+  function flawDisadvAttr(attr) { const f = bgFlaw(); return !!(f && f.disadvAttr === attr); }
+  function flawDisadvSkill(name) { const f = heritageFlaw(); return !!(f && f.disadvSkill === name); }
   // If the attribute's chakra is locked out (4 hits), a reason string for disabling its rolls; else null.
   function lockReason(attr) { return attr && isLocked(attr) ? `${PC.CHAKRAS[attr].name} chakra locked out — no ${attr} rolls` : null; }
 
@@ -259,8 +265,8 @@
     play.kp -= t.kp; consumeEcon(t.action);
     const prof = proficientWithKinetic(t);
     const mod = adjMod(t.attr) + (prof ? PC.profBonus(rec.level) : 0);
-    // Head crippled → disadvantage on technique attacks.
-    const r = PC.rollCheck(mod, (isDisadv(t.attr) || headCrippled()) ? "dis" : "normal");
+    // Head crippled or a background flaw on this attribute → disadvantage on technique attacks.
+    const r = PC.rollCheck(mod, (isDisadv(t.attr) || headCrippled() || flawDisadvAttr(t.attr)) ? "dis" : "normal");
     const dis = r.mode === "dis" ? ` (disadv [${r.d20s.join(",")}]→${r.picked})` : "";
     announce(r.total, `${t.name} attack: d20${dis}${PC.fmtMod(mod)} = ${r.total} to hit${prof ? " ✓prof" : ""} (−${t.kp} KP; roll Damage if it hits)`);
     save(); refresh();
@@ -371,8 +377,9 @@
     if (isLocked(skill.attr)) { App.toast(`${PC.CHAKRAS[skill.attr].name} chakra locked — can't use ${skill.attr} skills.`); return; }
     const proficient = bg().skills.includes(skill.name) || (rec.chosenSkills || []).includes(skill.name);
     const mod = adjMod(skill.attr) + (proficient ? PC.profBonus(rec.level) : 0);
-    // Head crippled → disadvantage on Mind (INT/WIS/CHA) checks.
-    const mode = (isDisadv(skill.attr) || (headCrippled() && MIND.indexOf(skill.attr) > -1)) ? "dis" : "normal";
+    // Disadvantage sources: chakra hit, head crippled on a Mind (INT/WIS/CHA) check,
+    // a background flaw on this attribute, or a heritage flaw naming this skill.
+    const mode = (isDisadv(skill.attr) || (headCrippled() && MIND.indexOf(skill.attr) > -1) || flawDisadvAttr(skill.attr) || flawDisadvSkill(skill.name)) ? "dis" : "normal";
     const r = PC.rollCheck(mod, mode);
     const dis = mode === "dis" ? ` (disadvantage: [${r.d20s.join(",")}]→${r.picked})` : "";
     announce(r.total, `${skill.name} check: d20${dis}${PC.fmtMod(mod)} = ${r.total}`);
@@ -543,6 +550,7 @@
       case "limbs": body = buildLimbsTab(); break;
       case "kinetics": body = buildKineticsTab(); break;
       case "skills": body = buildSkillsTab(); break;
+      case "traits": body = buildTraitsTab(); break;
       case "inventory": body = catalogOpen ? buildCatalogScreen() : buildInventoryTab(); break;
       default: body = buildSheetTab();
     }
@@ -565,12 +573,44 @@
 
   function buildTabBar() {
     const bar = el("div", "play-tabs");
-    [["sheet", "Sheet"], ["combat", "⚔ Combat"], ["limbs", "Limbs"], ["kinetics", "Kinetics"], ["skills", "Skills"], ["inventory", "Inventory"]].forEach((pair) => {
+    [["sheet", "Sheet"], ["combat", "⚔ Combat"], ["limbs", "Limbs"], ["kinetics", "Kinetics"], ["skills", "Skills"], ["traits", "Traits"], ["inventory", "Inventory"]].forEach((pair) => {
       const b = el("button", "play-tab" + (activeTab === pair[0] ? " active" : ""), pair[1]);
       b.onclick = () => { activeTab = pair[0]; catalogOpen = false; refresh(); };
       bar.appendChild(b);
     });
     return bar;
+  }
+
+  // Traits & Flaws tab — heritage positive traits, plus the background & heritage flaws (negative traits).
+  function buildTraitsTab() {
+    const root = el("div");
+    const h = PC.heritage(rec.heritage);
+    const b = bg();
+    const bf = bgFlaw(), hf = heritageFlaw();
+    const traits = h && h.traits ? h.traits : [];
+
+    // Positive traits (from Heritage)
+    const pos = el("div", "panel");
+    pos.appendChild(el("div", "section-label", "Traits" + (h ? " — " + h.name : "")));
+    if (traits.length) {
+      traits.forEach((t) => pos.appendChild(el("div", "inv-note", `<b>${t.name}</b> — ${t.desc}`)));
+    } else {
+      pos.appendChild(el("div", "muted", "No heritage traits on this character."));
+    }
+    root.appendChild(pos);
+
+    // Negative traits (Flaws)
+    const neg = el("div", "panel");
+    neg.appendChild(el("div", "section-label", "Flaws"));
+    if (!bf && !hf) {
+      neg.appendChild(el("div", "muted", "No flaws on this character."));
+    } else {
+      if (bf) neg.appendChild(el("div", "flaw-note", `<span class="flaw-tag">⚠ Background</span> <b>${bf.name}</b> — ${bf.desc}`));
+      if (hf) neg.appendChild(el("div", "flaw-note", `<span class="flaw-tag">⚠ Heritage</span> <b>${hf.name}</b> — ${hf.desc}`));
+      neg.appendChild(el("p", "hint", "Flaws apply automatically: a <b>background</b> flaw rolls disadvantage on that attribute's skill checks and Kinetic technique attacks; a <b>heritage</b> flaw rolls disadvantage on the one named skill. Flawed skills are tagged ⚠ on the Skills tab."));
+    }
+    root.appendChild(neg);
+    return root;
   }
 
   function buildSheetTab() {
@@ -1017,15 +1057,17 @@
     PC.ATTRS.forEach((a) => {
       const grp = PC.skillsByAttr(a);
       const lbl = el("div", "skill-attr-label");
-      lbl.textContent = `${a} ${PC.fmtMod(adjMod(a))}${isDisadv(a) ? " · disadv" : ""}${isLocked(a) ? " · LOCKED" : ""}`;
+      lbl.textContent = `${a} ${PC.fmtMod(adjMod(a))}${isDisadv(a) ? " · disadv" : ""}${flawDisadvAttr(a) ? " · flaw" : ""}${isLocked(a) ? " · LOCKED" : ""}`;
       skills.appendChild(lbl);
       const list = el("div", "skill-list");
       grp.forEach((s) => {
         const proficient = bg().skills.includes(s.name) || (rec.chosenSkills || []).includes(s.name);
         const mod = adjMod(a) + (proficient ? PC.profBonus(rec.level) : 0);
-        const row = el("button", "skill-row" + (proficient ? " prof" : "") + (isLocked(a) ? " locked" : ""));
-        row.innerHTML = `<span>${proficient ? "● " : "○ "}${s.name}${s.combat ? ' <span class="tag">⚔</span>' : ""}</span><span class="skmod">${PC.fmtMod(mod)}</span>`;
+        const flawed = !isLocked(a) && (flawDisadvAttr(a) || flawDisadvSkill(s.name));
+        const row = el("button", "skill-row" + (proficient ? " prof" : "") + (isLocked(a) ? " locked" : "") + (flawed ? " flawed" : ""));
+        row.innerHTML = `<span>${proficient ? "● " : "○ "}${s.name}${s.combat ? ' <span class="tag">⚔</span>' : ""}${flawed ? ' <span class="tag flaw">⚠ flaw</span>' : ""}</span><span class="skmod">${PC.fmtMod(mod)}</span>`;
         row.disabled = isLocked(a);
+        if (flawed) row.title = flawDisadvSkill(s.name) && heritageFlaw() ? heritageFlaw().name + " — " + heritageFlaw().desc : (bgFlaw() ? bgFlaw().name + " — " + bgFlaw().desc : "");
         row.onclick = () => rollSkill(s);
         list.appendChild(row);
       });

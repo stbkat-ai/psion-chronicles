@@ -187,19 +187,24 @@ that attribute's rolls **and** all its Kinetics.
 
 Each Background grants: **attribute boost** (either +3 to one, or +2/+1 split), a **pool boost**
 (Body +10, Mind +10, or +5/+5), **3 skill proficiencies**, **2 combat proficiencies** (weapon
-type and/or Kinetic type), and **1 free beginner Kinetic Technique**.
+type and/or Kinetic type), **1 free beginner Kinetic Technique**, and **1 flaw** (negative trait).
 
-| Background | Old-world identity | Attr boost | Pool boost | Skill profs | Combat profs | Free KT |
-|---|---|---|---|---|---|---|
-| **Body Builder** | Gym rat | +3 STR | Body +10 | Muscle, Athletics, Force | Heavy Weapons, **Robukinesis** | Ki Strike |
-| **Assassin** | Killer for hire | +3 AGI | Body +10 | Stealth, Sleight of Hand, Escape Artist | Thrown Weapons, **Umbrakinesis** | Shroud of Shadows |
-| **Survivalist** | Outdoorsman | +3 CON | Body +10 | Survival, Tolerance, Hardiness | Firearms, **Terrakinesis** | Mud Skin |
-| **Scholar** | Bookworm | +3 INT | Mind +10 | History, Language, Technology | Plasma Weapons, **Chronokinesis** | Slow Time |
-| **Witch** | Wiccan/mystic | +3 WIS | Mind +10 | Paranormal, Herbalism, Nature Tools | Channel Weapons, **Naturakinesis** | Thistle Bush |
-| **Musician** | Traveling musician | +3 CHA | Mind +10 | Music, Persuasion, Performance | Rapiers*, **Sonikinesis** | *(TBD — Sonikinesis beginner; old "Static Touch" was Electro, retired)* |
-| **Soldier** | Military/mercenary | +2 STR, +1 INT | Body +5, Mind +5 | Laborer's Tools, Intimidation, Medicine | Laser Guns, **Pyrokinesis** | Firebolt |
-| **Monk** | Loner martial artist | +2 AGI, +1 WIS | Body +5, Mind +5 | Acrobatics, Reflex, Awareness | Staffs, **Aerokinesis** | Gust |
-| **Guru** | Spiritual leader | +2 CON, +1 CHA | Body +5, Mind +5 | Concentration, Adrenaline, Etiquette | Volatile Weapons, **Spirikinesis** | Phantom Presence |
+**Background flaws (CONFIRMED Luke).** Every background carries one flaw: **disadvantage on one whole
+attribute's skill checks and Kinetic technique attack rolls**. The attribute is always one the archetype
+*doesn't* build around, so a flaw adds flavor and the occasional out-of-lane stumble without punishing the
+character's core competence. Flaws do **not** touch weapon attacks or initiative — only skills & techniques.
+
+| Background | Old-world identity | Attr boost | Pool boost | Skill profs | Combat profs | Free KT | Flaw (disadvantage) |
+|---|---|---|---|---|---|---|---|
+| **Body Builder** | Gym rat | +3 STR | Body +10 | Muscle, Athletics, Force | Heavy Weapons, **Robukinesis** | Ki Strike | *All Brawn* — INT |
+| **Assassin** | Killer for hire | +3 AGI | Body +10 | Stealth, Sleight of Hand, Escape Artist | Thrown Weapons, **Umbrakinesis** | Shroud of Shadows | *Cold Read* — CHA |
+| **Survivalist** | Outdoorsman | +3 CON | Body +10 | Survival, Tolerance, Hardiness | Firearms, **Terrakinesis** | Mud Skin | *Self-Taught* — INT |
+| **Scholar** | Bookworm | +3 INT | Mind +10 | History, Language, Technology | Plasma Weapons, **Chronokinesis** | Slow Time | *Ivory Tower* — STR |
+| **Witch** | Wiccan/mystic | +3 WIS | Mind +10 | Paranormal, Herbalism, Nature Tools | Channel Weapons, **Naturakinesis** | Thistle Bush | *Frail Vessel* — STR |
+| **Musician** | Traveling musician | +3 CHA | Mind +10 | Music, Persuasion, Performance | Rapiers*, **Sonikinesis** | *(TBD — Sonikinesis beginner; old "Static Touch" was Electro, retired)* | *Delicate Constitution* — CON |
+| **Soldier** | Military/mercenary | +2 STR, +1 INT | Body +5, Mind +5 | Laborer's Tools, Intimidation, Medicine | Laser Guns, **Pyrokinesis** | Firebolt | *Blunt Instrument* — CHA |
+| **Monk** | Loner martial artist | +2 AGI, +1 WIS | Body +5, Mind +5 | Acrobatics, Reflex, Awareness | Staffs, **Aerokinesis** | Gust | *Ascetic* — CHA |
+| **Guru** | Spiritual leader | +2 CON, +1 CHA | Body +5, Mind +5 | Concentration, Adrenaline, Etiquette | Volatile Weapons, **Spirikinesis** | Phantom Presence | *Faith Over Fact* — INT |
 
 \* "Rapiers" listed under Musician; note the CHA weapon types in Section 5 are Finesse/Art/Noise — reconcile with Luke.
 
@@ -214,6 +219,9 @@ old-world ancestry, grouped into **8 broad regions**.
 **Heritage grants — and only grants:**
 - **1 Fighting Style** (below), and from it **2 Combat Skills** + the style's **signature Passive**.
 - **2 Traits** — always-on roleplay/utility perks (advantage on certain checks, an extra language, etc.).
+- **1 flaw** — a **narrow, situational** disadvantage on **one specific skill** (never a whole attribute).
+  Kept deliberately small so that, whatever Background a player pairs with a Heritage, the flaw can't land on
+  the character's primary stat. Backgrounds carry the broad (attribute-wide) flaw; Heritages carry the pinpoint one.
 
 **Choosable proficiency grants (CONFIRMED Luke).** Some traits grant an *extra proficiency the player picks*:
 - **Weapon-proficiency grant** (e.g. Europe's *Martial Heritage*) → choose **one extra weapon type**. This is
@@ -246,16 +254,16 @@ while dual-wielding).
   style's skills.
 
 ### The 8 Heritages → Fighting Styles
-| Heritage | Fighting Style | Starting Combat Skills | Signature Passive | Traits |
-|---|---|---|---|---|
-| **North America** | Frontier Gunslinging | Marksmanship, Suppressing Fire | Deadeye | Frontier Grit, Scavenger |
-| **South America** | Flowing Movement | Combat Roll, Dodge Roll | Momentum | Jungle-Born, Herbal Lore |
-| **Europe** | Chivalric Swordplay | Riposte, Power Attack | Second Strike | Martial Heritage, Old-World Scholar |
-| **United Kingdom** | Fencing | Parry, Feint | En Garde | Stiff Upper Lip, Composed |
-| **Africa** | Warden's Bulwark | Guardian, Bracing Stance | Ironhide | Enduring, Kinship |
-| **Middle East** | Desert Whirlwind | Spinning Cut, Deflecting Slash | Whirlwind | Shrewd Trader, Desert-Hardened |
-| **East Asia** | Way of the Open Hand | Palm Strike, Deflect | Flurry | Inner Focus, Disciplined |
-| **Oceania** | Twin Fang | Twin Strike, Rapid Slash | Two-Weapon Fighting | Seafarer, Adaptable |
+| Heritage | Fighting Style | Starting Combat Skills | Signature Passive | Traits | Flaw (disadvantage) |
+|---|---|---|---|---|---|
+| **North America** | Frontier Gunslinging | Marksmanship, Suppressing Fire | Deadeye | Frontier Grit, Scavenger | *Rough Around the Edges* — Etiquette |
+| **South America** | Flowing Movement | Combat Roll, Dodge Roll | Momentum | Jungle-Born, Herbal Lore | *Untamed* — Technology |
+| **Europe** | Chivalric Swordplay | Riposte, Power Attack | Second Strike | Martial Heritage, Old-World Scholar | *Rigid Form* — Acrobatics |
+| **United Kingdom** | Fencing | Parry, Feint | En Garde | Stiff Upper Lip, Composed | *Too Polite* — Intimidation |
+| **Africa** | Warden's Bulwark | Guardian, Bracing Stance | Ironhide | Enduring, Kinship | *Immovable* — Stealth |
+| **Middle East** | Desert Whirlwind | Spinning Cut, Deflecting Slash | Whirlwind | Shrewd Trader, Desert-Hardened | *Eye for the Deal* — Paranormal |
+| **East Asia** | Way of the Open Hand | Palm Strike, Deflect | Flurry | Inner Focus, Disciplined | *Reserved* — Performance |
+| **Oceania** | Twin Fang | Twin Strike, Rapid Slash | Two-Weapon Fighting | Seafarer, Adaptable | *Far From the Archives* — History |
 
 Each style holds **5 active skills + 1 Passive** (48 combat skills total). Full skill text lives in
 `app/data.js` (`PC.FIGHTING_STYLES`); the app is the source of truth for exact effects.
