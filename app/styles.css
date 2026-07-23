@@ -226,6 +226,16 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 .kin-pane-head .muted { color: var(--text-dim); }
 .kin-lock { margin-top: 4px; }
 
+/* Kinetic proficiency / expertise */
+.kin-prof-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 7px 0; border-bottom: 1px dashed var(--border); }
+.kin-prof-name { font-weight: 650; min-width: 120px; }
+.kin-prof-name .tag { font-size: .66rem; color: var(--gold); margin-left: 5px; }
+.kin-prof-note { color: var(--text-dim); font-size: .8rem; margin-left: auto; }
+.kin-prof-badge { font-size: .74rem; font-weight: 700; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--border); }
+.kin-prof-badge.pro { color: var(--gold); border-color: var(--gold); }
+.kin-prof-badge.exp { color: var(--cyan); border-color: var(--cyan); box-shadow: 0 0 8px rgba(53,224,224,.25); }
+.kin-prof-badge.none { color: var(--text-dim); }
+
 /* ---- Review sheet ---- */
 .sheet-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .stat-line { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px dashed var(--border); font-size: .9rem; }

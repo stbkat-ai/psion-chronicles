@@ -120,6 +120,27 @@ PC.skill = function (name) { return PC.SKILLS.find((s) => s.name === name) || nu
 PC.kinetic = function (name) { return PC.KINETICS.find((k) => k.name === name) || null; };
 PC.technique = function (name) { return PC.TECHNIQUES.find((t) => t.name === name) || null; };
 PC.skillsByAttr = function (attr) { return PC.SKILLS.filter((s) => s.attr === attr); };
+/* Techniques of a Kinetic at a given tier (5 per tier per Kinetic). */
+PC.kineticTierTechniques = function (kinetic, tier) { return PC.TECHNIQUES.filter((t) => t.kinetic === kinetic && t.tier === tier); };
+/* True if the character knows EVERY technique in a Kinetic's given tier. */
+PC.kineticTierComplete = function (kinetic, tier, knownNames) {
+  const all = PC.kineticTierTechniques(kinetic, tier);
+  return all.length > 0 && all.every((t) => knownNames.indexOf(t.name) > -1);
+};
+/* Proficiency earned within a Kinetic:
+   - completing its Adept tier grants proficiency (the background focus Kinetic is proficient from the start);
+   - completing its Expert tier grants expertise (double proficiency bonus).
+   Returns "none" | "proficient" | "expertise". */
+PC.kineticProfLevel = function (kinetic, knownNames, isFocus) {
+  if (PC.kineticTierComplete(kinetic, "Expert", knownNames)) return "expertise";
+  if (isFocus || PC.kineticTierComplete(kinetic, "Adept", knownNames)) return "proficient";
+  return "none";
+};
+/* Numeric proficiency bonus for a Kinetic at a Soul Level, given a proficiency level (0 / prof / 2×prof). */
+PC.kineticProfBonus = function (level, profLevel) {
+  const p = PC.profBonus(level);
+  return profLevel === "expertise" ? p * 2 : profLevel === "proficient" ? p : 0;
+};
 PC.heritage = function (name) { return (PC.HERITAGES || []).find((h) => h.name === name) || null; };
 PC.combatSkill = function (name) { return (PC.COMBAT_SKILLS || []).find((s) => s.name === name) || null; };
 PC.fightingStyle = function (name) { return (PC.FIGHTING_STYLES || []).find((s) => s.name === name) || null; };

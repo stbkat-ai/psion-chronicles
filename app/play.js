@@ -251,8 +251,13 @@
     save(); refresh();
   }
 
-  // Is the character proficient with this technique's Kinetic? (background combat proficiency)
-  function proficientWithKinetic(t) { return bg().combat.indexOf(t.kinetic) > -1; }
+  // Kinetic proficiency. The background focus Kinetic is proficient from the start; a Kinetic also
+  // becomes proficient once every Adept-tier technique is known, and gains expertise (double prof
+  // bonus) once every Expert-tier technique is known.
+  function isFocusKinetic(kinetic) { return bg().combat.indexOf(kinetic) > -1; }
+  function kineticProfLevel(kinetic) { return PC.kineticProfLevel(kinetic, knownTechniques(), isFocusKinetic(kinetic)); }
+  function kineticProfBonusFor(kinetic) { return PC.kineticProfBonus(rec.level, kineticProfLevel(kinetic)); }
+  function proficientWithKinetic(t) { return kineticProfLevel(t.kinetic) !== "none"; }
   // Which damaging techniques need a to-hit roll: single-target (non-AoE, non-augment) damage.
   function techniqueNeedsToHit(t) { return !!t.damage && !t.aoe && !(t.augment); }
   function techniqueIsAoE(t) { return !!t.damage && !!t.aoe; }
@@ -263,12 +268,13 @@
     if (econBlocked(t.action)) { App.toast(`You've already used your ${econName(t.action)} this turn.`); return; }
     if (play.kp < t.kp) { App.toast(`Not enough KP (need ${t.kp}).`); return; }
     play.kp -= t.kp; consumeEcon(t.action);
-    const prof = proficientWithKinetic(t);
-    const mod = adjMod(t.attr) + (prof ? PC.profBonus(rec.level) : 0);
+    const profLvl = kineticProfLevel(t.kinetic);
+    const mod = adjMod(t.attr) + PC.kineticProfBonus(rec.level, profLvl);
+    const profTag = profLvl === "expertise" ? " ✦expertise (2× prof)" : profLvl === "proficient" ? " ✓prof" : "";
     // Head crippled or a background flaw on this attribute → disadvantage on technique attacks.
     const r = PC.rollCheck(mod, (isDisadv(t.attr) || headCrippled() || flawDisadvAttr(t.attr)) ? "dis" : "normal");
     const dis = r.mode === "dis" ? ` (disadv [${r.d20s.join(",")}]→${r.picked})` : "";
-    announce(r.total, `${t.name} attack: d20${dis}${PC.fmtMod(mod)} = ${r.total} to hit${prof ? " ✓prof" : ""} (−${t.kp} KP; roll Damage if it hits)`);
+    announce(r.total, `${t.name} attack: d20${dis}${PC.fmtMod(mod)} = ${r.total} to hit${profTag} (−${t.kp} KP; roll Damage if it hits)`);
     save(); refresh();
   }
   // Roll a technique's damage (no KP — the KP was spent on the attack/cast).
@@ -353,9 +359,9 @@
   function calledShotSources() {
     const src = [];
     (rec.inventory || []).filter((it) => it.equipped && it.category === "Weapon" && it.weaponType && it.damage)
-      .forEach((it) => { const a = weaponAttr(it); src.push({ label: `${it.name} (${a})`, attr: a, prof: proficientWithType(it) }); });
+      .forEach((it) => { const a = weaponAttr(it); const prof = proficientWithType(it); src.push({ label: `${it.name} (${a})`, attr: a, profBonus: prof ? PC.profBonus(rec.level) : 0, profTag: prof ? " ✓prof" : "" }); });
     knownTechniques().map((n) => PC.technique(n)).filter(Boolean).filter(techniqueNeedsToHit)
-      .forEach((t) => src.push({ label: `${t.name} (${t.attr})`, attr: t.attr, prof: proficientWithKinetic(t) }));
+      .forEach((t) => { const lvl = kineticProfLevel(t.kinetic); src.push({ label: `${t.name} (${t.attr})`, attr: t.attr, profBonus: PC.kineticProfBonus(rec.level, lvl), profTag: lvl === "expertise" ? " ✦expertise" : lvl === "proficient" ? " ✓prof" : "" }); });
     return src;
   }
   // Roll the called-shot skill check for a Marksmanship-style combat skill, using the chosen attack's
@@ -365,11 +371,11 @@
     if (isLocked(source.attr)) { App.toast(`${PC.CHAKRAS[source.attr].name} chakra locked — can't aim with ${source.attr}.`); return; }
     if (econBlocked(c.action)) { App.toast(`You've already used your ${econName(c.action)} this turn.`); return; }
     consumeEcon(c.action);
-    const mod = adjMod(source.attr) + (source.prof ? PC.profBonus(rec.level) : 0);
+    const mod = adjMod(source.attr) + (source.profBonus || 0);
     const mode = isDisadv(source.attr) ? "dis" : "normal";
     const r = PC.rollCheck(mod, mode);
     const dis = mode === "dis" ? ` (disadv [${r.d20s.join(",")}]→${r.picked})` : "";
-    announce(r.total, `🎖 ${c.name} called shot: d20${dis}${PC.fmtMod(mod)} = ${r.total}${source.prof ? " ✓prof" : ""} — vs the GM's DC (target size/difficulty). On a success, apply your ${source.label} damage to the called limb.`);
+    announce(r.total, `🎖 ${c.name} called shot: d20${dis}${PC.fmtMod(mod)} = ${r.total}${source.profTag || ""} — vs the GM's DC (target size/difficulty). On a success, apply your ${source.label} damage to the called limb.`);
     save(); refresh();
   }
 
@@ -1032,8 +1038,40 @@
   }
 
   /* ---------- Kinetics tab ---------- */
+  // Summary of which Kinetics have earned proficiency / expertise, and progress toward the next milestone.
+  function kineticProfPanel() {
+    const known = knownTechniques();
+    const kinSet = {};
+    known.forEach((n) => { const t = PC.technique(n); if (t) kinSet[t.kinetic] = true; });
+    bg().combat.forEach((c) => { if (PC.kinetic(c)) kinSet[c] = true; });
+    const kins = PC.KINETICS.map((k) => k.name).filter((n) => kinSet[n]);
+    if (!kins.length) return null;
+    const panel = el("div", "panel");
+    panel.appendChild(el("div", "section-label", "Kinetic Proficiencies"));
+    panel.appendChild(el("p", "hint", "Complete a Kinetic's <b>Adept</b> tier (all 5 techniques) to gain <b>proficiency</b> in it; complete its <b>Expert</b> tier (all 5) for <b>expertise</b> — double proficiency bonus on that Kinetic's technique attacks. Your background focus Kinetic is proficient from the start."));
+    kins.forEach((kin) => {
+      const lvl = kineticProfLevel(kin);
+      const adeptDone = PC.kineticTierTechniques(kin, "Adept").filter((t) => known.indexOf(t.name) > -1).length;
+      const expertDone = PC.kineticTierTechniques(kin, "Expert").filter((t) => known.indexOf(t.name) > -1).length;
+      const focus = isFocusKinetic(kin);
+      const badge = lvl === "expertise" ? '<span class="kin-prof-badge exp">✦ Expertise</span>'
+        : lvl === "proficient" ? '<span class="kin-prof-badge pro">✓ Proficient</span>'
+        : '<span class="kin-prof-badge none">—</span>';
+      let note;
+      if (lvl === "expertise") note = `+${PC.kineticProfBonus(rec.level, lvl)} to hit (2× prof)`;
+      else if (lvl === "proficient") note = `Expert ${expertDone}/5 → expertise`;
+      else note = `Adept ${adeptDone}/5 → proficiency`;
+      const row = el("div", "kin-prof-row");
+      row.innerHTML = `<span class="kin-prof-name">${kin}${focus ? ' <span class="tag">focus</span>' : ""}</span>${badge}<span class="kin-prof-note">${note}</span>`;
+      panel.appendChild(row);
+    });
+    return panel;
+  }
+
   function buildKineticsTab() {
     const root = el("div");
+    const profPanel = kineticProfPanel();
+    if (profPanel) root.appendChild(profPanel);
     const tech = el("div", "panel");
     tech.appendChild(el("div", "section-label", "Techniques — spend KP to use"));
     const known = knownTechniques();

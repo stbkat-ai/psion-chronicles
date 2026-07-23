@@ -67,7 +67,9 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     Expert @15, Master @22) **and** by requiring **≥3 techniques from that Kinetic's previous tier** to
     unlock its next tier. Spend **Combat Skill Points** to learn more **Combat Skills** from **any Fighting
     Style** (grouped by style, your own first; a style's signature Passive is learnable too). Your Heritage's
-    2 starters + its style Passive are free and permanent. Proficiency and pools update automatically;
+    2 starters + its style Passive are free and permanent. **Completing a Kinetic's Adept tier auto-grants
+    proficiency in it; completing its Expert tier auto-grants expertise (double prof)** — the level-up screen
+    toasts the moment you cross either threshold. Proficiency and pools update automatically;
     Otherkin unlocks at 15. Techniques to learn use the same **Kinetic tabs** as creation (focus ★ first,
     Kinetics you know techniques in ✦ next, then the rest by attribute) — each tab lists what's learnable now
     and, for Kinetics you're pursuing, spells out what's still needed to unlock its next tier.
@@ -91,7 +93,10 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
   - **Action economy enforced** — one Move / Action / Bonus Action per turn (Reaction once between turns). Spending
     a slot disables all other options of that type until **End Turn**; a "This Turn" tracker shows what's used
     (tap to toggle manually for feats/abilities that grant extras).
-  - **Kinetics tab** — all known techniques with their Use/Attack/Activate buttons.
+  - **Kinetics tab** — all known techniques with their Use/Attack/Activate buttons, topped by a **Kinetic
+    Proficiencies** summary: completing a Kinetic's **Adept** tier (all 5 techniques) grants **proficiency**
+    in it, and completing its **Expert** tier grants **expertise** (double proficiency bonus on that Kinetic's
+    technique attacks). Your background focus Kinetic is proficient from the start.
   - **Skills tab** — all 36 skills, tap to roll. Skills under a **flaw** are tagged ⚠ and roll with disadvantage.
   - **Traits tab** — your Heritage's positive **traits**, plus your two **flaws** (negative traits): the
     **background** flaw (disadvantage on a whole attribute's skills & Kinetic technique attacks) and the

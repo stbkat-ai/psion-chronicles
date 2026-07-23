@@ -1207,6 +1207,17 @@
 
     const luProf = b ? b.combat[1] : null;
     const luPursued = (kin) => known().some((n) => { const k = PC.technique(n); return k && k.kinetic === kin; });
+    // Kinetic proficiency/expertise earned by completing Adept/Expert tiers (see rules.js).
+    const luIsFocus = (kin) => !!b && b.combat.indexOf(kin) > -1;
+    const luProfLevel = (kin) => PC.kineticProfLevel(kin, known(), luIsFocus(kin));
+    const learnTech = (t) => {
+      const before = luProfLevel(t.kinetic);
+      rec.learnedTechniques.push(t.name);
+      const after = luProfLevel(t.kinetic); // known() now includes the freshly-learned technique
+      if (before !== "expertise" && after === "expertise") toast(`✦ Expertise gained in ${t.kinetic}! Double proficiency bonus on its technique attacks.`);
+      else if (before === "none" && after === "proficient") toast(`✓ Proficiency gained in ${t.kinetic}! (completed its Adept tier)`);
+      persist();
+    };
     // Per-Kinetic locked-tier explanation (only for tiers this character is pursuing).
     const lockedFor = (kin) => {
       if (!luPursued(kin)) return [];
@@ -1237,9 +1248,17 @@
       renderPane: (kin) => {
         const pane = el("div");
         const k = PC.kinetic(kin);
-        pane.appendChild(el("div", "kin-pane-head", `<b>${kin}</b> — ${k.attr} · ${k.role} · ${PC.CHAKRAS[k.attr].name} chakra · <span class="muted">${k.domain}</span>`));
+        const lvl = luProfLevel(kin);
+        const statusTag = lvl === "expertise" ? ' <span class="kin-prof-badge exp">✦ Expertise</span>' : lvl === "proficient" ? ' <span class="kin-prof-badge pro">✓ Proficient</span>' : "";
+        pane.appendChild(el("div", "kin-pane-head", `<b>${kin}</b> — ${k.attr} · ${k.role} · ${PC.CHAKRAS[k.attr].name} chakra · <span class="muted">${k.domain}</span>${statusTag}`));
+        // Progress toward the next proficiency milestone (all 5 of a tier).
+        const adeptDone = PC.kineticTierTechniques(kin, "Adept").filter((t) => known().indexOf(t.name) > -1).length;
+        const expertDone = PC.kineticTierTechniques(kin, "Expert").filter((t) => known().indexOf(t.name) > -1).length;
+        if (lvl === "expertise") pane.appendChild(el("div", "hint", "✦ Expertise — double proficiency bonus on this Kinetic's technique attacks."));
+        else if (lvl === "proficient") pane.appendChild(el("div", "hint", `Proficient. Learn all Expert-tier techniques (<b>${expertDone}/5</b>) to gain <b>expertise</b> (double prof).`));
+        else pane.appendChild(el("div", "hint", `Learn all Adept-tier techniques (<b>${adeptDone}/5</b>) to gain <b>proficiency</b> in this Kinetic.`));
         const list = byKin[kin] || [];
-        if (list.length) list.forEach((t) => pane.appendChild(techLearnCard(t, () => { rec.learnedTechniques.push(t.name); persist(); }, noTP)));
+        if (list.length) list.forEach((t) => pane.appendChild(techLearnCard(t, () => { learnTech(t); }, noTP)));
         else pane.appendChild(el("div", "muted", "Nothing learnable in this Kinetic right now."));
         const locks = lockedFor(kin);
         if (locks.length) { const ln = el("div", "hint kin-lock"); ln.innerHTML = "🔒 " + locks.join(" · "); pane.appendChild(ln); }

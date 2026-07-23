@@ -168,8 +168,18 @@ that attribute's rolls **and** all its Kinetics.
   You earn **+1 TP every level from level 2 onward** (so by level 30 you've gained 29 TP total).
 
 ### Technique tiers (CONFIRMED Luke)
-- Techniques come in tiers, starting at **Beginner** (higher tiers exist — names TBD).
-- A character's **Soul Level gates which tier they may learn/buy.** *(Exact tier→level gates TBD.)*
+- Techniques come in **4 tiers** — **Beginner · Adept · Expert · Master** — with **5 techniques per tier per
+  Kinetic** (18 Kinetics × 4 × 5 = 360 total).
+- A character's **Soul Level gates which tier they may learn/buy** (Adept @8, Expert @15, Master @22), **and**
+  a tier only opens once you already know **≥3 techniques from that Kinetic's previous tier**.
+
+### Kinetic proficiency by tier completion (CONFIRMED Luke)
+- Completing **every technique in a Kinetic's Adept tier** (all 5) **auto-grants proficiency** in that Kinetic
+  — relevant for Kinetics outside your background focus (the focus Kinetic is already proficient).
+- Completing **every technique in its Expert tier** (all 5) **auto-grants expertise** — you add **double your
+  proficiency bonus** to that Kinetic's technique attack rolls.
+- This is **derived automatically** from the techniques a character knows (no separate bookkeeping); the app
+  shows current status on the play sheet's **Kinetics** tab and toasts the moment a threshold is crossed.
 
 ### Three point currencies — keep separate!
 - **KP = Ki Points** — the **Mana** bar (= Mind Pool). Spent to *use* techniques in play; recovers via rest/items/etc.
