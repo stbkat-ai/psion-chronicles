@@ -94,6 +94,9 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     **← Inventory** button returns.
   - **Sheet tab** — the core overview:
   - HP & KP bars with damage/heal/spend controls (quick ±1/±5 or type an amount)
+  - **Soul Pool** — your XP + Soul Level tracker (leveling is GM-driven; XP thresholds are still being
+    tuned), with XP adjusters and the **⭐ Level Up** button right beneath it (opens the Level Up screen;
+    flags any unspent Technique / Attribute / Combat-Skill points)
   - **Interactive Chakra Chart** — click pips to add hits; penalties auto-apply to that attribute's
     modifier (disadvantage → half → zero → locked out) and everything that uses it
   - **Attributes** show live, chakra-adjusted modifiers, with active buffs highlighted

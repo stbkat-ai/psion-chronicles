@@ -300,6 +300,11 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 .poolbar-num { font-size: 1.15rem; font-weight: 700; }
 .poolbar.hp .poolbar-num { color: var(--hp); }
 .poolbar.kp .poolbar-num { color: var(--kp); }
+.poolbar.soul .poolbar-num { color: var(--cyan); }
+.soul-xp { color: var(--text-dim); font-size: .86rem; margin: 2px 0 10px; }
+.soul-xp b { color: var(--cyan); }
+.soul-lvlrow { margin: 4px 0 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.soul-lvlrow .lu-note { color: var(--gold); font-size: .84rem; }
 .bar-track { height: 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
 .bar-fill { height: 100%; border-radius: 10px; transition: width .25s; }
 .poolbar.hp .bar-fill { background: linear-gradient(90deg, #b23046, var(--hp)); }

@@ -57,6 +57,8 @@
     });
     // Inventory lives on the character record (persistent gear, not session state).
     if (!Array.isArray(rec.inventory)) rec.inventory = [];
+    // Soul Pool = accumulated XP (persistent). Leveling is GM-driven; thresholds are TBD.
+    if (typeof rec.xp !== "number") rec.xp = 0;
   }
   function save() {
     const list = App.loadRoster();
@@ -177,6 +179,16 @@
   function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
   function adjustHP(delta) { play.hp = clamp(play.hp + delta, 0, maxHP()); save(); refresh(); }
   function adjustKP(delta) { play.kp = clamp(play.kp + delta, 0, maxKP()); save(); refresh(); }
+  function adjustXP(delta) { rec.xp = Math.max(0, (rec.xp || 0) + delta); save(); refresh(); }
+  // Unspent level-up points (mirrors app.js renderLevelUp): flags when there's something to spend.
+  function unspentPoints() {
+    const lvl = rec.level || 1;
+    const availTP = Math.max(0, lvl - 1) - (rec.learnedTechniques || []).length;
+    const spentAttr = PC.ATTRS.reduce((s, a) => s + ((rec.levelAttr && rec.levelAttr[a]) || 0), 0);
+    const availAttr = Math.floor((lvl - 1) / 2) - spentAttr;
+    const availCSP = Math.floor(lvl / 5) - (rec.learnedCombatSkills || []).length;
+    return { availTP, availAttr, availCSP, any: availTP > 0 || availAttr > 0 || availCSP > 0 };
+  }
   function setChakra(attr, hits) { play.chakraHits[attr] = clamp(hits, 0, PC.RULES.CHAKRA_MAX_HITS); save(); refresh(); }
 
   function logLine(text) { play.log.unshift({ t: text, turn: play.turn }); play.log = play.log.slice(0, 40); }
@@ -568,6 +580,7 @@
     const pools = el("div", "panel");
     pools.appendChild(bar("HP", play.hp, maxHP(), "hp", adjustHP));
     pools.appendChild(bar("KP", play.kp, maxKP(), "kp", adjustKP));
+    pools.appendChild(soulBar());
     const rests = el("div", "rest-row");
     const sr = el("button", "btn small", "☾ Short Rest");
     sr.onclick = shortRest;
@@ -708,6 +721,41 @@
     const t = el("div", "tile");
     t.innerHTML = `<div class="tile-val">${val}</div><div class="tile-label">${label}</div>`;
     return t;
+  }
+  // Soul Pool — XP + Soul Level tracker (leveling is GM-driven; XP thresholds are TBD), with the
+  // Level Up button right beneath it. Opens the dedicated Level Up screen (app.js).
+  function soulBar() {
+    const box = el("div", "poolbar soul");
+    const head = el("div", "poolbar-head");
+    head.innerHTML = `<span>Soul Pool</span><span class="poolbar-num">Soul Level ${rec.level}${rec.level >= 30 ? " · MAX" : ""}</span>`;
+    box.appendChild(head);
+    box.appendChild(el("div", "soul-xp", `Experience: <b>${rec.xp || 0}</b> XP · leveling is GM-driven (thresholds being tuned)`));
+    // XP adjusters (GM awards / corrects XP).
+    const ctr = el("div", "adjust-row");
+    [[-10, "−10"], [-1, "−1"], [1, "+1"], [10, "+10"]].forEach(([n, t]) => {
+      const b = el("button", "btn small ghost", t); b.onclick = () => adjustXP(n); ctr.appendChild(b);
+    });
+    const inp = el("input"); inp.type = "number"; inp.placeholder = "#"; inp.className = "adjust-input";
+    const add = el("button", "btn small", "Add XP"); add.onclick = () => { const v = parseInt(inp.value, 10); if (v) adjustXP(Math.abs(v)); };
+    const rem = el("button", "btn small ghost", "Remove"); rem.onclick = () => { const v = parseInt(inp.value, 10); if (v) adjustXP(-Math.abs(v)); };
+    ctr.appendChild(inp); ctr.appendChild(add); ctr.appendChild(rem);
+    box.appendChild(ctr);
+    // Level Up button, right under the Soul Pool.
+    const luRow = el("div", "soul-lvlrow");
+    const lu = el("button", "btn primary small", rec.level >= 30 ? "Max Level (30)" : "⭐ Level Up");
+    lu.disabled = rec.level >= 30;
+    lu.onclick = () => App.openLevelUp(rec.id);
+    luRow.appendChild(lu);
+    const up = unspentPoints();
+    if (up.any) {
+      const bits = [];
+      if (up.availTP > 0) bits.push(`${up.availTP} TP`);
+      if (up.availAttr > 0) bits.push(`${up.availAttr} attribute`);
+      if (up.availCSP > 0) bits.push(`${up.availCSP} CSP`);
+      luRow.appendChild(el("span", "lu-note", `★ ${bits.join(" · ")} to spend`));
+    }
+    box.appendChild(luRow);
+    return box;
   }
 
   function inventoryItem(it, idx) {

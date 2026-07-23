@@ -1236,6 +1236,7 @@
     saveRoster: saveRoster,
     toast: toast,
     goHome: function () { playId = null; levelUpId = null; state = null; render(); },
+    openLevelUp: function (id) { playId = null; state = null; levelUpId = id; render(); },
     render: render,
     el: el,
   };
