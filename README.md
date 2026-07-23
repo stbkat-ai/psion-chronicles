@@ -37,8 +37,11 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
   3. Attributes — roll 8d12 (drop 2 lowest, +10) or enter manually, then assign
   4. Skills — background gives 3, choose 2 more (**+1 per skill-proficiency grant** from your Heritage —
      e.g. Oceania's *Adaptable* makes it 3)
-  5. Techniques — background's free one + choose 2 from any school (all 18 Kinetics' **Beginner** techniques
-     are in the app — 90 total; higher tiers arrive with the level-up system)
+  5. Techniques — background's free one + choose 2 from any school. The 18 Kinetics are shown as **tabs**
+     (tap one to browse just its Beginner techniques — no more scrolling a 90-card wall). Tabs are ordered
+     **your focus first** (★, from your background), then any Kinetic you've already picked into (✦), then
+     the rest in attribute order; each tab badges how many you've chosen from it. All 18 Kinetics' **Beginner**
+     techniques are in the app — 90 total; higher tiers arrive with the level-up system.
   6. **Equipment** (chosen **last**, so Heritage counts) — your starting-weapon options come from **three**
      sources: (a) your background's weapon proficiency; (b) any **bonus proficiency** a Heritage grants — e.g.
      Europe's *Martial Heritage* adds a **bonus weapon-type** selector here, and both count as proficient; and
@@ -62,7 +65,9 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     unlock its next tier. Spend **Combat Skill Points** to learn more **Combat Skills** from **any Fighting
     Style** (grouped by style, your own first; a style's signature Passive is learnable too). Your Heritage's
     2 starters + its style Passive are free and permanent. Proficiency and pools update automatically;
-    Otherkin unlocks at 15.
+    Otherkin unlocks at 15. Techniques to learn use the same **Kinetic tabs** as creation (focus ★ first,
+    Kinetics you know techniques in ✦ next, then the rest by attribute) — each tab lists what's learnable now
+    and, for Kinetics you're pursuing, spells out what's still needed to unlock its next tier.
 
 - **Live Play Sheet** (▶ Play on a character) — the at-the-table screen, organized into tabs so there's
   little scrolling: **Sheet · ⚔ Combat · Limbs · Kinetics · Skills · Inventory**.

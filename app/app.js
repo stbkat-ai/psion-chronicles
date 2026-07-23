@@ -35,6 +35,8 @@
   let state, step, rolled;
   let playId = null; // when set, we're in the live play sheet for this character id
   let levelUpId = null; // when set, we're in the level-up screen for this character id
+  let creatorKinTab = null; // active Kinetic tab on the creator's Techniques step (persists across re-renders)
+  let levelUpKinTab = null; // active Kinetic tab on the level-up screen's learn-techniques area
 
   function newState() {
     return {
@@ -209,7 +211,7 @@
     const edit = el("button", "btn ghost small", "✎ Edit");
     edit.onclick = () => editCharacter(c.id);
     const lvl = el("button", "btn ghost small", "⭐ Level Up");
-    lvl.onclick = () => { levelUpId = c.id; state = null; playId = null; render(); };
+    lvl.onclick = () => { levelUpId = c.id; state = null; playId = null; levelUpKinTab = null; render(); };
     const play = el("button", "btn primary small", "▶ Play");
     play.onclick = () => { playId = c.id; state = null; render(); };
     row.appendChild(del);
@@ -220,7 +222,7 @@
     return card;
   }
 
-  function startCreator() { state = newState(); step = 0; rolled = null; render(); }
+  function startCreator() { state = newState(); step = 0; rolled = null; creatorKinTab = null; render(); }
 
   function editCharacter(id) {
     const c = loadRoster().find((x) => x.id === id);
@@ -233,7 +235,7 @@
     if (!Array.isArray(state.bonusWeaponProfs)) state.bonusWeaponProfs = [];
     if (!state.chakraHits) state.chakraHits = { STR: 0, AGI: 0, CON: 0, INT: 0, WIS: 0, CHA: 0 };
     state._editing = true;
-    playId = null; step = 0; rolled = null;
+    playId = null; step = 0; rolled = null; creatorKinTab = null;
     render();
   }
 
@@ -660,32 +662,44 @@
     // group by kinetic (creation only offers Beginner-tier techniques)
     const byKin = {};
     PC.TECHNIQUES.filter((t) => t.tier === "Beginner").forEach((t) => { (byKin[t.kinetic] = byKin[t.kinetic] || []).push(t); });
-    Object.keys(byKin).forEach((kin) => {
-      const k = PC.kinetic(kin);
-      const label = el("div"); label.style.margin = "12px 0 6px"; label.style.color = "var(--psi-bright)"; label.style.fontSize = ".82rem";
-      label.textContent = `${kin} — ${k.attr} · ${k.role} · ${PC.CHAKRAS[k.attr].name} chakra`;
-      p.appendChild(label);
-      byKin[kin].forEach((t) => {
-        const chosen = state.chosenTechniques.includes(t.name);
-        const isFree = b && b.freeTech === t.name;
-        const card = techCard(t, isFree ? "free" : (chosen ? "selected" : ""));
-        if (!isFree) {
-          card.onclick = () => {
-            const i = state.chosenTechniques.indexOf(t.name);
-            if (i > -1) state.chosenTechniques.splice(i, 1);
-            else if (state.chosenTechniques.length < 2) state.chosenTechniques.push(t.name);
-            else { toast("Choose only 2 techniques. Deselect one first."); return; }
-            render();
-          };
-        }
-        p.appendChild(card);
-      });
-    });
 
-    const note = el("p", "hint");
-    note.style.marginTop = "16px";
-    note.innerHTML = "All 18 Kinetics' <b>Beginner</b> techniques are available — pick any 2 from any school. (Higher tiers unlock as you level up, once that system is added.)";
-    p.appendChild(note);
+    // Tabs: proficient Kinetic first, then any you've picked into, then the rest by attribute.
+    const profKin = b ? b.combat[1] : null;
+    const freeKin = b && b.freeTech && PC.technique(b.freeTech) ? PC.technique(b.freeTech).kinetic : null;
+    const pursued = (kin) => (byKin[kin] || []).some((t) => state.chosenTechniques.includes(t.name)) || kin === freeKin;
+    const order = orderKineticNames(Object.keys(byKin), profKin, pursued);
+    if (order.indexOf(creatorKinTab) < 0) creatorKinTab = order[0];
+
+    p.appendChild(el("p", "hint", "Each Kinetic is a tab — your background's focus is first (★), Kinetics you've picked into are marked ✦. Tap a tab to browse its Beginner techniques."));
+    p.appendChild(kineticPicker({
+      order: order,
+      active: creatorKinTab,
+      proficient: profKin,
+      pursued: pursued,
+      badge: (kin) => { const n = (byKin[kin] || []).filter((t) => state.chosenTechniques.includes(t.name)).length; return n ? n : null; },
+      onSelect: (kin) => { creatorKinTab = kin; render(); },
+      renderPane: (kin) => {
+        const pane = el("div");
+        const k = PC.kinetic(kin);
+        pane.appendChild(el("div", "kin-pane-head", `<b>${kin}</b> — ${k.attr} · ${k.role} · ${PC.CHAKRAS[k.attr].name} chakra · <span class="muted">${k.domain}</span>`));
+        (byKin[kin] || []).forEach((t) => {
+          const chosen = state.chosenTechniques.includes(t.name);
+          const isFree = b && b.freeTech === t.name;
+          const card = techCard(t, isFree ? "free" : (chosen ? "selected" : ""));
+          if (!isFree) {
+            card.onclick = () => {
+              const i = state.chosenTechniques.indexOf(t.name);
+              if (i > -1) state.chosenTechniques.splice(i, 1);
+              else if (state.chosenTechniques.length < 2) state.chosenTechniques.push(t.name);
+              else { toast("Choose only 2 techniques. Deselect one first."); return; }
+              render();
+            };
+          }
+          pane.appendChild(card);
+        });
+        return pane;
+      },
+    }));
 
     p.appendChild(navRow(() => { step = 3; render(); }, () => { step = 5; render(); }, "Next →", state.chosenTechniques.length === 2));
     return p;
@@ -701,6 +715,40 @@
        <div class="tdesc">${t.desc}</div>
        <div class="teff">▸ ${t.effect}</div>`;
     return card;
+  }
+
+  /* ---------- shared Kinetic tab picker (creator + level-up) ----------
+     Ordering: your proficient Kinetic first, then any Kinetic you already
+     have techniques in, then the rest in attribute order (STR→AGI→CON→INT→WIS→CHA). */
+  function orderKineticNames(names, proficient, pursued) {
+    const base = PC.KINETICS.map((k) => k.name).filter((n) => names.indexOf(n) >= 0);
+    const rank = (n) => (n === proficient ? 0 : pursued(n) ? 1 : 2);
+    return base.slice().sort((a, b) => (rank(a) - rank(b)) || (base.indexOf(a) - base.indexOf(b)));
+  }
+  // opts: {order, active, proficient, pursued(kin), badge(kin)|null, onSelect(kin), renderPane(kin)}
+  function kineticPicker(opts) {
+    const wrap = el("div", "kin-picker");
+    const bar = el("div", "kin-tabbar");
+    opts.order.forEach((kin) => {
+      const k = PC.kinetic(kin);
+      const prof = opts.proficient === kin;
+      const pursued = !prof && opts.pursued(kin);
+      const t = el("button", "kin-tab" + (opts.active === kin ? " active" : "") + (prof ? " prof" : pursued ? " pursued" : ""));
+      const mark = prof ? "★" : pursued ? "✦" : "";
+      const badge = opts.badge ? opts.badge(kin) : null;
+      t.type = "button";
+      t.innerHTML =
+        `<span class="kin-tab-top"><span class="kin-tab-name">${kin}</span>${mark ? `<span class="kin-tab-mark">${mark}</span>` : ""}</span>` +
+        `<span class="kin-tab-sub">${k.attr}${badge != null ? ` · <b>${badge}</b>` : ""}</span>`;
+      t.title = `${k.attr} · ${k.role} · ${PC.CHAKRAS[k.attr].name} chakra — ${k.domain}` + (prof ? " (your focus)" : pursued ? " (in progress)" : "");
+      t.onclick = () => opts.onSelect(kin);
+      bar.appendChild(t);
+    });
+    wrap.appendChild(bar);
+    const pane = el("div", "kin-tab-content");
+    pane.appendChild(opts.renderPane(opts.active));
+    wrap.appendChild(pane);
+    return wrap;
   }
 
   /* ---------- STEP 5: Equipment (last selection — reflects background + heritage profs) ---------- */
@@ -1139,43 +1187,56 @@
     });
     tp.appendChild(kl);
 
-    tp.appendChild(el("p", "hint", "To unlock a Kinetic's next tier you must reach its level gate <b>and</b> already know at least <b>3 techniques from that Kinetic's previous tier</b>."));
-    // Unlocked techniques are ALWAYS shown (even with 0 TP) so a met requirement never *looks* unmet —
-    // when you can't afford them yet, the Learn button is just disabled.
+    tp.appendChild(el("p", "hint", "Each Kinetic is a tab — your focus first (★), Kinetics you already know techniques in are marked ✦. To unlock a Kinetic's next tier you must reach its level gate <b>and</b> already know at least <b>3 techniques from its previous tier</b>."));
+    // Learn buttons are disabled (not hidden) when you have no TP, so a met requirement never *looks* unmet.
     const noTP = availTP <= 0;
-    tp.appendChild(el("div", "eq-choice-label", "Unlocked — learnable" + (noTP ? " (no Technique Points to spend yet)" : "")));
-    if (noTP) tp.appendChild(el("div", "muted", "You have no Technique Points right now. Anything you've unlocked is listed below — level up to earn a point and learn it."));
+    if (noTP) tp.appendChild(el("div", "muted", "No Technique Points to spend right now — browse what each Kinetic offers; the Learn buttons enable once you level up."));
+
     const learnable = PC.TECHNIQUES.filter((t) => tierUnlocked(t.tier) && tierPrereqMet(t) && knownNames.indexOf(t.name) < 0);
     const byKin = {};
     learnable.forEach((t) => { (byKin[t.kinetic] = byKin[t.kinetic] || []).push(t); });
-    if (!Object.keys(byKin).length) tp.appendChild(el("div", "muted", "Nothing unlocked yet — reach a tier's level gate and know 3 from the prior tier to open the next."));
-    Object.keys(byKin).forEach((kin) => {
-      tp.appendChild(el("div", "skill-attr-label", kin));
-      byKin[kin].forEach((t) => tp.appendChild(techLearnCard(t, () => { rec.learnedTechniques.push(t.name); persist(); }, noTP)));
-    });
-    // Show which higher tiers are close but locked, and why (always visible, regardless of TP).
-    const lockNotes = [];
-    ["Adept", "Expert", "Master"].forEach((tier) => {
-      const kins = {};
-      PC.TECHNIQUES.forEach((t) => { if (t.tier === tier) kins[t.kinetic] = true; });
-      Object.keys(kins).forEach((kin) => {
-        const haveAny = known().some((n) => { const k = PC.technique(n); return k && k.kinetic === kin; });
-        if (!haveAny) return; // only nag about kinetics the character is pursuing
+
+    const luProf = b ? b.combat[1] : null;
+    const luPursued = (kin) => known().some((n) => { const k = PC.technique(n); return k && k.kinetic === kin; });
+    // Per-Kinetic locked-tier explanation (only for tiers this character is pursuing).
+    const lockedFor = (kin) => {
+      if (!luPursued(kin)) return [];
+      const notes = [];
+      ["Adept", "Expert", "Master"].forEach((tier) => {
         const needLevel = !tierUnlocked(tier);
         const needPrereq = countKnownIn(kin, prevTier[tier]) < 3;
         if (needLevel || needPrereq) {
           const why = [];
           if (needLevel) why.push("Soul Level " + tierGate[tier]);
-          if (needPrereq) why.push((3 - countKnownIn(kin, prevTier[tier])) + " more " + prevTier[tier] + " " + kin);
-          lockNotes.push(`<b>${kin} ${tier}</b>: needs ${why.join(" + ")}`);
+          if (needPrereq) why.push((3 - countKnownIn(kin, prevTier[tier])) + " more " + prevTier[tier]);
+          notes.push(`${tier}: needs ${why.join(" + ")}`);
         }
       });
-    });
-    if (lockNotes.length) {
-      tp.appendChild(el("div", "eq-choice-label", "Locked (for Kinetics you're pursuing)"));
-      const ln = el("div", "hint"); ln.innerHTML = "🔒 " + lockNotes.join(" · ");
-      tp.appendChild(ln);
-    }
+      return notes;
+    };
+
+    const luOrder = orderKineticNames(PC.KINETICS.map((k) => k.name), luProf, luPursued);
+    if (luOrder.indexOf(levelUpKinTab) < 0) levelUpKinTab = luOrder[0];
+
+    tp.appendChild(kineticPicker({
+      order: luOrder,
+      active: levelUpKinTab,
+      proficient: luProf,
+      pursued: luPursued,
+      badge: (kin) => { const n = (byKin[kin] || []).length; return n ? n : null; },
+      onSelect: (kin) => { levelUpKinTab = kin; render(); },
+      renderPane: (kin) => {
+        const pane = el("div");
+        const k = PC.kinetic(kin);
+        pane.appendChild(el("div", "kin-pane-head", `<b>${kin}</b> — ${k.attr} · ${k.role} · ${PC.CHAKRAS[k.attr].name} chakra · <span class="muted">${k.domain}</span>`));
+        const list = byKin[kin] || [];
+        if (list.length) list.forEach((t) => pane.appendChild(techLearnCard(t, () => { rec.learnedTechniques.push(t.name); persist(); }, noTP)));
+        else pane.appendChild(el("div", "muted", "Nothing learnable in this Kinetic right now."));
+        const locks = lockedFor(kin);
+        if (locks.length) { const ln = el("div", "hint kin-lock"); ln.innerHTML = "🔒 " + locks.join(" · "); pane.appendChild(ln); }
+        return pane;
+      },
+    }));
     wrap.appendChild(tp);
 
     // learn combat skills (from Regional Heritage system)
@@ -1236,7 +1297,7 @@
     saveRoster: saveRoster,
     toast: toast,
     goHome: function () { playId = null; levelUpId = null; state = null; render(); },
-    openLevelUp: function (id) { playId = null; state = null; levelUpId = id; render(); },
+    openLevelUp: function (id) { playId = null; state = null; levelUpId = id; levelUpKinTab = null; render(); },
     render: render,
     el: el,
   };
