@@ -120,5 +120,6 @@ backend + login) is a **deferred, future feature** — noted, not yet built.
 
 ---
 
-*This log is maintained by hand as decisions are made. When a feature's behavior changes, update the
-relevant entry here and the matching section of `GAME_RULES.md`.*
+*Standing rule (recorded in `CLAUDE.md`): this log is updated as part of every feature change — a new
+entry or revision here, the matching `GAME_RULES.md`/`README.md` sections, and a re-publish of the
+private Artifacts — automatically, without needing to be asked.*

@@ -37,3 +37,19 @@ in the browser's `localStorage` (key `psion_chronicles_characters`), so saved da
 - Git branch is `main`; end commit messages with the `Co-Authored-By: Claude …` trailer.
 - **Never** `git add -A`: the untracked `Jobs/` folder is unrelated personal files and must stay out of
   commits. Stage `app/…` and the docs explicitly.
+
+## STANDING RULE — keep docs & artifacts in sync (do this WITHOUT being asked)
+The user has instructed that whenever a feature is added or its behavior changes, the record must be
+updated as part of the **same** change — never left for later. On every such change:
+1. **`DESIGN_LOG.md`** — add or revise the decision entry: what changed, **why**, and any choices the
+   user made. This is the plain-English "why" record.
+2. **`GAME_RULES.md`** (and **`README.md`** if it's player-facing) — update the matching section so the
+   rules stay accurate.
+3. Bump the `?v=N` cache-buster on the 6 tags in `app/index.html`.
+4. Rebuild the single-file bundle: `python build_bundle.py`.
+5. **Re-publish both private Artifacts to their existing URLs** (pass `url=` so the links don't change),
+   so the phone-accessible copies reflect the change, then tell the user you did:
+   - App → `https://claude.ai/code/artifact/35e25743-9e4e-4ce2-8bb2-f1a2a77deb2a`
+   - Design Log → `https://claude.ai/code/artifact/9c8d5e40-d89a-48fa-8173-886486b56ecc`
+
+Treat steps 1–2 as mandatory for any behavior change; steps 3–5 whenever the app code changed.
