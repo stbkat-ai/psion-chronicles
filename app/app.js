@@ -19,7 +19,10 @@
     try { return JSON.parse(localStorage.getItem(STORE_KEY)) || []; }
     catch (e) { return []; }
   }
-  function saveRoster(list) { localStorage.setItem(STORE_KEY, JSON.stringify(list)); }
+  function saveRoster(list) {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(list)); }
+    catch (e) { toast("⚠ Couldn't save — this browser is blocking local storage."); }
+  }
 
   function toast(msg) {
     let t = $(".toast");
@@ -1331,9 +1334,13 @@
   };
 
   /* ---------- boot ---------- */
-  document.addEventListener("DOMContentLoaded", () => {
+  function boot() {
     $("#new-btn").onclick = () => { playId = null; levelUpId = null; startCreator(); };
     $("#home-btn").onclick = () => { playId = null; levelUpId = null; state = null; render(); };
     render();
-  });
+  }
+  // Boot as soon as the DOM is ready. Guard on readyState so bundling contexts that run scripts
+  // after the document has already parsed (e.g. a single-file Artifact build) still start up.
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+  else boot();
 })();

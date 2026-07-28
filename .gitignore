@@ -10,3 +10,9 @@ desktop.ini
 *~
 
 # Local dev server / logs (none tracked)
+
+# Generated single-file bundle (reproduce with: python build_bundle.py)
+dist/
+
+# Unrelated personal files — never part of Psion Chronicles
+Jobs/
