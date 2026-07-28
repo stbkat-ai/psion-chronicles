@@ -57,8 +57,12 @@ updated as part of the **same** change — never left for later. On every such c
 2. **`GAME_RULES.md`** (and **`README.md`** if it's player-facing) — update the matching section so the
    rules stay accurate.
 3. Bump the `?v=N` cache-buster on the 6 tags in `app/index.html`.
-4. Commit and **`git push`** — the public GitHub Pages site redeploys automatically (live within ~1 min),
-   so the phone-accessible copy reflects the change. Tell the user it's live.
+4. Commit and **land the change on `main`** — GitHub Pages only redeploys from `main`, so the
+   phone-accessible copy doesn't update until the change is on `main`. **The user has given standing
+   approval to merge to `main` as soon as the code is written — do it automatically, without asking.**
+   If you developed on a working branch, push it and then fast-forward `main` to it
+   (`git push origin <branch>:main`) or merge the PR; if there's no branch requirement, commit straight
+   to `main`. Deploy is automatic and live within ~1 min. Tell the user it's live with the link.
 5. (Optional) Rebuild the single-file bundle `python build_bundle.py`; and only if you're still keeping the
    legacy private Claude artifacts current, re-publish them to their existing URLs.
 
