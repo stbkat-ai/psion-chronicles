@@ -19,7 +19,8 @@ Post-apocalyptic "Post-Veil" world. Characters awaken psionic/kinetic powers. Th
 - **Page 2:** Skills list — proficiency checkbox per skill, which attribute modifies it, the tracked modifier.
 - **Core pages:** **Kinetic Techniques (KT)** the character knows — name, which Kinetic it belongs to, effects & rules.
 - **Inventory:** carry weight + equipped/carried items.
-- **Notes:** appearance, backstory, campaign journal.
+- **Description:** the character's appearance & basic info — Basics (age, gender, pronouns), Physical appearance (height, weight, skin tone, hair colour/style, eye colour), and distinguishing features (tattoos, piercings, scars, etc.). Pure flavor, **no rules effect**; filled in at creation and editable on the play sheet.
+- **Notes:** backstory, campaign journal.
 
 ---
 

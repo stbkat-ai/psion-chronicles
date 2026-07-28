@@ -14,6 +14,37 @@
   };
   const STORE_KEY = "psion_chronicles_characters";
 
+  /* ---------- description schema ----------
+     Character appearance / basic info. Pure flavor — no rules effect. Defined once here so the
+     creator step (app.js) and the play sheet's Description tab (play.js) stay in perfect sync. */
+  const DESCRIPTION_GROUPS = [
+    { label: "Basics", fields: [
+      { key: "age", label: "Age", ph: "e.g. 27" },
+      { key: "gender", label: "Gender", ph: "e.g. Woman" },
+      { key: "pronouns", label: "Pronouns", ph: "e.g. she/her" },
+    ] },
+    { label: "Physical appearance", fields: [
+      { key: "height", label: "Height", ph: 'e.g. 5\'9"' },
+      { key: "weight", label: "Weight", ph: "e.g. 160 lb" },
+      { key: "skinTone", label: "Skin tone", ph: "e.g. Olive" },
+      { key: "hairColor", label: "Hair color", ph: "e.g. Black" },
+      { key: "hairStyle", label: "Hair style", ph: "e.g. Shoulder-length, braided" },
+      { key: "eyeColor", label: "Eye color", ph: "e.g. Amber" },
+    ] },
+  ];
+  const DESCRIPTION_MISC = { key: "marks", label: "Distinguishing features", ph: "Tattoos, piercings, scars, cybernetics, other notable details…" };
+  // A blank description object with every schema key present.
+  function defaultDescription() {
+    const d = {};
+    DESCRIPTION_GROUPS.forEach((g) => g.fields.forEach((f) => { d[f.key] = ""; }));
+    d[DESCRIPTION_MISC.key] = "";
+    return d;
+  }
+  // Escape user-entered text before inserting it via innerHTML (Review summary).
+  function escapeHtml(s) {
+    return String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  }
+
   /* ---------- persistence ---------- */
   function loadRoster() {
     try { return JSON.parse(localStorage.getItem(STORE_KEY)) || []; }
@@ -34,7 +65,7 @@
   }
 
   /* ---------- creator state ---------- */
-  const STEPS = ["Identity", "Heritage", "Attributes", "Skills", "Techniques", "Equipment", "Review"];
+  const STEPS = ["Identity", "Heritage", "Attributes", "Skills", "Techniques", "Equipment", "Description", "Review"];
   let state, step, rolled;
   let playId = null; // when set, we're in the live play sheet for this character id
   let levelUpId = null; // when set, we're in the level-up screen for this character id
@@ -59,6 +90,7 @@
       startWeaponMode: null,  // "single" | "dual" for two-weapon-fighting heritages
       bonusWeaponProfs: [],   // extra weapon-type proficiencies chosen from grants (e.g. Martial Heritage)
       chakraHits: { STR: 0, AGI: 0, CON: 0, INT: 0, WIS: 0, CHA: 0 },
+      description: defaultDescription(), // appearance / basic info (flavor only)
       notes: "",
       createdAt: new Date().toISOString(),
     };
@@ -237,6 +269,7 @@
     if (!Array.isArray(state.learnedCombatSkills)) state.learnedCombatSkills = [];
     if (!Array.isArray(state.bonusWeaponProfs)) state.bonusWeaponProfs = [];
     if (!state.chakraHits) state.chakraHits = { STR: 0, AGI: 0, CON: 0, INT: 0, WIS: 0, CHA: 0 };
+    state.description = Object.assign(defaultDescription(), state.description || {}); // backfill for pre-Description characters
     state._editing = true;
     playId = null; step = 0; rolled = null; creatorKinTab = null;
     render();
@@ -270,7 +303,8 @@
       case 3: return stepSkills();
       case 4: return stepTechniques();
       case 5: return stepEquipment();
-      case 6: return stepReview();
+      case 6: return stepDescription();
+      case 7: return stepReview();
     }
   }
 
@@ -764,7 +798,7 @@
     // Editing keeps the character's existing inventory; nothing to pick here.
     if (state._editing) {
       p.appendChild(el("p", "hint", "Editing an existing character keeps its current inventory. Manage items on the Play sheet's Inventory tab."));
-      p.appendChild(navRow(() => { step = 4; render(); }, () => { step = 6; render(); }, "Review →", true));
+      p.appendChild(navRow(() => { step = 4; render(); }, () => { step = 6; render(); }, "Next →", true));
       return p;
     }
 
@@ -902,12 +936,45 @@
 
     // Require any weapon-grant slots to be filled before proceeding.
     const grantsFilled = !wGrants.length || state.bonusWeaponProfs.slice(0, wGrants.length).every((x) => !!x);
-    p.appendChild(navRow(() => { step = 4; render(); }, () => { step = 6; render(); }, "Review →", grantsFilled));
+    p.appendChild(navRow(() => { step = 4; render(); }, () => { step = 6; render(); }, "Next →", grantsFilled));
     if (!grantsFilled) p.appendChild(el("p", "hint", "Choose your bonus weapon proficiency to continue."));
     return p;
   }
 
-  /* ---------- STEP 6: Review ---------- */
+  /* ---------- STEP: Description (appearance / basic info — flavor only) ---------- */
+  function descField(f) {
+    const l = el("label", "field");
+    l.appendChild(el("span", null, f.label));
+    const i = el("input"); i.type = "text"; i.placeholder = f.ph || "";
+    i.value = state.description[f.key] || "";
+    i.oninput = () => (state.description[f.key] = i.value); // no re-render, so focus is kept while typing
+    l.appendChild(i);
+    return l;
+  }
+  function stepDescription() {
+    if (!state.description) state.description = defaultDescription();
+    const p = el("div", "panel");
+    p.appendChild(el("h2", null, 'Description <span class="sub">— what your character looks like</span>'));
+    p.appendChild(el("p", "hint", "Optional flavor: describe your character's appearance and basic details. None of this affects the rules — it shows up on the <b>Description</b> tab of your play sheet so you and your table can picture them. Leave any field blank if you'd rather not say."));
+
+    DESCRIPTION_GROUPS.forEach((g) => {
+      p.appendChild(el("div", "section-label", g.label));
+      const grid = el("div", "desc-grid");
+      g.fields.forEach((f) => grid.appendChild(descField(f)));
+      p.appendChild(grid);
+    });
+
+    p.appendChild(el("div", "section-label", DESCRIPTION_MISC.label));
+    const misc = el("textarea"); misc.rows = 3; misc.placeholder = DESCRIPTION_MISC.ph;
+    misc.value = state.description[DESCRIPTION_MISC.key] || "";
+    misc.oninput = () => (state.description[DESCRIPTION_MISC.key] = misc.value);
+    p.appendChild(misc);
+
+    p.appendChild(navRow(() => { step = 5; render(); }, () => { step = 7; render(); }, "Review →", true));
+    return p;
+  }
+
+  /* ---------- STEP: Review ---------- */
   function stepReview() {
     const p = el("div", "panel");
     p.appendChild(el("h2", null, state._editing
@@ -1024,6 +1091,23 @@
     else if (b.freeTech) { const c = el("div","tech-card free"); c.innerHTML = `<div class="tname">${b.freeTech}</div><div class="tdesc">(details TBD)</div>`; p.appendChild(c); }
     state.chosenTechniques.forEach((n) => { const t = PC.technique(n); if (t) p.appendChild(techCard(t, "")); });
 
+    // description (appearance) — only show sections that were filled in
+    const desc = state.description || {};
+    const descRows = [];
+    DESCRIPTION_GROUPS.forEach((g) => g.fields.forEach((f) => { if ((desc[f.key] || "").trim()) descRows.push([f.label, desc[f.key]]); }));
+    const miscVal = (desc[DESCRIPTION_MISC.key] || "").trim();
+    if (descRows.length || miscVal) {
+      p.appendChild(el("div", "section-label", "Description"));
+      if (descRows.length) {
+        const dg = el("div", "sheet-grid");
+        const dL = el("div"), dR = el("div");
+        descRows.forEach((row, i) => (i % 2 === 0 ? dL : dR).appendChild(statLine(row[0], escapeHtml(row[1]))));
+        dg.appendChild(dL); dg.appendChild(dR);
+        p.appendChild(dg);
+      }
+      if (miscVal) p.appendChild(el("div", "inv-note", `<b>${DESCRIPTION_MISC.label}:</b> ${escapeHtml(miscVal)}`));
+    }
+
     // notes
     const nl = el("label", "field"); nl.style.marginTop = "16px";
     nl.appendChild(el("span", null, "Notes / backstory (optional)"));
@@ -1035,7 +1119,7 @@
     // save
     const row = el("div", "nav-row");
     const back = el("button", "btn ghost", "← Back");
-    back.onclick = () => { step = 5; render(); };
+    back.onclick = () => { step = 6; render(); };
     const save = el("button", "btn primary", state._editing ? "✓ Update Character" : "✓ Save Character");
     save.onclick = () => {
       const list = loadRoster();
@@ -1331,6 +1415,10 @@
     openLevelUp: function (id) { playId = null; state = null; levelUpId = id; levelUpKinTab = null; render(); },
     render: render,
     el: el,
+    // Description schema (shared with play.js so the creator + play tab stay in sync).
+    descriptionGroups: DESCRIPTION_GROUPS,
+    descriptionMisc: DESCRIPTION_MISC,
+    defaultDescription: defaultDescription,
   };
 
   /* ---------- boot ---------- */

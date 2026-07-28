@@ -106,6 +106,9 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: var(--p
 label.field { display: block; margin-bottom: 14px; }
 label.field > span { display: block; font-size: .82rem; color: var(--text-dim); margin-bottom: 5px; }
 
+/* ---- Description (appearance) form — two-column on wide screens, single on mobile ---- */
+.desc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+
 /* ---- Attribute grid ---- */
 .attr-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 .attr-card {
@@ -466,7 +469,7 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 .log-turn { color: var(--psi-bright); font-weight: 700; font-size: .74rem; margin-right: 6px; }
 
 @media (max-width: 680px) {
-  .sheet-grid, .pools { grid-template-columns: 1fr; }
+  .sheet-grid, .pools, .desc-grid { grid-template-columns: 1fr; }
   .attr-grid { grid-template-columns: repeat(2, 1fr); }
   .stepper .step-pill span.lbl { display: none; }
   .step-pill { min-width: 0; flex-basis: auto; }
