@@ -99,11 +99,19 @@ higher-tier ones (so a completed lower-tier attack benefits too).
 progress show on the play sheet's **Kinetics** tab, and the level-up screen toasts the moment you
 cross a threshold.
 
-### 8. Saving & access — private Artifact + local git
-**Decision.** The app is packaged into a single self-contained HTML file (`build_bundle.py` →
-`dist/psion_chronicles.html`) and published as a **private Claude Artifact**, so it opens on any device
-signed into the same Claude account. The full source + history stays in **git on the PC** as the
-durable record.
+### 8. Saving & access — GitHub Pages (public), with git as the backup
+**Decision.** The project lives in a public GitHub repo — **`stbkat-ai/psion-chronicles`** — and is served
+live via **GitHub Pages** at **https://stbkat-ai.github.io/psion-chronicles/**. A `git push` auto-deploys.
+**Why we moved here.** We first published the app + this log as **private Claude Artifacts**. They worked,
+but a private artifact is locked to the exact Claude account that created it (here the sanctuary's
+`tracy@` Teams account). On other devices the browser/app defaulted to a *different* account, so the links
+404'd and the phone couldn't open them — and the Claude phone *app* has no artifact gallery at all. A plain
+**public URL needs no login and works in any browser on any device**, which is what "open it on my phone"
+actually requires. The homebrew game content isn't sensitive, so public is an easy trade. The private
+artifacts still exist as a legacy copy; GitHub Pages is the canonical front door.
+**Backup.** The full source **and 26+ commits of history** now live on GitHub (off-machine), not just on
+the one PC. `build_bundle.py` still produces a single-file build for anyone who wants to drop it on another
+host.
 **Known limitation — data doesn't sync.** Characters live in each device's own browser storage, so a
 character made on the PC won't appear on the phone (and vice-versa). Real cross-device sync (a small
 backend + login) is a **deferred, future feature** — noted, not yet built.
@@ -116,10 +124,10 @@ backend + login) is a **deferred, future feature** — noted, not yet built.
   full sync.
 - Heritage-opened starting weapons granting **actual proficiency** (currently start-only).
 - A real **XP-to-next-level** bar once Luke sets the thresholds.
-- Off-PC backup of the **source** (e.g. a private GitHub repo) — belt-and-suspenders for the code.
+- Off-PC backup of the **source** — ✅ done (public GitHub repo `stbkat-ai/psion-chronicles`).
 
 ---
 
 *Standing rule (recorded in `CLAUDE.md`): this log is updated as part of every feature change — a new
-entry or revision here, the matching `GAME_RULES.md`/`README.md` sections, and a re-publish of the
-private Artifacts — automatically, without needing to be asked.*
+entry or revision here, the matching `GAME_RULES.md`/`README.md` sections, and a `git push` (which
+auto-deploys GitHub Pages) — automatically, without needing to be asked.*

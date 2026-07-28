@@ -11,8 +11,19 @@ in the browser's `localStorage` (key `psion_chronicles_characters`), so saved da
 - Open `app/index.html` directly in a browser, **or** serve it: from the `app/` folder run
   `python -m http.server 8777`, then visit `http://localhost:8777`.
 - After any JS/CSS change, bump the `?v=N` cache-buster on the **6 tags** in `app/index.html`
-  (currently **v=25**) and hard-refresh, so browsers don't serve stale files.
+  (currently **v=26**) and hard-refresh, so browsers don't serve stale files.
 - Verify changes in the real app (http.server + the browser tools) before committing.
+
+## Hosting & access
+- **Live app (public, no login):** https://stbkat-ai.github.io/psion-chronicles/ (redirects to `app/`).
+- **GitHub repo (source + off-machine backup):** https://github.com/stbkat-ai/psion-chronicles — branch
+  `main`, public, MIT-licensed. **A `git push` auto-deploys GitHub Pages** (live within ~1 min).
+- **Local working copy:** `C:\Claude\PsionChronicles` — its `origin` remote has the push token embedded,
+  so `git push` needs no prompt. (The older `C:\Claude\Luke` copy is a pre-migration backup; work here now.)
+- Characters save to each device's `localStorage` (per-device; no cross-device sync yet — see
+  `DESIGN_LOG.md` → "Deferred / future ideas").
+- Legacy: two private Claude artifacts (App / Design Log) also exist but are locked to one Claude account
+  and proved hard to open across devices — GitHub Pages is now the canonical, login-free access path.
 
 ## Files (all under `app/`)
 - `index.html` — entry point; the 6 asset tags carry `?v=N`.
@@ -46,10 +57,9 @@ updated as part of the **same** change — never left for later. On every such c
 2. **`GAME_RULES.md`** (and **`README.md`** if it's player-facing) — update the matching section so the
    rules stay accurate.
 3. Bump the `?v=N` cache-buster on the 6 tags in `app/index.html`.
-4. Rebuild the single-file bundle: `python build_bundle.py`.
-5. **Re-publish both private Artifacts to their existing URLs** (pass `url=` so the links don't change),
-   so the phone-accessible copies reflect the change, then tell the user you did:
-   - App → `https://claude.ai/code/artifact/35e25743-9e4e-4ce2-8bb2-f1a2a77deb2a`
-   - Design Log → `https://claude.ai/code/artifact/9c8d5e40-d89a-48fa-8173-886486b56ecc`
+4. Commit and **`git push`** — the public GitHub Pages site redeploys automatically (live within ~1 min),
+   so the phone-accessible copy reflects the change. Tell the user it's live.
+5. (Optional) Rebuild the single-file bundle `python build_bundle.py`; and only if you're still keeping the
+   legacy private Claude artifacts current, re-publish them to their existing URLs.
 
-Treat steps 1–2 as mandatory for any behavior change; steps 3–5 whenever the app code changed.
+Treat steps 1–2 as mandatory for any behavior change; steps 3–4 whenever the app code changed.

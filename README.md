@@ -4,6 +4,12 @@ A digital companion for the **Psion Chronicles** TTRPG (like D&D Beyond, but for
 Built with Luke. Everything you'd track on paper — character sheet, HP, KP, chakras, skills,
 techniques — lives in the app.
 
+### ▶ Play it (any device, no login)
+**https://stbkat-ai.github.io/psion-chronicles/**
+
+Open it in any browser on a phone or computer and bookmark it. Your characters save in that browser
+(per-device for now — a character made on one device won't appear on another yet).
+
 ## Saving & versions (Git)
 This project is a **Git repository** — every revision is tracked so you can roll back or compare.
 - **After making changes**, save a version by committing (ask Claude, or run in the `Luke` folder):
