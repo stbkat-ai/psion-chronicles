@@ -59,8 +59,13 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
      melee-background gunslinger (North America) can still begin with a rifle. Two-weapon-fighting Heritages
      (Oceania's *Twin Fang*) instead offer a choice: **one two-handed weapon _or_ two one-handed weapons**.
      Your picks auto-populate the new character's inventory, pre-equipped and ready to roll
-  7. Review & Save — full computed sheet + your **Heritage** (Fighting Style, Combat Skills, passive, Traits),
-     combat proficiencies (incl. any bonus), and starting loadout
+  7. **Description** — optional flavor: your character's **Basics** (age, gender, pronouns), **Physical
+     appearance** (height, weight, skin tone, hair colour/style, eye colour), and a free-text
+     **Distinguishing features** box (tattoos, piercings, scars, etc.). Purely descriptive — **no rules
+     effect** — and every field is optional, so it never blocks the build. It shows up on the play sheet's
+     new **Description** tab, where you can also edit it at the table
+  8. Review & Save — full computed sheet + your **Heritage** (Fighting Style, Combat Skills, passive, Traits),
+     combat proficiencies (incl. any bonus), starting loadout, and your description
 - Auto-calculates HP, KP, all 6 chakras, Defense Score, speeds, carry weight, modifiers, proficiency
 - **Roster** — saved characters on the home screen; **Edit**, Play, and delete
   - **Edit** reopens a character in the creator with everything prefilled; change anything (name, stats,
@@ -81,7 +86,7 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     and, for Kinetics you're pursuing, spells out what's still needed to unlock its next tier.
 
 - **Live Play Sheet** (▶ Play on a character) — the at-the-table screen, organized into tabs so there's
-  little scrolling: **Sheet · ⚔ Combat · Limbs · Kinetics · Skills · Traits · Inventory**.
+  little scrolling: **Sheet · ⚔ Combat · Limbs · Kinetics · Skills · Traits · Description · Inventory**.
   - **Limbs tab** — Fallout-style called-shot damage: 6 limbs each with their own HP (Head ¼, Torso ½,
     Arms/Legs ¼ of max HP). A called shot damages the limb and HP, capped at the limb's HP (excess lost);
     at 0 the limb is crippled. Crippled effects auto-apply — legs cut movement, a crippled arm gives
@@ -107,6 +112,9 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
   - **Traits tab** — your Heritage's positive **traits**, plus your two **flaws** (negative traits): the
     **background** flaw (disadvantage on a whole attribute's skills & Kinetic technique attacks) and the
     **heritage** flaw (disadvantage on one specific skill). Both apply automatically at the table.
+  - **Description tab** — your character's appearance & basic info (Basics, Physical appearance, and
+    distinguishing features) as filled in at creation. Fully editable here too — each field saves as you
+    go — so you can flesh out or change a look mid-campaign. Flavor only; nothing here touches the rules.
   - **Inventory tab** — carry weight, carried items (equip, actions, config), a custom-item form, and a
     **🔍 Browse Item Catalog** button that opens a dedicated **catalog screen**: search/filter the item
     catalog (194 weapons + armor, consumables, tools, gear) and Add any of them (weapons arrive attack-ready

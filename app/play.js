@@ -55,6 +55,8 @@
       if (typeof play.limbs[L.key] !== "number") play.limbs[L.key] = m;
       play.limbs[L.key] = Math.min(play.limbs[L.key], m); // clamp to max if maxHP dropped
     });
+    // Character appearance / basic info (flavor only). Backfill for characters made before Description existed.
+    if (!rec.description) rec.description = App.defaultDescription ? App.defaultDescription() : {};
     // Inventory lives on the character record (persistent gear, not session state).
     if (!Array.isArray(rec.inventory)) rec.inventory = [];
     // Soul Pool = accumulated XP (persistent). Leveling is GM-driven; thresholds are TBD.
@@ -557,6 +559,7 @@
       case "kinetics": body = buildKineticsTab(); break;
       case "skills": body = buildSkillsTab(); break;
       case "traits": body = buildTraitsTab(); break;
+      case "description": body = buildDescriptionTab(); break;
       case "inventory": body = catalogOpen ? buildCatalogScreen() : buildInventoryTab(); break;
       default: body = buildSheetTab();
     }
@@ -579,7 +582,7 @@
 
   function buildTabBar() {
     const bar = el("div", "play-tabs");
-    [["sheet", "Sheet"], ["combat", "⚔ Combat"], ["limbs", "Limbs"], ["kinetics", "Kinetics"], ["skills", "Skills"], ["traits", "Traits"], ["inventory", "Inventory"]].forEach((pair) => {
+    [["sheet", "Sheet"], ["combat", "⚔ Combat"], ["limbs", "Limbs"], ["kinetics", "Kinetics"], ["skills", "Skills"], ["traits", "Traits"], ["description", "Description"], ["inventory", "Inventory"]].forEach((pair) => {
       const b = el("button", "play-tab" + (activeTab === pair[0] ? " active" : ""), pair[1]);
       b.onclick = () => { activeTab = pair[0]; catalogOpen = false; refresh(); };
       bar.appendChild(b);
@@ -616,6 +619,46 @@
       neg.appendChild(el("p", "hint", "Flaws apply automatically: a <b>background</b> flaw rolls disadvantage on that attribute's skill checks and Kinetic technique attacks; a <b>heritage</b> flaw rolls disadvantage on the one named skill. Flawed skills are tagged ⚠ on the Skills tab."));
     }
     root.appendChild(neg);
+    return root;
+  }
+
+  // Description tab — the character's appearance / basic info. Editable at the table; each field
+  // saves on blur (onchange) like the Inventory item fields. Flavor only, no rules effect.
+  function buildDescriptionTab() {
+    const root = el("div");
+    if (!rec.description) rec.description = App.defaultDescription ? App.defaultDescription() : {};
+    const groups = App.descriptionGroups || [];
+    const misc = App.descriptionMisc;
+
+    const descPlayField = (f) => {
+      const l = el("label", "field");
+      l.appendChild(el("span", null, f.label));
+      const i = el("input"); i.type = "text"; i.placeholder = f.ph || "";
+      i.value = rec.description[f.key] || "";
+      i.oninput = () => { rec.description[f.key] = i.value; };  // live in-memory update
+      i.onchange = () => { save(); };                          // persist on blur
+      l.appendChild(i);
+      return l;
+    };
+
+    const p = el("div", "panel");
+    p.appendChild(el("div", "section-label", "Description"));
+    p.appendChild(el("p", "hint", "Your character's appearance and basic details. Edit any field — changes save automatically. Flavor only; nothing here affects the rules."));
+    groups.forEach((g) => {
+      p.appendChild(el("div", "section-label", g.label));
+      const grid = el("div", "desc-grid");
+      g.fields.forEach((f) => grid.appendChild(descPlayField(f)));
+      p.appendChild(grid);
+    });
+    if (misc) {
+      p.appendChild(el("div", "section-label", misc.label));
+      const ta = el("textarea"); ta.rows = 3; ta.placeholder = misc.ph || "";
+      ta.value = rec.description[misc.key] || "";
+      ta.oninput = () => { rec.description[misc.key] = ta.value; };
+      ta.onchange = () => { save(); };
+      p.appendChild(ta);
+    }
+    root.appendChild(p);
     return root;
   }
 

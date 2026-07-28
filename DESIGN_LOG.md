@@ -17,7 +17,7 @@ made. The rules themselves live in `GAME_RULES.md`; the code is under `app/`. Th
 - `app/rules.js` — pure math: modifiers, pools, derived stats, chakra effects, proficiency.
 - `app/app.js` — character creator, roster, level-up screen (`window.PsionApp`).
 - `app/play.js` — the live play sheet (`window.PsionPlay`): Sheet · Combat · Limbs · Kinetics ·
-  Skills · Traits · Inventory.
+  Skills · Traits · Description · Inventory.
 - `app/styles.css` — the "Post-Veil" dark theme.
 
 ---
@@ -115,6 +115,24 @@ host.
 **Known limitation — data doesn't sync.** Characters live in each device's own browser storage, so a
 character made on the PC won't appear on the phone (and vice-versa). Real cross-device sync (a small
 backend + login) is a **deferred, future feature** — noted, not yet built.
+
+### 9. Character Description — appearance / basic info (flavor)
+**Decision.** Added a **Description** step to the character creator (placed right before Review) and a
+matching **Description** tab on the play sheet (between Traits and Inventory). It captures purely
+descriptive details — **Basics** (age, gender, pronouns), **Physical appearance** (height, weight, skin
+tone, hair colour, hair style, eye colour), and a free-text **Distinguishing features** box (tattoos,
+piercings, scars, etc.). Everything the player enters at creation shows up on the play sheet's Description
+tab, where it's also editable at the table (fields save on blur, like Inventory item fields).
+**Why.** Players wanted a home for who their character *is* beyond the numbers, so the table can picture
+them. It's flavor only — **no rules effect** — so it never gates the mechanical creation flow: the step
+sits at the end and every field is optional (Next is always enabled). We put it before Review so the
+finished sheet summarises it, and gave it its own play tab (rather than burying it in Notes) so it reads
+like a reference card.
+**How it's wired.** The field schema is defined **once** in `app.js` (`DESCRIPTION_GROUPS` +
+`DESCRIPTION_MISC`) and exposed on `window.PsionApp` so `play.js` renders the exact same fields — one
+source of truth, no drift. `defaultDescription()` seeds new characters; existing characters are backfilled
+with blank fields on edit (`app.js`) and on open (`ensurePlay` in `play.js`), so nothing breaks for
+characters made before this existed. User-entered text is HTML-escaped in the Review summary.
 
 ---
 
