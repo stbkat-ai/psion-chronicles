@@ -138,7 +138,10 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     - **Ranged single-target** (Ki Bolt, Ki Blast) → **⚔ Attack** rolls d20 + attribute mod + proficiency
       to hit (spends KP), then **🎲 Damage** rolls damage on a hit (no extra KP)
     - **AoE** (Ki Volley) → auto-hits everything in the area; one button rolls damage per target
-    - **Sustained** (Ki Shield → +DS, Ki Flame → attribute buff) → Activate/End; **End Turn** pays upkeep
+    - **Sustained** (Ki Shield → +DS, Ki Flame → attribute buff) → Activate/End; **End Turn** pays upkeep.
+      A buff that raises attributes also raises the matching **pool** while active — a body-attribute buff
+      (STR/AGI/CON) adds to **max HP**, a mind-attribute buff (INT/WIS/CHA) to **max KP** (e.g. Ki Flame = +6 max HP);
+      it's headroom to heal into, and the max drops back when the buff ends
     - **Heal / grant** (Focus Ki, Share Ki) → Use
   - **Skills** — tap any skill to roll a d20 check (adds mod + proficiency, rolls disadvantage if the
     chakra is hit, disabled if locked out)

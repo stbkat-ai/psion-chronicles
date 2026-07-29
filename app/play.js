@@ -25,12 +25,10 @@
 
   /* ---------- init / persistence ---------- */
   function ensurePlay() {
-    const eff0 = PC.effectiveScores(rec.baseScores, bg().boosts, null);
-    const maxHP = PC.bodyPool(eff0, bg().pool);
-    const maxKP = PC.mindPool(eff0, bg().pool);
     if (!rec.play) {
+      // Seed a fresh play session at the permanent (buff-free) pool maxes.
       rec.play = {
-        hp: maxHP, kp: maxKP,
+        hp: permMaxHP(), kp: permMaxKP(),
         chakraHits: rec.chakraHits || { STR: 0, AGI: 0, CON: 0, INT: 0, WIS: 0, CHA: 0 },
         active: [], turn: 1, log: [],
       };
@@ -42,16 +40,18 @@
     if (typeof play.turn !== "number") play.turn = 1;
     // Action economy for the current turn (true = already used this turn).
     if (!play.econ) play.econ = { action: false, bonus: false, reaction: false, move: false };
-    // If attributes were edited, current HP/KP may exceed new maxes — clamp.
-    play.hp = Math.min(play.hp, maxHP);
-    play.kp = Math.min(play.kp, maxKP);
-    // Limb HP (called-shot / crippling system). Current per limb; max derives from maxHP.
+    // Clamp current HP/KP to the CURRENT (buff-aware) max. An active attribute buff raises the max, so
+    // current is left as-is (you gain headroom, not free HP); when the buff ends — or an attribute is
+    // edited down — the lower max clamps current back down on the next render.
+    play.hp = Math.min(play.hp, maxHP());
+    play.kp = Math.min(play.kp, maxKP());
+    // Limb HP (called-shot / crippling system). Current per limb; max is a fraction of current max HP.
     if (!play.limbs) {
       play.limbs = {};
-      PC.LIMBS.forEach((L) => { play.limbs[L.key] = Math.ceil(maxHP * L.frac); });
+      PC.LIMBS.forEach((L) => { play.limbs[L.key] = limbMaxFor(L.key); });
     }
     PC.LIMBS.forEach((L) => {
-      const m = Math.ceil(maxHP * L.frac);
+      const m = limbMaxFor(L.key);
       if (typeof play.limbs[L.key] !== "number") play.limbs[L.key] = m;
       play.limbs[L.key] = Math.min(play.limbs[L.key], m); // clamp to max if maxHP dropped
     });
@@ -69,8 +69,14 @@
   }
 
   /* ---------- computations ---------- */
-  function maxHP() { return PC.bodyPool(PC.effectiveScores(rec.baseScores, bg().boosts, null), bg().pool); }
-  function maxKP() { return PC.mindPool(PC.effectiveScores(rec.baseScores, bg().boosts, null), bg().pool); }
+  // Max pools use LIVE (buff-aware) scores: a sustained technique that raises attributes raises the
+  // matching pool for as long as it's active — body-attribute buffs grow max HP, mind-attribute buffs
+  // grow max KP (bodyPool/mindPool sum the attribute scores, so the increase is exactly the buff).
+  // The buff-free "permanent" pools are computed separately in ensurePlay to seed a new play session.
+  function maxHP() { return PC.bodyPool(liveScores(), bg().pool); }
+  function maxKP() { return PC.mindPool(liveScores(), bg().pool); }
+  function permMaxHP() { return PC.bodyPool(PC.effectiveScores(rec.baseScores, bg().boosts, null), bg().pool); }
+  function permMaxKP() { return PC.mindPool(PC.effectiveScores(rec.baseScores, bg().boosts, null), bg().pool); }
 
   function activeAttrBuffs() {
     const buff = {};
@@ -231,7 +237,9 @@
   }
   function longRest() {
     PC.ATTRS.forEach((a) => { if (play.chakraHits[a] > 0) play.chakraHits[a] = Math.max(0, play.chakraHits[a] - 2); });
-    play.hp = maxHP(); play.kp = maxKP(); play.active = []; play.turn = 1;
+    // End sustained techniques first, so "fully restored" fills the permanent (unbuffed) pools.
+    play.active = []; play.turn = 1;
+    play.hp = maxHP(); play.kp = maxKP();
     play.econ = { action: false, bonus: false, reaction: false, move: false };
     PC.LIMBS.forEach((L) => { play.limbs[L.key] = limbMaxFor(L.key); }); // limbs fully restored
     logLine("Long rest — HP & KP fully restored, chakras +2, limbs fully healed, sustained techniques ended.");

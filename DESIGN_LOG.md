@@ -164,6 +164,21 @@ type→subtype tree isn't possible in the dropdown. Combining both into each gro
 show the hierarchy while keeping the plain, reliable native control. Group order follows the map (proficient types
 first, then Heritage start-only types, tagged "not proficient").
 
+### 12. Attribute-buff techniques now raise the matching pool (bug fix)
+**Decision.** A sustained technique that raises attributes now also raises the matching **pool** (max HP/KP) for as
+long as it's active — body-attribute buffs (STR/AGI/CON) grow **max HP**, mind-attribute buffs (INT/WIS/CHA) grow
+**max KP**, by exactly the buff. (Reported via *Ki Flame*: it buffed the three body attributes but max HP wasn't
+moving; now its +2/+2/+2 adds +6 max HP while active.)
+**Why it was broken.** Each pool is the *sum of its attribute scores*, but `maxHP()`/`maxKP()` in `play.js` computed
+that sum from **buff-free** scores (they passed `null` for temp modifiers), while everything else — modifiers,
+Defense, movement — used the buffed `liveScores()`. So the pools were the one derived value ignoring active buffs.
+**The fix.** `maxHP()`/`maxKP()` now use `liveScores()` (buff-aware); a separate `permMaxHP()`/`permMaxKP()` keeps the
+buff-free value used only to seed a fresh play session. `ensurePlay` clamps current HP/KP to the buff-aware max.
+**Design choice — headroom, not instant HP.** Activating a buff raises the *max* but doesn't bump *current* HP/KP;
+you gain room to heal/recover into, and when the buff ends the max drops and current clamps back down. This keeps
+the literal rule ("increase the pool") and avoids a toggle-on/off exploit that granting current HP would create.
+Limb HP (a fraction of max HP) scales with the buffed max as a consequence, which is consistent.
+
 ---
 
 ## Deferred / future ideas
