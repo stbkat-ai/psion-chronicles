@@ -855,8 +855,14 @@
     const offeredTypes = allStartWeaponTypes();
     p.appendChild(el("div", "section-label", "Starting weapon"));
 
-    // Build a <select> of eligible weapons matching `filter`, grouped by type (proficient types first),
-    // tagging heritage start-only types "not proficient". Defaults to a proficient weapon when possible.
+    // Subtype of a weapon (from the beginner map in items.js), falling back to its parent type name.
+    const subtypeOf = (w) => (PC.starterSubtype && PC.starterSubtype(w.name)) || w.weaponType;
+    // The subtypes of a type, in the beginner map's order (so groups read in a stable, curated order).
+    const subtypeOrderFor = (wt) => (PC.STARTER_WEAPONS_BY_SUBTYPE && PC.STARTER_WEAPONS_BY_SUBTYPE[wt]) ? Object.keys(PC.STARTER_WEAPONS_BY_SUBTYPE[wt]) : [];
+
+    // Build a <select> of eligible weapons matching `filter`, grouped by type → subtype (proficient
+    // types first), one <optgroup> per subtype labelled "Type · Subtype" (native selects can't nest
+    // groups). Heritage start-only types are tagged "not proficient". Defaults to a proficient weapon.
     const buildWeaponSelect = (filter, current, onPick) => {
       const list = eligible.filter(filter);
       const sel = el("select"); sel.className = "inv-cat"; sel.style.maxWidth = "360px";
@@ -868,9 +874,16 @@
         const inType = list.filter((w) => w.weaponType === wt);
         if (!inType.length) return;
         const tag = isProficientType(wt) ? "" : " — not proficient";
-        html += `<optgroup label="${wt}${tag}">`;
-        inType.forEach((w) => { html += `<option value="${w.name}" ${w.name === chosen ? "selected" : ""}>${w.name} (${w.damage}, ${w.hands === 2 ? "2H" : "1H"})</option>`; });
-        html += `</optgroup>`;
+        // Group this type's weapons by subtype; list subtypes in the map's order, then any extras.
+        const bySub = {};
+        inType.forEach((w) => { const s = subtypeOf(w); (bySub[s] = bySub[s] || []).push(w); });
+        const order = subtypeOrderFor(wt).filter((s) => bySub[s]);
+        Object.keys(bySub).forEach((s) => { if (order.indexOf(s) < 0) order.push(s); });
+        order.forEach((s) => {
+          html += `<optgroup label="${wt} · ${s}${tag}">`;
+          bySub[s].forEach((w) => { html += `<option value="${w.name}" ${w.name === chosen ? "selected" : ""}>${w.name} (${w.damage}, ${w.hands === 2 ? "2H" : "1H"})</option>`; });
+          html += `</optgroup>`;
+        });
       });
       sel.innerHTML = html;
       sel.onchange = () => { onPick(sel.value); render(); };

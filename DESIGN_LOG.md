@@ -151,6 +151,19 @@ and two-weapon Heritages still choose one 2H or two 1H weapons. The full catalog
 *creation* is restricted. A safety fallback keeps the old all-Common behavior if the list is ever missing, so the
 picker can't end up empty.
 
+### 11. Starting-weapon picker groups by subtype (as well as type)
+**Decision.** The creator's starting-weapon dropdown now shows a separate group **per weapon _subtype_**, each
+labelled **"Type · Subtype"** (e.g. *Heavy Weapons · Great Swords*, *Heavy Weapons · Great Axes*), instead of one
+group per type. To make this possible, the beginner list in `items.js` changed shape: `PC.STARTER_WEAPONS` became
+a nested map **`PC.STARTER_WEAPONS_BY_SUBTYPE`** (type → subtype → names); the flat list and a new
+`PC.starterSubtype(name)` lookup are **derived** from it, so there's still one source of truth.
+**Why.** With beginner weapons trimmed to ~2 per subtype, players couldn't tell *which* subtype each option was —
+grouping by subtype makes the shortlist self-documenting and easier to scan.
+**Why "Type · Subtype" labels (not nested groups).** A native HTML `<select>` can't nest `<optgroup>`s, so a true
+type→subtype tree isn't possible in the dropdown. Combining both into each group's label is the standard way to
+show the hierarchy while keeping the plain, reliable native control. Group order follows the map (proficient types
+first, then Heritage start-only types, tagged "not proficient").
+
 ---
 
 ## Deferred / future ideas

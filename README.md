@@ -53,7 +53,8 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
      techniques are in the app — 90 total; higher tiers arrive with the level-up system.
   6. **Equipment** (chosen **last**, so Heritage counts) — you pick from a curated **beginner-weapon**
      shortlist (up to **two per weapon subtype** — the simplest of each — so the picker stays short instead of
-     listing every Common weapon). Which *types* are on offer comes from **three** sources: (a) your background's
+     listing every Common weapon). The dropdown groups weapons by **subtype**, each labelled *Type · Subtype*
+     (e.g. *Heavy Weapons · Great Swords*), so it's easy to scan. Which *types* are on offer comes from **three** sources: (a) your background's
      weapon proficiency; (b) any **bonus proficiency** a Heritage grants — e.g. Europe's *Martial Heritage* adds a
      **bonus weapon-type** selector here, and both count as proficient; and (c) your Heritage's **Fighting Style
      weapon focus**, which lets you **start with** weapons of its flavor even though you're **not proficient** with
