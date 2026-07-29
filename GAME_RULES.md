@@ -364,11 +364,19 @@ Every catalog weapon records two extra properties:
   *Twin Fang* combat skills require a **one-handed weapon in each hand**. The app tags each weapon 1H/2H on
   the catalog and on the equipped-weapon combat card.
 - **Rarity — D&D-style tiers:** **Common · Uncommon · Rare · Very Rare · Legendary.** Only **Common** weapons
-  are offered as **starting gear** at character creation; higher-rarity weapons are found/earned in play (loot,
+  are ever eligible as **starting gear**; higher-rarity weapons are found/earned in play (loot,
   rewards, purchases). Higher rarities hit harder (bigger damage dice) and usually carry a **special property**
   (e.g. *Heartpiercer* crits on 19–20; *Worldbreaker* knocks nearby enemies prone on a crit; *Skypiercer*
   ignores cover). The catalog (194 weapons) is browsable/searchable on the Inventory tab; `app/items.js`
   (`PC.ITEMS`) is the source of truth for each weapon's die, hands, rarity, and special note.
+- **Beginner weapons — the starting-gear shortlist (CONFIRMED).** Common rarity isn't enough on its own: only a
+  curated **beginner** subset — **up to two weapons per weapon _subtype_**, the simplest/most iconic of each —
+  is offered at character creation. This keeps the creation weapon picker short (a handful per type instead of
+  the full Common list) while still covering every subtype. The full catalog remains available in play. The
+  beginner list lives in `app/items.js` as **`PC.STARTER_WEAPONS`** (the single source of truth), and the
+  creator filters against it. All the *other* starting-gear rules stack on top unchanged — you may still only
+  start with a weapon whose **type you're proficient with** (or that your Heritage's Fighting Style opens as
+  *start-only*), and two-weapon Heritages still choose **one two-handed or two one-handed** weapons.
 
 ### Action Economy (CONFIRMED Luke)
 On your turn you may take **one Move, one Action, and one Bonus Action** — each once per turn unless a
@@ -451,11 +459,11 @@ Each attribute has a guiding philosophy:
 | **Spirikinesis** | Healer | Spirits and the afterlife |
 
 ### Starting Equipment by Background (CONFIRMED Luke)
-Each background grants **fixed gear**, a **starting weapon of the player's choice from ANY weapon in their
-proficient weapon type** (a dropdown of every catalog weapon of that type — e.g. a Body Builder picks any
-Heavy Weapon), plus other **choice groups** (armor, instrument, focus…). The chosen weapon is equipped and
-proficient; chosen armor is equipped. *(If a background's proficiency is a weapon **subtype**, the picker
-resolves it to the parent weapon type; all current backgrounds use full weapon types.)*
+Each background grants **fixed gear**, a **starting weapon of the player's choice from the _beginner_ weapons
+of their proficient weapon type** (a dropdown of that type's beginner shortlist — up to two per subtype — e.g. a
+Body Builder picks a beginner Heavy Weapon), plus other **choice groups** (armor, instrument, focus…). The chosen
+weapon is equipped and proficient; chosen armor is equipped. *(If a background's proficiency is a weapon
+**subtype**, the picker resolves it to the parent weapon type; all current backgrounds use full weapon types.)*
 
 | Background | Fixed | Weapon choice | Armor / other choice |
 |---|---|---|---|

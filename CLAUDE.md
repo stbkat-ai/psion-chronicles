@@ -11,7 +11,7 @@ in the browser's `localStorage` (key `psion_chronicles_characters`), so saved da
 - Open `app/index.html` directly in a browser, **or** serve it: from the `app/` folder run
   `python -m http.server 8777`, then visit `http://localhost:8777`.
 - After any JS/CSS change, bump the `?v=N` cache-buster on the **6 tags** in `app/index.html`
-  (currently **v=27**) and hard-refresh, so browsers don't serve stale files.
+  (currently **v=28**) and hard-refresh, so browsers don't serve stale files.
 - Verify changes in the real app (http.server + the browser tools) before committing.
 
 ## Hosting & access
@@ -34,7 +34,7 @@ in the browser's `localStorage` (key `psion_chronicles_characters`), so saved da
   kinetic tier-completion proficiency/expertise). No DOM.
 - `app.js` — `window.PsionApp`: character creator flow, roster, level-up screen.
 - `play.js` — `window.PsionPlay`: the live play sheet. Tabs: **Sheet · Combat · Limbs · Kinetics ·
-  Skills · Traits · Inventory**.
+  Skills · Traits · Description · Inventory**.
 - `styles.css` — the "Post-Veil" dark theme (CSS variables: `--psi`, `--gold`, `--hp`, `--kp`,
   `--cyan`, `--danger`, …).
 

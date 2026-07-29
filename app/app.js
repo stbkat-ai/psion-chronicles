@@ -153,11 +153,18 @@
   function isProficientType(wt) { return proficientWeaponTypes().indexOf(wt) > -1; }
   // Total skills the player chooses at creation: 2 base + 1 per skill-proficiency grant.
   function skillsToChoose() { return 2 + skillGrantCount(); }
-  // Every *Common* catalog weapon of any offered type (proficient + heritage start-only).
-  // Higher-rarity weapons exist in the catalog but are never offered as starting gear.
+  // The *beginner* weapons of any offered type (proficient + heritage start-only). Starting gear is
+  // limited to the curated beginner list (PC.STARTER_WEAPONS — up to 2 per subtype), not every Common
+  // weapon; higher-rarity weapons are never offered at creation. Falls back to all-Common if the
+  // beginner list is somehow unavailable, so the picker never ends up empty.
   function eligibleStartWeapons() {
     const types = allStartWeaponTypes();
-    return (window.PC.ITEMS || []).filter((it) => it.category === "Weapon" && types.indexOf(it.weaponType) > -1 && (it.rarity || "Common") === "Common");
+    const hasStarterList = !!(window.PC && Array.isArray(window.PC.STARTER_WEAPONS));
+    return (window.PC.ITEMS || []).filter((it) =>
+      it.category === "Weapon" &&
+      types.indexOf(it.weaponType) > -1 &&
+      (it.rarity || "Common") === "Common" &&
+      (!hasStarterList || window.PC.isStarterWeapon(it.name)));
   }
   // Build an equipped inventory item from a chosen weapon name; proficient only if its type is proficient.
   function startWeaponItem(name) {
@@ -360,7 +367,7 @@
       if (b.equipment) {
         const eqp = el("div", "bg-equip");
         const lines = [];
-        lines.push(`<div><b>Weapon:</b> any ${weaponTypeFor(b)}</div>`);
+        lines.push(`<div><b>Weapon:</b> a beginner ${weaponTypeFor(b)} weapon</div>`);
         (b.equipment.choices || []).forEach((grp) => {
           if (isWeaponGroup(grp)) return; // shown as the dynamic weapon line above
           lines.push(`<div><b>${grp.label}:</b> ${grp.options.map((o) => o.label).join(" / ")}</div>`);
@@ -802,7 +809,7 @@
       return p;
     }
 
-    p.appendChild(el("p", "hint", "Chosen last so your Heritage's proficiencies count: pick a bonus weapon proficiency (if your Heritage grants one), then a starting weapon from ANY type you're proficient with, plus armor / other options."));
+    p.appendChild(el("p", "hint", "Chosen last so your Heritage's proficiencies count: pick a bonus weapon proficiency (if your Heritage grants one), then a <b>beginner weapon</b> from any type you're proficient with (a curated shortlist — the fuller catalog is found in play), plus armor / other options."));
 
     const b = bg();
 
@@ -904,7 +911,7 @@
       state.startWeapon2 = null;
       const profTxt = profTypes.length ? profTypes.join(" or ") : "none";
       const extra = startOnly.length ? ` — your Heritage also lets you start with ${startOnly.join(", ")} (not proficient)` : "";
-      p.appendChild(el("div", "eq-choice-label", `Any weapon you're proficient with — ${profTxt}${extra}`));
+      p.appendChild(el("div", "eq-choice-label", `Beginner weapon you're proficient with — ${profTxt}${extra}`));
       const w = buildWeaponSelect(() => true, state.startWeapon, (v) => { state.startWeapon = v; }); state.startWeapon = w.chosen; p.appendChild(w.sel);
     }
 

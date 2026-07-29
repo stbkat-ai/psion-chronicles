@@ -51,14 +51,17 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
      **your focus first** (★, from your background), then any Kinetic you've already picked into (✦), then
      the rest in attribute order; each tab badges how many you've chosen from it. All 18 Kinetics' **Beginner**
      techniques are in the app — 90 total; higher tiers arrive with the level-up system.
-  6. **Equipment** (chosen **last**, so Heritage counts) — your starting-weapon options come from **three**
-     sources: (a) your background's weapon proficiency; (b) any **bonus proficiency** a Heritage grants — e.g.
-     Europe's *Martial Heritage* adds a **bonus weapon-type** selector here, and both count as proficient; and
-     (c) your Heritage's **Fighting Style weapon focus**, which lets you **start with** weapons of its flavor
-     even though you're **not proficient** with them (tagged *"not proficient"* in the picker) — so a
-     melee-background gunslinger (North America) can still begin with a rifle. Two-weapon-fighting Heritages
-     (Oceania's *Twin Fang*) instead offer a choice: **one two-handed weapon _or_ two one-handed weapons**.
-     Your picks auto-populate the new character's inventory, pre-equipped and ready to roll
+  6. **Equipment** (chosen **last**, so Heritage counts) — you pick from a curated **beginner-weapon**
+     shortlist (up to **two per weapon subtype** — the simplest of each — so the picker stays short instead of
+     listing every Common weapon). Which *types* are on offer comes from **three** sources: (a) your background's
+     weapon proficiency; (b) any **bonus proficiency** a Heritage grants — e.g. Europe's *Martial Heritage* adds a
+     **bonus weapon-type** selector here, and both count as proficient; and (c) your Heritage's **Fighting Style
+     weapon focus**, which lets you **start with** weapons of its flavor even though you're **not proficient** with
+     them (tagged *"not proficient"* in the picker) — so a melee-background gunslinger (North America) can still
+     begin with a rifle. Two-weapon-fighting Heritages (Oceania's *Twin Fang*) instead offer a choice: **one
+     two-handed weapon _or_ two one-handed weapons**. (The full weapon catalog stays available in play — only
+     creation is limited to beginner weapons.) Your picks auto-populate the new character's inventory,
+     pre-equipped and ready to roll
   7. **Description** — optional flavor: your character's **Basics** (age, gender, pronouns), **Physical
      appearance** (height, weight, skin tone, hair colour/style, eye colour), and a free-text
      **Distinguishing features** box (tattoos, piercings, scars, etc.). Purely descriptive — **no rules

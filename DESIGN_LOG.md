@@ -134,6 +134,23 @@ source of truth, no drift. `defaultDescription()` seeds new characters; existing
 with blank fields on edit (`app.js`) and on open (`ensurePlay` in `play.js`), so nothing breaks for
 characters made before this existed. User-entered text is HTML-escaped in the Review summary.
 
+### 10. Beginner weapons — trim the starting-gear picker
+**Decision.** Starting gear no longer offers **every** Common weapon of an offered type. Instead there's a
+curated **beginner** shortlist — **up to two weapons per weapon _subtype_** (the simplest/most iconic of each) —
+and only those are selectable at character creation. The list lives in `app/items.js` as `PC.STARTER_WEAPONS`
+(a plain, commented array of names — the single source of truth), and `eligibleStartWeapons()` in `app.js`
+filters against it.
+**Why.** The Common list had grown large (e.g. 15 Heavy Weapons), so the creator's starting-weapon dropdown was
+a wall of near-identical options. Two per subtype keeps it short while still representing every subtype, so no
+playstyle loses its flavor. We kept it a **separate list** (the user's call) so the whole starting roster can be
+seen and tuned in one place, and picked **two** per subtype (not one) so there's still a little choice.
+**What did NOT change.** This is one new filter layered on top — **every other starting-gear rule is intact**:
+you still may only start with a weapon whose **type you're proficient with** (or one your Heritage's Fighting
+Style opens as *start-only*, tagged "not proficient"), bonus weapon-proficiency grants still widen the options,
+and two-weapon Heritages still choose one 2H or two 1H weapons. The full catalog is still available in play; only
+*creation* is restricted. A safety fallback keeps the old all-Common behavior if the list is ever missing, so the
+picker can't end up empty.
+
 ---
 
 ## Deferred / future ideas

@@ -184,4 +184,53 @@ window.PC = window.PC || {};
   M("Journal & Pen", 1, "For notes and records."),
   M("Sigil Talisman", 1, "A personal ward."),
   ];
+
+  /* ===== BEGINNER (STARTING-GEAR) WEAPONS =====
+     The starting-gear picker offers ONLY these weapons — up to two per weapon *subtype*, chosen as the
+     simplest/most iconic of each — instead of every Common weapon of an offered type. All the other
+     starting-gear rules still apply on top of this list (you may only start with a weapon whose TYPE
+     you're proficient with, or that your Heritage's Fighting Style opens as "start-only"; two-weapon
+     Heritages still pick one 2H or two 1H). Every one of these is a Common weapon; higher rarities are
+     never starting gear. Edit this list to change what's offered at creation — it's the single source
+     of truth for beginner weapons (see rules.js note: eligibleStartWeapons filters against it). */
+  PC.STARTER_WEAPONS = [
+    // — Heavy Weapons (STR): Great Hammers · Great Swords · Great Axes · Maces · Axes —
+    "Warmaul", "Siege Sledge", "Zweihander", "Claymore", "Headsman's Axe", "Great Axe", "War Mace", "Morning Star", "Battleaxe", "Hatchet",
+    // — Fist Weapons (STR): Knuckles · Full Fists · Knuckle Blades —
+    "Brass Knuckles", "Weighted Wraps", "Iron Gauntlets", "Powered Cestus", "Punch Daggers", "Katar",
+    // — Archery (STR): Longbows · Shortbows · Slings · Slingshots —
+    "War Longbow", "Yew Longbow", "Hunting Bow", "Recurve Bow", "Leather Sling", "War Sling", "Steel Slingshot", "Wrist Rocket",
+    // — Light Weapons (AGI): Knives · Daggers · Batons · Short Swords —
+    "Combat Knife", "Kunai", "Stiletto", "Parrying Dagger", "Nightstick", "Tactical Baton", "Gladius", "Cutlass",
+    // — Quick Weapons (AGI): Tonfa · Wrist Blades · Hand Crossbows · Blowguns —
+    "Riot Tonfa", "Twin Tonfa", "Bracer Blades", "Hidden Blade", "Pistol Crossbow", "Repeater Crossbow", "Poison Blowpipe", "Reed Blowgun",
+    // — Thrown Weapons (AGI): Shuriken · Throwing Knives · Darts —
+    "Shuriken", "Bo-Shuriken", "Throwing Knives", "Flechettes", "Throwing Darts",
+    // — Firearms (CON): Rifles · Handguns · Revolvers —
+    "Bolt-Action Rifle", "Hunting Rifle", "Semi-Auto Pistol", "Sidearm", "Six-Shooter", "Magnum Revolver",
+    // — Explosives (CON): Grenades · Mines · Improvised Explosives —
+    "Frag Grenade", "Concussion Grenade", "Proximity Mine", "Land Mine", "Pipe Bomb", "Molotov",
+    // — Volatile Weapons (CON): Flamethrowers · Rocket Launchers · Chemical Weapons —
+    "Flamethrower", "Napalm Sprayer", "Rocket Launcher", "Bazooka", "Acid Sprayer", "Gas Canister Gun",
+    // — Laser Weapons (INT): Laser Swords · Blaster Rifles · Blaster Pistols —
+    "Plasma Saber", "Photon Blade", "Pulse Rifle", "Beam Carbine", "Hand Blaster", "Prism Pistol",
+    // — Plasma Weapons (INT): Plasma Blades · Beam Rifles · Plasma Cannons —
+    "Plasma Sword", "Ion Axe", "Plasma Carbine", "Ion Beam Rifle", "Heavy Plasma Cannon", "Ion Mortar",
+    // — Tech Weapons (INT): Chain Blades · Power Weapons · Rocket Weapons —
+    "Chainsword", "Buzz-Axe", "Shock Maul", "Power Fist", "Rocket Hammer", "Thruster Axe",
+    // — Channel Weapons (WIS): Staffs · Wands · Amulets —
+    "Quarterstaff", "Bo Staff", "Focus Wand", "Rune Wand", "Radiant Amulet", "Pulse Charm",
+    // — Living Weapons (WIS): Sentient Plants · Living Oozes · Insect Hives —
+    "Thornwhip Vine", "Barkfist", "Slime Morningstar", "Ooze Gauntlet", "Wasp Bracer", "Hornet Pauldron",
+    // — Ritual Weapons (WIS): Ritual Blades · Incense Flails —
+    "Athame", "Kris Dagger", "Censer Flail", "Smoke Chain",
+    // — Finesse Weapons (CHA): Fencing Swords · Rope Weapons · Chakrams —
+    "Rapier", "Sabre", "Whip", "Chain Whip", "Throwing Ring", "Bladed Chakram",
+    // — Art Weapons (CHA): Battle Fans · Hoop Blades · Nunchucku —
+    "War Fan", "Bladed Fan", "Wind-and-Fire Wheels", "Ring Blades", "Nunchaku", "Triple-Section Staff",
+    // — Noise Weapons (CHA): Instrument Weapons · Percussive Weapons · Amp Weapons —
+    "Bladed Guitar", "Axe-Bass", "War Drum Hammer", "Shockwave Drumstick", "Sonic Amp", "Resonator",
+  ];
+  // Fast membership test used by the starting-gear picker (app.js).
+  PC.isStarterWeapon = function (name) { return PC.STARTER_WEAPONS.indexOf(name) > -1; };
 })();
