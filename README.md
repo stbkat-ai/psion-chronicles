@@ -93,11 +93,14 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
 
 - **Live Play Sheet** (▶ Play on a character) — the at-the-table screen, organized into tabs so there's
   little scrolling: **Sheet · ⚔ Combat · Limbs · Kinetics · Skills · Traits · Description · Inventory**.
-  - **Limbs tab** — Fallout-style called-shot damage: 6 limbs each with their own HP (Head ¼, Torso ½,
-    Arms/Legs ¼ of max HP). A called shot damages the limb and HP, capped at the limb's HP (excess lost);
-    at 0 the limb is crippled. Crippled effects auto-apply — legs cut movement, a crippled arm gives
+  - **Limbs tab** — Fallout-style called-shot damage shown on a **body figure**: a silhouette of head,
+    torso, two arms and two legs, with each limb's **HP written over it** in the bold colored pool-number
+    style (green/gold when healthy → orange when hurt → red when crippled). **Tap a limb** to open its
+    damage/heal controls (**⊕ Called Shot** / Heal / Full). 6 limbs each have their own HP (Head ¼, Torso ½,
+    Arms/Legs ¼ of max HP); a called shot damages the limb *and* your HP, capped at the limb's HP (excess
+    lost); at 0 the limb is crippled. Crippled effects auto-apply — legs cut movement, a crippled arm gives
     weapon-attack disadvantage (both block attacks), a crippled head gives disadvantage on technique attacks
-    & Mind checks. Long rest fully heals limbs; short rest restores half.
+    & Mind checks — and are listed below the figure. Long rest fully heals limbs; short rest restores half.
   - **⚔ Combat tab** — everything you can do this turn, grouped by action economy: **Actions** (equipped-weapon
     attack/damage/augments, a universal **👊 Unarmed Strike** — d20+STR+prof to hit, 1d4+STR damage — and
     Action techniques), **Bonus Actions**, **Reactions** (a universal **↩ Opportunity Attack** — one melee

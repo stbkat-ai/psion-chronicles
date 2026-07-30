@@ -20,6 +20,7 @@
   let invSearchCat = "All"; // inventory catalog category filter
   let catalogOpen = false; // whether the item-catalog sub-screen is open (from the Inventory tab)
   let poolEdit = null;     // which pool's inline editor is open on the Sheet tab: "body"|"mind"|"soul"|null
+  let limbSel = null;      // which limb's editor is open on the Limbs tab (limb key) | null
   const refresh = () => App.render();
 
   const bg = () => PC.background(rec.background);
@@ -608,7 +609,7 @@
 
   /* ---------- render ---------- */
   function render(container, id) {
-    if (id !== curId) { activeTab = "sheet"; expandedItem = null; catalogOpen = false; poolEdit = null; curId = id; }
+    if (id !== curId) { activeTab = "sheet"; expandedItem = null; catalogOpen = false; poolEdit = null; limbSel = null; curId = id; }
     rec = App.loadRoster().find((c) => c.id === id);
     if (!rec) { App.goHome(); return; }
     ensurePlay();
@@ -1137,36 +1138,81 @@
   }
 
   /* ---------- Limbs tab ---------- */
+  // Health state of a limb → class for coloring (ok / hurt ≤50% / ko crippled).
+  function limbState(key) {
+    const cur = limbCurrent(key), max = limbMaxFor(key);
+    const ratio = max > 0 ? cur / max : 0;
+    return { cur, max, cls: cur <= 0 ? "ko" : ratio <= 0.5 ? "hurt" : "ok" };
+  }
+  // Fallout-style body figure: each limb is a clickable SVG group with its cur/max written over it.
+  // Layout positions (viewBox 0 0 320 380): head, torso, arms outstretched, legs apart.
+  function limbFigureSVG() {
+    const parts = [
+      { key: "head",  shape: '<ellipse cx="160" cy="46" rx="30" ry="34"/>', tx: 160, ty: 47, fs: 16 },
+      { key: "torso", shape: '<rect x="120" y="84" width="80" height="128" rx="18"/>', tx: 160, ty: 148, fs: 20 },
+      { key: "larm",  shape: '<rect x="24" y="110" width="96" height="30" rx="15"/>', tx: 71, ty: 125, fs: 15 },
+      { key: "rarm",  shape: '<rect x="200" y="110" width="96" height="30" rx="15"/>', tx: 249, ty: 125, fs: 15 },
+      { key: "lleg",  shape: '<rect x="116" y="214" width="32" height="152" rx="16"/>', tx: 132, ty: 292, fs: 13 },
+      { key: "rleg",  shape: '<rect x="172" y="214" width="32" height="152" rx="16"/>', tx: 188, ty: 292, fs: 13 },
+    ];
+    let g = "";
+    parts.forEach((pt) => {
+      const st = limbState(pt.key);
+      const sel = limbSel === pt.key ? " sel" : "";
+      g += `<g class="limb ${st.cls}${sel}" data-key="${pt.key}">${pt.shape}` +
+        `<text class="limb-num" x="${pt.tx}" y="${pt.ty}" font-size="${pt.fs}" text-anchor="middle" dominant-baseline="central">${st.cur}/${st.max}</text>` +
+        `</g>`;
+    });
+    return `<svg class="limb-figure" viewBox="0 0 320 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Body — tap a limb">${g}</svg>`;
+  }
+
   function buildLimbsTab() {
     const root = el("div");
     const p = el("div", "panel");
     p.appendChild(el("div", "section-label", "Limb Damage — called shots"));
-    p.appendChild(el("p", "hint", "A <b>called shot</b> (e.g. Marksmanship) damages a limb <b>and</b> your HP, capped at the limb's current HP — excess is lost. At 0 HP a limb is <b>crippled</b>. Long rest fully heals limbs; short rest restores half each."));
-    PC.LIMBS.forEach((L) => {
-      const cur = limbCurrent(L.key), max = limbMaxFor(L.key);
-      const crippled = cur <= 0;
-      const box = el("div", "limb-box" + (crippled ? " crippled" : ""));
-      const head = el("div", "poolbar-head");
-      head.innerHTML = `<span>${L.name}</span><span class="poolbar-num">${cur} / ${max}${crippled ? " · CRIPPLED" : ""}</span>`;
-      box.appendChild(head);
-      const track = el("div", "bar-track");
-      const fill = el("div", "bar-fill limb"); fill.style.width = (max > 0 ? (cur / max) * 100 : 0) + "%";
-      track.appendChild(fill); box.appendChild(track);
-      if (crippled) box.appendChild(el("div", "limb-effect", "⚠ " + L.crippled));
-      // controls
+    p.appendChild(el("p", "hint", "A <b>called shot</b> (e.g. Marksmanship) damages a limb <b>and</b> your HP, capped at the limb's current HP — excess is lost. At 0 HP a limb is <b>crippled</b>. Long rest fully heals limbs; short rest restores half. <b>Tap a limb</b> on the figure to damage or heal it."));
+
+    // The body figure — each limb shows its HP in the pool-number style (colored by health).
+    const figWrap = el("div", "limb-figure-wrap");
+    figWrap.innerHTML = limbFigureSVG();
+    figWrap.querySelectorAll(".limb[data-key]").forEach((gEl) => {
+      gEl.addEventListener("click", () => { const k = gEl.getAttribute("data-key"); limbSel = limbSel === k ? null : k; refresh(); });
+    });
+    p.appendChild(figWrap);
+
+    // Editor for the tapped limb (or a hint if none selected).
+    if (limbSel) {
+      const L = PC.LIMBS.find((x) => x.key === limbSel);
+      const cur = limbCurrent(limbSel), max = limbMaxFor(limbSel), crippled = cur <= 0;
+      const ed = el("div", "limb-editor");
+      ed.appendChild(el("div", "limb-ed-head",
+        `<b>${L.name}</b> <span class="limb-ed-num">${cur} / ${max}</span>` + (crippled ? ' <span class="limb-crippled-tag">⚠ CRIPPLED</span>' : "")));
+      if (crippled) ed.appendChild(el("div", "limb-effect", L.crippled));
       const ctl = el("div", "adjust-row");
       const inp = el("input"); inp.type = "number"; inp.placeholder = "#"; inp.className = "adjust-input";
       const hit = el("button", "btn small", "⊕ Called Shot");
       hit.title = "Apply damage to this limb and HP (capped at limb HP)";
-      hit.onclick = () => { const v = parseInt(inp.value, 10); if (v) calledShot(L.key, Math.abs(v)); };
+      hit.onclick = () => { const v = parseInt(inp.value, 10); if (v) calledShot(limbSel, Math.abs(v)); };
       const heal = el("button", "btn small ghost", "Heal");
-      heal.onclick = () => { const v = parseInt(inp.value, 10); if (v) healLimb(L.key, Math.abs(v)); };
+      heal.onclick = () => { const v = parseInt(inp.value, 10); if (v) healLimb(limbSel, Math.abs(v)); };
       const full = el("button", "btn small ghost", "Full");
-      full.onclick = () => healLimb(L.key, max);
+      full.onclick = () => healLimb(limbSel, max);
       ctl.appendChild(inp); ctl.appendChild(hit); ctl.appendChild(heal); ctl.appendChild(full);
-      box.appendChild(ctl);
-      p.appendChild(box);
-    });
+      ed.appendChild(ctl);
+      p.appendChild(ed);
+    } else {
+      p.appendChild(el("div", "pool-hint", "Tap a limb to damage or heal it"));
+    }
+
+    // Any crippled limbs: list their (auto-applied) effects so nothing is hidden.
+    const crippledLimbs = PC.LIMBS.filter((L) => limbCurrent(L.key) <= 0);
+    if (crippledLimbs.length) {
+      const sum = el("div"); sum.style.marginTop = "14px";
+      sum.appendChild(el("div", "section-label", "Crippled — effects in play"));
+      crippledLimbs.forEach((L) => sum.appendChild(el("div", "limb-effect", `⚠ <b>${L.name}</b> — ${L.crippled}`)));
+      p.appendChild(sum);
+    }
+
     root.appendChild(p);
     return root;
   }

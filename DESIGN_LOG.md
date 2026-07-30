@@ -264,6 +264,21 @@ it reflects Heavy-armor and crippled-leg penalties). `buildSheetTab()` swapped i
 panel; `buildCombat()` added a `Speeds` section and a Prof mini-stat. `.combat-vitals` grid widened to 5
 columns. (`tileRoll()` is now unused but harmless.)
 
+### 18. Limbs tab — body figure instead of a list of bars
+**Decision.** The Limbs tab is now a **Fallout-style body silhouette** (SVG): head, torso, two outstretched
+arms, two legs, with each limb's **cur/max HP written over it** in the same bold, colored pen-and-paper style
+as the Body/Mind/Soul pools. The number's color tracks health — **gold** (healthy) → **orange** (≤50%) →
+**red** (crippled at 0). **Tapping a limb** selects it (psi outline) and opens an inline editor with the
+⊕ Called Shot / Heal / Full controls; crippled limbs' auto-applied effects are listed below the figure.
+**Why.** The old stacked list of six bars was functional but plain; the user wanted something more aesthetic,
+Fallout-like. A figure with the HP over each limb is instantly readable ("which limb, how hurt") and matches
+the pool-number treatment used elsewhere, so the whole play sheet feels of a piece.
+**How.** `limbFigureSVG()` in `play.js` builds an inline SVG (viewBox 0 0 320 380) — each limb is a `<g>` with
+a shape + a `.limb-num` text, classed `ok`/`hurt`/`ko` (and `sel`). The SVG is injected via innerHTML and each
+limb `<g>` gets a click handler that toggles `limbSel` (module var, reset on character switch), mirroring the
+pools' tap-to-edit. Colors use `currentColor` driven by the limb's state class, so shapes and numbers share one
+color. `calledShot()`/`healLimb()` are unchanged. The old `.limb-box`/`.bar-fill.limb` styles were removed.
+
 ---
 
 ## Deferred / future ideas

@@ -401,13 +401,26 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 .skill-row .skmod { font-weight: 700; color: var(--psi-bright); }
 
 /* limbs */
-.limb-box { background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
-.limb-box.crippled { border-color: var(--danger); box-shadow: inset 3px 0 0 var(--danger); }
-.bar-fill.limb { background: linear-gradient(90deg, #8a6d2f, var(--gold)); }
-.limb-box.crippled .bar-fill.limb { background: var(--danger); }
-.limb-box .poolbar-num { color: var(--gold); font-weight: 700; }
-.limb-box.crippled .poolbar-num { color: var(--danger); }
 .limb-effect { color: var(--danger); font-size: .82rem; margin: 8px 0 2px; }
+
+/* Limbs tab — Fallout-style body figure with each limb's HP written over it */
+.limb-figure-wrap { display: flex; justify-content: center; margin: 6px 0 4px; }
+.limb-figure { width: 100%; max-width: 280px; height: auto; }
+.limb-figure .limb { cursor: pointer; }
+.limb-figure .limb ellipse, .limb-figure .limb rect {
+  fill: currentColor; fill-opacity: .12; stroke: currentColor; stroke-opacity: .85; stroke-width: 2; transition: .15s;
+}
+.limb-figure .limb.ok   { color: var(--gold); }
+.limb-figure .limb.hurt { color: #e8a23d; }
+.limb-figure .limb.ko   { color: var(--danger); }
+.limb-figure .limb:hover ellipse, .limb-figure .limb:hover rect { fill-opacity: .2; }
+.limb-figure .limb.sel ellipse, .limb-figure .limb.sel rect { stroke: var(--psi); stroke-opacity: 1; stroke-width: 3; fill-opacity: .22; }
+.limb-figure .limb-num { fill: currentColor; font-weight: 800; font-variant-numeric: tabular-nums; }
+/* Selected-limb editor */
+.limb-editor { margin-top: 12px; }
+.limb-ed-head { font-size: 1rem; margin-bottom: 6px; }
+.limb-ed-num { color: var(--gold); font-weight: 800; margin-left: 6px; font-variant-numeric: tabular-nums; }
+.limb-crippled-tag { color: var(--danger); font-weight: 800; font-size: .78rem; margin-left: 6px; }
 
 /* inventory */
 .carry-box { margin-bottom: 14px; }
