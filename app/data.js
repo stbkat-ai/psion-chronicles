@@ -857,42 +857,42 @@ PC.COMBAT_SKILLS = PC.FIGHTING_STYLES.reduce(function (all, st) {
    and 2 roleplay traits. No attribute changes. Chosen before Attributes. */
 PC.HERITAGES = [
   { name: "North America", blurb: "Rugged frontier stock — self-reliant survivors of the wild expanse.",
-    fightingStyle: "Frontier Gunslinging", combatSkills: ["Marksmanship", "Suppressing Fire"],
+    fightingStyle: "Frontier Gunslinging", combatSkills: ["Marksmanship", "Suppressing Fire"], armorProf: ["Medium"],  // classes beyond the universal Light
     traits: [ { name: "Frontier Grit", desc: "Advantage on Survival checks in the wilderness." },
               { name: "Scavenger", desc: "Advantage on checks to jury-rig or repair with salvaged parts." } ],
     flaw: { name: "Rough Around the Edges", desc: "Frontier manners grate on polished company. Disadvantage on Etiquette.", disadvSkill: "Etiquette" } },
   { name: "South America", blurb: "Jungle-forged and resourceful, at home in dense, untamed country.",
-    fightingStyle: "Flowing Movement", combatSkills: ["Combat Roll", "Dodge Roll"],
+    fightingStyle: "Flowing Movement", combatSkills: ["Combat Roll", "Dodge Roll"], armorProf: [],  // classes beyond the universal Light
     traits: [ { name: "Jungle-Born", desc: "Advantage on Acrobatics and moving through natural difficult terrain." },
               { name: "Herbal Lore", desc: "Advantage on Herbalism; identify plants and toxins at a glance." } ],
     flaw: { name: "Untamed", desc: "Old-world machinery is alien to you. Disadvantage on Technology.", disadvSkill: "Technology" } },
   { name: "Europe", blurb: "Heirs to a long, disciplined martial tradition.",
-    fightingStyle: "Chivalric Swordplay", combatSkills: ["Riposte", "Power Attack"],
+    fightingStyle: "Chivalric Swordplay", combatSkills: ["Riposte", "Power Attack"], armorProf: ["Medium", "Heavy"],  // classes beyond the universal Light
     traits: [ { name: "Martial Heritage", desc: "You gain one additional weapon-type proficiency.", grant: { kind: "weapon" } },
               { name: "Old-World Scholar", desc: "You speak an extra old-world language; advantage on Etiquette." } ],
     flaw: { name: "Rigid Form", desc: "Disciplined stances resist improvisation. Disadvantage on Acrobatics.", disadvSkill: "Acrobatics" } },
   { name: "United Kingdom", blurb: "Stoic and tactical, unshaken under pressure.",
-    fightingStyle: "Fencing", combatSkills: ["Parry", "Feint"],
+    fightingStyle: "Fencing", combatSkills: ["Parry", "Feint"], armorProf: ["Medium"],  // classes beyond the universal Light
     traits: [ { name: "Stiff Upper Lip", desc: "Advantage on checks and saves to resist Fear." },
               { name: "Composed", desc: "Advantage on Insight to read a tense situation." } ],
     flaw: { name: "Too Polite", desc: "You'd sooner reason than menace. Disadvantage on Intimidation.", disadvSkill: "Intimidation" } },
   { name: "Africa", blurb: "Enduring and community-strong, forged by hardship and kinship.",
-    fightingStyle: "Warden's Bulwark", combatSkills: ["Guardian", "Bracing Stance"],
+    fightingStyle: "Warden's Bulwark", combatSkills: ["Guardian", "Bracing Stance"], armorProf: ["Medium", "Heavy"],  // classes beyond the universal Light
     traits: [ { name: "Enduring", desc: "Advantage on Hardiness and checks to resist exhaustion." },
               { name: "Kinship", desc: "Advantage on Persuasion within a community; rally to stabilize a downed ally." } ],
     flaw: { name: "Immovable", desc: "Built to hold ground, not to slink past it. Disadvantage on Stealth.", disadvSkill: "Stealth" } },
   { name: "Middle East", blurb: "Resilient warrior-traders, sharp of eye and tongue.",
-    fightingStyle: "Desert Whirlwind", combatSkills: ["Spinning Cut", "Deflecting Slash"],
+    fightingStyle: "Desert Whirlwind", combatSkills: ["Spinning Cut", "Deflecting Slash"], armorProf: ["Medium"],  // classes beyond the universal Light
     traits: [ { name: "Shrewd Trader", desc: "Advantage on Barter." },
               { name: "Desert-Hardened", desc: "Resist extreme heat and thirst; advantage on Tolerance vs. environment." } ],
     flaw: { name: "Eye for the Deal", desc: "You weigh profit before portents. Disadvantage on Paranormal.", disadvSkill: "Paranormal" } },
   { name: "East Asia", blurb: "Honed by generations of martial discipline and focus.",
-    fightingStyle: "Way of the Open Hand", combatSkills: ["Palm Strike", "Deflect"],
+    fightingStyle: "Way of the Open Hand", combatSkills: ["Palm Strike", "Deflect"], armorProf: [],  // classes beyond the universal Light
     traits: [ { name: "Inner Focus", desc: "Advantage on Concentration checks." },
               { name: "Disciplined", desc: "You speak an extra language; advantage on precise, patient tasks." } ],
     flaw: { name: "Reserved", desc: "Discipline over showmanship. Disadvantage on Performance.", disadvSkill: "Performance" } },
   { name: "Oceania", blurb: "Seafaring and adaptable, thriving between island and open water.",
-    fightingStyle: "Twin Fang", combatSkills: ["Twin Strike", "Rapid Slash"],
+    fightingStyle: "Twin Fang", combatSkills: ["Twin Strike", "Rapid Slash"], armorProf: [],  // classes beyond the universal Light
     traits: [ { name: "Seafarer", desc: "Advantage to swim, sail, or navigate water; hold your breath long." },
               { name: "Adaptable", desc: "You gain one extra skill proficiency of your choice.", grant: { kind: "skill" } } ],
     flaw: { name: "Far From the Archives", desc: "Island life kept the old-world academies at arm's length. Disadvantage on History.", disadvSkill: "History" } },

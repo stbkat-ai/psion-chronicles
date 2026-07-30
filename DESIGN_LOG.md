@@ -225,6 +225,30 @@ falls back to `PC.itemDesc(it.name)` so items saved before this change still sho
 existing `PC.ITEMS` definitions (and their stats/notes) completely untouched — descriptions are additive.
 Flavor only: mechanics still live in each item's stats and its `note` (special property).
 
+### 16. Armor system — Light / Medium / Heavy, proficiency & rarity
+**Decision.** Armor is now a real system with **three classes** and a clear mobility-vs-protection tradeoff:
+- **Light** — least Defense (+1/+2), keeps **full AGI to Defense**, **advantage on Stealth**. (Nimble.)
+- **Medium** — mid Defense (+3/+4), AGI to Defense **capped at +2**, no penalties. (The balanced middle.)
+- **Heavy** — most Defense (+5/+6), **no AGI to Defense**, **−5 ft move**, **Stealth disadvantage**. (Tanky.)
+CON always contributes to Defense; only AGI (the mobility stat) is gated by class. **Proficiency:** everyone
+has **Light**; **Medium/Heavy** come from your **Heritage only**. Wearing a non-proficient class → no Defense
+bonus from it + disadvantage on AGI checks/attacks. **Rarity** mirrors weapons (Common→Legendary): rarer armor
+gives special protections (GM notes), and Legendary can grant an engine-applied perk (advantage on a named
+skill, or negating Heavy's move penalty).
+**Why these choices (the user's calls).** *Gated-AGI* scheme so light vs heavy is a genuine build decision, not
+just a bigger number. *Proficiency from Heritage only* (not backgrounds) — keeps the martial/agile identity on
+the region-of-origin layer, where the Fighting Style already lives. *Hybrid rarity* so the "legendary grants
+skill advantage" vision actually works in the app while flavor protections stay flexible GM notes. All existing
+~22 armors were **re-tiered** into the three classes with tuned Defense + rarities, and a few new
+Uncommon→Legendary pieces were added to show the system off (Shadowplate, Warden's Aegis, etc.).
+**How it's wired.** `items.js`: the `A()` helper now takes `(name, class, defense, weight, rarity, note,
+grants)`; `grants` holds engine-applied perks (`advSkill`, `noMovePenalty`). `data.js`: each heritage carries
+`armorProf` (classes beyond Light). `play.js`: `wornArmorClass()` (heaviest equipped), `armorProfClasses()`,
+`agiToDefense()` (the gate), and hooks in `defenseScore()`, `effectiveMovement()`, `rollSkill()` (now supports
+advantage, cancelling with disadvantage), `attackWith()` and `attackTechnique()` (AGI attacks). `app.js`
+surfaces armor proficiency on the Heritage step and the Review. The Inventory tab shows each armor's class,
+rarity, proficiency status, Defense contribution, class effects, and any grant/note.
+
 ---
 
 ## Deferred / future ideas

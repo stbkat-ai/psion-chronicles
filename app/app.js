@@ -483,6 +483,15 @@
         if (sg) notes.push(`<b>+${sg} skill proficiency</b> — choose ${2 + sg} skills on the <b>Skills</b> step`);
         d.appendChild(el("p", "hint", "This heritage grants " + notes.join("; ") + "."));
       }
+      // Armor proficiency (everyone gets Light; this heritage may add Medium/Heavy).
+      const ap = (h.armorProf || []).filter((c) => c !== "Light");
+      d.appendChild(el("div", "section-label", "Armor Proficiency"));
+      const apl = el("div", "pill-list");
+      ["Light"].concat(ap).forEach((c) => apl.appendChild(el("span", "pill prof", c + " armor")));
+      d.appendChild(apl);
+      d.appendChild(el("p", "hint", ap.length
+        ? `Proficient with <b>Light, ${ap.join(", ")}</b> armor. Light gives full mobility (AGI to Defense + Stealth); heavier classes trade mobility for more Defense.`
+        : "Proficient with <b>Light</b> armor only — nimble and stealthy. Wearing heavier armor you're not trained in gives no Defense bonus and disadvantage on AGI checks & attacks."));
       p.appendChild(d);
     }
     p.appendChild(navRow(() => { step = 0; render(); }, () => { step = 2; render(); }, "Next →", !!state.heritage));
@@ -1065,6 +1074,9 @@
     const cp = el("div", "pill-list");
     b.combat.forEach((c) => cp.appendChild(el("span", "pill psi", c)));
     (state.bonusWeaponProfs || []).forEach((wt) => { if (wt) cp.appendChild(el("span", "pill psi", wt + " ＋")); });
+    // Armor proficiency: Light for everyone, plus the Heritage's grants.
+    const armorClasses = ["Light"].concat((((state.heritage && PC.heritage(state.heritage)) || {}).armorProf || []).filter((c) => c !== "Light"));
+    armorClasses.forEach((c) => cp.appendChild(el("span", "pill prof", c + " armor")));
     p.appendChild(cp);
 
     // background flaw (negative trait)

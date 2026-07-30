@@ -99,7 +99,31 @@ Both **HP (Body Pool)** and **KP (Mind Pool)** recover the same ways:
 - **WIS / CHA** — narrative for now; check mechanics TBD.
 
 ### Defense Score (DS)
-- Unarmored **DS = 10 + AGI mod + CON mod** (armor rules TBD).
+- Unarmored **DS = 10 + AGI mod + CON mod**.
+- **With armor**, the AGI contribution is gated by the armor's **class** and the armor adds its Defense bonus
+  (see **Armor** below): **DS = 10 + (AGI mod, gated by class) + CON mod + armor bonus.** CON always applies.
+
+### Armor — classes, proficiency & rarity (CONFIRMED Luke)
+Armor comes in **three classes**, a clear tradeoff between mobility and protection:
+
+| Class | Defense bonus | AGI → Defense | Movement | Stealth |
+|---|---|---|---|---|
+| **Light** | +1 to +2 | **full** AGI mod | normal | **advantage** |
+| **Medium** | +3 to +4 | capped at **+2** | normal | normal |
+| **Heavy** | +5 to +6 | **none** | **−5 ft** | **disadvantage** |
+
+- **Armor proficiency.** Everyone is proficient with **Light**. **Medium** and **Heavy** proficiency come from
+  your **Regional Heritage** only (e.g. Europe & Africa grant Medium + Heavy; agile/monastic heritages like
+  Oceania, East Asia, South America grant Light only). Wearing a class you're **not** proficient with: you gain
+  **no Defense bonus** from it, and roll **AGI-based checks and attacks at disadvantage** while it's worn (the
+  class's movement/Stealth effects still apply).
+- **Rarity** (as with weapons): **Common · Uncommon · Rare · Very Rare · Legendary.** Higher-rarity armor is
+  sturdier and carries a **special property** — Uncommon/Rare tend to give *protection from specific things*
+  (resist a damage type, seal against gas, reflect a shot — GM-adjudicated **notes**), while **Legendary** armor
+  can grant a mechanical perk the app applies automatically, e.g. **advantage on a named skill** while equipped
+  (*Shadowplate* → Stealth; *Sentinel's Regalia* → Awareness), or negating Heavy's move penalty (*Powered Armor*).
+- The full armor list (class, Defense, rarity, effects) lives in `app/items.js` (`PC.ITEMS`); heritage armor
+  grants are `armorProf` on each heritage in `app/data.js`.
 
 ### Limb Damage (CONFIRMED Luke) — called-shot / crippling system
 A third tracking system (Fallout-style). Every character/monster has **6 limbs**, each with its own limb-HP.

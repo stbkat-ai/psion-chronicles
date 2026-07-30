@@ -116,6 +116,8 @@
   const MIND = ["INT", "WIS", "CHA"];
   function effectiveMovement() {
     let m = PC.derive(liveScores(), rec.level).movement;
+    // Heavy armor slows you by 5 ft (unless the armor's servos negate it).
+    if (wornArmorClass() === "Heavy" && !armorNegatesMovePenalty()) m = Math.max(0, m - 5);
     const legs = crippledLegs();
     if (legs >= 2) return 0;
     if (legs === 1) return Math.floor(m / 2);
@@ -141,14 +143,53 @@
     save(); refresh();
   }
 
+  /* ---------- armor ---------- */
+  // Armor classes the character is proficient with: Light is universal, plus any their Heritage grants.
+  function armorProfClasses() {
+    const h = PC.heritage(rec.heritage);
+    const extra = (h && Array.isArray(h.armorProf)) ? h.armorProf : [];
+    return ["Light"].concat(extra.filter((c) => c !== "Light"));
+  }
+  function proficientWithArmorClass(cls) { return !cls || armorProfClasses().indexOf(cls) > -1; }
+  function equippedArmor() { return (rec.inventory || []).filter((it) => it.equipped && it.category === "Armor"); }
+  // Worn class = the heaviest equipped armor class (drives AGI-to-Defense gating, movement, stealth).
+  function wornArmorClass() {
+    const order = { Light: 1, Medium: 2, Heavy: 3 };
+    let worst = null, rank = 0;
+    equippedArmor().forEach((it) => { const c = it.armorClass; if (c && (order[c] || 0) > rank) { rank = order[c]; worst = c; } });
+    return worst;
+  }
+  // Wearing any armor whose class you're NOT proficient with? (voids its Defense; disadvantage on AGI.)
+  function wearingUnproficientArmor() { return equippedArmor().some((it) => it.armorClass && !proficientWithArmorClass(it.armorClass)); }
+  // AGI's contribution to Defense, gated by the worn class: Light/none full, Medium capped +2, Heavy none.
+  function agiToDefense() {
+    const cls = wornArmorClass();
+    const agi = adjMod("AGI");
+    if (cls === "Heavy") return 0;
+    if (cls === "Medium") return Math.min(agi, 2);
+    return agi;
+  }
+  // Skills that equipped, proficient armor grants advantage on (rarity/legendary advSkill grants).
+  function armorAdvSkills() {
+    const out = [];
+    equippedArmor().forEach((it) => {
+      if (it.grants && it.grants.advSkill && proficientWithArmorClass(it.armorClass)) {
+        [].concat(it.grants.advSkill).forEach((s) => { if (out.indexOf(s) < 0) out.push(s); });
+      }
+    });
+    return out;
+  }
+  function armorNegatesMovePenalty() { return equippedArmor().some((it) => it.grants && it.grants.noMovePenalty && proficientWithArmorClass(it.armorClass)); }
+
   function defenseScore() {
-    let ds = PC.RULES.BASE_DS + adjMod("AGI") + adjMod("CON");
+    let ds = PC.RULES.BASE_DS + agiToDefense() + adjMod("CON");
     play.active.forEach((n) => {
       const t = PC.technique(n);
       if (t && t.buff && t.buff.dsFromMod) ds += adjMod(t.buff.dsFromMod);
     });
-    (rec.inventory || []).forEach((it) => {
-      if (it.equipped && it.category === "Armor" && it.dsBonus) ds += Number(it.dsBonus) || 0;
+    // Armor's Defense bonus applies only if you're proficient with its class; otherwise it grants nothing.
+    equippedArmor().forEach((it) => {
+      if (it.dsBonus && proficientWithArmorClass(it.armorClass)) ds += Number(it.dsBonus) || 0;
     });
     return ds;
   }
@@ -282,8 +323,9 @@
     const profLvl = kineticProfLevel(t.kinetic);
     const mod = adjMod(t.attr) + PC.kineticProfBonus(rec.level, profLvl);
     const profTag = profLvl === "expertise" ? " ✦expertise (2× prof)" : profLvl === "proficient" ? " ✓prof" : "";
-    // Head crippled or a background flaw on this attribute → disadvantage on technique attacks.
-    const r = PC.rollCheck(mod, (isDisadv(t.attr) || headCrippled() || flawDisadvAttr(t.attr)) ? "dis" : "normal");
+    // Disadvantage: chakra hit, head crippled, a background flaw on this attribute, or non-proficient
+    // armor on an AGI-based technique attack.
+    const r = PC.rollCheck(mod, (isDisadv(t.attr) || headCrippled() || flawDisadvAttr(t.attr) || (t.attr === "AGI" && wearingUnproficientArmor())) ? "dis" : "normal");
     const dis = r.mode === "dis" ? ` (disadv [${r.d20s.join(",")}]→${r.picked})` : "";
     announce(r.total, `${t.name} attack: d20${dis}${PC.fmtMod(mod)} = ${r.total} to hit${profTag} (−${t.kp} KP; roll Damage if it hits)`);
     save(); refresh();
@@ -401,12 +443,21 @@
     if (isLocked(skill.attr)) { App.toast(`${PC.CHAKRAS[skill.attr].name} chakra locked — can't use ${skill.attr} skills.`); return; }
     const proficient = bg().skills.includes(skill.name) || (rec.chosenSkills || []).includes(skill.name);
     const mod = adjMod(skill.attr) + (proficient ? PC.profBonus(rec.level) : 0);
-    // Disadvantage sources: chakra hit, head crippled on a Mind (INT/WIS/CHA) check,
-    // a background flaw on this attribute, or a heritage flaw naming this skill.
-    const mode = (isDisadv(skill.attr) || (headCrippled() && MIND.indexOf(skill.attr) > -1) || flawDisadvAttr(skill.attr) || flawDisadvSkill(skill.name)) ? "dis" : "normal";
+    const worn = wornArmorClass();
+    // Disadvantage sources: chakra hit; head crippled on a Mind (INT/WIS/CHA) check; a background flaw
+    // on this attribute; a heritage flaw naming this skill; non-proficient armor on any AGI check; and
+    // Heavy armor on Stealth.
+    let dis = isDisadv(skill.attr) || (headCrippled() && MIND.indexOf(skill.attr) > -1) || flawDisadvAttr(skill.attr) || flawDisadvSkill(skill.name);
+    if (skill.attr === "AGI" && wearingUnproficientArmor()) dis = true;
+    if (skill.name === "Stealth" && worn === "Heavy") dis = true;
+    // Advantage sources: Light armor on Stealth; a skill named by equipped armor's advSkill grant.
+    const adv = (skill.name === "Stealth" && worn === "Light") || armorAdvSkills().indexOf(skill.name) > -1;
+    // Advantage and disadvantage cancel to a normal roll.
+    const mode = (adv && !dis) ? "adv" : (dis && !adv) ? "dis" : "normal";
     const r = PC.rollCheck(mod, mode);
-    const dis = mode === "dis" ? ` (disadvantage: [${r.d20s.join(",")}]→${r.picked})` : "";
-    announce(r.total, `${skill.name} check: d20${dis}${PC.fmtMod(mod)} = ${r.total}`);
+    const tag = mode === "dis" ? ` (disadvantage: [${r.d20s.join(",")}]→${r.picked})`
+      : mode === "adv" ? ` (advantage: [${r.d20s.join(",")}]→${r.picked})` : "";
+    announce(r.total, `${skill.name} check: d20${tag}${PC.fmtMod(mod)} = ${r.total}`);
     save(); refresh();
   }
 
@@ -485,8 +536,8 @@
     consumeEcon(econType);
     const prof = proficientWithType(it);
     const mod = adjMod(attr) + (prof ? PC.profBonus(rec.level) : 0);
-    // Crippled arm → disadvantage on weapon attacks.
-    const mode = (isDisadv(attr) || anyArmCrippled()) ? "dis" : "normal";
+    // Disadvantage: crippled arm, or wearing non-proficient armor on an AGI-based attack.
+    const mode = (isDisadv(attr) || anyArmCrippled() || (attr === "AGI" && wearingUnproficientArmor())) ? "dis" : "normal";
     const r = PC.rollCheck(mod, mode);
     const dis = mode === "dis" ? ` (disadv [${r.d20s.join(",")}]→${r.picked})` : "";
     const oa = econType === "Reaction" ? " (Opportunity)" : "";
@@ -965,14 +1016,39 @@
         detail.appendChild(note);
       }
       if (it.category === "Armor") {
+        const cls = it.armorClass || "Light"; // custom/legacy armor defaults to Light
+        const prof = proficientWithArmorClass(cls);
+        // Class · rarity · proficiency line.
+        const tags = el("div", "inv-note");
+        tags.innerHTML = `<b>${cls} armor</b>${it.rarity && it.rarity !== "Common" ? ` · ${it.rarity}` : ""} · ${prof ? "proficient ✓" : "not proficient ⚠"}`;
+        detail.appendChild(tags);
+        // Config: class selector (for custom/legacy armor) + Defense bonus.
         const cfg = el("div", "inv-cfg");
+        const clsSel = el("select");
+        clsSel.innerHTML = ["Light", "Medium", "Heavy"].map((c) => `<option value="${c}" ${c === cls ? "selected" : ""}>${c}</option>`).join("");
+        clsSel.onchange = () => setItemField(it, "armorClass", clsSel.value);
         const dsInp = el("input"); dsInp.type = "number"; dsInp.placeholder = "DS bonus"; dsInp.value = (it.dsBonus != null ? it.dsBonus : "");
         dsInp.onchange = () => setItemField(it, "dsBonus", parseInt(dsInp.value, 10) || 0);
+        cfg.appendChild(labeled("Armor class", clsSel));
         cfg.appendChild(labeled("Defense Score bonus", dsInp));
         detail.appendChild(cfg);
-        detail.appendChild(el("div", "inv-note", it.equipped
-          ? `Equipped: +${Number(it.dsBonus) || 0} to Defense Score.`
-          : "Equip this to add its Defense Score bonus. (Armor rules are placeholder — house-adjustable.)"));
+        // Class benefits/drawbacks + proficiency effect.
+        const traits = cls === "Light" ? "Full AGI to Defense · Stealth advantage"
+          : cls === "Medium" ? "AGI to Defense capped at +2"
+          : "No AGI to Defense · −5 ft movement · Stealth disadvantage";
+        const eff = el("div", "inv-note");
+        if (it.equipped && !prof) {
+          eff.innerHTML = `⚠ Not proficient with <b>${cls}</b> armor — while worn you gain <b>no Defense bonus</b> and roll AGI checks & attacks at <b>disadvantage</b>. (${traits}.)`;
+        } else if (it.equipped) {
+          eff.innerHTML = `Equipped: <b>+${Number(it.dsBonus) || 0} Defense</b>. ${traits}.`;
+        } else {
+          eff.innerHTML = `${traits}. Equip to apply${prof ? "" : ` — note you're <b>not proficient</b> with ${cls} armor`}.`;
+        }
+        detail.appendChild(eff);
+        // Auto-applied perks (grants) + GM-applied special note.
+        if (it.grants && it.grants.advSkill) detail.appendChild(el("div", "inv-note", `✦ Advantage on <b>${[].concat(it.grants.advSkill).join(", ")}</b> checks while equipped${prof ? "" : " (needs proficiency)"}.`));
+        if (it.grants && it.grants.noMovePenalty) detail.appendChild(el("div", "inv-note", "✦ Negates Heavy armor's −5 ft movement penalty."));
+        if (it.note) detail.appendChild(el("div", "inv-note", `★ ${it.note}`));
       }
 
       wrap.appendChild(detail);
@@ -1233,10 +1309,10 @@
           meta += ` · ${it.weaponType} · ${it.damage} · ${it.hands === 2 ? "two-handed" : "one-handed"}`;
           if (it.note) meta += ` · ${it.note}`;
         }
-        else if (it.category === "Armor") meta += ` · +${it.dsBonus} DS`;
+        else if (it.category === "Armor") { meta += ` · ${it.armorClass || "Light"} · +${it.dsBonus} DS`; if (it.note) meta += ` · ${it.note}`; }
         else if (it.note) meta += ` · ${it.note}`;
-        // Rarity tag for weapons (Common shown muted; higher rarities colored).
-        const rarityTag = it.category === "Weapon" && it.rarity
+        // Rarity tag for weapons & armor (Common shown muted; higher rarities colored).
+        const rarityTag = (it.category === "Weapon" || it.category === "Armor") && it.rarity
           ? `<span class="rarity-tag rarity-${it.rarity.toLowerCase().replace(/\s+/g, "-")}">${it.rarity}</span>` : "";
         const descLine = it.desc ? `<span class="cat-desc">${it.desc}</span>` : "";
         row.innerHTML = `<div class="cat-info"><span class="cat-name">${it.name}${rarityTag}</span><span class="cat-meta">${meta}</span>${descLine}</div><span class="cat-wt">${it.weight} lb</span>`;

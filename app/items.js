@@ -15,7 +15,15 @@ window.PC = window.PC || {};
     if (note) w.note = note;
     return w;
   }
-  function A(name, dsBonus, weight) { return { name: name, category: "Armor", dsBonus: dsBonus, weight: weight }; }
+  // Armor. cls = "Light"|"Medium"|"Heavy"; rarity default Common. note = descriptive special effect
+  // (GM-applied). grants = structured perks the engine auto-applies while equipped & proficient, e.g.
+  // { advSkill: "Stealth" } (advantage on that skill) or { noMovePenalty: true }.
+  function A(name, cls, dsBonus, weight, rarity, note, grants) {
+    const a = { name: name, category: "Armor", armorClass: cls, dsBonus: dsBonus, weight: weight, rarity: rarity || "Common" };
+    if (note) a.note = note;
+    if (grants) a.grants = grants;
+    return a;
+  }
   function C(name, weight, note) { return { name: name, category: "Consumable", weight: weight, note: note }; }
   function T(name, weight, note) { return { name: name, category: "Tool", weight: weight, note: note }; }
   function M(name, weight, note) { return { name: name, category: "Misc", weight: weight, note: note }; }
@@ -133,11 +141,34 @@ window.PC = window.PC || {};
   W("Sonic Amp", "Noise Weapons", "1d10", 6, 2), W("Bass Cannon", "Noise Weapons", "1d10", 8, 2), W("Resonator", "Noise Weapons", "1d10", 5, 1),
   W("Cataclysm Speaker", "Noise Weapons", "3d6", 8, 2, "Legendary", "On a hit, all enemies within 10 ft of the target are pushed 5 ft."),
 
-  /* ===== ARMOR ===== */
-  A("Padded Cloak", 1, 4), A("Traveling Robes", 1, 4), A("Fine Clothes", 1, 3), A("Fine Robes", 1, 3), A("Monk's Wraps", 1, 2), A("Combat Fatigues", 1, 4), A("Reinforced Coat", 1, 6), A("Camo Poncho", 1, 4),
-  A("Leather Armor", 2, 8), A("Shadowed Leathers", 2, 8), A("Weathered Leathers", 2, 8), A("Reinforced Vest", 2, 15), A("Enchanted Shawl", 2, 5), A("Ceremonial Vestments", 2, 6), A("Lab Exosuit", 2, 18), A("Riot Shield", 2, 10),
-  A("Kevlar Vest", 3, 12), A("Heavy Plating", 3, 25), A("Riot Gear", 3, 22), A("Combat Exosuit", 3, 20),
-  A("Powered Armor", 4, 40),
+  /* ===== ARMOR — three classes (Light / Medium / Heavy), with rarity like weapons =====
+     Light  = full AGI to Defense + Stealth advantage, least Defense.
+     Medium = AGI to Defense capped at +2, no move/stealth penalty (the balanced middle).
+     Heavy  = no AGI to Defense, −5 ft movement, Stealth disadvantage, most Defense.
+     Everyone is proficient with Light; Medium/Heavy proficiency comes from your Heritage. Wearing a
+     class you're not proficient with gives NO Defense bonus and disadvantage on AGI checks/attacks.
+     `grants` perks (e.g. advSkill) auto-apply while equipped & proficient; `note` effects are GM-applied. */
+  // Light (Defense +1..+2)
+  A("Padded Cloak", "Light", 1, 4), A("Traveling Robes", "Light", 1, 4), A("Fine Clothes", "Light", 1, 3),
+  A("Fine Robes", "Light", 1, 3), A("Monk's Wraps", "Light", 1, 2), A("Ceremonial Vestments", "Light", 1, 6),
+  A("Combat Fatigues", "Light", 2, 4), A("Leather Armor", "Light", 2, 8), A("Weathered Leathers", "Light", 2, 8),
+  A("Camo Poncho", "Light", 2, 4, "Uncommon", "Patterned to melt into terrain.", { advSkill: "Stealth" }),
+  A("Shadowed Leathers", "Light", 2, 8, "Uncommon", "Matte-black, sound-muffling leathers.", { advSkill: "Stealth" }),
+  A("Enchanted Shawl", "Light", 2, 5, "Uncommon", "Woven wards soften the first blow of each fight (GM)."),
+  A("Nightweave Cloak", "Light", 2, 4, "Rare", "Drinks in the light and sound around you.", { advSkill: "Stealth" }),
+  A("Shadowplate", "Light", 2, 6, "Legendary", "Veil-shadow armor: you leave no tracks and can hide even while observed (GM).", { advSkill: "Stealth" }),
+  // Medium (Defense +3..+4)
+  A("Reinforced Coat", "Medium", 3, 6), A("Reinforced Vest", "Medium", 3, 15), A("Kevlar Vest", "Medium", 3, 12),
+  A("Lab Exosuit", "Medium", 3, 18, "Uncommon", "Sealed against gas, acid, and lab hazards (GM)."),
+  A("Riot Shield", "Medium", 4, 10),
+  A("Mirrormail", "Medium", 4, 16, "Rare", "Once per fight, turn a ranged attack back on its attacker (GM)."),
+  A("Sentinel's Regalia", "Medium", 4, 14, "Legendary", "You can't be surprised while you wear it.", { advSkill: "Awareness" }),
+  // Heavy (Defense +5..+6)
+  A("Heavy Plating", "Heavy", 5, 25), A("Riot Gear", "Heavy", 5, 22),
+  A("Aegis Plate", "Heavy", 5, 26, "Rare", "Resistance to one physical damage type of your choice (GM)."),
+  A("Combat Exosuit", "Heavy", 6, 20, "Rare", "Powered frame sealed against fire and gas (GM)."),
+  A("Powered Armor", "Heavy", 6, 40, "Very Rare", "Servos negate Heavy armor's movement penalty; resists ballistic damage (GM).", { noMovePenalty: true }),
+  A("Warden's Aegis", "Heavy", 6, 30, "Legendary", "Resistance to physical damage; advantage to resist being moved or knocked prone (GM).", { advSkill: "Hardiness" }),
 
   /* ===== CONSUMABLES ===== */
   C("Trail Rations", 2, "A day's food."),
@@ -475,6 +506,12 @@ window.PC = window.PC || {};
     "Riot Gear": "Full riot armor covering the body against blows.",
     "Combat Exosuit": "A powered frame that shrugs off heavy punishment.",
     "Powered Armor": "A full suit of powered plate — a walking fortress.",
+    "Nightweave Cloak": "A cloak of shadow-dyed weave that swallows light and muffles every step.",
+    "Shadowplate": "Armor spun from captured Veil-shadow — silent, trackless, and barely there.",
+    "Mirrormail": "Polished, faceted mail that can catch a shot and fling it back.",
+    "Sentinel's Regalia": "Ceremonial guard-plate whose wards keep the wearer ever watchful.",
+    "Aegis Plate": "Rune-banded plate hardened against a chosen kind of harm.",
+    "Warden's Aegis": "A legendary bulwark harness that makes its warden all but immovable.",
     // — Consumables —
     "Trail Rations": "Dried, packable food that keeps a traveler going.",
     "Waterskin": "A sealed hide flask for carrying drinking water.",

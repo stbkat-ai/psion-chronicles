@@ -42,7 +42,9 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
      **2 Traits** and **one flaw** (a narrow, situational disadvantage on a single skill — e.g. North America →
      *Rough Around the Edges*: disadvantage on Etiquette). *No* attribute changes. Combat Skills are organized
      into Fighting Styles the way techniques are organized into Kinetics (48 skills across 8 styles); they cost
-     no KP and only use action economy (Action / Bonus Action / Reaction / Passive).
+     no KP and only use action economy (Action / Bonus Action / Reaction / Passive). Your Heritage also sets your
+     **armor proficiency** — everyone can wear **Light**, and martial regions add **Medium/Heavy** (see the
+     armor system on the Inventory tab).
   3. Attributes — roll 8d12 (drop 2 lowest, +10) or enter manually, then assign
   4. Skills — background gives 3, choose 2 more (**+1 per skill-proficiency grant** from your Heritage —
      e.g. Oceania's *Adaptable* makes it 3)
@@ -155,7 +157,14 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
   - **Equip / Unequip + item actions** — tap an item to expand it:
     - **Weapons** — set a weapon type (sets the governing attribute) + damage die, then **⚔ Attack**
       (d20 + attr mod + proficiency, disadvantage/lockout from chakra applies) and **🎲 Damage** (die + attr mod)
-    - **Armor** — set a Defense Score bonus; **equipping** it adds that bonus to your DS live
+    - **Armor** — three **classes** with a mobility-vs-protection tradeoff: **Light** (full AGI to Defense +
+      Stealth advantage, least armor), **Medium** (AGI to Defense capped at +2, the balanced middle),
+      **Heavy** (most armor, but no AGI to Defense, −5 ft move, Stealth disadvantage). Everyone is proficient
+      with **Light**; **Medium/Heavy** come from your **Heritage** — wear a class you're not trained in and you
+      get **no Defense bonus** from it plus **disadvantage on AGI checks & attacks**. Armor has **rarity** too
+      (Common→Legendary): rarer pieces grant special protections, and **Legendary** armor can auto-apply perks
+      like **advantage on a skill** (e.g. Shadowplate → Stealth). Equipping/unequipping updates your Defense,
+      movement, and Stealth live; the expanded item shows its class, rarity, proficiency, and effects
     - **Consumables** — **Use** decrements the quantity (auto-removes at 0)
     - **Melee augments** (e.g. Ki Strike) — on a melee weapon, a **+Ki Strike (3 KP)** button rolls the
       weapon's damage *and* the augment's dice together as one total and spends the KP. Augment techniques
