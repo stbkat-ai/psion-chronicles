@@ -182,6 +182,17 @@ toggling on/off can never net free HP/KP (you can only ever *stay* full, never g
 in `toggleSustained`, which captures the pre-activation maxes and, if a bar was still full after paying costs,
 raises it to the new max.)* Limb HP (a fraction of max HP) scales with the buffed max as a consequence, consistent.
 
+### 13. Pool bars labelled "Body Pool / Mind Pool", code inside the bar
+**Decision.** On the play sheet's Sheet tab, the two pool bars now read **"Body Pool"** and **"Mind Pool"**
+above the bar (with current/max on the right, as before), and the short code **HP** / **KP** is drawn *inside*
+the bar in small black print. Previously the header just said "HP"/"KP".
+**Why.** The user wanted the fuller pool names visible and the short codes moved into the bars — a cleaner,
+more consistent look that also ties the bars to the game's "Body Pool = HP / Mind Pool = KP" language.
+**How.** `bar()` in `play.js` now takes a `name` (shown above) and a `letter` (overlaid inside via a
+`.bar-letter` span); the pool-bar track is slightly taller (`.poolbar .bar-track`) to seat the code, which is
+centered, bold, black, with a faint light text-shadow so it stays legible whether it sits over the coloured
+fill or the darker empty portion. Limb and carry bars are untouched (the rules are scoped to `.poolbar`).
+
 ---
 
 ## Deferred / future ideas

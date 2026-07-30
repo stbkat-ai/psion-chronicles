@@ -682,8 +682,8 @@
 
     /* HP / KP */
     const pools = el("div", "panel");
-    pools.appendChild(bar("HP", play.hp, maxHP(), "hp", adjustHP));
-    pools.appendChild(bar("KP", play.kp, maxKP(), "kp", adjustKP));
+    pools.appendChild(bar("Body Pool", "HP", play.hp, maxHP(), "hp", adjustHP));
+    pools.appendChild(bar("Mind Pool", "KP", play.kp, maxKP(), "kp", adjustKP));
     pools.appendChild(soulBar());
     const rests = el("div", "rest-row");
     const sr = el("button", "btn small", "☾ Short Rest");
@@ -796,15 +796,18 @@
   }
 
   /* ---------- small builders ---------- */
-  function bar(label, cur, max, cls, adjust) {
+  // name = pool name shown above the bar (e.g. "Body Pool"); letter = short code drawn inside the
+  // bar in small black print (e.g. "HP"). The cur/max number stays on the right of the header.
+  function bar(name, letter, cur, max, cls, adjust) {
     const box = el("div", "poolbar " + cls);
     const pct = max > 0 ? Math.round((cur / max) * 100) : 0;
     const head = el("div", "poolbar-head");
-    head.innerHTML = `<span>${label}</span><span class="poolbar-num">${cur} / ${max}</span>`;
+    head.innerHTML = `<span>${name}</span><span class="poolbar-num">${cur} / ${max}</span>`;
     box.appendChild(head);
     const track = el("div", "bar-track");
     const fill = el("div", "bar-fill"); fill.style.width = pct + "%";
     track.appendChild(fill);
+    track.appendChild(el("span", "bar-letter", letter)); // letter overlaid inside the bar
     box.appendChild(track);
     const ctr = el("div", "adjust-row");
     [[-5, "−5"], [-1, "−1"], [1, "+1"], [5, "+5"]].forEach(([n, t]) => {
@@ -813,9 +816,9 @@
       ctr.appendChild(b);
     });
     const inp = el("input"); inp.type = "number"; inp.placeholder = "#"; inp.className = "adjust-input";
-    const dmg = el("button", "btn small", label === "HP" ? "Damage" : "Spend");
+    const dmg = el("button", "btn small", letter === "HP" ? "Damage" : "Spend");
     dmg.onclick = () => { const v = parseInt(inp.value, 10); if (v) adjust(-Math.abs(v)); };
-    const heal = el("button", "btn small", label === "HP" ? "Heal" : "Restore");
+    const heal = el("button", "btn small", letter === "HP" ? "Heal" : "Restore");
     heal.onclick = () => { const v = parseInt(inp.value, 10); if (v) adjust(Math.abs(v)); };
     ctr.appendChild(inp); ctr.appendChild(dmg); ctr.appendChild(heal);
     box.appendChild(ctr);

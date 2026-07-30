@@ -127,7 +127,9 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     as starting gear; higher-rarity weapons (bigger dice + special properties) are found in play. A
     **← Inventory** button returns.
   - **Sheet tab** — the core overview:
-  - HP & KP bars with damage/heal/spend controls (quick ±1/±5 or type an amount)
+  - **Body Pool** (HP) & **Mind Pool** (KP) bars — the pool name sits above each bar, its short code
+    (HP/KP) rides inside the bar, and the current/max is on the right — with damage/heal/spend controls
+    (quick ±1/±5 or type an amount)
   - **Soul Pool** — your XP + Soul Level tracker (leveling is GM-driven; XP thresholds are still being
     tuned), with XP adjusters and the **⭐ Level Up** button right beneath it (opens the Level Up screen;
     flags any unspent Technique / Attribute / Combat-Skill points)

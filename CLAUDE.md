@@ -11,7 +11,7 @@ in the browser's `localStorage` (key `psion_chronicles_characters`), so saved da
 - Open `app/index.html` directly in a browser, **or** serve it: from the `app/` folder run
   `python -m http.server 8777`, then visit `http://localhost:8777`.
 - After any JS/CSS change, bump the `?v=N` cache-buster on the **6 tags** in `app/index.html`
-  (currently **v=31**) and hard-refresh, so browsers don't serve stale files.
+  (currently **v=32**) and hard-refresh, so browsers don't serve stale files.
 - Verify changes in the real app (http.server + the browser tools) before committing.
 
 ## Hosting & access
