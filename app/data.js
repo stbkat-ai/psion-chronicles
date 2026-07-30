@@ -15,13 +15,15 @@ PC.BODY_ATTRS = ["STR", "AGI", "CON"]; // Body Pool = HP
 PC.MIND_ATTRS = ["INT", "WIS", "CHA"]; // Mind Pool = KP (Ki Points)
 
 /* --- Chakras (one per attribute) ---------------------------------------- */
+/* color = the chakra's signature hue (traditional chakra palette); order = top-to-bottom
+   position on the seated body figure (0 = crown, 5 = root) used by the Chakras tab. */
 PC.CHAKRAS = {
-  STR: { name: "Core",      full: "Solar Plexus", theme: "Raw power & willpower" },
-  AGI: { name: "Sacral",    full: "Sacral",       theme: "Movement, flow, reflexes" },
-  CON: { name: "Root",      full: "Root",         theme: "Survival, endurance, grounding" },
-  CHA: { name: "Throat",    full: "Throat",       theme: "Voice & expression" },
-  WIS: { name: "Third Eye", full: "Third Eye",    theme: "Insight, awareness, intuition" },
-  INT: { name: "Crown",     full: "Crown",        theme: "Knowledge, logic, higher mind" },
+  STR: { name: "Core",      full: "Solar Plexus", theme: "Raw power & willpower",             color: "#ffcf3f", order: 3 },
+  AGI: { name: "Sacral",    full: "Sacral",       theme: "Movement, flow, reflexes",          color: "#ff8c1a", order: 4 },
+  CON: { name: "Root",      full: "Root",         theme: "Survival, endurance, grounding",    color: "#e64553", order: 5 },
+  CHA: { name: "Throat",    full: "Throat",       theme: "Voice & expression",                color: "#28a7e6", order: 2 },
+  WIS: { name: "Third Eye", full: "Third Eye",    theme: "Insight, awareness, intuition",     color: "#5a63d8", order: 1 },
+  INT: { name: "Crown",     full: "Crown",        theme: "Knowledge, logic, higher mind",     color: "#a855f7", order: 0 },
 };
 
 /* --- The 18 Kinetics (3 per attribute: Tank / Controller / Healer) ------- */

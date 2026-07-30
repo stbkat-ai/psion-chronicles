@@ -281,6 +281,29 @@ color. `calledShot()`/`healLimb()` are unchanged. The old `.limb-box`/`.bar-fill
 
 ---
 
+### 19. Chakras moved to their own tab — a seated figure, each chakra its own color
+**Decision.** The interactive chakra chart left the **Sheet** tab and became its own **Chakras** tab, placed
+right after **Limbs**. It's styled like the Limbs tab: a **seated (lotus) body silhouette** (SVG) with a
+glowing **chakra disc over each spinal point**, drawn crown→root in the traditional chakra palette — **Crown
+(INT) violet · Third Eye (WIS) indigo · Throat (CHA) blue · Core/Solar-Plexus (STR) yellow · Sacral (AGI)
+orange · Root (CON) red**. Below the figure, one labeled **control row per chakra** (color swatch, name,
+attribute, current effect, and 4 hit-pips), each tinted its chakra's color. Tapping a disc on the figure or a
+row selects/highlights that chakra; the pips set its hits. Hits dim the disc; the 4th hit greys it with an ✕
+and flags the row **Locked out**. Mechanics (hits → disadvantage / halved / removed / locked, rest healing)
+are **unchanged** — this is a relocation + visual pass only.
+**Why.** The Sheet tab was getting crowded and the flat pip-card row was the last plain-looking piece of the
+play sheet. The user asked for a dedicated tab, designed like the Limbs figure, with a distinct color per
+chakra (referencing the classic seven-chakra body charts). A colored figure makes "which chakra, how hurt"
+readable at a glance and matches the pen-and-paper feel used elsewhere.
+**How.** Added `color` + `order` to each entry in `PC.CHAKRAS` (`data.js`) — the single source of truth for
+hue and top-to-bottom position. In `play.js`: `chakraFigureSVG()` builds the lotus silhouette + six chakra
+`<g>` groups (each `style="--cc:<color>"`, classed `ok`/`hurt`/`locked` + `sel`); `buildChakraTab()` wires
+disc/row taps to a new `chakraSel` module var (reset on character switch) and reuses `setChakra()`/the pips.
+The old chakra panel was removed from `buildSheetTab()`; the stale `.chakra`/`.chakra-row` card CSS was
+replaced with `.chakra-figure`/`.chakra-legend` styles that drive color via the `--cc` custom property.
+
+---
+
 ## Deferred / future ideas
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before

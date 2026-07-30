@@ -21,6 +21,7 @@
   let catalogOpen = false; // whether the item-catalog sub-screen is open (from the Inventory tab)
   let poolEdit = null;     // which pool's inline editor is open on the Sheet tab: "body"|"mind"|"soul"|null
   let limbSel = null;      // which limb's editor is open on the Limbs tab (limb key) | null
+  let chakraSel = null;    // which chakra's editor is open on the Chakras tab (attr key) | null
   const refresh = () => App.render();
 
   const bg = () => PC.background(rec.background);
@@ -609,7 +610,7 @@
 
   /* ---------- render ---------- */
   function render(container, id) {
-    if (id !== curId) { activeTab = "sheet"; expandedItem = null; catalogOpen = false; poolEdit = null; limbSel = null; curId = id; }
+    if (id !== curId) { activeTab = "sheet"; expandedItem = null; catalogOpen = false; poolEdit = null; limbSel = null; chakraSel = null; curId = id; }
     rec = App.loadRoster().find((c) => c.id === id);
     if (!rec) { App.goHome(); return; }
     ensurePlay();
@@ -624,6 +625,7 @@
     switch (activeTab) {
       case "combat": body = buildCombat(); break;
       case "limbs": body = buildLimbsTab(); break;
+      case "chakras": body = buildChakraTab(); break;
       case "kinetics": body = buildKineticsTab(); break;
       case "skills": body = buildSkillsTab(); break;
       case "traits": body = buildTraitsTab(); break;
@@ -650,7 +652,7 @@
 
   function buildTabBar() {
     const bar = el("div", "play-tabs");
-    [["sheet", "Sheet"], ["combat", "⚔ Combat"], ["limbs", "Limbs"], ["kinetics", "Kinetics"], ["skills", "Skills"], ["traits", "Traits"], ["description", "Description"], ["inventory", "Inventory"]].forEach((pair) => {
+    [["sheet", "Sheet"], ["combat", "⚔ Combat"], ["limbs", "Limbs"], ["chakras", "Chakras"], ["kinetics", "Kinetics"], ["skills", "Skills"], ["traits", "Traits"], ["description", "Description"], ["inventory", "Inventory"]].forEach((pair) => {
       const b = el("button", "play-tab" + (activeTab === pair[0] ? " active" : ""), pair[1]);
       b.onclick = () => { activeTab = pair[0]; catalogOpen = false; refresh(); };
       bar.appendChild(b);
@@ -799,29 +801,6 @@
     });
     attrs.appendChild(ag);
     root.appendChild(attrs);
-
-    /* chakra chart (interactive) */
-    const chak = el("div", "panel");
-    chak.appendChild(el("div", "section-label", "Chakra Chart — click pips to set hits"));
-    const crow = el("div", "chakra-row");
-    PC.ATTRS.forEach((a) => {
-      const ch = PC.CHAKRAS[a];
-      const hits = chakraOf(a);
-      const eff = PC.chakraEffect(hits);
-      const c = el("div", "chakra" + (hits >= 4 ? " ko" : hits > 0 ? " hurt" : ""));
-      c.appendChild(el("div", "cname", ch.name));
-      c.appendChild(el("div", "cattr", a + " · " + eff.label));
-      const pips = el("div", "pips");
-      for (let i = 0; i < 4; i++) {
-        const pip = el("span", "pip" + (i < hits ? " filled" : ""));
-        pip.onclick = () => setChakra(a, hits === i + 1 ? i : i + 1);
-        pips.appendChild(pip);
-      }
-      c.appendChild(pips);
-      crow.appendChild(c);
-    });
-    chak.appendChild(crow);
-    root.appendChild(chak);
 
     /* dice roller + log */
     const dice = el("div", "panel");
@@ -1213,6 +1192,81 @@
       p.appendChild(sum);
     }
 
+    root.appendChild(p);
+    return root;
+  }
+
+  /* ---------- Chakras tab ---------- */
+  // Chakras run down the body's centerline (crown → root). Each is one attribute's chakra,
+  // drawn in its own signature color; hits dim it and, at 4, lock it out.
+  function chakraOrder() { return PC.ATTRS.slice().sort((a, b) => PC.CHAKRAS[a].order - PC.CHAKRAS[b].order); }
+
+  // Seated (lotus) silhouette with a colored chakra disc glowing over each spinal point.
+  function chakraFigureSVG() {
+    const ys = [22, 44, 70, 128, 162, 196]; // by order: crown, third-eye, throat, solar-plexus, sacral, root
+    const body =
+      '<path class="ch-body" d="M150 176 C96 176 54 200 54 226 C54 244 96 252 150 252 C204 252 246 244 246 226 C246 200 204 176 150 176 Z"/>' +
+      '<path class="ch-body" d="M120 92 C86 104 66 150 70 206 C74 220 98 222 114 210 C122 172 128 130 132 104 Z"/>' +
+      '<path class="ch-body" d="M180 92 C214 104 234 150 230 206 C226 220 202 222 186 210 C178 172 172 130 168 104 Z"/>' +
+      '<path class="ch-body" d="M150 62 C126 62 114 76 117 96 L127 198 C131 216 169 216 173 198 L183 96 C186 76 174 62 150 62 Z"/>' +
+      '<rect class="ch-body" x="140" y="50" width="20" height="16" rx="6"/>' +
+      '<circle class="ch-body" cx="150" cy="34" r="23"/>';
+    let dots = "";
+    chakraOrder().forEach((a) => {
+      const ch = PC.CHAKRAS[a];
+      const hits = chakraOf(a);
+      const st = hits >= 4 ? "locked" : hits > 0 ? "hurt" : "ok";
+      const sel = chakraSel === a ? " sel" : "";
+      const cy = ys[ch.order];
+      dots +=
+        `<g class="chakra ${st}${sel}" data-attr="${a}" style="--cc:${ch.color}">` +
+        `<circle class="ch-halo" cx="150" cy="${cy}" r="17"/>` +
+        `<circle class="ch-disc" cx="150" cy="${cy}" r="12"/>` +
+        `<circle class="ch-core" cx="150" cy="${cy}" r="5"/>` +
+        (hits >= 4 ? `<text class="ch-x" x="150" y="${cy}" text-anchor="middle" dominant-baseline="central">✕</text>` : "") +
+        `</g>`;
+    });
+    return `<svg class="chakra-figure" viewBox="0 0 300 268" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Chakras — tap one">${body}${dots}</svg>`;
+  }
+
+  function buildChakraTab() {
+    const root = el("div");
+    const p = el("div", "panel");
+    p.appendChild(el("div", "section-label", "Chakras — one per attribute"));
+    p.appendChild(el("p", "hint", "Each chakra governs an attribute. Taking <b>hits</b> weakens it: 1 = disadvantage, 2 = modifier halved, 3 = modifier removed, 4 = <b>locked out</b> (no rolls with that attribute until you rest). <b>Tap a chakra</b> on the figure — or a row below — to set its hits. Short rest heals 1 hit each; long rest heals 2."));
+
+    const figWrap = el("div", "chakra-figure-wrap");
+    figWrap.innerHTML = chakraFigureSVG();
+    figWrap.querySelectorAll(".chakra[data-attr]").forEach((gEl) => {
+      gEl.addEventListener("click", () => { const a = gEl.getAttribute("data-attr"); chakraSel = chakraSel === a ? null : a; refresh(); });
+    });
+    p.appendChild(figWrap);
+
+    // Labeled control rows (crown → root), each in its chakra's color, with pips to set hits.
+    const list = el("div", "chakra-legend");
+    chakraOrder().forEach((a) => {
+      const ch = PC.CHAKRAS[a];
+      const hits = chakraOf(a);
+      const eff = PC.chakraEffect(hits);
+      const row = el("div", "chakra-leg" + (hits >= 4 ? " locked" : hits > 0 ? " hurt" : "") + (chakraSel === a ? " sel" : ""));
+      row.style.setProperty("--cc", ch.color);
+      const info = el("div", "chakra-leg-info");
+      info.innerHTML =
+        `<span class="chakra-swatch"></span>` +
+        `<span class="chakra-nm">${ch.name}</span>` +
+        `<span class="chakra-at">${a} · ${PC.ATTR_NAMES[a]}</span>` +
+        `<span class="chakra-eff">${eff.label}</span>`;
+      info.onclick = () => { chakraSel = chakraSel === a ? null : a; refresh(); };
+      const pips = el("div", "pips");
+      for (let i = 0; i < 4; i++) {
+        const pip = el("span", "pip" + (i < hits ? " filled" : ""));
+        pip.onclick = () => setChakra(a, hits === i + 1 ? i : i + 1);
+        pips.appendChild(pip);
+      }
+      row.appendChild(info); row.appendChild(pips);
+      list.appendChild(row);
+    });
+    p.appendChild(list);
     root.appendChild(p);
     return root;
   }

@@ -151,14 +151,17 @@ A **second health track**, independent of HP. There are **6 chakra points**, one
 (attacks, skills, and techniques):
 
 ### The 6 Chakras (CONFIRMED Luke)
-| Attribute | Chakra | Location | Theme |
-|---|---|---|---|
-| **STR** | **Core** (Solar Plexus) | upper abdomen | Raw power & willpower |
-| **AGI** | **Sacral** | lower belly | Movement, flow, reflexes |
-| **CON** | **Root** | base of spine | Survival, endurance, grounding |
-| **CHA** | **Throat** | throat | Voice & expression |
-| **WIS** | **Third Eye** | brow | Insight, awareness, intuition |
-| **INT** | **Crown** | top of head | Knowledge, logic, higher mind |
+Listed crown→root (top of the body to the base), with each chakra's signature color (as shown on the app's
+**Chakras** tab):
+
+| Attribute | Chakra | Location | Color | Theme |
+|---|---|---|---|---|
+| **INT** | **Crown** | top of head | Violet | Knowledge, logic, higher mind |
+| **WIS** | **Third Eye** | brow | Indigo | Insight, awareness, intuition |
+| **CHA** | **Throat** | throat | Blue | Voice & expression |
+| **STR** | **Core** (Solar Plexus) | upper abdomen | Yellow | Raw power & willpower |
+| **AGI** | **Sacral** | lower belly | Orange | Movement, flow, reflexes |
+| **CON** | **Root** | base of spine | Red | Survival, endurance, grounding |
 
 Each Kinetic inherits its chakra from its governing attribute (e.g. all STR Kinetics — Robukinesis,
 Pyrokinesis, Electrokinesis — are tied to the **Core** chakra). Hitting a chakra therefore weakens both

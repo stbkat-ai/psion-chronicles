@@ -145,16 +145,11 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 .poolbox.hp .pval { color: var(--hp); }
 .poolbox.kp .pval { color: var(--kp); }
 
-/* ---- Chakra chart ---- */
-.chakra-row { display: flex; flex-wrap: wrap; gap: 10px; }
-.chakra {
-  flex: 1 1 120px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px; padding: 10px; text-align: center;
-}
-.chakra .cname { font-weight: 650; }
-.chakra .cattr { font-size: .72rem; color: var(--text-dim); }
+/* ---- Chakra hit pips (used on the Chakras tab) ---- */
 .pips { display: flex; gap: 5px; justify-content: center; margin-top: 8px; }
-.pip { width: 15px; height: 15px; border-radius: 50%; border: 1px solid var(--border-glow); background: transparent; }
+.pip { width: 15px; height: 15px; border-radius: 50%; border: 1px solid var(--border-glow); background: transparent; cursor: pointer; }
 .pip.filled { background: var(--psi); box-shadow: 0 0 8px rgba(124,92,255,.6); border-color: var(--psi); }
+.pip:hover { border-color: var(--psi-bright); }
 
 /* ---- Chips / selectable lists ---- */
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -381,12 +376,6 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 .attr-status.locked { color: var(--danger); font-weight: 700; }
 .buffup { color: var(--good); font-size: .9rem; vertical-align: super; margin-left: 2px; }
 
-/* chakra states */
-.chakra.hurt { border-color: var(--gold); }
-.chakra.ko { border-color: var(--danger); box-shadow: 0 0 0 1px var(--danger); }
-.chakra .pip { cursor: pointer; }
-.chakra .pip:hover { border-color: var(--psi-bright); }
-
 /* skills */
 .skill-attr-label { color: var(--text-dim); font-size: .78rem; margin: 14px 0 6px; letter-spacing: .5px; }
 .skill-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
@@ -421,6 +410,45 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 .limb-ed-head { font-size: 1rem; margin-bottom: 6px; }
 .limb-ed-num { color: var(--gold); font-weight: 800; margin-left: 6px; font-variant-numeric: tabular-nums; }
 .limb-crippled-tag { color: var(--danger); font-weight: 800; font-size: .78rem; margin-left: 6px; }
+
+/* Chakras tab — seated body figure with a colored chakra disc over each spinal point */
+.chakra-figure-wrap { display: flex; justify-content: center; margin: 6px 0 10px; }
+.chakra-figure { width: 100%; max-width: 260px; height: auto; }
+.chakra-figure .ch-body { fill: #2b3140; stroke: #3c4457; stroke-width: 1.5; }
+.chakra-figure .chakra { cursor: pointer; --cc: var(--psi); }
+.chakra-figure .ch-halo { fill: var(--cc); opacity: .28; filter: blur(1px); transition: .15s; }
+.chakra-figure .ch-disc { fill: var(--cc); transition: .15s; }
+.chakra-figure .ch-core { fill: #fff; opacity: .85; }
+.chakra-figure .chakra:hover .ch-halo { opacity: .5; }
+.chakra-figure .chakra.hurt .ch-disc { opacity: .5; }
+.chakra-figure .chakra.hurt .ch-halo { opacity: .14; }
+.chakra-figure .chakra.locked .ch-disc { fill: #55606f; }
+.chakra-figure .chakra.locked .ch-halo { opacity: 0; }
+.chakra-figure .chakra.locked .ch-core { opacity: 0; }
+.chakra-figure .ch-x { fill: var(--danger); font-weight: 800; font-size: 15px; }
+.chakra-figure .chakra.sel .ch-halo { opacity: .55; }
+.chakra-figure .chakra.sel .ch-disc { stroke: #fff; stroke-width: 2.5; }
+
+/* Chakras tab — labeled control rows (one per chakra, in its own color) */
+.chakra-legend { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.chakra-leg {
+  --cc: var(--psi);
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  background: var(--panel-2); border: 1px solid var(--border); border-left: 4px solid var(--cc);
+  border-radius: 10px; padding: 9px 12px; transition: .13s;
+}
+.chakra-leg.hurt { opacity: .82; }
+.chakra-leg.locked { border-color: var(--danger); border-left-color: var(--danger); }
+.chakra-leg.sel { box-shadow: 0 0 0 1px var(--cc); border-color: var(--cc); }
+.chakra-leg-info { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; cursor: pointer; flex: 1; }
+.chakra-swatch { width: 15px; height: 15px; border-radius: 50%; background: var(--cc); box-shadow: 0 0 8px var(--cc); flex: 0 0 auto; }
+.chakra-nm { font-weight: 700; }
+.chakra-at { font-size: .74rem; color: var(--text-dim); }
+.chakra-eff { font-size: .74rem; color: var(--text-dim); margin-left: auto; }
+.chakra-leg.hurt .chakra-eff { color: var(--gold); }
+.chakra-leg.locked .chakra-eff { color: var(--danger); font-weight: 700; }
+.chakra-leg .pips { margin-top: 0; flex: 0 0 auto; }
+.chakra-leg .pip.filled { background: var(--cc); border-color: var(--cc); box-shadow: 0 0 8px var(--cc); }
 
 /* inventory */
 .carry-box { margin-bottom: 14px; }

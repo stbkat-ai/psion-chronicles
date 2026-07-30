@@ -92,7 +92,7 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     and, for Kinetics you're pursuing, spells out what's still needed to unlock its next tier.
 
 - **Live Play Sheet** (▶ Play on a character) — the at-the-table screen, organized into tabs so there's
-  little scrolling: **Sheet · ⚔ Combat · Limbs · Kinetics · Skills · Traits · Description · Inventory**.
+  little scrolling: **Sheet · ⚔ Combat · Limbs · Chakras · Kinetics · Skills · Traits · Description · Inventory**.
   - **Limbs tab** — Fallout-style called-shot damage shown on a **body figure**: a silhouette of head,
     torso, two arms and two legs, with each limb's **HP written over it** in the bold colored pool-number
     style (green/gold when healthy → orange when hurt → red when crippled). **Tap a limb** to open its
@@ -101,6 +101,12 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     lost); at 0 the limb is crippled. Crippled effects auto-apply — legs cut movement, a crippled arm gives
     weapon-attack disadvantage (both block attacks), a crippled head gives disadvantage on technique attacks
     & Mind checks — and are listed below the figure. Long rest fully heals limbs; short rest restores half.
+  - **Chakras tab** — the chakra health track, shown on a **seated body figure**: a glowing **chakra disc over
+    each spinal point**, drawn crown→root in the traditional colors (Crown/INT **violet**, Third Eye/WIS
+    **indigo**, Throat/CHA **blue**, Core/STR **yellow**, Sacral/AGI **orange**, Root/CON **red**). Below it,
+    one color-coded **row per chakra** (name, attribute, current effect, and 4 hit-pips). **Tap** a disc or a
+    row to set its hits: 1 = disadvantage, 2 = modifier halved, 3 = modifier removed, 4 = **locked out** (no
+    rolls with that attribute until you rest). Short rest heals 1 hit on each hurt chakra; long rest heals 2.
   - **⚔ Combat tab** — everything you can do this turn, grouped by action economy: **Actions** (equipped-weapon
     attack/damage/augments, a universal **👊 Unarmed Strike** — d20+STR+prof to hit, 1d4+STR damage — and
     Action techniques), **Bonus Actions**, **Reactions** (a universal **↩ Opportunity Attack** — one melee
