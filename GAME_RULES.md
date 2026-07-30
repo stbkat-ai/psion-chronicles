@@ -50,8 +50,10 @@ Every pool = **base + permanent boosts + temporary modifiers**:
   Because each pool is the *sum of its attribute scores*, any effect that increases an attribute increases
   that pool for as long as it lasts — a **body**-attribute buff (STR/AGI/CON) raises **max HP**, a **mind**-attribute
   buff (INT/WIS/CHA) raises **max KP**, by exactly the buff. (E.g. *Ki Flame*'s +2 STR/AGI/CON raises max HP by 6.)
-  The increase is **headroom**, not instant HP/KP: your current value doesn't jump when you activate the buff, but
-  you can now heal/recover into the higher max; when the buff ends, the max drops and current is clamped back down.
+  If the bar was **full** when the buff is activated, it **stays full** (current rises with the max); if it was
+  **partial**, current stays put and you gain **headroom** to heal into. When the buff ends, the max drops and
+  current is clamped back down — so toggling it can never net free HP/KP (you only ever stay full, never exceed
+  your unbuffed full).
 - **Soul Pool = experience points / character level** (CONFIRMED Luke) — this is the XP + **Soul Level** track, *not* a spendable combat resource like HP/KP.
 - *Example: STR15/AGI12/CON13 → Body Pool base 40. INT22/WIS18/CHA16 → Mind Pool base 56.*
 

@@ -347,7 +347,14 @@
       if (isLocked(t.attr)) { App.toast(`${PC.CHAKRAS[t.attr].name} chakra locked — can't use ${t.kinetic}.`); return; }
       if (econBlocked(t.action)) { App.toast(`You've already used your ${econName(t.action)} this turn.`); return; }
       if (play.kp < t.kp) { App.toast(`Not enough KP (need ${t.kp}).`); return; }
+      // Capture the pre-activation maxes so a *full* bar can stay full when this buff raises the pool.
+      const oldMaxHP = maxHP(), oldMaxKP = maxKP();
       play.kp -= t.kp; play.active.push(t.name); consumeEcon(t.action);
+      // If a bar was full (current still at the old max after paying costs) and the buff raised that
+      // pool, top it up to the new max — a full bar stays full. A partial bar keeps its value (headroom),
+      // so toggling can never net free HP/KP. (KP here is already reduced by this technique's cost.)
+      if (play.hp >= oldMaxHP) play.hp = maxHP();
+      if (play.kp >= oldMaxKP) play.kp = maxKP();
       logLine(`${t.name} activated (−${t.kp} KP; ${t.upkeep || 0} KP/turn upkeep).`);
     }
     save(); refresh();

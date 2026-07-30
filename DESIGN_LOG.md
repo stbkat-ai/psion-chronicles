@@ -174,10 +174,13 @@ that sum from **buff-free** scores (they passed `null` for temp modifiers), whil
 Defense, movement — used the buffed `liveScores()`. So the pools were the one derived value ignoring active buffs.
 **The fix.** `maxHP()`/`maxKP()` now use `liveScores()` (buff-aware); a separate `permMaxHP()`/`permMaxKP()` keeps the
 buff-free value used only to seed a fresh play session. `ensurePlay` clamps current HP/KP to the buff-aware max.
-**Design choice — headroom, not instant HP.** Activating a buff raises the *max* but doesn't bump *current* HP/KP;
-you gain room to heal/recover into, and when the buff ends the max drops and current clamps back down. This keeps
-the literal rule ("increase the pool") and avoids a toggle-on/off exploit that granting current HP would create.
-Limb HP (a fraction of max HP) scales with the buffed max as a consequence, which is consistent.
+**Design choice — a full bar stays full; a partial bar gains headroom.** Activating an attribute buff raises the
+*max*. If the bar was **full** at that moment, current rises with it (stays full); if it was **partial**, current
+stays put and you gain headroom to heal into. When the buff ends the max drops and current clamps back down — so
+toggling on/off can never net free HP/KP (you can only ever *stay* full, never gain above your unbuffed full).
+*(This first shipped as headroom-only even when full; per the user, a full bar should top up to the new max — done
+in `toggleSustained`, which captures the pre-activation maxes and, if a bar was still full after paying costs,
+raises it to the new max.)* Limb HP (a fraction of max HP) scales with the buffed max as a consequence, consistent.
 
 ---
 
