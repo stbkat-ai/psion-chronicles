@@ -192,6 +192,24 @@ more consistent look that also ties the bars to the game's "Body Pool = HP / Min
 `.bar-letter` span); the pool-bar track is slightly taller (`.poolbar .bar-track`) to seat the code, which is
 centered, bold, black, with a faint light text-shadow so it stays legible whether it sits over the coloured
 fill or the darker empty portion. Limb and carry bars are untouched (the rules are scoped to `.poolbar`).
+*(Superseded by #14 — the pool bars were replaced entirely by side-by-side numbers.)*
+
+### 14. Pools as side-by-side colored numbers, tap to edit (supersedes #13)
+**Decision.** On the Sheet tab, the three pools are no longer bars — they're bold **current/max numbers**
+shown **side by side**: **Body** (HP) in red, **Mind** (KP) in blue, **Soul** in cyan. Soul displays
+**Soul Level / 30**. Tapping a pool opens an inline editor below the row: Body/Mind show the damage/heal
+(spend/restore) controls; Soul shows its XP tracker + adjusters and the Level Up button. Only one editor is
+open at a time; a small "Tap a pool to adjust it" hint shows when none is.
+**Why.** The stacked bars took a lot of vertical space (scrolling) and read like a video-game HUD; the user
+wanted a tighter, tabletop-character-sheet feel. Three colored numbers on one line is compact and instantly
+readable, and tucking the controls behind a tap keeps the default view clean without losing any function.
+**Choices the user made.** Tap-to-edit (rather than always-visible controls); and Soul shows the **Soul
+Level**, with the tap revealing XP editing + Level Up. Soul's "max" is the level cap (30).
+**How.** `play.js`: new `poolStat()` (the colored current/max cell), `poolAdjustControls()` (Body/Mind
+editor) and `soulEditor()` (XP + Level Up) replace the old `bar()`/`soulBar()`. A module var `poolEdit`
+tracks which editor is open (reset on character switch). `styles.css`: `.pool-row` (3-col grid), `.pool-stat`
+(the tappable cell, colored via `.hp`/`.kp`/`.soul`). Limb and carry-weight bars still use the old
+`.bar-track`/`.poolbar-head` styles, which were kept.
 
 ---
 

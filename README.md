@@ -127,12 +127,12 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     as starting gear; higher-rarity weapons (bigger dice + special properties) are found in play. A
     **← Inventory** button returns.
   - **Sheet tab** — the core overview:
-  - **Body Pool** (HP) & **Mind Pool** (KP) bars — the pool name sits above each bar, its short code
-    (HP/KP) rides inside the bar, and the current/max is on the right — with damage/heal/spend controls
-    (quick ±1/±5 or type an amount)
-  - **Soul Pool** — your XP + Soul Level tracker (leveling is GM-driven; XP thresholds are still being
-    tuned), with XP adjusters and the **⭐ Level Up** button right beneath it (opens the Level Up screen;
-    flags any unspent Technique / Attribute / Combat-Skill points)
+  - **Body · Mind · Soul pools** — shown side by side as bold colored **current/max** numbers
+    (Body/HP in **red**, Mind/KP in **blue**, Soul in **cyan**), pen-and-paper style. Soul shows your
+    **Soul Level / 30**. **Tap a pool** to open its inline editor: Body/Mind get damage/heal (or
+    spend/restore) controls (quick ±1/±5 or type an amount); Soul reveals its **XP** tracker + adjusters
+    and the **⭐ Level Up** button (opens the Level Up screen; flags any unspent Technique / Attribute /
+    Combat-Skill points). Leveling is GM-driven; XP thresholds are still being tuned
   - **Interactive Chakra Chart** — click pips to add hits; penalties auto-apply to that attribute's
     modifier (disadvantage → half → zero → locked out) and everything that uses it
   - **Attributes** show live, chakra-adjusted modifiers, with active buffs highlighted

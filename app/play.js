@@ -19,6 +19,7 @@
   let invSearchQ = "";     // inventory catalog search query
   let invSearchCat = "All"; // inventory catalog category filter
   let catalogOpen = false; // whether the item-catalog sub-screen is open (from the Inventory tab)
+  let poolEdit = null;     // which pool's inline editor is open on the Sheet tab: "body"|"mind"|"soul"|null
   const refresh = () => App.render();
 
   const bg = () => PC.background(rec.background);
@@ -556,7 +557,7 @@
 
   /* ---------- render ---------- */
   function render(container, id) {
-    if (id !== curId) { activeTab = "sheet"; expandedItem = null; catalogOpen = false; curId = id; }
+    if (id !== curId) { activeTab = "sheet"; expandedItem = null; catalogOpen = false; poolEdit = null; curId = id; }
     rec = App.loadRoster().find((c) => c.id === id);
     if (!rec) { App.goHome(); return; }
     ensurePlay();
@@ -680,11 +681,22 @@
   function buildSheetTab() {
     const root = el("div");
 
-    /* HP / KP */
+    /* Pools — Body / Mind / Soul as colored current/max numbers, side by side (tap one to adjust it) */
     const pools = el("div", "panel");
-    pools.appendChild(bar("Body Pool", "HP", play.hp, maxHP(), "hp", adjustHP));
-    pools.appendChild(bar("Mind Pool", "KP", play.kp, maxKP(), "kp", adjustKP));
-    pools.appendChild(soulBar());
+    const prow = el("div", "pool-row");
+    prow.appendChild(poolStat("body", "Body", play.hp, maxHP(), "hp"));
+    prow.appendChild(poolStat("mind", "Mind", play.kp, maxKP(), "kp"));
+    prow.appendChild(poolStat("soul", "Soul", rec.level, 30, "soul"));
+    pools.appendChild(prow);
+    if (poolEdit) {
+      const ed = el("div", "pool-editor");
+      if (poolEdit === "body") ed.appendChild(poolAdjustControls("HP", adjustHP));
+      else if (poolEdit === "mind") ed.appendChild(poolAdjustControls("KP", adjustKP));
+      else if (poolEdit === "soul") ed.appendChild(soulEditor());
+      pools.appendChild(ed);
+    } else {
+      pools.appendChild(el("div", "pool-hint", "Tap a pool to adjust it"));
+    }
     const rests = el("div", "rest-row");
     const sr = el("button", "btn small", "☾ Short Rest");
     sr.onclick = shortRest;
@@ -796,19 +808,19 @@
   }
 
   /* ---------- small builders ---------- */
-  // name = pool name shown above the bar (e.g. "Body Pool"); letter = short code drawn inside the
-  // bar in small black print (e.g. "HP"). The cur/max number stays on the right of the header.
-  function bar(name, letter, cur, max, cls, adjust) {
-    const box = el("div", "poolbar " + cls);
-    const pct = max > 0 ? Math.round((cur / max) * 100) : 0;
-    const head = el("div", "poolbar-head");
-    head.innerHTML = `<span>${name}</span><span class="poolbar-num">${cur} / ${max}</span>`;
-    box.appendChild(head);
-    const track = el("div", "bar-track");
-    const fill = el("div", "bar-fill"); fill.style.width = pct + "%";
-    track.appendChild(fill);
-    track.appendChild(el("span", "bar-letter", letter)); // letter overlaid inside the bar
-    box.appendChild(track);
+  // A pool as a colored current/max number (pen-and-paper style). Tapping toggles its inline editor.
+  // key = "body"|"mind"|"soul"; cls = "hp"|"kp"|"soul" (colors the number).
+  function poolStat(key, label, cur, max, cls) {
+    const cell = el("div", "pool-stat " + cls + (poolEdit === key ? " open" : ""));
+    cell.innerHTML =
+      `<div class="pool-label">${label}</div>` +
+      `<div class="pool-val">${cur}<span class="pool-slash">/</span>${max}</div>`;
+    cell.title = "Tap to adjust";
+    cell.onclick = () => { poolEdit = poolEdit === key ? null : key; refresh(); };
+    return cell;
+  }
+  // The ±/type-a-number adjust controls for a Body/Mind pool (letter "HP" or "KP").
+  function poolAdjustControls(letter, adjust) {
     const ctr = el("div", "adjust-row");
     [[-5, "−5"], [-1, "−1"], [1, "+1"], [5, "+5"]].forEach(([n, t]) => {
       const b = el("button", "btn small ghost", t);
@@ -821,22 +833,18 @@
     const heal = el("button", "btn small", letter === "HP" ? "Heal" : "Restore");
     heal.onclick = () => { const v = parseInt(inp.value, 10); if (v) adjust(Math.abs(v)); };
     ctr.appendChild(inp); ctr.appendChild(dmg); ctr.appendChild(heal);
-    box.appendChild(ctr);
-    return box;
+    return ctr;
   }
   function tile(label, val) {
     const t = el("div", "tile");
     t.innerHTML = `<div class="tile-val">${val}</div><div class="tile-label">${label}</div>`;
     return t;
   }
-  // Soul Pool — XP + Soul Level tracker (leveling is GM-driven; XP thresholds are TBD), with the
-  // Level Up button right beneath it. Opens the dedicated Level Up screen (app.js).
-  function soulBar() {
-    const box = el("div", "poolbar soul");
-    const head = el("div", "poolbar-head");
-    head.innerHTML = `<span>Soul Pool</span><span class="poolbar-num">Soul Level ${rec.level}${rec.level >= 30 ? " · MAX" : ""}</span>`;
-    box.appendChild(head);
-    box.appendChild(el("div", "soul-xp", `Experience: <b>${rec.xp || 0}</b> XP · leveling is GM-driven (thresholds being tuned)`));
+  // Soul Pool editor — shown when the Soul number is tapped. XP tracker (leveling is GM-driven;
+  // thresholds TBD) with adjusters and the Level Up button. Opens the dedicated Level Up screen (app.js).
+  function soulEditor() {
+    const box = el("div");
+    box.appendChild(el("div", "soul-xp", `Soul Level <b>${rec.level}</b>${rec.level >= 30 ? " · MAX" : ""} · Experience: <b>${rec.xp || 0}</b> XP · leveling is GM-driven (thresholds being tuned)`));
     // XP adjusters (GM awards / corrects XP).
     const ctr = el("div", "adjust-row");
     [[-10, "−10"], [-1, "−1"], [1, "+1"], [10, "+10"]].forEach(([n, t]) => {
