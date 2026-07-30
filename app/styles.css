@@ -309,7 +309,7 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 .play-tab.active { background: linear-gradient(180deg, rgba(124,92,255,.22), var(--panel)); color: #fff; border-color: var(--psi); box-shadow: 0 -2px 14px rgba(124,92,255,.25); }
 
 /* combat tab */
-.combat-vitals { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.combat-vitals { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
 .mini-stat { background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px; padding: 10px; text-align: center; }
 .mini-stat.hp { border-top: 2px solid var(--hp); }
 .mini-stat.kp { border-top: 2px solid var(--kp); }

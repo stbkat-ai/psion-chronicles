@@ -729,6 +729,18 @@
     return root;
   }
 
+  // Movement speeds (walk / climb / jump / swim) — shown on both the Sheet and Combat tabs. Walk uses
+  // effectiveMovement() so it reflects crippled legs and Heavy-armor penalty; the rest come from derive().
+  function speedsRow() {
+    const d = PC.derive(liveScores(), rec.level);
+    const row = el("div", "tile-row");
+    row.appendChild(tile("Movement", effectiveMovement() + " ft" + (crippledLegs() ? " ⚠" : "")));
+    row.appendChild(tile("Climb", d.climb + " ft"));
+    row.appendChild(tile("Jump", d.jump + " ft"));
+    row.appendChild(tile("Swim", d.swim + " ft"));
+    return row;
+  }
+
   function buildSheetTab() {
     const root = el("div");
 
@@ -758,38 +770,11 @@
     pools.appendChild(rests);
     root.appendChild(pools);
 
-    /* combat stats + active effects */
-    const combat = el("div", "panel");
-    combat.appendChild(el("div", "section-label", "Combat"));
-    const tiles = el("div", "tile-row");
-    const d = PC.derive(liveScores(), rec.level);
-    tiles.appendChild(tile("Defense Score", defenseScore()));
-    tiles.appendChild(tile("Movement", effectiveMovement() + " ft" + (crippledLegs() ? " ⚠" : "")));
-    tiles.appendChild(tileRoll("Initiative", "d20 " + PC.fmtMod(adjMod("AGI")), () => {
-      const r = PC.rollCheck(adjMod("AGI"), isDisadv("AGI") ? "dis" : "normal");
-      announce(r.total, `Initiative: d20${PC.fmtMod(adjMod("AGI"))} = ${r.total}`); save(); refresh();
-    }));
-    tiles.appendChild(tile("Prof. Bonus", PC.fmtMod(PC.profBonus(rec.level))));
-    combat.appendChild(tiles);
-
-    combat.appendChild(el("div", "section-label", "This Turn — tap to toggle"));
-    combat.appendChild(econTracker());
-
-    combat.appendChild(el("div", "section-label", "Active Effects"));
-    if (!play.active.length) combat.appendChild(el("div", "muted", "No sustained techniques active."));
-    else {
-      const ae = el("div", "chips");
-      play.active.forEach((n) => {
-        const t = PC.technique(n);
-        const chip = el("div", "chip selected");
-        chip.innerHTML = `${n} <span class="tag">−${t.upkeep || 0}/turn ✕</span>`;
-        chip.title = "Click to end";
-        chip.onclick = () => toggleSustained(t);
-        ae.appendChild(chip);
-      });
-      combat.appendChild(ae);
-    }
-    root.appendChild(combat);
+    /* movement speeds (combat actions live on the Combat tab) */
+    const speeds = el("div", "panel");
+    speeds.appendChild(el("div", "section-label", "Speeds"));
+    speeds.appendChild(speedsRow());
+    root.appendChild(speeds);
 
     /* attributes (live mods, chakra-aware) */
     const attrs = el("div", "panel");
@@ -1393,6 +1378,7 @@
     strip.appendChild(miniStat("HP", play.hp + " / " + maxHP(), "hp"));
     strip.appendChild(miniStat("KP", play.kp + " / " + maxKP(), "kp"));
     strip.appendChild(miniStat("Defense", defenseScore(), ""));
+    strip.appendChild(miniStat("Prof", PC.fmtMod(PC.profBonus(rec.level)), ""));
     strip.appendChild(miniStat("Turn", play.turn, ""));
     vit.appendChild(strip);
     const quick = el("div", "combat-quick");
@@ -1405,6 +1391,8 @@
     et.onclick = endTurn;
     quick.appendChild(init); quick.appendChild(et);
     vit.appendChild(quick);
+    vit.appendChild(el("div", "section-label", "Speeds"));
+    vit.appendChild(speedsRow());
     vit.appendChild(el("div", "section-label", "This Turn — tap to toggle"));
     vit.appendChild(econTracker());
     if (play.active.length) {

@@ -105,8 +105,10 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     Reaction techniques), and **Full-Turn & Other**. Your **🎖 Combat Skills** (granted + learned) are folded
     right into those same groups as **clickable 🎖 cards** — using one spends its action-economy slot and logs
     the effect, exactly like a weapon or technique; each is tagged with its origin Fighting Style. Your style's
-    always-on **Passive** stays in a separate reference panel below (nothing to click). Plus a compact
-    HP/KP/Defense/Turn strip, Roll Initiative, End Turn, active effects, and the log.
+    always-on **Passive** stays in a separate reference panel below (nothing to click). Topped by a compact
+    **HP / KP / Defense / Prof / Turn** strip, **Roll Initiative**, **End Turn**, a **Speeds** row
+    (Movement · Climb · Jump · Swim), the This-Turn tracker, active effects, and the log — all your combat
+    stats and controls live here on the Combat tab.
   - **Action economy enforced** — one Move / Action / Bonus Action per turn (Reaction once between turns). Spending
     a slot disables all other options of that type until **End Turn**; a "This Turn" tracker shows what's used
     (tap to toggle manually for feats/abilities that grant extras).
@@ -136,6 +138,9 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     spend/restore) controls (quick ±1/±5 or type an amount); Soul reveals its **XP** tracker + adjusters
     and the **⭐ Level Up** button (opens the Level Up screen; flags any unspent Technique / Attribute /
     Combat-Skill points). Leveling is GM-driven; XP thresholds are still being tuned
+  - **Speeds** — a quick reference of your **Movement · Climb · Jump · Swim** (walk speed reflects Heavy-armor
+    and crippled-leg penalties). Movement shows here *and* on the Combat tab; the rest of the combat stats
+    and controls live on the **Combat tab**
   - **Interactive Chakra Chart** — click pips to add hits; penalties auto-apply to that attribute's
     modifier (disadvantage → half → zero → locked out) and everything that uses it
   - **Attributes** show live, chakra-adjusted modifiers, with active buffs highlighted

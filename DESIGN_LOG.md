@@ -249,6 +249,21 @@ advantage, cancelling with disadvantage), `attackWith()` and `attackTechnique()`
 surfaces armor proficiency on the Heritage step and the Review. The Inventory tab shows each armor's class,
 rarity, proficiency status, Defense contribution, class effects, and any grant/note.
 
+### 17. Combat stats moved to the Combat tab; Speeds on both
+**Decision.** The Sheet tab no longer carries a "Combat" panel (Defense / Movement / Initiative / Prof tiles +
+the This-Turn tracker + active effects) — that duplicated what the **Combat tab** already showed, so it now
+lives only on the Combat tab. To preserve everything, the Combat tab's vitals strip gained **Prof** (now
+HP / KP / Defense / Prof / Turn) and a **Speeds** row. The Sheet tab keeps a **Speeds** panel of its own, so
+**movement speeds are visible on both tabs** (the user's ask).
+**Why.** The Sheet tab had become a scroll of combat HUD that belonged with the rest of the combat controls;
+splitting cleanly — reference/identity on the Sheet, actions/vitals on the Combat tab — is tidier and matches
+how the app is used at the table. Movement is wanted in both places (planning on the Sheet, acting on Combat),
+hence the shared Speeds row.
+**How.** New reusable `speedsRow()` in `play.js` (Movement/Climb/Jump/Swim; walk uses `effectiveMovement()` so
+it reflects Heavy-armor and crippled-leg penalties). `buildSheetTab()` swapped its Combat panel for a Speeds
+panel; `buildCombat()` added a `Speeds` section and a Prof mini-stat. `.combat-vitals` grid widened to 5
+columns. (`tileRoll()` is now unused but harmless.)
+
 ---
 
 ## Deferred / future ideas
