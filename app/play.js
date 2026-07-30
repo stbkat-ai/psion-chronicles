@@ -902,6 +902,10 @@
     if (open) {
       const detail = el("div", "inv-detail");
 
+      // Flavor description — what the item is (falls back to the catalog for older saved items).
+      const desc = it.desc || (window.PC.itemDesc ? PC.itemDesc(it.name) : "");
+      if (desc) detail.appendChild(el("div", "inv-desc", desc));
+
       // Actions
       const actions = el("div", "inv-actions");
       actions.appendChild(el("span", "inv-actions-label", "Actions:"));
@@ -1217,7 +1221,7 @@
       const cat = invSearchCat;
       let matches = (PC.ITEMS || []).filter((it) =>
         (cat === "All" || it.category === cat) &&
-        (!q || it.name.toLowerCase().indexOf(q) > -1 || (it.weaponType && it.weaponType.toLowerCase().indexOf(q) > -1) || (it.rarity && it.rarity.toLowerCase().indexOf(q) > -1) || (it.note && it.note.toLowerCase().indexOf(q) > -1)));
+        (!q || it.name.toLowerCase().indexOf(q) > -1 || (it.weaponType && it.weaponType.toLowerCase().indexOf(q) > -1) || (it.rarity && it.rarity.toLowerCase().indexOf(q) > -1) || (it.note && it.note.toLowerCase().indexOf(q) > -1) || (it.desc && it.desc.toLowerCase().indexOf(q) > -1)));
       results.innerHTML = "";
       if (!matches.length) { results.appendChild(el("div", "muted", "No items match. Try another search.")); return; }
       const total = matches.length;
@@ -1234,7 +1238,8 @@
         // Rarity tag for weapons (Common shown muted; higher rarities colored).
         const rarityTag = it.category === "Weapon" && it.rarity
           ? `<span class="rarity-tag rarity-${it.rarity.toLowerCase().replace(/\s+/g, "-")}">${it.rarity}</span>` : "";
-        row.innerHTML = `<div class="cat-info"><span class="cat-name">${it.name}${rarityTag}</span><span class="cat-meta">${meta}</span></div><span class="cat-wt">${it.weight} lb</span>`;
+        const descLine = it.desc ? `<span class="cat-desc">${it.desc}</span>` : "";
+        row.innerHTML = `<div class="cat-info"><span class="cat-name">${it.name}${rarityTag}</span><span class="cat-meta">${meta}</span>${descLine}</div><span class="cat-wt">${it.weight} lb</span>`;
         const add = el("button", "btn small primary", "＋ Add");
         add.onclick = () => addCatalogItem(it);
         row.appendChild(add);

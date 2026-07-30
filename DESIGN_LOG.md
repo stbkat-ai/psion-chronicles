@@ -211,6 +211,20 @@ tracks which editor is open (reset on character switch). `styles.css`: `.pool-ro
 (the tappable cell, colored via `.hp`/`.kp`/`.soul`). Limb and carry-weight bars still use the old
 `.bar-track`/`.poolbar-head` styles, which were kept.
 
+### 15. Every item has a flavor description
+**Decision.** Every catalog item — all 254, weapons/armor/consumables/tools/gear — now carries a short
+"what it is" description (1–2 sentences). It shows on the **Inventory tab**: in the expanded detail of a
+carried item, and on each row of the **Browse & Search catalog** (and the catalog search now matches
+description text too). Example — *Cutlass: "A short curved saber favored by sailors and raiders."*
+**Why.** Names and stats alone didn't tell players what a weapon actually *is*; a one-line description makes
+the catalog readable and helps players picture their gear — a small but big quality-of-life win.
+**How.** Descriptions live in one place, `PC.ITEM_DESCRIPTIONS` in `items.js` (a name→text map, the single
+source of truth), with a `PC.itemDesc(name)` lookup. They're **stamped onto each catalog item at load**
+(`it.desc`) so copies made into a character's inventory or starting gear carry the text; the display also
+falls back to `PC.itemDesc(it.name)` so items saved before this change still show a description. This kept the
+existing `PC.ITEMS` definitions (and their stats/notes) completely untouched — descriptions are additive.
+Flavor only: mechanics still live in each item's stats and its `note` (special property).
+
 ---
 
 ## Deferred / future ideas

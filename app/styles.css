@@ -426,6 +426,7 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 .catalog-row .cat-info { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .catalog-row .cat-name { font-weight: 550; font-size: .88rem; }
 .catalog-row .cat-meta { font-size: .72rem; color: var(--text-dim); }
+.catalog-row .cat-desc { font-size: .74rem; color: var(--text-dim); font-style: italic; margin-top: 2px; line-height: 1.35; }
 .catalog-row .cat-wt { font-size: .78rem; color: var(--text-dim); white-space: nowrap; }
 /* Rarity tag on catalog weapons (D&D-style tiers) */
 .rarity-tag { font-size: .6rem; text-transform: uppercase; letter-spacing: .5px; font-weight: 700; border: 1px solid currentColor; border-radius: 5px; padding: 0 5px; margin-left: 7px; vertical-align: middle; }
@@ -451,6 +452,7 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 .inv-qty-ctl .btn { padding: 3px 9px; }
 .inv-qn { min-width: 20px; text-align: center; font-weight: 650; }
 .inv-detail { padding: 0 12px 12px; border-top: 1px dashed var(--border); margin-top: 2px; }
+.inv-desc { font-size: .82rem; color: var(--text); font-style: italic; padding-top: 10px; line-height: 1.4; }
 .inv-actions { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding-top: 10px; }
 .inv-actions-label { color: var(--text-dim); font-size: .78rem; margin-right: 4px; }
 .inv-cfg { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; }

@@ -121,11 +121,12 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     go — so you can flesh out or change a look mid-campaign. Flavor only; nothing here touches the rules.
   - **Inventory tab** — carry weight, carried items (equip, actions, config), a custom-item form, and a
     **🔍 Browse Item Catalog** button that opens a dedicated **catalog screen**: search/filter the item
-    catalog (194 weapons + armor, consumables, tools, gear) and Add any of them (weapons arrive attack-ready
-    with type + damage die). Each weapon shows whether it's **one- or two-handed** (matters for dual-wielding)
-    and its **rarity** — Common · Uncommon · Rare · Very Rare · Legendary. Only **Common** weapons are offered
-    as starting gear; higher-rarity weapons (bigger dice + special properties) are found in play. A
-    **← Inventory** button returns.
+    catalog (weapons + armor, consumables, tools, gear) and Add any of them (weapons arrive attack-ready
+    with type + damage die). **Every item carries a short flavor description** of what it is — shown when you
+    expand a carried item and on each catalog row (and the search matches description text too). Each weapon
+    also shows whether it's **one- or two-handed** (matters for dual-wielding) and its **rarity** — Common ·
+    Uncommon · Rare · Very Rare · Legendary. Only **Common** weapons are offered as starting gear;
+    higher-rarity weapons (bigger dice + special properties) are found in play. A **← Inventory** button returns.
   - **Sheet tab** — the core overview:
   - **Body · Mind · Soul pools** — shown side by side as bold colored **current/max** numbers
     (Body/HP in **red**, Mind/KP in **blue**, Soul in **cyan**), pen-and-paper style. Soul shows your

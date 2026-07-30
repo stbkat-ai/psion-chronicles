@@ -375,8 +375,11 @@ Every catalog weapon records two extra properties:
   are ever eligible as **starting gear**; higher-rarity weapons are found/earned in play (loot,
   rewards, purchases). Higher rarities hit harder (bigger damage dice) and usually carry a **special property**
   (e.g. *Heartpiercer* crits on 19–20; *Worldbreaker* knocks nearby enemies prone on a crit; *Skypiercer*
-  ignores cover). The catalog (194 weapons) is browsable/searchable on the Inventory tab; `app/items.js`
+  ignores cover). The catalog is browsable/searchable on the Inventory tab; `app/items.js`
   (`PC.ITEMS`) is the source of truth for each weapon's die, hands, rarity, and special note.
+- **Flavor descriptions.** Every catalog item (weapon, armor, consumable, tool, gear) also carries a short
+  one-line description of what it is, shown on the Inventory tab. It's pure flavor — no rules effect — kept in
+  `PC.ITEM_DESCRIPTIONS` in `app/items.js`.
 - **Beginner weapons — the starting-gear shortlist (CONFIRMED).** Common rarity isn't enough on its own: only a
   curated **beginner** subset — **up to two weapons per weapon _subtype_**, the simplest/most iconic of each —
   is offered at character creation. This keeps the creation weapon picker short (a handful per type instead of
