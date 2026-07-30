@@ -144,7 +144,9 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     higher-rarity weapons (bigger dice + special properties) are found in play. **Tool kits are tied to
     skills** — every gear-using skill has a matching kit (e.g. Lockpicks → Sleight of Hand, Medkit →
     Medicine, Disguise Kit → Deception), and the kit shows the skill it aids (🛠 *Aids &lt;Skill&gt;*).
-    A **← Inventory** button returns.
+    **Consumables actually work** — Use a Health Draught, KP Elixir, Stimpak, Vital Tonic, Chakra Salve,
+    or Panacea and it rolls the effect and updates your HP/KP, chakras, and limbs on the spot (capped at
+    your max), then logs it. A **← Inventory** button returns.
   - **Sheet tab** — the core overview:
   - **Body · Mind · Soul pools** — shown side by side as bold colored **current/max** numbers
     (Body/HP in **red**, Mind/KP in **blue**, Soul in **cyan**), pen-and-paper style. Soul shows your

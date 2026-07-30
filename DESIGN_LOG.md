@@ -349,6 +349,31 @@ descriptions; every kit points at a real skill (validated). **Open:** decide the
 
 ---
 
+### 22. Functioning consumables — Use actually heals HP/KP (and more)
+**Decision.** Consumables now **do something when used** instead of just decrementing quantity. Each carries a
+structured `effect` that the play sheet applies on Use, rolling any dice and updating the sheet: **HP** and
+**KP** restores (dice or flat, capped at max), **chakra** healing (1 hit on each damaged chakra), **limb**
+un-crippling, **self-revive** (downed → 1 HP), and full-restore. Wired the existing items (Health Draught 2d6,
+Greater 4d6, Stimpak 3d6 + un-cripple, KP Elixir 2d6, Chakra Salve, Bandages, Rez Serum) and added a few:
+**Greater KP Elixir** (4d6 KP), **Vital Tonic** (2d6 HP + 2d6 KP), and **Panacea** (full HP/KP + all chakras +
+all limbs). Purely narrative items (food, water, smoke, flare, Antitoxin, Adrenaline) still just log. Using a
+consumable **does not spend an action** yet — GM adjudicates timing.
+**Why.** The user pointed out consumables (like Trail Rations) didn't actually function — they wanted items
+that heal and replenish HP/KP. Making the effect structured data (not hard-coded per item) means new
+consumables are one catalog line, and the same engine covers chakras and limbs the sheet already tracks.
+**How.** `items.js`: `C()` gained a 4th `effect` arg (schema documented above it); added new items +
+descriptions; built `PC.ITEM_EFFECTS` + `PC.itemEffect(name)` (name→effect fallback for older/manually-added
+copies). `play.js`: rewrote `useConsumable()` to read `it.effect || PC.itemEffect(it.name)`, apply each key
+(reviveSelf → hp/hpFull → kp/kpFull → chakraHeal → uncripple/uncrippleAll → cure/note), `announce()` a flash +
+log line summarizing what happened, then decrement/remove. Reused existing `maxHP/maxKP/clamp/limb/chakra`
+helpers, plus a `consumableAmount()` dice/number roller. Added a `⚕ Use:` line in the item detail so the
+effect is clear before using. **Verified**: from hp5/kp4, STR-chakra 3, head crippled — Health Draught +10 HP,
+KP Elixir +9 KP, Chakra Salve 3→2, Stimpak +12 HP & head restored, Panacea full-restored everything; the raw
+injected items (no `effect` field) confirmed the name-lookup fallback. **Open:** whether Use should cost an
+action, and hooking Antitoxin/Adrenaline into a future condition/econ system.
+
+---
+
 ## Deferred / future ideas
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before

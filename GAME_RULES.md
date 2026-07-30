@@ -435,6 +435,24 @@ Every catalog weapon records two extra properties:
 - **Flavor descriptions.** Every catalog item (weapon, armor, consumable, tool, gear) also carries a short
   one-line description of what it is, shown on the Inventory tab. It's pure flavor — no rules effect — kept in
   `PC.ITEM_DESCRIPTIONS` in `app/items.js`.
+- **Functioning consumables.** Consumables **actually apply their effect on Use** — the app rolls any dice,
+  updates the sheet, and logs the result. Restores are **capped at your maximum**. Current set:
+
+  | Item | Effect on Use |
+  |---|---|
+  | Bandages | +1d4 HP; revives you to 1 HP if downed |
+  | Health Draught / Greater | +2d6 / +4d6 HP |
+  | Stimpak | +3d6 HP **and** un-cripples one limb |
+  | KP Elixir / Greater | +2d6 / +4d6 KP |
+  | Vital Tonic | +2d6 HP **and** +2d6 KP |
+  | Chakra Salve | heals 1 hit on every damaged chakra |
+  | Panacea | full HP & KP, heals all chakras, un-cripples all limbs |
+  | Rez Serum | revives you from downed to 1 HP |
+  | Antitoxin / Adrenaline Shot | narrative (GM-adjudicated; logged) |
+
+  Effects are structured data on each item (`effect` in `PC.ITEMS`, e.g. `{ hp: "3d6", uncripple: 1 }`), with a
+  name→effect fallback so older saved items still work. Using a consumable does **not** yet spend an action —
+  the GM adjudicates timing. Food, water, smoke, and flares are narrative-only.
 - **Beginner weapons — the starting-gear shortlist (CONFIRMED).** Common rarity isn't enough on its own: only a
   curated **beginner** subset — **up to two weapons per weapon _subtype_**, the simplest/most iconic of each —
   is offered at character creation. This keeps the creation weapon picker short (a handful per type instead of

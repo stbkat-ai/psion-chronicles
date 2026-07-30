@@ -24,7 +24,14 @@ window.PC = window.PC || {};
     if (grants) a.grants = grants;
     return a;
   }
-  function C(name, weight, note) { return { name: name, category: "Consumable", weight: weight, note: note }; }
+  // effect = structured mechanics applied on Use (optional). Keys the play sheet understands:
+  //   hp / kp: dice string ("2d6") or flat number — restore that much HP / KP
+  //   hpFull / kpFull: true — restore HP / KP to max
+  //   chakraHeal: N — heal N hits on each damaged chakra
+  //   uncripple: N — restore N crippled limbs to full; uncrippleAll: true — restore every crippled limb
+  //   reviveSelf: true — if you're at 0 HP, come back to 1 HP first
+  //   cure / note: text — narrative effects the GM adjudicates (no tracked condition yet)
+  function C(name, weight, note, effect) { const c = { name: name, category: "Consumable", weight: weight, note: note }; if (effect) c.effect = effect; return c; }
   // skill = the Skill this kit supports (optional). Skill kits carry it; general gear leaves it null.
   function T(name, weight, note, skill) { const t = { name: name, category: "Tool", weight: weight, note: note }; if (skill) t.skill = skill; return t; }
   function M(name, weight, note) { return { name: name, category: "Misc", weight: weight, note: note }; }
@@ -171,20 +178,29 @@ window.PC = window.PC || {};
   A("Powered Armor", "Heavy", 6, 40, "Very Rare", "Servos negate Heavy armor's movement penalty; resists ballistic damage (GM).", { noMovePenalty: true }),
   A("Warden's Aegis", "Heavy", 6, 30, "Legendary", "Resistance to physical damage; advantage to resist being moved or knocked prone (GM).", { advSkill: "Hardiness" }),
 
-  /* ===== CONSUMABLES ===== */
+  /* ===== CONSUMABLES =====
+     4th arg = structured effect applied on Use (see C() above). Items without one are
+     narrative-only (food, light, smoke). HP/KP restores are capped at your maximum. */
+  // — HP restore —
+  C("Bandages", 1, "Stabilize yourself if downed; heal 1d4 HP.", { hp: "1d4", reviveSelf: true }),
+  C("Health Draught", 0.5, "Restores 2d6 HP when used.", { hp: "2d6" }),
+  C("Greater Health Draught", 0.5, "Restores 4d6 HP when used.", { hp: "4d6" }),
+  C("Stimpak", 0.5, "Restores 3d6 HP and un-cripples one limb.", { hp: "3d6", uncripple: 1 }),
+  // — KP restore —
+  C("KP Elixir", 0.5, "Restores 2d6 KP when used.", { kp: "2d6" }),
+  C("Greater KP Elixir", 0.5, "Restores 4d6 KP when used.", { kp: "4d6" }),
+  // — Combined / restorative —
+  C("Vital Tonic", 0.5, "Restores 2d6 HP and 2d6 KP.", { hp: "2d6", kp: "2d6" }),
+  C("Chakra Salve", 0.5, "Heals 1 hit on each damaged chakra.", { chakraHeal: 1 }),
+  C("Panacea", 1, "Fully restores HP & KP, heals all chakras, and un-cripples every limb.", { hpFull: true, kpFull: true, chakraHeal: 4, uncrippleAll: true }),
+  C("Rez Serum", 1, "Revives you from downed to 1 HP (or a downed ally).", { reviveSelf: true }),
+  C("Antitoxin", 0.5, "Cures poison / ends Weakened.", { cure: "poison / Weakened" }),
+  // — Narrative / utility (no tracked mechanic) —
+  C("Adrenaline Shot", 0.5, "Gain an extra action this turn (once).", { note: "gain an extra action this turn (toggle it on the This-Turn tracker)" }),
   C("Trail Rations", 2, "A day's food."),
   C("Waterskin", 3, "Holds a day of water."),
-  C("Health Draught", 0.5, "Restores 2d6 HP when used."),
-  C("Greater Health Draught", 0.5, "Restores 4d6 HP when used."),
-  C("Stimpak", 0.5, "Restores 3d6 HP; can un-cripple one limb."),
-  C("KP Elixir", 0.5, "Restores 2d6 KP when used."),
-  C("Chakra Salve", 0.5, "Heals 1 hit on each damaged chakra."),
-  C("Antitoxin", 0.5, "Cures poison / ends Weakened."),
-  C("Bandages", 1, "Stabilize a downed ally / heal 1d4 HP."),
-  C("Adrenaline Shot", 0.5, "Gain an extra action this turn (once)."),
   C("Smoke Bomb", 1, "Creates a 15-ft smoke cloud (obscured)."),
   C("Flare", 0.5, "Bright light for several minutes."),
-  C("Rez Serum", 1, "Revives a downed ally to 1 HP."),
 
   /* ===== TOOLS =====
      Skill kits (4th arg = the Skill they support): one kit for every tool-using skill, so a
@@ -536,6 +552,9 @@ window.PC = window.PC || {};
     "Greater Health Draught": "A potent healing brew for graver injuries.",
     "Stimpak": "An emergency injector that mends flesh and resets a crippled limb.",
     "KP Elixir": "A shimmering draught that restores spent ki.",
+    "Greater KP Elixir": "A concentrated brew that floods you with renewed ki.",
+    "Vital Tonic": "A dual-tone tonic that mends body and mind at once.",
+    "Panacea": "A legendary cure-all that restores body, mind, chakras, and broken limbs.",
     "Chakra Salve": "A soothing balm that eases strain on the chakras.",
     "Antitoxin": "A bitter cure that purges poison from the blood.",
     "Bandages": "Clean wrappings to stabilize wounds and stop bleeding.",
@@ -587,4 +606,10 @@ window.PC = window.PC || {};
   PC.ITEM_SKILLS = {};
   PC.ITEMS.forEach(function (it) { if (it.skill) PC.ITEM_SKILLS[it.name] = it.skill; });
   PC.itemSkill = function (name) { return PC.ITEM_SKILLS[name] || null; };
+
+  /* name → consumable effect lookup, so the play sheet can apply an item's effect even for
+     older saved or manually-added copies that don't carry the field. */
+  PC.ITEM_EFFECTS = {};
+  PC.ITEMS.forEach(function (it) { if (it.effect) PC.ITEM_EFFECTS[it.name] = it.effect; });
+  PC.itemEffect = function (name) { return PC.ITEM_EFFECTS[name] || null; };
 })();

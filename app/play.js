@@ -510,12 +510,53 @@
     it[field] = value;
     save(); refresh();
   }
+  // Roll a consumable amount spec: a flat number, or a dice string like "2d6".
+  function consumableAmount(spec) {
+    if (typeof spec === "number") return { total: spec, detail: "" };
+    const r = PC.rollDiceExpr(spec);
+    if (!r) return { total: 0, detail: "" };
+    return { total: r.total, detail: ` [${r.rolls.join(",")}]` };
+  }
   function useConsumable(idx) {
     const it = rec.inventory[idx];
     if (!it) return;
-    logLine(`Used ${it.name}.`);
+    const eff = it.effect || (window.PC.itemEffect ? PC.itemEffect(it.name) : null);
+    const parts = [];
+    let flashTotal = null;
+    if (eff) {
+      // Self-revive first, so any HP heal in the same item lands above 0.
+      if (eff.reviveSelf && play.hp <= 0) { play.hp = 1; parts.push("revived to 1 HP"); }
+      if (eff.hpFull) { play.hp = maxHP(); parts.push(`HP → full (${play.hp})`); }
+      else if (eff.hp != null) {
+        const a = consumableAmount(eff.hp);
+        const before = play.hp; play.hp = clamp(play.hp + a.total, 0, maxHP());
+        flashTotal = play.hp - before;
+        parts.push(`+${play.hp - before} HP${a.detail}`);
+      }
+      if (eff.kpFull) { play.kp = maxKP(); parts.push(`KP → full (${play.kp})`); }
+      else if (eff.kp != null) {
+        const a = consumableAmount(eff.kp);
+        const before = play.kp; play.kp = clamp(play.kp + a.total, 0, maxKP());
+        if (flashTotal == null) flashTotal = play.kp - before;
+        parts.push(`+${play.kp - before} KP${a.detail}`);
+      }
+      if (eff.chakraHeal) {
+        let n = 0;
+        PC.ATTRS.forEach((a) => { if (chakraOf(a) > 0) { play.chakraHits[a] = Math.max(0, chakraOf(a) - eff.chakraHeal); n++; } });
+        if (n) parts.push(`healed ${eff.chakraHeal} hit${eff.chakraHeal > 1 ? "s" : ""} on ${n} chakra${n > 1 ? "s" : ""}`);
+      }
+      if (eff.uncrippleAll || eff.uncripple) {
+        let left = eff.uncrippleAll ? Infinity : eff.uncripple, n = 0;
+        PC.LIMBS.forEach((L) => { if (left > 0 && limbCurrent(L.key) <= 0) { play.limbs[L.key] = limbMaxFor(L.key); left--; n++; } });
+        if (n) parts.push(`restored ${n} crippled limb${n > 1 ? "s" : ""}`);
+      }
+      if (eff.cure) parts.push(`cures ${eff.cure}`);
+      if (eff.note) parts.push(eff.note);
+    }
+    const msg = `Used ${it.name}${parts.length ? " — " + parts.join(", ") : ""}.`;
+    if (flashTotal != null && flashTotal > 0) announce(flashTotal, msg); else logLine(msg);
     it.qty = (Number(it.qty) || 1) - 1;
-    if (it.qty <= 0) rec.inventory.splice(idx, 1);
+    if (it.qty <= 0) { expandedItem = null; rec.inventory.splice(idx, 1); }
     save(); refresh();
   }
   // weapon helpers
@@ -925,6 +966,9 @@
       // Tool kits show the Skill they support (fall back to the catalog for older saved items).
       const itemSkill = it.skill || (window.PC.itemSkill ? PC.itemSkill(it.name) : null);
       if (itemSkill) detail.appendChild(el("div", "inv-skill", `🛠 Aids <b>${itemSkill}</b> checks`));
+
+      // Consumables show what Use does (the mechanical note), so the effect is clear up front.
+      if (it.category === "Consumable" && it.note) detail.appendChild(el("div", "inv-skill", `⚕ <b>Use:</b> ${it.note}`));
 
       // Actions
       const actions = el("div", "inv-actions");
