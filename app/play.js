@@ -922,6 +922,10 @@
       const desc = it.desc || (window.PC.itemDesc ? PC.itemDesc(it.name) : "");
       if (desc) detail.appendChild(el("div", "inv-desc", desc));
 
+      // Tool kits show the Skill they support (fall back to the catalog for older saved items).
+      const itemSkill = it.skill || (window.PC.itemSkill ? PC.itemSkill(it.name) : null);
+      if (itemSkill) detail.appendChild(el("div", "inv-skill", `🛠 Aids <b>${itemSkill}</b> checks`));
+
       // Actions
       const actions = el("div", "inv-actions");
       actions.appendChild(el("span", "inv-actions-label", "Actions:"));
@@ -1429,7 +1433,7 @@
           if (it.note) meta += ` · ${it.note}`;
         }
         else if (it.category === "Armor") { meta += ` · ${it.armorClass || "Light"} · +${it.dsBonus} DS`; if (it.note) meta += ` · ${it.note}`; }
-        else if (it.note) meta += ` · ${it.note}`;
+        else { if (it.skill) meta += ` · 🛠 ${it.skill}`; if (it.note) meta += ` · ${it.note}`; }
         // Rarity tag for weapons & armor (Common shown muted; higher rarities colored).
         const rarityTag = (it.category === "Weapon" || it.category === "Armor") && it.rarity
           ? `<span class="rarity-tag rarity-${it.rarity.toLowerCase().replace(/\s+/g, "-")}">${it.rarity}</span>` : "";

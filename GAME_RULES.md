@@ -356,6 +356,25 @@ Backgrounds grant 3 skill profs; player picks **2 more** at creation.
 
 *(Full descriptions in guide pp.13–15 — preserved for the compendium.)*
 
+### Skill tool kits
+Every skill that is about *using gear* has a matching **tool kit** item in the catalog, so the kit and the
+skill go together. Each kit lists the skill it aids on the Inventory tab (🛠 *Aids &lt;Skill&gt;*):
+
+| Kit | Skill | Kit | Skill |
+|---|---|---|---|
+| Toolkit | Laborer's Tools | Linguist's Kit | Language |
+| Tinker's Kit | Deft Tools | Herbalism Kit | Herbalism |
+| Lockpicks | Sleight of Hand | Naturalist's Kit | Nature Tools |
+| Climbing Kit | Athletics | Beast-Handler's Kit | Zoology |
+| Survival Kit | Survival | Incense Kit | Paranormal |
+| Medkit | Medicine | Binoculars | Awareness |
+| Investigator's Kit | Investigation | Disguise Kit | Deception |
+| Engineer's Tools | Technology | Musical Instrument | Music / Performance |
+
+Currently the kits are **reference/flavor gear** — they name the tie and set the scene, without a mechanical
+bonus (skill proficiency still comes from Background/Heritage). *[Open: whether a kit should later be
+**required** for the finest work, or grant advantage on its skill.]*
+
 ### No attribute saves (CONFIRMED Luke)
 Psion Chronicles has **no separate "saving throw" system.** Where other games call for a save, Psion
 Chronicles uses the **specific skill** that fits the situation (e.g. **Reflex** to dodge, **Fortitude** to

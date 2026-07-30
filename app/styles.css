@@ -507,6 +507,8 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 .inv-qn { min-width: 20px; text-align: center; font-weight: 650; }
 .inv-detail { padding: 0 12px 12px; border-top: 1px dashed var(--border); margin-top: 2px; }
 .inv-desc { font-size: .82rem; color: var(--text); font-style: italic; padding-top: 10px; line-height: 1.4; }
+.inv-skill { font-size: .78rem; color: var(--text-dim); margin-top: 6px; }
+.inv-skill b { color: var(--gold); }
 .inv-actions { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding-top: 10px; }
 .inv-actions-label { color: var(--text-dim); font-size: .78rem; margin-right: 4px; }
 .inv-cfg { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; }

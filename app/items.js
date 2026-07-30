@@ -25,7 +25,8 @@ window.PC = window.PC || {};
     return a;
   }
   function C(name, weight, note) { return { name: name, category: "Consumable", weight: weight, note: note }; }
-  function T(name, weight, note) { return { name: name, category: "Tool", weight: weight, note: note }; }
+  // skill = the Skill this kit supports (optional). Skill kits carry it; general gear leaves it null.
+  function T(name, weight, note, skill) { const t = { name: name, category: "Tool", weight: weight, note: note }; if (skill) t.skill = skill; return t; }
   function M(name, weight, note) { return { name: name, category: "Misc", weight: weight, note: note }; }
 
   PC.ITEMS = [
@@ -185,23 +186,39 @@ window.PC = window.PC || {};
   C("Flare", 0.5, "Bright light for several minutes."),
   C("Rez Serum", 1, "Revives a downed ally to 1 HP."),
 
-  /* ===== TOOLS ===== */
-  T("Lockpicks", 1, "Deft Tools / Sleight of Hand checks to open locks."),
-  T("Medkit", 3, "Medicine checks; heal or stabilize."),
-  T("Survival Kit", 3, "Survival checks; fire, shelter, foraging."),
-  T("Herbalism Kit", 3, "Herbalism checks; brew remedies."),
-  T("Engineer's Tools", 4, "Technology checks; repair & build."),
-  T("Toolkit", 5, "General repairs and Laborer's Tools checks."),
-  T("Climbing Kit", 5, "Ropes, pitons, harness for climbing."),
+  /* ===== TOOLS =====
+     Skill kits (4th arg = the Skill they support): one kit for every tool-using skill, so a
+     skill that's about wielding gear now has gear that goes with it. Ordered by governing
+     attribute (STR → CHA), then general gear with no skill link. */
+  // — STR —
+  T("Toolkit", 5, "Hammers, saws, drills, and fasteners for heavy repairs and construction.", "Laborer's Tools"),
+  // — AGI —
+  T("Tinker's Kit", 2, "Jeweler's drivers, glass cutters, and clockwork picks for delicate mechanisms.", "Deft Tools"),
+  T("Lockpicks", 1, "Slim picks and tension wrenches for slipping locks, latches, and pockets.", "Sleight of Hand"),
+  T("Climbing Kit", 5, "Ropes, pitons, carabiners, and a harness for scaling sheer heights.", "Athletics"),
+  // — CON —
+  T("Survival Kit", 3, "Fire-starter, snare wire, water filter, and shelter gear for the wilds.", "Survival"),
+  // — INT —
+  T("Medkit", 3, "Sutures, splints, antiseptics, and salves for treating wounds in the field.", "Medicine"),
+  T("Investigator's Kit", 2, "Magnifier, print powder, tweezers, and evidence pouches for reading a scene.", "Investigation"),
+  T("Engineer's Tools", 4, "Precision drivers and diagnostics for repairing and building machinery.", "Technology"),
+  T("Linguist's Kit", 2, "Cipher wheels, lexicons, quills, and ink for cracking scripts and codes.", "Language"),
+  // — WIS —
+  T("Herbalism Kit", 3, "Pouches, pestle, and vials for gathering and brewing herbal remedies.", "Herbalism"),
+  T("Naturalist's Kit", 3, "Fishing line, tanning tools, and flint for living off the land.", "Nature Tools"),
+  T("Beast-Handler's Kit", 3, "Snares, lures, muzzles, and feed for tracking and handling animals.", "Zoology"),
+  T("Incense Kit", 2, "Incense, censer, candles, and chalk for rituals and occult focus.", "Paranormal"),
+  T("Binoculars", 1, "Magnifying optics for scouting distant terrain and spotting targets.", "Awareness"),
+  // — CHA —
+  T("Disguise Kit", 3, "Cosmetics, prosthetics, dyes, and wigs for assuming a false face.", "Deception"),
+  T("Musical Instrument", 4, "A portable instrument (lute, drum, flute) for music and performance.", "Music"),
+  // — General gear (no skill link) —
   T("Rope (50 ft)", 5, "Hemp or synthetic rope."),
   T("Grappling Hook", 2, "Anchor for climbing / swinging."),
   T("Old-World Datapad", 1, "Access old-world data & History/Technology."),
   T("Comm Device", 1, "Short-range communication."),
   T("Lantern", 2, "Bright light in a radius."),
   T("Torch", 1, "Improvised light / fire source."),
-  T("Binoculars", 1, "See distant targets (Awareness)."),
-  T("Musical Instrument", 4, "Music / Performance checks (lute, drum, etc.)."),
-  T("Incense Kit", 2, "Ritual / Paranormal focus."),
 
   /* ===== MISC ===== */
   M("Backpack", 2, "Carries your gear."),
@@ -526,14 +543,20 @@ window.PC = window.PC || {};
     "Smoke Bomb": "A canister that fills the air with concealing smoke.",
     "Flare": "A bright signal flare that burns for minutes.",
     "Rez Serum": "A miracle serum that hauls the fallen back to life.",
-    // — Tools —
+    // — Tools (skill kits + gear) —
+    "Toolkit": "An all-purpose set of heavy tools for general repairs and building.",
+    "Tinker's Kit": "Fine drivers, cutters, and picks for the most delicate mechanisms.",
     "Lockpicks": "A slim set of picks and tension wrenches for defeating locks.",
-    "Medkit": "A field kit of tools and supplies for treating wounds.",
-    "Survival Kit": "The essentials for making fire, shelter, and finding food.",
-    "Herbalism Kit": "Pouches and tools for gathering and brewing herbs.",
-    "Engineer's Tools": "A kit for repairing and building machinery.",
-    "Toolkit": "An all-purpose set of tools for general repairs.",
     "Climbing Kit": "Ropes, pitons, and a harness for scaling heights.",
+    "Survival Kit": "The essentials for making fire, shelter, and finding food.",
+    "Medkit": "A field kit of tools and supplies for treating wounds.",
+    "Investigator's Kit": "Magnifier, print powder, and pouches for combing a scene for clues.",
+    "Engineer's Tools": "A kit for repairing and building machinery.",
+    "Linguist's Kit": "Cipher wheels, lexicons, and ink for translating scripts and codes.",
+    "Herbalism Kit": "Pouches and tools for gathering and brewing herbs.",
+    "Naturalist's Kit": "Primitive gear — fishing line, tanning tools, flint — for the wilds.",
+    "Beast-Handler's Kit": "Snares, lures, and muzzles for tracking, calming, and handling animals.",
+    "Disguise Kit": "Cosmetics, prosthetics, and wigs for slipping into another identity.",
     "Rope (50 ft)": "A coil of sturdy rope for climbing and hauling.",
     "Grappling Hook": "A hooked anchor for climbing or swinging across gaps.",
     "Old-World Datapad": "A salvaged tablet holding fragments of pre-Veil data.",
@@ -558,4 +581,10 @@ window.PC = window.PC || {};
   PC.itemDesc = function (name) { return PC.ITEM_DESCRIPTIONS[name] || ""; };
   // Stamp the description onto each catalog item so copies (inventory, starting gear) carry it.
   PC.ITEMS.forEach(function (it) { if (PC.ITEM_DESCRIPTIONS[it.name]) it.desc = PC.ITEM_DESCRIPTIONS[it.name]; });
+
+  /* name → Skill lookup for tool kits, so the UI can show the tie even for older saved or
+     manually-added items that don't carry the field on their inventory copy. */
+  PC.ITEM_SKILLS = {};
+  PC.ITEMS.forEach(function (it) { if (it.skill) PC.ITEM_SKILLS[it.name] = it.skill; });
+  PC.itemSkill = function (name) { return PC.ITEM_SKILLS[name] || null; };
 })();

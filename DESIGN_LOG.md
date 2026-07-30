@@ -326,6 +326,29 @@ Creature actually *does*, then wire its track/controls here.
 
 ---
 
+### 21. Skill tool kits — gear that goes with the tool-based skills
+**Decision.** Turned the ad-hoc tools list into a **coherent set of skill kits**: one tool kit for every
+skill that's about *using gear*, each explicitly **tied to its skill**. The three "*Tools*" skills finally
+have gear (Laborer's Tools → **Toolkit**, Deft Tools → **Tinker's Kit**, Nature Tools → **Naturalist's
+Kit**), and the set extends to the rest — Sleight of Hand → Lockpicks, Athletics → Climbing Kit, Survival →
+Survival Kit, Medicine → Medkit, Investigation → **Investigator's Kit**, Technology → Engineer's Tools,
+Language → **Linguist's Kit**, Herbalism → Herbalism Kit, Zoology → **Beast-Handler's Kit**, Paranormal →
+Incense Kit, Awareness → Binoculars, Deception → **Disguise Kit**, Music → Musical Instrument. Six kits are
+new; the rest were relinked and re-described. Each kit shows its tie on the Inventory tab and catalog
+(🛠 *Aids &lt;Skill&gt;*). Kits are currently **reference/flavor** — no mechanical bonus (proficiency still
+comes from Background/Heritage).
+**Why.** The user pointed out we had tool-based skills but no tools to go with them. A one-kit-per-skill set
+makes the gear feel deliberate and gives players a reason to buy/carry kits. We kept them flavor-only for now
+to avoid rebalancing before deciding whether a kit should be *required* for the finest work or grant
+advantage — left as an open question in GAME_RULES.
+**How.** `items.js`: `T()` gained a 4th `skill` arg; the TOOLS block was reorganized into skill-kits (by
+attribute) + general gear, six kits added, descriptions added for all new items. Built `PC.ITEM_SKILLS` +
+`PC.itemSkill(name)` (name→skill lookup) so the tie shows even on older saved/manually-added copies. `play.js`
+renders a `.inv-skill` line in the item detail and a `🛠 <skill>` tag in the catalog meta. All 22 tools have
+descriptions; every kit points at a real skill (validated). **Open:** decide the kits' mechanical role.
+
+---
+
 ## Deferred / future ideas
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before

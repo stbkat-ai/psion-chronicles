@@ -141,7 +141,10 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     expand a carried item and on each catalog row (and the search matches description text too). Each weapon
     also shows whether it's **one- or two-handed** (matters for dual-wielding) and its **rarity** — Common ·
     Uncommon · Rare · Very Rare · Legendary. Only **Common** weapons are offered as starting gear;
-    higher-rarity weapons (bigger dice + special properties) are found in play. A **← Inventory** button returns.
+    higher-rarity weapons (bigger dice + special properties) are found in play. **Tool kits are tied to
+    skills** — every gear-using skill has a matching kit (e.g. Lockpicks → Sleight of Hand, Medkit →
+    Medicine, Disguise Kit → Deception), and the kit shows the skill it aids (🛠 *Aids &lt;Skill&gt;*).
+    A **← Inventory** button returns.
   - **Sheet tab** — the core overview:
   - **Body · Mind · Soul pools** — shown side by side as bold colored **current/max** numbers
     (Body/HP in **red**, Mind/KP in **blue**, Soul in **cyan**), pen-and-paper style. Soul shows your

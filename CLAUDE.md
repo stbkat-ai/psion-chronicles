@@ -29,7 +29,7 @@ in the browser's `localStorage` (key `psion_chronicles_characters`), so saved da
 - `index.html` — entry point; the 6 asset tags carry `?v=N`.
 - `data.js` — all game data on `window.PC` (9 backgrounds, 8 heritages, 18 kinetics, 36 skills,
   18 weapon types, 360 techniques, fighting styles/combat skills, per-background & per-heritage flaws).
-- `items.js` — the weapon/item catalog (~194 items).
+- `items.js` — the weapon/item catalog (~266 items; incl. skill tool kits tied to skills via `it.skill`).
 - `rules.js` — pure calculation engine (modifiers, pools, derived stats, chakra effects, proficiency,
   kinetic tier-completion proficiency/expertise). No DOM.
 - `app.js` — `window.PsionApp`: character creator flow, roster, level-up screen.
