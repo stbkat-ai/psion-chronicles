@@ -482,6 +482,20 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 .catalog-row .cat-meta { font-size: .72rem; color: var(--text-dim); }
 .catalog-row .cat-desc { font-size: .74rem; color: var(--text-dim); font-style: italic; margin-top: 2px; line-height: 1.35; }
 .catalog-row .cat-wt { font-size: .78rem; color: var(--text-dim); white-space: nowrap; }
+.catalog-row .cat-craft { font-size: .72rem; color: var(--gold); margin-top: 2px; }
+.catalog-row .cat-craft.leg { color: var(--text-dim); font-style: italic; }
+.catalog-row .cat-btns { display: flex; flex-direction: column; gap: 4px; }
+
+/* Salvage materials panel (crafting stock) */
+.salvage-grid { display: flex; flex-wrap: wrap; gap: 7px; }
+.salvage-chip {
+  display: inline-flex; align-items: baseline; gap: 6px; padding: 5px 10px; border-radius: 999px;
+  background: var(--panel-2); border: 1px solid var(--border);
+}
+.salvage-chip .sv-name { font-size: .8rem; }
+.salvage-chip .sv-qty { font-size: .82rem; font-weight: 800; color: var(--psi-bright); font-variant-numeric: tabular-nums; }
+.salvage-chip.exotic { border-color: var(--gold); background: rgba(212, 175, 55, .09); }
+.salvage-chip.exotic .sv-qty { color: var(--gold); }
 /* Rarity tag on catalog weapons (D&D-style tiers) */
 .rarity-tag { font-size: .6rem; text-transform: uppercase; letter-spacing: .5px; font-weight: 700; border: 1px solid currentColor; border-radius: 5px; padding: 0 5px; margin-left: 7px; vertical-align: middle; }
 .rarity-common { color: var(--text-faint); }

@@ -462,6 +462,30 @@ Every catalog weapon records two extra properties:
   start with a weapon whose **type you're proficient with** (or that your Heritage's Fighting Style opens as
   *start-only*), and two-weapon Heritages still choose **one two-handed or two one-handed** weapons.
 
+### Crafting & Salvage
+**Every item outside Legendary rarity can be crafted** by a character who has the **components** (and, in the
+fiction, the relevant skill). Legendary items are found/earned, never crafted. Items break down into — and are
+built from — **salvage materials**.
+
+- **14 salvage materials, tiered.** Nine **Basic** (Scrap Metal, Hardwood, Leather, Cloth, Circuitry,
+  Chemicals, Focus Crystal, Botanicals, Bone & Sinew) and five **Exotic** (Pristine Alloy, Power Cell,
+  Resonant Crystal, Volatile Compound, Ki Core). Exotic materials only appear in the recipes of
+  **Uncommon+** items, so higher-rarity crafting is meaningfully harder.
+- **Recipes are derived, not hand-listed.** Each item's component list comes from its **category, weapon type
+  / armor class, weight, and rarity** — heavier items need more primary material; each rarity step adds an
+  exotic and bumps quantities. (`PC.itemRecipe(item)` in `app/items.js` is the single source; it returns
+  `null` for Legendary, raw materials, and currency.)
+- **Salvaging** an item breaks **one** unit down into materials: you recover about **half** of each Basic
+  component (min 1), and Exotic cores are **consumed** in the teardown (floor of half). So craft→salvage is
+  always lossy — no infinite-material loop.
+- **Crafting** consumes the full recipe from your materials and produces the item. In the app it's gated on
+  **having the components** (the Craft button disables and lists what you're missing). The **crafting skill**
+  is shown as advisory (derived from the primary material: metal → Laborer's Tools, tech → Technology, crystal
+  → Paranormal, chem/plant → Herbalism, wood/hide/cloth → Nature Tools) — *[Open: whether to hard-gate on
+  skill proficiency and set DCs by rarity; and using Craft/Salvage does not yet cost an action.]*
+- **Custom items** (crafting something not in the catalog) are a **planned** extension — the recipe engine
+  already works off generic item fields, so it will carry over.
+
 ### Action Economy (CONFIRMED Luke)
 On your turn you may take **one Move, one Action, and one Bonus Action** — each once per turn unless a
 feat/ability says otherwise. A **Reaction** is used *outside* your turn and refreshes at the start of your

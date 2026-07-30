@@ -489,6 +489,67 @@
     App.toast(`Added ${item.name}.`);
     save(); refresh();
   }
+
+  /* ---------- crafting / salvage ---------- */
+  // How much of a salvage material the character holds (summed across stacks).
+  function ownedMaterial(name) {
+    return (rec.inventory || []).reduce((s, it) => s + (it.category === "Salvage" && it.name === name ? (Number(it.qty) || 0) : 0), 0);
+  }
+  // All salvage the character holds, as [{name, tier, qty}] in canonical order.
+  function ownedMaterials() {
+    return (PC.SALVAGE || []).map((s) => ({ name: s.name, tier: s.tier, qty: ownedMaterial(s.name) })).filter((m) => m.qty > 0);
+  }
+  function addMaterial(name, qty) {
+    if (qty <= 0) return;
+    const ex = (rec.inventory || []).find((it) => it.category === "Salvage" && it.name === name);
+    if (ex) ex.qty = (Number(ex.qty) || 0) + qty;
+    else rec.inventory.push({
+      id: "mat_" + Date.now().toString(36) + "_" + name.replace(/\W+/g, "").slice(0, 6),
+      name: name, category: "Salvage", tier: PC.SALVAGE_TIER[name] || "Basic",
+      weight: PC.SALVAGE_TIER[name] === "Exotic" ? 0.5 : 1, qty: qty, desc: PC.itemDesc(name),
+    });
+  }
+  function spendMaterial(name, qty) {
+    let left = qty;
+    for (let i = rec.inventory.length - 1; i >= 0 && left > 0; i--) {
+      const it = rec.inventory[i];
+      if (it.category === "Salvage" && it.name === name) {
+        const take = Math.min(left, Number(it.qty) || 0);
+        it.qty -= take; left -= take;
+        if (it.qty <= 0) rec.inventory.splice(i, 1);
+      }
+    }
+  }
+  function recipeOf(item) { return window.PC.itemRecipe ? PC.itemRecipe(item) : null; }
+  // Materials the character still lacks to craft `item`, as ["2× Scrap Metal", …] (empty = can craft).
+  function missingComponents(item) {
+    const r = recipeOf(item); if (!r) return null;
+    return r.filter((c) => ownedMaterial(c.mat) < c.qty).map((c) => `${c.qty - ownedMaterial(c.mat)}× ${c.mat}`);
+  }
+  function fmtMats(list) { return list.map((c) => `${c.qty}× ${c.mat}`).join(" · "); }
+  function craftItem(item) {
+    const r = recipeOf(item);
+    if (!r) { App.toast("This can't be crafted."); return; }
+    const miss = missingComponents(item);
+    if (miss.length) { App.toast(`Missing: ${miss.join(", ")}.`); return; }
+    r.forEach((c) => spendMaterial(c.mat, c.qty));
+    rec.inventory.push(Object.assign({}, item, { qty: 1, id: "it_" + Date.now().toString(36) + "_" + item.name.replace(/\s+/g, "").slice(0, 6) }));
+    logLine(`Crafted ${item.name} — used ${fmtMats(r)}.`);
+    App.toast(`Crafted ${item.name}!`);
+    save(); refresh();
+  }
+  function salvageItem(idx) {
+    const it = rec.inventory[idx]; if (!it) return;
+    const y = window.PC.itemSalvageYield ? PC.itemSalvageYield(it) : null;
+    if (!y) { App.toast(`${it.name} can't be salvaged.`); return; }
+    y.forEach((c) => addMaterial(c.mat, c.qty));
+    it.qty = (Number(it.qty) || 1) - 1;
+    if (it.qty <= 0) { expandedItem = null; rec.inventory.splice(idx, 1); }
+    logLine(`Salvaged ${it.name} → ${y.length ? fmtMats(y) : "nothing usable"}.`);
+    App.toast(`Salvaged ${it.name}.`);
+    save(); refresh();
+  }
+
   function removeItem(idx) {
     const it = rec.inventory[idx];
     rec.inventory.splice(idx, 1);
@@ -970,6 +1031,16 @@
       // Consumables show what Use does (the mechanical note), so the effect is clear up front.
       if (it.category === "Consumable" && it.note) detail.appendChild(el("div", "inv-skill", `⚕ <b>Use:</b> ${it.note}`));
 
+      // Crafting: what it's made of + what salvaging returns (for craftable, non-material items).
+      const recipe = it.category !== "Salvage" ? recipeOf(it) : null;
+      if (recipe) {
+        detail.appendChild(el("div", "inv-skill", `🔨 <b>Made of:</b> ${fmtMats(recipe)}`));
+        const yld = PC.itemSalvageYield(it);
+        if (yld && yld.length) detail.appendChild(el("div", "inv-skill", `♻ <b>Salvage yields:</b> ${fmtMats(yld)}`));
+      } else if (it.category !== "Salvage" && it.rarity === "Legendary") {
+        detail.appendChild(el("div", "inv-skill", "🔨 <b>Legendary</b> — too intricate to craft or salvage."));
+      }
+
       // Actions
       const actions = el("div", "inv-actions");
       actions.appendChild(el("span", "inv-actions-label", "Actions:"));
@@ -1003,6 +1074,13 @@
         const use = el("button", "btn small primary", "Use (−1)");
         use.onclick = () => useConsumable(idx);
         actions.appendChild(use);
+      }
+      // Salvage: break one unit down into its materials (craftable, non-material items).
+      if (it.category !== "Salvage" && recipeOf(it)) {
+        const salv = el("button", "btn small ghost", "♻ Salvage");
+        salv.title = "Break one down into salvage materials";
+        salv.onclick = () => salvageItem(idx);
+        actions.appendChild(salv);
       }
       const del = el("button", "btn small ghost", "✕ Delete");
       del.onclick = () => { expandedItem = null; removeItem(idx); };
@@ -1452,7 +1530,7 @@
     const searchRow = el("div", "inv-form");
     const search = el("input"); search.type = "text"; search.placeholder = "Search items (e.g. rifle, staff, stimpak)…"; search.value = invSearchQ; search.className = "inv-name";
     const catFilter = el("select"); catFilter.className = "inv-cat";
-    ["All", "Weapon", "Armor", "Consumable", "Tool", "Misc"].forEach((c) => { const o = el("option", null, c); o.value = c; catFilter.appendChild(o); });
+    ["All", "Weapon", "Armor", "Consumable", "Tool", "Misc", "Salvage"].forEach((c) => { const o = el("option", null, c); o.value = c; catFilter.appendChild(o); });
     catFilter.value = invSearchCat;
     searchRow.appendChild(search); searchRow.appendChild(catFilter);
     panel.appendChild(searchRow);
@@ -1482,10 +1560,25 @@
         const rarityTag = (it.category === "Weapon" || it.category === "Armor") && it.rarity
           ? `<span class="rarity-tag rarity-${it.rarity.toLowerCase().replace(/\s+/g, "-")}">${it.rarity}</span>` : "";
         const descLine = it.desc ? `<span class="cat-desc">${it.desc}</span>` : "";
-        row.innerHTML = `<div class="cat-info"><span class="cat-name">${it.name}${rarityTag}</span><span class="cat-meta">${meta}</span>${descLine}</div><span class="cat-wt">${it.weight} lb</span>`;
+        // Crafting line: recipe (or Legendary / raw-material note).
+        const recipe = it.category !== "Salvage" ? recipeOf(it) : null;
+        let craftLine = "";
+        if (recipe) craftLine = `<span class="cat-craft">🔨 ${fmtMats(recipe)}</span>`;
+        else if (it.category !== "Salvage" && it.rarity === "Legendary") craftLine = `<span class="cat-craft leg">🔨 Legendary — cannot be crafted</span>`;
+        row.innerHTML = `<div class="cat-info"><span class="cat-name">${it.name}${rarityTag}</span><span class="cat-meta">${meta}</span>${descLine}${craftLine}</div><span class="cat-wt">${it.weight} lb</span>`;
+        const btns = el("div", "cat-btns");
+        if (recipe) {
+          const miss = missingComponents(it);
+          const craft = el("button", "btn small", "🔨 Craft");
+          craft.disabled = miss.length > 0;
+          craft.title = miss.length ? `Need ${miss.join(", ")}` : `Craft using ${fmtMats(recipe)}`;
+          craft.onclick = () => craftItem(it);
+          btns.appendChild(craft);
+        }
         const add = el("button", "btn small primary", "＋ Add");
         add.onclick = () => addCatalogItem(it);
-        row.appendChild(add);
+        btns.appendChild(add);
+        row.appendChild(btns);
         results.appendChild(row);
       });
       if (total > 80) results.appendChild(el("div", "muted", `Showing 80 of ${total} — refine your search.`));
@@ -1538,15 +1631,34 @@
     form.appendChild(nameI); form.appendChild(catS); form.appendChild(wtI); form.appendChild(qtyI); form.appendChild(addBtn);
     inv.appendChild(form);
 
-    // item list
+    // item list (salvage materials are shown separately in the Materials panel below)
     inv.appendChild(el("div", "section-label", "Carried Items"));
-    if (!rec.inventory.length) inv.appendChild(el("div", "muted", "No items yet. Search the catalog or add a custom item above."));
+    const gearIdx = rec.inventory.map((it, idx) => idx).filter((idx) => rec.inventory[idx].category !== "Salvage");
+    if (!gearIdx.length) inv.appendChild(el("div", "muted", "No items yet. Search the catalog, craft, or add a custom item above."));
     else {
       const list = el("div", "inv-list");
-      rec.inventory.forEach((it, idx) => { list.appendChild(inventoryItem(it, idx)); });
+      gearIdx.forEach((idx) => { list.appendChild(inventoryItem(rec.inventory[idx], idx)); });
       inv.appendChild(list);
     }
     root.appendChild(inv);
+
+    // ---- salvage materials (crafting stock) ----
+    const mats = ownedMaterials();
+    const mp = el("div", "panel");
+    mp.appendChild(el("div", "section-label", "Salvage Materials"));
+    mp.appendChild(el("p", "hint", "Break gear down (♻ <b>Salvage</b> on an item) to earn materials, then <b>🔨 Craft</b> any non-legendary item from the catalog once you hold its components."));
+    if (!mats.length) mp.appendChild(el("div", "muted", "No materials yet. Salvage an item, or Add some from the catalog (Salvage category)."));
+    else {
+      const grid = el("div", "salvage-grid");
+      mats.forEach((m) => {
+        const chip = el("div", "salvage-chip" + (m.tier === "Exotic" ? " exotic" : ""));
+        chip.title = PC.itemDesc(m.name);
+        chip.innerHTML = `<span class="sv-name">${m.name}</span><span class="sv-qty">×${m.qty}</span>`;
+        grid.appendChild(chip);
+      });
+      mp.appendChild(grid);
+    }
+    root.appendChild(mp);
     return root;
   }
 

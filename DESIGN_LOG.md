@@ -374,6 +374,36 @@ action, and hooking Antitoxin/Adrenaline into a future condition/econ system.
 
 ---
 
+### 23. Crafting & salvage — every non-legendary item breaks down into materials
+**Decision.** Added a crafting system. **14 salvage materials** (9 Basic + 5 Exotic) become catalog items in a
+new **Salvage** category. **Every item outside Legendary** has a **recipe** (component list) and a **salvage
+yield**. On the play sheet: each item's detail shows *Made of* + *Salvage yields*; a **♻ Salvage** button
+breaks one unit into materials; the catalog gains a **🔨 Craft** button per craftable row (disabled with a
+"need X" tooltip until you hold the components) and a recipe line; materials live in a **Salvage Materials**
+panel on the Inventory tab (salvage is filtered out of the normal carried list). Legendary items show
+"cannot be crafted." Salvaging is **lossy** (Basic ≈ half, Exotic cores consumed) so there's no
+craft↔salvage exploit.
+**Why.** The user's crafting system: any non-legendary item craftable with the right components (and skills),
+custom items later. Step one was "break every item into component materials called salvage." With 257
+craftable items, hand-writing recipes would be inconsistent, so recipes are **derived** from each item's own
+fields — which also means future **custom items** get a breakdown for free. Chose a **tiered ~14-material**
+set (per the user) so exotics gate higher-rarity crafting, and built the **working Craft + Salvage actions**
+(also per the user) rather than data-only.
+**How.** `items.js`: `PC.SALVAGE` (materials + descriptions, pushed into `PC.ITEMS`), lookup tables
+(`_wmat` by weapon type, `_amat` by armor class, `_override` for the 48 consumable/tool/misc items,
+`_craftSkill` by primary material), and `PC.itemRecipe()` / `PC.itemSalvageYield()` / `PC.craftSkillFor()`.
+Recipe quantity scales with weight (`_bulk`) and rarity tier (exotic added at Uncommon+, +1 primary at Rare,
++2 & 2 exotic at Very Rare). `play.js`: `ownedMaterial/ownedMaterials/addMaterial/spendMaterial`,
+`recipeOf/missingComponents/craftItem/salvageItem`, the detail lines + Salvage button, catalog Craft button +
+recipe line + "Salvage" filter, and the Materials panel. CSS for `.cat-craft`, `.cat-btns`, `.salvage-grid`,
+`.salvage-chip` (exotic = gold). **Validated**: 256 craftable / 27 excluded (12 Legendary + currency + 14
+materials), no bad recipes. **Verified in-browser**: salvaged a Warmaul → 2× Scrap Metal + 1× Hardwood;
+crafted a Combat Knife (−1 Scrap Metal, −1 Leather); Worldbreaker shows uncraftable; Plasma Craft disabled
+without Circuitry/Power Cell. **Open:** hard skill-gating + rarity DCs, whether Craft/Salvage costs an action,
+and custom-item crafting (the promised next step).
+
+---
+
 ## Deferred / future ideas
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before

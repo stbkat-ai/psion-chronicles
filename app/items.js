@@ -612,4 +612,148 @@ window.PC = window.PC || {};
   PC.ITEM_EFFECTS = {};
   PC.ITEMS.forEach(function (it) { if (it.effect) PC.ITEM_EFFECTS[it.name] = it.effect; });
   PC.itemEffect = function (name) { return PC.ITEM_EFFECTS[name] || null; };
+
+  /* =========================================================================
+     CRAFTING — salvage materials & recipes
+     Every item outside Legendary rarity can be broken down into / crafted from
+     salvage materials. 14 tiered materials: 9 Basic (common teardown) + 5 Exotic
+     (only higher-rarity recipes call for them). Recipes are DERIVED from an item's
+     own fields (category, weapon type / armor class, weight, rarity) so all ~257
+     craftable items — and future custom items — get a consistent breakdown.
+     ========================================================================= */
+  PC.SALVAGE = [
+    // — Basic —
+    { name: "Scrap Metal",    tier: "Basic",  weight: 1,   desc: "Salvaged metal — blades, plates, and frames melt down to this." },
+    { name: "Hardwood",       tier: "Basic",  weight: 1,   desc: "Seasoned wood for hafts, stocks, staves, and bows." },
+    { name: "Leather",        tier: "Basic",  weight: 1,   desc: "Cured hide for grips, straps, and light armor." },
+    { name: "Cloth",          tier: "Basic",  weight: 0.5, desc: "Woven fiber for wraps, padding, and robes." },
+    { name: "Circuitry",      tier: "Basic",  weight: 0.5, desc: "Salvaged boards and wiring from old-world tech." },
+    { name: "Chemicals",      tier: "Basic",  weight: 0.5, desc: "Reagents and propellants for potions and explosives." },
+    { name: "Focus Crystal",  tier: "Basic",  weight: 0.5, desc: "A cut crystal that channels psionic energy." },
+    { name: "Botanicals",     tier: "Basic",  weight: 0.5, desc: "Dried herbs, roots, and plant matter." },
+    { name: "Bone & Sinew",   tier: "Basic",  weight: 0.5, desc: "Bone, gut, and cord from beasts — string and binding." },
+    // — Exotic —
+    { name: "Pristine Alloy",     tier: "Exotic", weight: 0.5, desc: "A flawless refined alloy, prized for master-forged gear." },
+    { name: "Power Cell",         tier: "Exotic", weight: 0.5, desc: "A charged energy core that drives directed-energy weapons." },
+    { name: "Resonant Crystal",   tier: "Exotic", weight: 0.5, desc: "A crystal attuned to a psionic frequency." },
+    { name: "Volatile Compound",  tier: "Exotic", weight: 0.5, desc: "An unstable, high-yield reagent." },
+    { name: "Ki Core",            tier: "Exotic", weight: 0.5, desc: "A rare mote of crystallized life-force." },
+  ];
+  PC.SALVAGE_TIER = {};
+  PC.SALVAGE.forEach(function (s) {
+    PC.SALVAGE_TIER[s.name] = s.tier;
+    PC.ITEM_DESCRIPTIONS[s.name] = s.desc;
+    PC.ITEMS.push({ name: s.name, category: "Salvage", tier: s.tier, weight: s.weight, desc: s.desc });
+  });
+  PC.isSalvage = function (name) { return !!PC.SALVAGE_TIER[name]; };
+
+  // Weapon type → [primary basic, secondary basic, exotic] materials.
+  var _wmat = {
+    "Heavy Weapons":    ["Scrap Metal", "Hardwood",     "Pristine Alloy"],
+    "Fist Weapons":     ["Scrap Metal", "Leather",      "Pristine Alloy"],
+    "Light Weapons":    ["Scrap Metal", "Leather",      "Pristine Alloy"],
+    "Quick Weapons":    ["Scrap Metal", "Hardwood",     "Pristine Alloy"],
+    "Finesse Weapons":  ["Scrap Metal", "Leather",      "Pristine Alloy"],
+    "Thrown Weapons":   ["Scrap Metal", "Leather",      "Pristine Alloy"],
+    "Archery":          ["Hardwood",    "Bone & Sinew", "Pristine Alloy"],
+    "Firearms":         ["Scrap Metal", "Circuitry",    "Pristine Alloy"],
+    "Explosives":       ["Chemicals",   "Scrap Metal",  "Volatile Compound"],
+    "Volatile Weapons": ["Chemicals",   "Scrap Metal",  "Volatile Compound"],
+    "Laser Weapons":    ["Circuitry",   "Scrap Metal",  "Power Cell"],
+    "Plasma Weapons":   ["Circuitry",   "Scrap Metal",  "Power Cell"],
+    "Tech Weapons":     ["Circuitry",   "Scrap Metal",  "Power Cell"],
+    "Channel Weapons":  ["Focus Crystal", "Hardwood",     "Resonant Crystal"],
+    "Ritual Weapons":   ["Focus Crystal", "Bone & Sinew", "Resonant Crystal"],
+    "Art Weapons":      ["Focus Crystal", "Cloth",        "Resonant Crystal"],
+    "Noise Weapons":    ["Circuitry",     "Focus Crystal","Resonant Crystal"],
+    "Living Weapons":   ["Botanicals",    "Bone & Sinew", "Ki Core"],
+  };
+  var _amat = {
+    "Light":  ["Leather",     "Cloth",   "Pristine Alloy"],
+    "Medium": ["Leather",     "Scrap Metal", "Pristine Alloy"],
+    "Heavy":  ["Scrap Metal", "Leather", "Pristine Alloy"],
+  };
+  // Per-name recipes for consumables / tools / misc (materials, 1 each unless the name repeats).
+  var _override = {
+    // Consumables
+    "Bandages": ["Cloth", "Botanicals"], "Health Draught": ["Botanicals", "Chemicals"],
+    "Greater Health Draught": ["Botanicals", "Chemicals", "Volatile Compound"],
+    "Stimpak": ["Chemicals", "Circuitry", "Volatile Compound"],
+    "KP Elixir": ["Botanicals", "Focus Crystal"], "Greater KP Elixir": ["Botanicals", "Focus Crystal", "Resonant Crystal"],
+    "Vital Tonic": ["Botanicals", "Chemicals", "Focus Crystal"], "Chakra Salve": ["Botanicals", "Focus Crystal"],
+    "Panacea": ["Botanicals", "Ki Core", "Volatile Compound"], "Rez Serum": ["Chemicals", "Ki Core"],
+    "Antitoxin": ["Botanicals", "Chemicals"], "Adrenaline Shot": ["Chemicals", "Circuitry"],
+    "Trail Rations": ["Botanicals"], "Waterskin": ["Leather"], "Smoke Bomb": ["Chemicals", "Cloth"], "Flare": ["Chemicals"],
+    // Tools
+    "Toolkit": ["Scrap Metal", "Hardwood"], "Tinker's Kit": ["Scrap Metal", "Leather"], "Lockpicks": ["Scrap Metal"],
+    "Climbing Kit": ["Bone & Sinew", "Scrap Metal"], "Survival Kit": ["Leather", "Cloth"], "Medkit": ["Cloth", "Botanicals"],
+    "Investigator's Kit": ["Leather", "Circuitry"], "Engineer's Tools": ["Scrap Metal", "Circuitry"], "Linguist's Kit": ["Cloth", "Hardwood"],
+    "Herbalism Kit": ["Leather", "Botanicals"], "Naturalist's Kit": ["Leather", "Bone & Sinew"], "Beast-Handler's Kit": ["Leather", "Bone & Sinew"],
+    "Incense Kit": ["Botanicals", "Cloth"], "Binoculars": ["Circuitry", "Scrap Metal"], "Disguise Kit": ["Cloth", "Leather"],
+    "Musical Instrument": ["Hardwood", "Bone & Sinew"], "Rope (50 ft)": ["Cloth"], "Grappling Hook": ["Scrap Metal"],
+    "Old-World Datapad": ["Circuitry"], "Comm Device": ["Circuitry"], "Lantern": ["Scrap Metal", "Cloth"], "Torch": ["Hardwood", "Cloth"],
+    // Misc
+    "Backpack": ["Leather", "Cloth"], "Bedroll": ["Cloth"], "Component Pouch": ["Cloth", "Botanicals"],
+    "Holy Charm": ["Focus Crystal", "Bone & Sinew"], "Prayer Beads": ["Hardwood", "Bone & Sinew"], "Meditation Stone": ["Focus Crystal"],
+    "Old-World Relic": ["Circuitry", "Ki Core"], "Journal & Pen": ["Cloth", "Hardwood"], "Sigil Talisman": ["Focus Crystal", "Cloth"],
+  };
+  var _catDefault = { "Consumable": ["Botanicals", "Chemicals"], "Tool": ["Scrap Metal", "Leather"], "Misc": ["Cloth", "Leather"] };
+  var _nonCraft = { "Scrip / Currency": true };
+  // Advisory crafting skill, from the recipe's primary material.
+  var _craftSkill = {
+    "Scrap Metal": "Laborer's Tools", "Pristine Alloy": "Laborer's Tools",
+    "Circuitry": "Technology", "Power Cell": "Technology",
+    "Focus Crystal": "Paranormal", "Resonant Crystal": "Paranormal", "Ki Core": "Paranormal",
+    "Botanicals": "Herbalism", "Chemicals": "Herbalism", "Volatile Compound": "Herbalism",
+    "Hardwood": "Nature Tools", "Bone & Sinew": "Nature Tools", "Leather": "Nature Tools", "Cloth": "Nature Tools",
+  };
+  function _clamp(n, lo, hi) { return Math.max(lo, Math.min(hi, n)); }
+  function _bulk(w) { return _clamp(Math.round((Number(w) || 1) / 3), 1, 6); }
+  function _tier(r) { return ({ "Common": 0, "Uncommon": 1, "Rare": 2, "Very Rare": 3 })[r] || 0; }
+  function _merge(list) { // combine duplicate materials, drop qty<=0
+    var m = {}, order = [];
+    list.forEach(function (c) { if (c.qty > 0) { if (!(c.mat in m)) order.push(c.mat); m[c.mat] = (m[c.mat] || 0) + c.qty; } });
+    return order.map(function (mat) { return { mat: mat, qty: m[mat] }; });
+  }
+
+  // The recipe to CRAFT an item: [{mat, qty}], or null if it can't be crafted
+  // (Legendary rarity, raw salvage, or currency).
+  PC.itemRecipe = function (item) {
+    if (!item || item.category === "Salvage") return null;
+    if (item.rarity === "Legendary") return null;
+    if (_nonCraft[item.name]) return null;
+    var tier = _tier(item.rarity);
+    var out = [];
+    if (item.category === "Weapon") {
+      var m = _wmat[item.weaponType] || ["Scrap Metal", "Hardwood", "Pristine Alloy"];
+      out.push({ mat: m[0], qty: _bulk(item.weight) + (tier >= 2 ? 1 : 0) + (tier >= 3 ? 1 : 0) });
+      out.push({ mat: m[1], qty: (Number(item.weight) >= 8 ? 2 : 1) });
+      if (tier >= 1) out.push({ mat: m[2], qty: (tier >= 3 ? 2 : 1) });
+    } else if (item.category === "Armor") {
+      var a = _amat[item.armorClass] || _amat.Light;
+      out.push({ mat: a[0], qty: _bulk(item.weight) + (tier >= 2 ? 1 : 0) + (tier >= 3 ? 1 : 0) });
+      out.push({ mat: a[1], qty: (Number(item.weight) >= 12 ? 2 : 1) });
+      if (item.grants) out.push({ mat: "Circuitry", qty: 1 }); // powered / techy armor
+      if (tier >= 1) out.push({ mat: a[2], qty: (tier >= 3 ? 2 : 1) });
+    } else {
+      var mats = _override[item.name] || _catDefault[item.category] || ["Cloth"];
+      mats.forEach(function (mm) { out.push({ mat: mm, qty: 1 }); });
+    }
+    return _merge(out);
+  };
+  // What you RECOVER by breaking an item down: Basic mats ≈ half (min 1), Exotic mats floor(½)
+  // (rare cores are consumed in the teardown). null if the item isn't craftable.
+  PC.itemSalvageYield = function (item) {
+    var r = PC.itemRecipe(item);
+    if (!r) return null;
+    return _merge(r.map(function (c) {
+      var q = PC.SALVAGE_TIER[c.mat] === "Exotic" ? Math.floor(c.qty / 2) : Math.max(1, Math.ceil(c.qty / 2));
+      return { mat: c.mat, qty: q };
+    }));
+  };
+  // Advisory crafting skill for an item (from its recipe's primary material), or null.
+  PC.craftSkillFor = function (item) {
+    var r = PC.itemRecipe(item);
+    return (r && r.length) ? (_craftSkill[r[0].mat] || null) : null;
+  };
 })();
