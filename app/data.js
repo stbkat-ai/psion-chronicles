@@ -26,6 +26,12 @@ PC.CHAKRAS = {
   INT: { name: "Crown",     full: "Crown",        theme: "Knowledge, logic, higher mind",     color: "#a855f7", order: 0 },
 };
 
+/* The hidden 7th chakra. It stays fully concealed until Soul Level 15, then awakens at the
+   center of the chart (between Throat and Core) — the seat of the Otherkin "Soul Creature".
+   It is NOT bound to an attribute, so it has no 4-hit track yet; its mechanics arrive with the
+   Otherkin system. Green, its traditional color. */
+PC.HEART_CHAKRA = { name: "Heart", full: "Heart", theme: "The Soul Creature within", color: "#46c46e", unlockLevel: 15, system: "Otherkin" };
+
 /* --- The 18 Kinetics (3 per attribute: Tank / Controller / Healer) ------- */
 PC.KINETICS = [
   { name: "Robukinesis",   attr: "STR", role: "Tank",       domain: "Raw Ki, life force, martial power" },

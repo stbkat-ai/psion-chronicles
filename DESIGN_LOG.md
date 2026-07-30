@@ -304,6 +304,28 @@ replaced with `.chakra-figure`/`.chakra-legend` styles that drive color via the 
 
 ---
 
+### 20. The hidden 7th chakra — Heart, awakens at Soul Level 15 (Otherkin)
+**Decision.** Added a **seventh chakra, Heart** (green), that is **fully hidden until Soul Level 15** and then
+**awakens** at the *center* of the chakra chart (between Throat and Core). It is the in-app home of the
+**Otherkin / Soul Creature** system (already established as a level-15 unlock, mechanics TBD). Because it is
+**not tied to an attribute**, it has **no 4-hit track** yet — it's a status node (Dormant→Awakened), gently
+pulsing to mark it special, with a short reveal note explaining the Soul Creature and that its powers are
+still to come. The level-up screen's Otherkin hint now points to the Heart chakra on the Chakras tab.
+**Why.** The user wanted a "surprise" seventh chakra tied to Otherkin. We chose **fully hidden until 15**
+(over a visible sealed/mystery node) so the reveal is a genuine surprise at the milestone — nothing hints at
+the center slot beforehand. Keeping it attribute-free and hit-less avoids inventing mechanics before the
+Otherkin system is designed, while still letting players *see* the awakening the moment they hit 15.
+**How.** New `PC.HEART_CHAKRA` in `data.js` (`color`, `unlockLevel: 15`, `system: "Otherkin"`) — separate
+from the six attribute-keyed `PC.CHAKRAS` since it isn't an attribute. In `play.js`, `heartUnlocked()` gates
+it on `rec.level >= 15`; when true, `chakraFigureSVG()` appends a green `.chakra.heart` `<g>` at the chart's
+center and `buildChakraTab()` appends a green Heart legend row (`Otherkin · Soul Creature · Awakened ★`) plus
+a reveal note. Selection reuses the same `chakraSel` var (key `"HEART"`). CSS adds a `heartPulse` halo
+animation and green Heart row/note styling. **Verified**: level 1 shows 6 chakras and no Heart anywhere;
+level 15 shows 7, with the Heart node, row, and note. **Open for later:** design what the Heart chakra/Soul
+Creature actually *does*, then wire its track/controls here.
+
+---
+
 ## Deferred / future ideas
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before

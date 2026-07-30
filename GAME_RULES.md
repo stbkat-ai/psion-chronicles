@@ -167,6 +167,12 @@ Each Kinetic inherits its chakra from its governing attribute (e.g. all STR Kine
 Pyrokinesis, Electrokinesis — are tied to the **Core** chakra). Hitting a chakra therefore weakens both
 that attribute's rolls **and** all its Kinetics.
 
+**The hidden 7th — Heart chakra (Otherkin).** A **seventh** chakra, **Heart** (green), stays fully concealed
+until **Soul Level 15**, when it **awakens** at the *center* of the chart (between Throat and Core). It is
+**not** bound to an attribute and has **no hit-track** — it is the seat of the **Otherkin / Soul Creature**
+system (below), and its powers arrive with that design. In the app it is invisible before 15 and appears as
+an "Awakened" node on the **Chakras** tab once unlocked.
+
 
 | Hits on a chakra | Effect on that attribute's attacks / skills / techniques |
 |---|---|
@@ -225,7 +231,10 @@ that attribute's rolls **and** all its Kinetics.
 ### Otherkin System (unlocks at Soul Level 15)
 - Your **Soul Creature** — a being that has lived in your soul since creation.
 - Examples: **dragon, phoenix, werewolf, vampire, sprite, fairy**, etc.
-- *[Mechanics TBD: what the Soul Creature grants, how it's chosen, how it's used.]*
+- Seated at the **Heart chakra** (the hidden 7th, green): it stays concealed until Soul Level 15, then
+  **awakens** at the center of the chakra chart. The Heart chakra is the Otherkin's in-app home.
+- *[Mechanics TBD: what the Soul Creature grants, how it's chosen, how it's used, and how the Heart chakra
+  is spent/tracked once the system is designed.]*
 
 ---
 

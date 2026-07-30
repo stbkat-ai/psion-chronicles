@@ -428,6 +428,10 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 .chakra-figure .ch-x { fill: var(--danger); font-weight: 800; font-size: 15px; }
 .chakra-figure .chakra.sel .ch-halo { opacity: .55; }
 .chakra-figure .chakra.sel .ch-disc { stroke: #fff; stroke-width: 2.5; }
+/* Heart chakra — awakened Otherkin node, gently pulsing to mark it special */
+.chakra-figure .chakra.heart .ch-disc { stroke: #fff; stroke-opacity: .55; stroke-width: 1.5; }
+.chakra-figure .chakra.heart .ch-halo { animation: heartPulse 2.6s ease-in-out infinite; }
+@keyframes heartPulse { 0%, 100% { opacity: .28; } 50% { opacity: .62; } }
 
 /* Chakras tab — labeled control rows (one per chakra, in its own color) */
 .chakra-legend { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
@@ -449,6 +453,15 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 .chakra-leg.locked .chakra-eff { color: var(--danger); font-weight: 700; }
 .chakra-leg .pips { margin-top: 0; flex: 0 0 auto; }
 .chakra-leg .pip.filled { background: var(--cc); border-color: var(--cc); box-shadow: 0 0 8px var(--cc); }
+/* Heart chakra row + reveal note */
+.chakra-leg.heart { border-color: var(--cc); background: rgba(70, 196, 110, .07); }
+.chakra-leg.heart .chakra-eff { color: var(--cc); font-weight: 700; }
+.chakra-heart-badge { color: var(--cc); font-size: 1.15rem; font-weight: 800; flex: 0 0 auto; }
+.chakra-heart-note {
+  margin-top: 12px; font-size: .85rem; color: var(--text-dim); line-height: 1.55;
+  background: rgba(70, 196, 110, .08); border: 1px solid rgba(70, 196, 110, .32); border-radius: 10px; padding: 11px 13px;
+}
+.chakra-heart-note .heart-hl { color: #46c46e; }
 
 /* inventory */
 .carry-box { margin-bottom: 14px; }

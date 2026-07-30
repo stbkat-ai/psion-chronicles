@@ -107,6 +107,8 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     one color-coded **row per chakra** (name, attribute, current effect, and 4 hit-pips). **Tap** a disc or a
     row to set its hits: 1 = disadvantage, 2 = modifier halved, 3 = modifier removed, 4 = **locked out** (no
     rolls with that attribute until you rest). Short rest heals 1 hit on each hurt chakra; long rest heals 2.
+    A hidden **7th chakra — Heart** (green) stays concealed until **Soul Level 15**, then **awakens** at the
+    center of the chart: the seat of the **Otherkin / Soul Creature** system (powers coming with that design).
   - **⚔ Combat tab** — everything you can do this turn, grouped by action economy: **Actions** (equipped-weapon
     attack/damage/augments, a universal **👊 Unarmed Strike** — d20+STR+prof to hit, 1d4+STR damage — and
     Action techniques), **Bonus Actions**, **Reactions** (a universal **↩ Opportunity Attack** — one melee
@@ -188,7 +190,7 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     big result banner on screen so you never have to scroll to the log; tap or wait to dismiss
 
 ## What's next (ideas)
-- **Level up** — spend Technique Points, add attribute points on odd levels, Otherkin at 15
+- **Level up** — spend Technique Points, add attribute points on odd levels, Otherkin (Heart chakra) awakens at 15
 - **Compendium** — browse all backgrounds, kinetics, skills, weapons, techniques
 - **Inventory & weapons** — carry weight, equipped weapons with attack + damage rolls
 - **Export/import** characters (share with your table), or cloud sync + accounts later

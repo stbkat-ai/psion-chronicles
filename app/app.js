@@ -1271,7 +1271,7 @@
     tr.appendChild(tileEl("Attribute Points", availAttr + " / " + earnedAttr));
     tr.appendChild(tileEl("Combat Skill Points", availCSP + " / " + earnedCSP));
     pts.appendChild(tr);
-    if (level >= 15) pts.appendChild(el("p", "hint", "★ <b>Otherkin unlocked</b> — your Soul Creature awakens (mechanics coming soon)."));
+    if (level >= 15) pts.appendChild(el("p", "hint", "★ <b>Otherkin unlocked</b> — your Soul Creature awakens at the <b>Heart chakra</b> (see the Chakras tab; mechanics coming soon)."));
     wrap.appendChild(pts);
 
     // attribute allocation

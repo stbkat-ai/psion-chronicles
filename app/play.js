@@ -1200,6 +1200,8 @@
   // Chakras run down the body's centerline (crown → root). Each is one attribute's chakra,
   // drawn in its own signature color; hits dim it and, at 4, lock it out.
   function chakraOrder() { return PC.ATTRS.slice().sort((a, b) => PC.CHAKRAS[a].order - PC.CHAKRAS[b].order); }
+  // The hidden Heart chakra reveals itself only once the Soul Creature awakens (Soul Level 15+).
+  function heartUnlocked() { return (rec.level || 0) >= PC.HEART_CHAKRA.unlockLevel; }
 
   // Seated (lotus) silhouette with a colored chakra disc glowing over each spinal point.
   function chakraFigureSVG() {
@@ -1226,6 +1228,17 @@
         (hits >= 4 ? `<text class="ch-x" x="150" y="${cy}" text-anchor="middle" dominant-baseline="central">✕</text>` : "") +
         `</g>`;
     });
+    // The awakened Heart chakra sits at the chart's center (mid-chest), between Throat and Core.
+    if (heartUnlocked()) {
+      const h = PC.HEART_CHAKRA;
+      const sel = chakraSel === "HEART" ? " sel" : "";
+      dots +=
+        `<g class="chakra heart awakened${sel}" data-attr="HEART" style="--cc:${h.color}">` +
+        `<circle class="ch-halo" cx="150" cy="99" r="20"/>` +
+        `<circle class="ch-disc" cx="150" cy="99" r="13"/>` +
+        `<circle class="ch-core" cx="150" cy="99" r="5"/>` +
+        `</g>`;
+    }
     return `<svg class="chakra-figure" viewBox="0 0 300 268" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Chakras — tap one">${body}${dots}</svg>`;
   }
 
@@ -1266,7 +1279,28 @@
       row.appendChild(info); row.appendChild(pips);
       list.appendChild(row);
     });
+    // The Heart chakra joins the list only once it has awakened (Soul Level 15+).
+    if (heartUnlocked()) {
+      const h = PC.HEART_CHAKRA;
+      const row = el("div", "chakra-leg heart" + (chakraSel === "HEART" ? " sel" : ""));
+      row.style.setProperty("--cc", h.color);
+      const info = el("div", "chakra-leg-info");
+      info.innerHTML =
+        `<span class="chakra-swatch"></span>` +
+        `<span class="chakra-nm">${h.name}</span>` +
+        `<span class="chakra-at">Otherkin · Soul Creature</span>` +
+        `<span class="chakra-eff">Awakened</span>`;
+      info.onclick = () => { chakraSel = chakraSel === "HEART" ? null : "HEART"; refresh(); };
+      row.appendChild(info);
+      row.appendChild(el("div", "chakra-heart-badge", "★"));
+      list.appendChild(row);
+    }
     p.appendChild(list);
+    // Reveal note — explains the newly awakened Heart chakra and that its powers are still to come.
+    if (heartUnlocked()) {
+      p.appendChild(el("div", "chakra-heart-note",
+        `<b class="heart-hl">♥ The Heart chakra has awakened.</b> At Soul Level 15 your <b>Soul Creature</b> stirs at the center of your chakras — the <b>Otherkin</b> that has lived in your soul since creation. Its powers are still being forged; this node will come alive when the Otherkin system is complete.`));
+    }
     root.appendChild(p);
     return root;
   }
