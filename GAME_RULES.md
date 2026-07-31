@@ -480,13 +480,18 @@ built from — **salvage materials**.
   always lossy — no infinite-material loop.
 - **Downtime only (CONFIRMED Luke).** Crafting and salvaging are **not** combat actions — they cost **no**
   Action / Bonus Action and are done during the party's **downtime**, never mid-fight.
-- **Crafting** consumes the full recipe from your materials and produces the item. It is gated on **both**:
+- **Crafting** consumes the recipe from your materials and produces the item. It needs:
   1. **Components** — you must hold every material (the Craft button disables and lists what you're missing).
-  2. **Skill (CONFIRMED Luke)** — you must be **proficient in the item's craft skill**, one of the existing
-     skills, chosen by the item's primary material: **metal → Laborer's Tools · tech → Technology · crystal →
-     Paranormal · chem/plant → Herbalism · wood/hide/cloth → Nature Tools**. The Craft button shows the skill
-     with ✓ (proficient) or 🔒 (locked) and disables if you lack it. *(Salvaging needs no skill — anyone can
-     break gear down.)* *[Open: rarity-based DCs / a crafting check, rather than a flat proficiency gate.]*
+  2. **A craft skill CHECK (CONFIRMED Luke — a check, *not* a proficiency lock).** Crafting rolls
+     **d20 + the craft skill's modifier** (its attribute mod, chakra-adjusted, **+ proficiency if you have
+     it**) against a **DC set by rarity**: **Common 10 · Uncommon 13 · Rare 16 · Very Rare 20**. **Anyone may
+     attempt** — proficiency and a high attribute just improve the odds; you are never locked out.
+     - **Craft skill by item** (from its primary material): **metal → Laborer's Tools · tech → Technology ·
+       crystal → Paranormal · chem/plant → Herbalism · wood/hide/cloth → Nature Tools**.
+     - **On success:** components are spent and the item is made. **On failure:** the check is logged and your
+       **materials are kept** (the GM paces how many attempts a downtime allows). *[Open: whether a failed
+       craft should instead waste some materials.]*
+  - *(Salvaging needs no check — anyone can break gear down.)*
 - **Custom items** (crafting something not in the catalog) are a **planned** extension — the recipe engine
   already works off generic item fields, so it will carry over.
 

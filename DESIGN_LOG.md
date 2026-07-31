@@ -427,6 +427,31 @@ rarity-based crafting DCs / an actual check instead of a flat proficiency gate; 
 
 ---
 
+### 25. Crafting is a skill CHECK, not a proficiency lock (supersedes #24's gate)
+**Decision.** Per the user — "it should absolutely be a skill check, not locked behind proficiencies" — crafting
+no longer requires proficiency. **Anyone may attempt** any non-legendary item they have the components for;
+crafting **rolls d20 + the craft-skill modifier** (the skill's attribute mod, chakra-adjusted, **plus**
+proficiency if the character has it) vs a **rarity DC: Common 10 · Uncommon 13 · Rare 16 · Very Rare 20**.
+**Success** spends the components and makes the item; **failure** logs the roll and **keeps the materials**
+(non-destructive default; GM paces attempts). The craft-skill→item mapping from #23/#24 is unchanged — it now
+just picks *which* skill you roll, not a lock. Salvaging still needs no check.
+**Why.** #24 had made the craft skill a hard proficiency gate; the user wants the uncertainty/roll of a real
+check, with proficiency as a bonus rather than a wall. Kept failure non-destructive (don't delete a player's
+materials on one unlucky d20) and flagged "waste materials on failure" as an option.
+**How.** `play.js`: `craftDC(item)` (rarity→DC) and `craftCheckInfo(item)` (skill, attribute, chakra-adjusted
+modifier + proficiency bonus, DC). `craftItem()` now rolls `PC.rollCheck(mod, mode)` (disadvantage only from
+chakra/flaw on the attribute), compares to the DC, and branches success/fail — `announce()`ing the roll either
+way. The catalog Craft button is enabled **whenever components are present** (no skill lock); its line/tooltip
+show `🎲 <skill> DC <n>` and a `✓` if you happen to be proficient; the item detail shows the full
+`Craft check: <skill> (d20±m) vs DC n`. Hints reworded to "skill check (DC by rarity)". Removed the
+`hasCraftSkill` disable and the `.cat-craft-skill.ok/.no` split. **Verified in-browser**: a non-proficient
+character's Plasma weapons (Technology) are now craftable (button enabled, `🎲 Technology DC 10`); crafting a
+Combat Knife over 12 attempts gave 11 successes / 1 fail, spending 1× Scrap Metal only on success and keeping
+materials on the fail, with each roll announced (e.g. "Laborer's Tools check d20+4 = 24 vs DC 10 ✓").
+**Open:** optional material-loss-on-failure; custom-item crafting.
+
+---
+
 ## Deferred / future ideas
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before

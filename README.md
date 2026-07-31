@@ -151,10 +151,13 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     **🔨 crafted** from **salvage materials** (14 tiered mats: Scrap Metal, Circuitry, Focus Crystal, … + rarer
     exotics like Pristine Alloy). Each item's detail shows what it's **made of**, its **craft skill**, and what
     **salvaging** returns; **♻ Salvage** an item to break it into materials, and **Craft** any catalog item
-    once you hold its components **and are proficient in its craft skill** (shown ✓/🔒 — metal → Laborer's
-    Tools, tech → Technology, crystal → Paranormal, chem/plant → Herbalism, wood/hide/cloth → Nature Tools).
-    Your materials live in a **Salvage Materials** panel on the Inventory tab. Legendary items can't be
-    crafted; salvaging is deliberately lossy (no infinite loop). *(Custom-item crafting is planned next.)*
+    once you hold its components. Crafting rolls a **skill check** — `d20 + craft-skill modifier` vs a **DC by
+    rarity** (Common 10 · Uncommon 13 · Rare 16 · Very Rare 20). **Anyone can attempt**; proficiency and a good
+    attribute just improve the odds (craft skill by item: metal → Laborer's Tools, tech → Technology, crystal →
+    Paranormal, chem/plant → Herbalism, wood/hide/cloth → Nature Tools). Success spends the materials and makes
+    the item; **failure keeps your materials**. Your materials live in a **Salvage Materials** panel on the
+    Inventory tab. Legendary items can't be crafted; salvaging is deliberately lossy (no infinite loop).
+    *(Custom-item crafting is planned next.)*
   - **Sheet tab** — the core overview:
   - **Body · Mind · Soul pools** — shown side by side as bold colored **current/max** numbers
     (Body/HP in **red**, Mind/KP in **blue**, Soul in **cyan**), pen-and-paper style. Soul shows your
