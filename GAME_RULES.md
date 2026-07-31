@@ -478,11 +478,15 @@ built from — **salvage materials**.
 - **Salvaging** an item breaks **one** unit down into materials: you recover about **half** of each Basic
   component (min 1), and Exotic cores are **consumed** in the teardown (floor of half). So craft→salvage is
   always lossy — no infinite-material loop.
-- **Crafting** consumes the full recipe from your materials and produces the item. In the app it's gated on
-  **having the components** (the Craft button disables and lists what you're missing). The **crafting skill**
-  is shown as advisory (derived from the primary material: metal → Laborer's Tools, tech → Technology, crystal
-  → Paranormal, chem/plant → Herbalism, wood/hide/cloth → Nature Tools) — *[Open: whether to hard-gate on
-  skill proficiency and set DCs by rarity; and using Craft/Salvage does not yet cost an action.]*
+- **Downtime only (CONFIRMED Luke).** Crafting and salvaging are **not** combat actions — they cost **no**
+  Action / Bonus Action and are done during the party's **downtime**, never mid-fight.
+- **Crafting** consumes the full recipe from your materials and produces the item. It is gated on **both**:
+  1. **Components** — you must hold every material (the Craft button disables and lists what you're missing).
+  2. **Skill (CONFIRMED Luke)** — you must be **proficient in the item's craft skill**, one of the existing
+     skills, chosen by the item's primary material: **metal → Laborer's Tools · tech → Technology · crystal →
+     Paranormal · chem/plant → Herbalism · wood/hide/cloth → Nature Tools**. The Craft button shows the skill
+     with ✓ (proficient) or 🔒 (locked) and disables if you lack it. *(Salvaging needs no skill — anyone can
+     break gear down.)* *[Open: rarity-based DCs / a crafting check, rather than a flat proficiency gate.]*
 - **Custom items** (crafting something not in the catalog) are a **planned** extension — the recipe engine
   already works off generic item fields, so it will carry over.
 

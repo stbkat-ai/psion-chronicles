@@ -521,6 +521,11 @@
     }
   }
   function recipeOf(item) { return window.PC.itemRecipe ? PC.itemRecipe(item) : null; }
+  // Regular skill proficiency (background-granted or chosen at creation), mirroring rollSkill().
+  function isSkillProficient(name) { return bg().skills.includes(name) || (rec.chosenSkills || []).includes(name); }
+  // The Skill required to craft an item (from its recipe's primary material), or null.
+  function craftSkillOf(item) { return window.PC.craftSkillFor ? PC.craftSkillFor(item) : null; }
+  function hasCraftSkill(item) { const s = craftSkillOf(item); return !s || isSkillProficient(s); }
   // Materials the character still lacks to craft `item`, as ["2× Scrap Metal", …] (empty = can craft).
   function missingComponents(item) {
     const r = recipeOf(item); if (!r) return null;
@@ -530,6 +535,8 @@
   function craftItem(item) {
     const r = recipeOf(item);
     if (!r) { App.toast("This can't be crafted."); return; }
+    const skill = craftSkillOf(item);
+    if (skill && !isSkillProficient(skill)) { App.toast(`Crafting this needs ${skill} proficiency.`); return; }
     const miss = missingComponents(item);
     if (miss.length) { App.toast(`Missing: ${miss.join(", ")}.`); return; }
     r.forEach((c) => spendMaterial(c.mat, c.qty));
@@ -1031,12 +1038,15 @@
       // Consumables show what Use does (the mechanical note), so the effect is clear up front.
       if (it.category === "Consumable" && it.note) detail.appendChild(el("div", "inv-skill", `⚕ <b>Use:</b> ${it.note}`));
 
-      // Crafting: what it's made of + what salvaging returns (for craftable, non-material items).
+      // Crafting: what it's made of, the required skill, and what salvaging returns (downtime activity).
       const recipe = it.category !== "Salvage" ? recipeOf(it) : null;
       if (recipe) {
         detail.appendChild(el("div", "inv-skill", `🔨 <b>Made of:</b> ${fmtMats(recipe)}`));
+        const cskill = craftSkillOf(it);
+        if (cskill) detail.appendChild(el("div", "inv-skill",
+          `🔧 <b>Craft skill:</b> ${cskill} ` + (isSkillProficient(cskill) ? '<span class="craft-ok">✓ proficient</span>' : '<span class="craft-no">🔒 not proficient</span>')));
         const yld = PC.itemSalvageYield(it);
-        if (yld && yld.length) detail.appendChild(el("div", "inv-skill", `♻ <b>Salvage yields:</b> ${fmtMats(yld)}`));
+        if (yld && yld.length) detail.appendChild(el("div", "inv-skill", `♻ <b>Salvage yields:</b> ${fmtMats(yld)} <span class="craft-dt">· downtime</span>`));
       } else if (it.category !== "Salvage" && it.rarity === "Legendary") {
         detail.appendChild(el("div", "inv-skill", "🔨 <b>Legendary</b> — too intricate to craft or salvage."));
       }
@@ -1078,7 +1088,7 @@
       // Salvage: break one unit down into its materials (craftable, non-material items).
       if (it.category !== "Salvage" && recipeOf(it)) {
         const salv = el("button", "btn small ghost", "♻ Salvage");
-        salv.title = "Break one down into salvage materials";
+        salv.title = "Downtime: break one down into salvage materials";
         salv.onclick = () => salvageItem(idx);
         actions.appendChild(salv);
       }
@@ -1525,7 +1535,7 @@
     headRow.appendChild(cw);
     panel.appendChild(headRow);
 
-    panel.appendChild(el("p", "hint", "Search the full game catalog and tap <b>Add</b> to put an item in your inventory. Weapons arrive attack-ready (type + damage set)."));
+    panel.appendChild(el("p", "hint", "Search the full game catalog. <b>Add</b> drops an item straight in (GM/free); <b>🔨 Craft</b> builds it from your salvage — a <b>downtime</b> activity that needs the components and the listed craft-skill proficiency. Weapons arrive attack-ready (type + damage set)."));
 
     const searchRow = el("div", "inv-form");
     const search = el("input"); search.type = "text"; search.placeholder = "Search items (e.g. rifle, staff, stimpak)…"; search.value = invSearchQ; search.className = "inv-name";
@@ -1560,18 +1570,22 @@
         const rarityTag = (it.category === "Weapon" || it.category === "Armor") && it.rarity
           ? `<span class="rarity-tag rarity-${it.rarity.toLowerCase().replace(/\s+/g, "-")}">${it.rarity}</span>` : "";
         const descLine = it.desc ? `<span class="cat-desc">${it.desc}</span>` : "";
-        // Crafting line: recipe (or Legendary / raw-material note).
+        // Crafting line: recipe + required skill (or Legendary / raw-material note).
         const recipe = it.category !== "Salvage" ? recipeOf(it) : null;
         let craftLine = "";
-        if (recipe) craftLine = `<span class="cat-craft">🔨 ${fmtMats(recipe)}</span>`;
-        else if (it.category !== "Salvage" && it.rarity === "Legendary") craftLine = `<span class="cat-craft leg">🔨 Legendary — cannot be crafted</span>`;
+        if (recipe) {
+          const cskill = craftSkillOf(it);
+          const skillTag = cskill ? ` · <span class="cat-craft-skill ${hasCraftSkill(it) ? "ok" : "no"}">${hasCraftSkill(it) ? "✓" : "🔒"} ${cskill}</span>` : "";
+          craftLine = `<span class="cat-craft">🔨 ${fmtMats(recipe)}${skillTag}</span>`;
+        } else if (it.category !== "Salvage" && it.rarity === "Legendary") craftLine = `<span class="cat-craft leg">🔨 Legendary — cannot be crafted</span>`;
         row.innerHTML = `<div class="cat-info"><span class="cat-name">${it.name}${rarityTag}</span><span class="cat-meta">${meta}</span>${descLine}${craftLine}</div><span class="cat-wt">${it.weight} lb</span>`;
         const btns = el("div", "cat-btns");
         if (recipe) {
           const miss = missingComponents(it);
+          const skillOK = hasCraftSkill(it);
           const craft = el("button", "btn small", "🔨 Craft");
-          craft.disabled = miss.length > 0;
-          craft.title = miss.length ? `Need ${miss.join(", ")}` : `Craft using ${fmtMats(recipe)}`;
+          craft.disabled = miss.length > 0 || !skillOK;
+          craft.title = !skillOK ? `Requires ${craftSkillOf(it)} proficiency` : (miss.length ? `Need ${miss.join(", ")}` : `Craft using ${fmtMats(recipe)}`);
           craft.onclick = () => craftItem(it);
           btns.appendChild(craft);
         }
@@ -1646,7 +1660,7 @@
     const mats = ownedMaterials();
     const mp = el("div", "panel");
     mp.appendChild(el("div", "section-label", "Salvage Materials"));
-    mp.appendChild(el("p", "hint", "Break gear down (♻ <b>Salvage</b> on an item) to earn materials, then <b>🔨 Craft</b> any non-legendary item from the catalog once you hold its components."));
+    mp.appendChild(el("p", "hint", "A <b>downtime</b> activity (not a combat action). Break gear down (♻ <b>Salvage</b> on an item) to earn materials, then <b>🔨 Craft</b> any non-legendary item from the catalog once you hold its components <b>and are proficient in its craft skill</b>."));
     if (!mats.length) mp.appendChild(el("div", "muted", "No materials yet. Salvage an item, or Add some from the catalog (Salvage category)."));
     else {
       const grid = el("div", "salvage-grid");

@@ -147,12 +147,14 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     **Consumables actually work** — Use a Health Draught, KP Elixir, Stimpak, Vital Tonic, Chakra Salve,
     or Panacea and it rolls the effect and updates your HP/KP, chakras, and limbs on the spot (capped at
     your max), then logs it. A **← Inventory** button returns.
-  - **Crafting & Salvage** — every non-legendary item can be **🔨 crafted** from **salvage materials** (14
-    tiered mats: Scrap Metal, Circuitry, Focus Crystal, … + rarer exotics like Pristine Alloy). Each item's
-    detail shows what it's **made of** and what **salvaging** returns; **♻ Salvage** an item to break it into
-    materials, and **Craft** any catalog item once you hold its components (the button lists what you're
-    missing). Your materials live in a **Salvage Materials** panel on the Inventory tab. Legendary items can't
-    be crafted; salvaging is deliberately lossy (no infinite loop). *(Custom-item crafting is planned next.)*
+  - **Crafting & Salvage** (a **downtime** activity — no combat action) — every non-legendary item can be
+    **🔨 crafted** from **salvage materials** (14 tiered mats: Scrap Metal, Circuitry, Focus Crystal, … + rarer
+    exotics like Pristine Alloy). Each item's detail shows what it's **made of**, its **craft skill**, and what
+    **salvaging** returns; **♻ Salvage** an item to break it into materials, and **Craft** any catalog item
+    once you hold its components **and are proficient in its craft skill** (shown ✓/🔒 — metal → Laborer's
+    Tools, tech → Technology, crystal → Paranormal, chem/plant → Herbalism, wood/hide/cloth → Nature Tools).
+    Your materials live in a **Salvage Materials** panel on the Inventory tab. Legendary items can't be
+    crafted; salvaging is deliberately lossy (no infinite loop). *(Custom-item crafting is planned next.)*
   - **Sheet tab** — the core overview:
   - **Body · Mind · Soul pools** — shown side by side as bold colored **current/max** numbers
     (Body/HP in **red**, Mind/KP in **blue**, Soul in **cyan**), pen-and-paper style. Soul shows your

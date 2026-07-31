@@ -404,6 +404,29 @@ and custom-item crafting (the promised next step).
 
 ---
 
+### 24. Crafting is downtime + skill-gated (follows #23)
+**Decision.** Two rulings from the user on the crafting system: (1) crafting and salvaging are **downtime**
+activities — they cost **no** Action/Bonus Action and can't be done in combat; (2) the **craft skill is
+required**, wired to the **existing skills list** per item. So crafting is now gated on **both components and
+proficiency in the item's craft skill**; the per-item skill is derived from the recipe's primary material
+(metal → Laborer's Tools, tech → Technology, crystal → Paranormal, chem/plant → Herbalism, wood/hide/cloth →
+Nature Tools). Salvaging stays unskilled (anyone can break gear down). No action-economy cost was ever wired
+in, so "downtime" needed no mechanical change — just made explicit in the UI copy.
+**Why.** The user: crafting/salvage "should not be an action or bonus action… it's for downtime," and the
+required skill "would be wired into the existing skills list depending on the item." The material-based skill
+map from #23 already provided the per-item skill; this promotes it from advisory to a hard gate.
+**How.** `play.js`: added `isSkillProficient(name)` (mirrors `rollSkill`: background-granted or chosen skills),
+`craftSkillOf()`/`hasCraftSkill()`; `craftItem()` now blocks if not proficient; the catalog Craft button
+disables on missing components **or** missing skill and its recipe line shows `✓/🔒 <skill>`; the item detail
+shows a **Craft skill** line with proficient/locked status; hints now say "downtime" and note the skill
+requirement; the Salvage button tooltip reads "Downtime." CSS for `.cat-craft-skill.ok/.no`,
+`.craft-ok/.craft-no/.craft-dt`. **Verified in-browser**: a Laborer's-Tools-proficient character could craft a
+Warmaul & rifles (✓, enabled) but not Plasma (Technology 🔒), potions (Herbalism 🔒), or staves (Paranormal
+🔒) — all disabled with the reason; crafting the Warmaul consumed materials and produced the item. **Open:**
+rarity-based crafting DCs / an actual check instead of a flat proficiency gate; custom-item crafting.
+
+---
+
 ## Deferred / future ideas
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before
