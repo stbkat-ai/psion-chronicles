@@ -31,7 +31,7 @@
   let compOpen = false;    // whether the "Craft Components" panel is expanded
   // Live state of the custom-item builder form (survives re-renders so type changes don't lose input).
   // slotGrade maps a component part → the grade (1–4) chosen for that slot on a weapon/armor build.
-  let craftForm = { name: "", type: "Weapon", rarity: "Common", weight: "", desc: "", weaponType: "", hands: "1", armorClass: "Light", hp: "", kp: "", skill: "", slotGrade: {} };
+  let craftForm = { name: "", type: "Weapon", rarity: "Common", weight: "", desc: "", weaponType: "", subtype: "", hands: "1", armorClass: "Light", hp: "", kp: "", skill: "", slotGrade: {} };
   const refresh = () => App.render();
 
   const bg = () => PC.background(rec.background);
@@ -1771,7 +1771,7 @@
     const miss = missingComponents(item);
     const card = el("div", "recipe-card");
     let meta = item.category + (item.rarity && item.rarity !== "Common" ? ` · ${item.rarity}` : "");
-    if (item.category === "Weapon" && item.weaponType) meta += ` · ${item.weaponType}${item.damage ? " · " + item.damage : ""}`;
+    if (item.category === "Weapon" && item.weaponType) meta += ` · ${item.weaponType}${item.subtype ? " · " + item.subtype : ""}${item.damage ? " · " + item.damage : ""}`;
     else if (item.category === "Armor") meta += ` · ${item.armorClass || "Light"}${item.dsBonus != null ? " · +" + item.dsBonus + " DS" : ""}`;
     const head = el("div", "recipe-head");
     head.innerHTML = `<span class="recipe-name">${item.name}${item.custom ? ' <span class="recipe-custom">custom</span>' : ""}</span><span class="recipe-meta">${meta}</span>`;
@@ -2038,8 +2038,11 @@
       base.rarity = PC.qualityRarity(q);
       base.recipe = slots.map((p, i) => ({ mat: PC.componentName(p, grades[i]), qty: 1, component: true, part: p, quality: grades[i] }));
       const tmpl = f.type === "Weapon" ? PC.weaponTemplate(f.weaponType) : PC.armorTemplate(f.armorClass);
-      if (f.type === "Weapon") { base.weaponType = f.weaponType; base.damage = PC.templateDamage(f.weaponType, q); base.hands = tmpl.hands || 1; }
-      else { base.armorClass = f.armorClass; base.dsBonus = PC.templateDS(f.armorClass, q); }
+      if (f.type === "Weapon") {
+        base.weaponType = f.weaponType; base.hands = tmpl.hands || 1;
+        if (f.subtype) { base.subtype = f.subtype; base.damage = PC.subtypeDamage(PC.subtypeDie(f.weaponType, f.subtype), q); }
+        else base.damage = PC.templateDamage(f.weaponType, q);
+      } else { base.armorClass = f.armorClass; base.dsBonus = PC.templateDS(f.armorClass, q); }
       if (tmpl.weight) base.weight = Math.max(tmpl.weight[0], Math.min(tmpl.weight[1], base.weight || tmpl.weight[0]));
     } else if (f.type === "Consumable") {
       base.rarity = f.rarity;
@@ -2060,13 +2063,14 @@
     const f = craftForm;
     if (!(f.name || "").trim()) { App.toast("Name your custom item."); return; }
     if ((f.type === "Weapon" || f.type === "Armor") && !formSlots(f).length) { App.toast(`Pick a ${f.type === "Weapon" ? "weapon type" : "armor class"} first.`); return; }
+    if (f.type === "Weapon" && !f.subtype) { App.toast("Pick a subtype first."); return; }
     const item = customItemFromForm();
     if (!recipeOf(item)) { App.toast("This can't be made a recipe (check the type)."); return; }
     customItems().push(item);
     const statBit = item.category === "Weapon" ? ` (${item.damage})` : item.category === "Armor" ? ` (+${item.dsBonus} DS)` : "";
     logLine(`✎ Designed custom ${item.rarity} ${item.category.toLowerCase()}: ${item.name}${statBit} — needs ${fmtMats(recipeOf(item))}.`);
     App.toast(`Custom recipe saved: ${item.name}. Craft it under Known Recipes.`);
-    craftForm = { name: "", type: f.type, rarity: "Common", weight: "", desc: "", weaponType: "", hands: "1", armorClass: "Light", hp: "", kp: "", skill: "", slotGrade: {} };
+    craftForm = { name: "", type: f.type, rarity: "Common", weight: "", desc: "", weaponType: "", subtype: "", hands: "1", armorClass: "Light", hp: "", kp: "", skill: "", slotGrade: {} };
     save(); refresh();
   }
   function forgetCustom(item) {
@@ -2107,8 +2111,16 @@
       const wtypeS = el("select");
       wtypeS.innerHTML = '<option value="">— choose weapon type —</option>' +
         Object.keys(PC.WEAPON_TEMPLATES).map((n) => `<option value="${n}" ${f.weaponType === n ? "selected" : ""}>${n} (${PC.WEAPON_TEMPLATES[n].attr})</option>`).join("");
-      wtypeS.onchange = () => { f.weaponType = wtypeS.value; f.slotGrade = {}; refresh(); };
+      wtypeS.onchange = () => { f.weaponType = wtypeS.value; f.subtype = ""; f.slotGrade = {}; refresh(); };
       form.appendChild(labeled("Weapon Type", wtypeS));
+      // Third level: the subtype (only after a weapon type is chosen).
+      if (f.weaponType) {
+        const subS = el("select");
+        subS.innerHTML = '<option value="">— choose subtype —</option>' +
+          PC.weaponSubtypes(f.weaponType).map((s) => `<option value="${s.name}" ${f.subtype === s.name ? "selected" : ""}>${s.name} (base ${s.die})</option>`).join("");
+        subS.onchange = () => { f.subtype = subS.value; refresh(); };
+        form.appendChild(labeled("Subtype", subS));
+      }
     } else if (f.type === "Armor") {
       const clsS = el("select");
       clsS.innerHTML = '<option value="">— choose armor type —</option>' + ["Light", "Medium", "Heavy"].map((c) => `<option value="${c}" ${f.armorClass === c ? "selected" : ""}>${c} armor</option>`).join("");
@@ -2150,8 +2162,12 @@
     if (isComplex && slots.length) {
       const tmpl = f.type === "Weapon" ? PC.weaponTemplate(f.weaponType) : PC.armorTemplate(f.armorClass);
       const rules = el("div", "tmpl-rules");
-      const capBits = [1, 2, 3, 4].map((q) => `${PC.qualityName(q)} ${f.type === "Weapon" ? PC.templateDamage(f.weaponType, q) : "+" + PC.templateDS(f.armorClass, q) + " DS"}`).join(" · ");
-      rules.innerHTML = `<b>Template:</b> ${f.type === "Weapon" ? f.weaponType + " · " + tmpl.attr + " · " + (tmpl.hands === 2 ? "two-handed" : "one-handed") : f.armorClass + " armor"} · weight ${tmpl.weight[0]}–${tmpl.weight[1]} lb<br><b>By grade:</b> ${capBits}`;
+      const subDie = f.type === "Weapon" && f.subtype ? PC.subtypeDie(f.weaponType, f.subtype) : null;
+      const capBits = [1, 2, 3, 4].map((q) => `${PC.qualityName(q)} ${f.type === "Weapon" ? (subDie ? PC.subtypeDamage(subDie, q) : PC.templateDamage(f.weaponType, q)) : "+" + PC.templateDS(f.armorClass, q) + " DS"}`).join(" · ");
+      const head = f.type === "Weapon"
+        ? `${f.weaponType}${f.subtype ? " · " + f.subtype : ""} · ${tmpl.attr} · ${tmpl.hands === 2 ? "two-handed" : "one-handed"}`
+        : `${f.armorClass} armor`;
+      rules.innerHTML = `<b>Template:</b> ${head} · weight ${tmpl.weight[0]}–${tmpl.weight[1]} lb<br><b>By grade:</b> ${capBits}${f.type === "Weapon" && !f.subtype ? ' <span class="craft-dt">— pick a subtype above for its damage</span>' : ""}`;
       panel.appendChild(rules);
       const slotWrap = el("div", "slot-grid");
       slots.forEach((part) => {
@@ -2178,7 +2194,7 @@
       if (!r || !r.length) { preview.innerHTML = '<span class="craft-dt">Choose a type (and subtype) to see the recipe.</span>'; return; }
       const ci = craftCheckInfo(item);
       let statLine = "";
-      if (item.category === "Weapon") statLine = `<b>${PC.qualityName(item._quality)} ${item.rarity}</b> · ${item.damage} · ${item.hands === 2 ? "two-handed" : "one-handed"} · `;
+      if (item.category === "Weapon") statLine = `<b>${PC.qualityName(item._quality)} ${item.rarity}</b> · ${item.subtype ? item.subtype + " · " : ""}${item.damage || "?"} · ${item.hands === 2 ? "two-handed" : "one-handed"} · `;
       else if (item.category === "Armor") statLine = `<b>${PC.qualityName(item._quality)} ${item.rarity}</b> · +${item.dsBonus} Defense · `;
       preview.innerHTML = `${statLine}<b>Recipe:</b> ${fmtMats(r)} &nbsp;·&nbsp; 🎲 ${ci.name || "?"} d20${PC.fmtMod(ci.mod)} vs DC ${ci.dc}`;
     }

@@ -32,9 +32,10 @@ in the browser's `localStorage` (key `psion_chronicles_characters`), so saved da
 - `items.js` — the weapon/item catalog (~283 gear items + 64 component entries; skill tool kits via `it.skill`;
   functioning consumables via `it.effect`). **Crafting is two-tier:** raw `PC.SALVAGE` (14 materials) →
   **components** (`PC.COMPONENTS`, 16 parts × 4 quality grades Crude→Masterwork) → weapons & armor. Templates
-  (`PC.WEAPON_TEMPLATES`/`PC.ARMOR_TEMPLATES`) set each subtype's attribute, component slots, weight band, and
-  damage/DS-by-grade **hard caps**; an assembled item's quality = **average of its parts' grades**
-  (`PC.qualityFromGrades`). `PC.itemRecipe()` / `PC.itemSalvageYield()` / `PC.componentRecipe()` flow through
+  (`PC.WEAPON_TEMPLATES`/`PC.ARMOR_TEMPLATES`) set each type's attribute, component slots, weight band, and hands;
+  weapons also break into `PC.WEAPON_SUBTYPES` (58, from WEAPONS.md), each a base damage die that
+  `PC.subtypeDamage()` steps up `PC.DIE_LADDER` per grade (hard cap). An assembled item's quality = **average of
+  its parts' grades** (`PC.qualityFromGrades`). `PC.itemRecipe()` / `PC.itemSalvageYield()` / `PC.componentRecipe()` flow through
   components; `null` recipe = Legendary/raw/currency.
 - `rules.js` — pure calculation engine (modifiers, pools, derived stats, chakra effects, proficiency,
   kinetic tier-completion proficiency/expertise). No DOM.

@@ -746,6 +746,39 @@ window.PC = window.PC || {};
   };
   PC.weaponTemplate = function (t) { return PC.WEAPON_TEMPLATES[t] || null; };
   PC.armorTemplate = function (c) { return PC.ARMOR_TEMPLATES[c] || null; };
+
+  /* Weapon SUBTYPES — each weapon type breaks down into named subtypes (from WEAPONS.md), each with a
+     base damage die (its Crude/Q1 damage). Higher component grades ladder the die up (see subtypeDamage). */
+  PC.WEAPON_SUBTYPES = {
+    "Heavy Weapons":    [{ name: "Great Hammers", die: "2d6" }, { name: "Great Swords", die: "2d6" }, { name: "Great Axes", die: "1d12" }, { name: "Maces", die: "1d10" }, { name: "Axes", die: "1d8" }],
+    "Fist Weapons":     [{ name: "Knuckles", die: "1d4" }, { name: "Full Fists", die: "1d6" }, { name: "Knuckle Blades", die: "1d6" }],
+    "Archery":          [{ name: "Longbows", die: "1d8" }, { name: "Shortbows", die: "1d6" }, { name: "Slings", die: "1d4" }, { name: "Slingshots", die: "1d4" }],
+    "Light Weapons":    [{ name: "Knives", die: "1d4" }, { name: "Daggers", die: "1d4" }, { name: "Batons", die: "1d6" }, { name: "Short Swords", die: "1d6" }],
+    "Quick Weapons":    [{ name: "Tonfa", die: "1d6" }, { name: "Wrist Blades", die: "1d6" }, { name: "Hand Crossbows", die: "1d6" }, { name: "Blowguns", die: "1d4" }],
+    "Thrown Weapons":   [{ name: "Shuriken", die: "1d4" }, { name: "Throwing Knives", die: "1d4" }, { name: "Darts", die: "1d4" }],
+    "Firearms":         [{ name: "Rifles", die: "1d10" }, { name: "Handguns", die: "1d8" }, { name: "Revolvers", die: "1d10" }],
+    "Explosives":       [{ name: "Grenades", die: "2d6" }, { name: "Mines", die: "2d8" }, { name: "Improvised Explosives", die: "2d6" }],
+    "Volatile Weapons": [{ name: "Flamethrowers", die: "2d6" }, { name: "Rocket Launchers", die: "3d6" }, { name: "Chemical Weapons", die: "1d8" }],
+    "Laser Weapons":    [{ name: "Laser Swords", die: "1d10" }, { name: "Blaster Rifles", die: "1d10" }, { name: "Blaster Pistols", die: "1d8" }],
+    "Plasma Weapons":   [{ name: "Plasma Blades", die: "1d10" }, { name: "Beam Rifles", die: "1d12" }, { name: "Plasma Cannons", die: "3d6" }],
+    "Tech Weapons":     [{ name: "Chain Blades", die: "1d10" }, { name: "Power Weapons", die: "1d10" }, { name: "Rocket Weapons", die: "1d12" }],
+    "Channel Weapons":  [{ name: "Staffs", die: "1d6" }, { name: "Wands", die: "1d8" }, { name: "Amulets", die: "1d6" }],
+    "Living Weapons":   [{ name: "Sentient Plants", die: "1d8" }, { name: "Living Oozes", die: "1d8" }, { name: "Insect Hives", die: "1d6" }],
+    "Ritual Weapons":   [{ name: "Ritual Blades", die: "1d6" }, { name: "Incense Flails", die: "1d8" }],
+    "Finesse Weapons":  [{ name: "Fencing Swords", die: "1d8" }, { name: "Rope Weapons", die: "1d6" }, { name: "Chakrams", die: "1d6" }],
+    "Art Weapons":      [{ name: "Battle Fans", die: "1d6" }, { name: "Hoop Blades", die: "1d6" }, { name: "Nunchucku", die: "1d8" }],
+    "Noise Weapons":    [{ name: "Instrument Weapons", die: "1d8" }, { name: "Percussive Weapons", die: "1d10" }, { name: "Amp Weapons", die: "1d10" }],
+  };
+  // Ascending damage-die ladder — each quality grade steps a subtype's base die one rung up (hard-capped).
+  PC.DIE_LADDER = ["1d4", "1d6", "1d8", "1d10", "1d12", "2d6", "2d8", "2d10", "3d6", "3d8", "4d6"];
+  PC.weaponSubtypes = function (type) { return PC.WEAPON_SUBTYPES[type] || []; };
+  PC.subtypeDie = function (type, name) { var s = (PC.WEAPON_SUBTYPES[type] || []).filter(function (x) { return x.name === name; })[0]; return s ? s.die : null; };
+  // A subtype's base die stepped up by quality: Q1 = base, Q2..Q4 = +1/+2/+3 rungs (clamped to the ladder).
+  PC.subtypeDamage = function (die, q) {
+    var i = PC.DIE_LADDER.indexOf(die);
+    if (i < 0) return die;
+    return PC.DIE_LADDER[Math.min(i + (Math.max(1, Math.min(4, q)) - 1), PC.DIE_LADDER.length - 1)];
+  };
   // The component slots an item is assembled from (null for non-component items).
   PC.itemComponentSlots = function (item) {
     if (!item) return null;

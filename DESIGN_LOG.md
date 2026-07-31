@@ -588,6 +588,28 @@ attribute, e.g. "Heavy Weapons (STR)") or **"Armor Type"** (Light/Medium/Heavy a
 
 ---
 
+### 31. Weapon subtypes — a third builder level with per-subtype damage ladders
+**Decision.** Per the user ("weapons break down into weapon types and each weapon type breaks down into
+subtypes"), the custom weapon flow gained a **third cascade**: **Item Category → Weapon Type → Subtype**. The
+subtypes are the real taxonomy already documented in `WEAPONS.md` (58 across the 18 types — Heavy Weapons →
+Great Hammers / Great Swords / Great Axes / Maces / Axes, Firearms → Rifles / Handguns / Revolvers, etc.), each
+with a **base damage die**. Armor stays two-level (Item Category → Armor Type); the user only asked for weapon
+subtypes.
+**Why.** A single weapon-type template gave one damage table for the whole type, but subtypes have distinct
+dice (an Axe ≠ a Great Hammer). The subtype now carries the base die, so a custom weapon's identity survives
+grade scaling.
+**How.** `items.js`: added `PC.WEAPON_SUBTYPES` (type → [{name, die}], transcribed from WEAPONS.md), a
+`PC.DIE_LADDER` (1d4…4d6), and `PC.subtypeDamage(die, q)` — Q1 = base die, Q2–Q4 step +1/+2/+3 rungs up the
+ladder (clamped = hard cap). `play.js buildCustomBuilder()`: a **Subtype** select renders after a Weapon Type is
+chosen (options tagged with base die); the template rules readout and the item's damage now come from
+`subtypeDamage(subtypeDie, quality)` instead of the flat type table; the custom item stores its `subtype`, shown
+in the recipe card + preview; save requires a subtype. Component slots/attribute/hands/weight still come from
+the weapon-type template. **Verified** (Playwright): Heavy Weapons surfaces the Subtype select with its 5
+subtypes; Axes shows the ladder **Crude 1d8 · Standard 1d10 · Fine 1d12 · Masterwork 2d6**; both slots at Fine →
+**Fine Rare · Axes · 1d12**; no console errors. Cache-buster **v=51**.
+
+---
+
 ## Deferred / future ideas
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before

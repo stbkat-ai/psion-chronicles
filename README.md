@@ -167,11 +167,13 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
       Herbalism, wood/hide/cloth → Nature Tools). **Success** spends the ingredients; **failure wastes half**
       (rounded up). Legendary items can't be crafted; salvaging is deliberately lossy.
     - **Custom items — within the balance rules.** The **Create Custom Item** builder designs a fully playable
-      item. **Weapons & armor** pick a **subtype/class template** (fixed attribute, weight band, and damage/DS
-      **hard-capped by grade**) and a **grade for each component slot**; the item's **quality is the average of
-      those grades**, which sets its rarity and stats. Its recipe is the exact components you chose, and it
-      becomes a **known custom recipe** you can craft and equip. Consumables/tools/misc stay simple (heal/effect
-      or aided skill). A live preview shows the result, recipe, and craft check before you save.
+      item. **Weapons** cascade **Item Category → Weapon Type → Subtype** (Heavy Weapons → Great Hammers / Axes /
+      …); the subtype sets a **base damage die** that each quality grade steps up a hard-capped die ladder.
+      **Armor** cascades **Item Category → Armor Type** (Light/Medium/Heavy). You then pick a **grade for each
+      component slot**; the item's **quality is the average of those grades**, which sets its rarity and stats.
+      Its recipe is the exact components you chose, and it becomes a **known custom recipe** you can craft and
+      equip. Consumables/tools/misc stay simple (heal/effect or aided skill). A live preview shows the result,
+      recipe, and craft check before you save.
   - **Sheet tab** — the core overview:
   - **Body · Mind · Soul pools** — shown side by side as bold colored **current/max** numbers
     (Body/HP in **red**, Mind/KP in **blue**, Soul in **cyan**), pen-and-paper style. Soul shows your

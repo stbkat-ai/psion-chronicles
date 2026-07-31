@@ -520,12 +520,14 @@ built from — **salvage materials**.
   - *(Salvaging needs no check — anyone can break gear down.)*
 - **Custom items (CONFIRMED Luke — shipped, component-based).** The Crafting tab's **✎ Create Custom Item**
   builder designs a fully mechanical item **within the balance rules**:
-  - **Weapons & armor** pick a **subtype/class template**, then a **grade for each component slot**. The
-    builder shows the template's limits (attribute, weight band, damage/DS by grade) and computes the result
-    live: the item's **quality = the average of the chosen slot grades**, which fixes its **rarity** and
-    **hard-capped damage/DS**. Its recipe is the **exact graded components** you chose, so building it consumes
-    those parts. The design is saved as a **known custom recipe** you can craft, salvage, equip, and attack
-    with like any catalog item.
+  - **Weapons** cascade **Item Category → Weapon Type → Subtype** (the same taxonomy as `WEAPONS.md` — e.g.
+    Heavy Weapons → Great Hammers / Great Swords / Great Axes / Maces / Axes), then a **grade for each component
+    slot**. The subtype sets the **base damage die** (its Crude damage); each quality grade steps it **one rung
+    up the die ladder** (1d4→1d6→1d8→1d10→1d12→2d6→2d8→2d10→3d6→3d8→4d6), hard-capped. **Armor** cascades
+    **Item Category → Armor Type** (Light/Medium/Heavy). The item's **quality = the average of the chosen slot
+    grades**, which fixes its **rarity** and its damage/DS. Its recipe is the **exact graded components** you
+    chose, so building it consumes those parts. The design is saved as a **known custom recipe** you can craft,
+    salvage, equip, and attack with like any catalog item.
   - **Consumables / tools / misc** stay simple (name, rarity, weight, and a heal/effect or aided skill), built
     from raw salvage.
 - **Where it lives:** crafting has its own **🔨 Crafting tab** (after Inventory) — raw materials **and
