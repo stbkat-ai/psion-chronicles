@@ -534,6 +534,45 @@ list with the type rows hidden; no console errors. Cache-buster **v=47**.
 
 ---
 
+### 29. Components, templates & quality grades — a two-tier crafting economy
+**Decision.** Per the user, custom-item crafting (and crafting generally) needed **balance rules**, real
+**components** ("triggers, blades, barrels"), and **templates** per item type. Four AskUserQuestion forks
+settled it: **(1) Reach** = all weapons & armor (not just custom), conserving raw cost; **(2) Components** are
+craftable from raw **and** mid-tier salvage **and** findable loot; **(3) Balance** = hard caps, with the
+**materials/components used driving the item's numbers** (better parts → better gear); **(4) Quality rule** =
+the **average** of the parts' grades.
+**The model.**
+- **Quality grades (4):** Crude Q1 · Standard Q2 · Fine Q3 · Masterwork Q4, aligned to Common→Very Rare.
+- **16 components** (`PC.COMPONENTS`): Blade, Bludgeon Head, Haft, Bow Limbs, Barrel, Trigger Assembly, Stock,
+  Emitter Lens, Focus Array, Warhead, Power Core, Living Node, Plating, Armor Weave, Padding, Straps & Fittings.
+  Each is a real catalog item at all 4 grades (64 entries), craftable from raw salvage (the material tier sets
+  the grade — Basic→low, Exotic→Q3/Q4), recovered by salvage, or found.
+- **Templates** (`PC.WEAPON_TEMPLATES` × 18 subtypes, `PC.ARMOR_TEMPLATES` × 3 classes): fixed attribute,
+  component slots, weight band, and a **damage/DS-by-grade table** whose Q4 rung = the subtype's real catalog
+  max (grounded in a scan of the 283-item catalog) — the hard cap.
+- **Assembly:** an item's quality = **average of its slot grades** (`PC.qualityFromGrades`, floor), which sets
+  rarity + damage/DS off the template. Weapons/armor recipes are now **component slots at their rarity grade**;
+  components/consumables/tools/misc stay raw. Salvaging weapons/armor returns the **higher-value half** of their
+  components (edge/core first) at the item's grade; everything else returns raw. All lossy.
+**How.** `items.js`: added the quality/component/template engine and rewrote `itemRecipe`, `itemSalvageYield`,
+`craftSkillFor` to flow through components (a `component:true`/`part`/`quality` tag rides on recipe entries).
+`play.js`: generalized `ownedMaterial`/`addMaterial`/`spendMaterial` to treat **components and salvage
+uniformly** as "ingredients"; added `ownedComponents`, `componentChip`, a **⚙ Craft Components** workbench
+(`craftComponent` — a skill check, each grade a button gated by materials), and reworked the **custom builder**
+so weapons/armor pick a template + a grade per slot with a live quality/rarity/damage preview (`recipeOf` now
+honors a custom item's stored `.recipe`). Components are excluded from the known-recipe list (their own panel)
+and shown on the Crafting tab, not the carried-gear list. `styles.css`: grade-colored chips/buttons, the
+components workbench grid, and the template-rules / slot-grade pickers. **Verified in-browser** (Playwright):
+component craft (raw→part, failure loses half); custom Light Weapon with Fine Blade + Standard Haft →
+**averaged to Standard/Uncommon, 1d6**, saved & shown in the Weapons group, then crafted into inventory
+consuming those parts; salvaging a rifle returned **Crude Barrel + Crude Stock** (valuable parts kept); no
+console errors. Cache-buster **v=48**.
+**Open:** per-instance component quality is coarse (grade only, not sub-tiers); custom **consumable/tool**
+depth is still simple (no component tree — intentionally). Possible polish: let a built item preserve its exact
+mixed-grade parts on rebuild rather than the averaged uniform grade.
+
+---
+
 ## Deferred / future ideas
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before

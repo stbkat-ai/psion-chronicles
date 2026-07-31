@@ -647,6 +647,122 @@ window.PC = window.PC || {};
   });
   PC.isSalvage = function (name) { return !!PC.SALVAGE_TIER[name]; };
 
+  /* =========================================================================
+     COMPONENTS — the mid-tier parts (blades, barrels, triggers, plating…) that
+     complex gear (weapons & armor) is built from. Each component has a QUALITY
+     grade (1–4) set by the materials used to make it. Components can be crafted
+     from raw salvage, recovered by salvaging gear, or found as loot.
+     ========================================================================= */
+  // Quality grades, aligned to item rarity. Legendary stays found-only (uncraftable).
+  PC.QUALITY = [
+    { q: 1, name: "Crude",      rarity: "Common" },
+    { q: 2, name: "Standard",   rarity: "Uncommon" },
+    { q: 3, name: "Fine",       rarity: "Rare" },
+    { q: 4, name: "Masterwork", rarity: "Very Rare" },
+  ];
+  PC.qualityName = function (q) { return (PC.QUALITY[(q || 1) - 1] || PC.QUALITY[0]).name; };
+  PC.qualityRarity = function (q) { return (PC.QUALITY[(q || 1) - 1] || PC.QUALITY[0]).rarity; };
+  PC.rarityQuality = function (r) { return ({ "Common": 1, "Uncommon": 2, "Rare": 3, "Very Rare": 4 })[r] || 1; };
+
+  // Component definitions: part name → role, weight, primary/secondary basic mats, and the exotic
+  // used at the top grades. The primary material also decides the crafting Skill (via _craftSkill).
+  PC.COMPONENTS = [
+    { part: "Blade",            role: "edge",     weight: 1,   mats: ["Scrap Metal"],              exotic: "Pristine Alloy",   desc: "A forged edge — the business end of most melee weapons." },
+    { part: "Bludgeon Head",    role: "edge",     weight: 2,   mats: ["Scrap Metal", "Hardwood"],  exotic: "Pristine Alloy",   desc: "A heavy striking head for maces, mauls, and knuckles." },
+    { part: "Haft",             role: "frame",    weight: 1,   mats: ["Hardwood", "Leather"],      exotic: "Pristine Alloy",   desc: "A shaft, handle, or grip that a weapon is built around." },
+    { part: "Bow Limbs",        role: "edge",     weight: 1,   mats: ["Hardwood", "Bone & Sinew"], exotic: "Pristine Alloy",   desc: "Sprung limbs and string for bows and slings." },
+    { part: "Barrel",           role: "edge",     weight: 2,   mats: ["Scrap Metal", "Circuitry"], exotic: "Pristine Alloy",   desc: "A rifled barrel or conduit that directs a shot." },
+    { part: "Trigger Assembly", role: "mech",     weight: 0.5, mats: ["Circuitry", "Scrap Metal"], exotic: "Power Cell",       desc: "The firing mechanism — sears, springs, and contacts." },
+    { part: "Stock",            role: "frame",    weight: 1,   mats: ["Hardwood", "Scrap Metal"],  exotic: "Pristine Alloy",   desc: "A frame or stock that braces a ranged weapon." },
+    { part: "Emitter Lens",     role: "edge",     weight: 1,   mats: ["Circuitry", "Focus Crystal"], exotic: "Power Cell",     desc: "A focusing lens/coil for directed-energy weapons." },
+    { part: "Focus Array",      role: "edge",     weight: 1,   mats: ["Focus Crystal"],            exotic: "Resonant Crystal", desc: "A tuned crystal array that shapes psionic force." },
+    { part: "Warhead",          role: "edge",     weight: 1,   mats: ["Chemicals", "Scrap Metal"], exotic: "Volatile Compound", desc: "A charged payload for explosives and volatile arms." },
+    { part: "Power Core",       role: "core",     weight: 0.5, mats: ["Circuitry"],                exotic: "Power Cell",       desc: "An energy core that powers tech and energy weapons." },
+    { part: "Living Node",      role: "core",     weight: 1,   mats: ["Botanicals", "Bone & Sinew"], exotic: "Ki Core",        desc: "A cultivated living heart for symbiotic weapons." },
+    { part: "Plating",          role: "armor",    weight: 4,   mats: ["Scrap Metal"],              exotic: "Pristine Alloy",   desc: "Rigid protective plate for medium and heavy armor." },
+    { part: "Armor Weave",      role: "armor",    weight: 2,   mats: ["Leather", "Cloth"],         exotic: "Pristine Alloy",   desc: "A layered flexible weave — the body of light armor." },
+    { part: "Padding",          role: "lining",   weight: 1,   mats: ["Cloth"],                    exotic: "Pristine Alloy",   desc: "Shock-absorbing lining worn under armor." },
+    { part: "Straps & Fittings", role: "fittings", weight: 0.5, mats: ["Leather"],                 exotic: "Pristine Alloy",   desc: "Buckles, straps, and hardware that hold gear together." },
+  ];
+  PC.componentByPart = {};
+  PC.COMPONENTS.forEach(function (c) {
+    PC.componentByPart[c.part] = c;
+    // Register each grade as a findable/searchable catalog item + description.
+    PC.ITEM_DESCRIPTIONS[c.part] = c.desc;
+    for (var q = 1; q <= 4; q++) {
+      var nm = PC.qualityName(q) + " " + c.part;
+      PC.ITEM_DESCRIPTIONS[nm] = c.desc + " (" + PC.qualityName(q) + " grade.)";
+      PC.ITEMS.push({ name: nm, category: "Component", part: c.part, quality: q, weight: c.weight, desc: PC.ITEM_DESCRIPTIONS[nm] });
+    }
+  });
+  PC.isComponent = function (name) { var n = String(name || "").replace(/^(Crude|Standard|Fine|Masterwork)\s+/, ""); return !!PC.componentByPart[n]; };
+  PC.componentName = function (part, q) { return PC.qualityName(q) + " " + part; };
+  // Raw-material recipe to CRAFT a component at grade q. Basic mats at low grades; exotic at Q3–Q4.
+  PC.componentRecipe = function (part, q) {
+    var d = PC.componentByPart[part]; if (!d) return null;
+    q = q || 1;
+    var out = [{ mat: d.mats[0], qty: q >= 2 ? 2 : 1 }];
+    if (d.mats[1]) out.push({ mat: d.mats[1], qty: 1 });
+    if (q >= 3) out.push({ mat: d.exotic, qty: q >= 4 ? 2 : 1 });
+    return _merge(out);
+  };
+  // Raw recovered by breaking a component DOWN (Basic ≈ half min 1, Exotic floor half).
+  PC.componentSalvageYield = function (part, q) {
+    var r = PC.componentRecipe(part, q); if (!r) return null;
+    return _merge(r.map(function (c) {
+      var half = PC.SALVAGE_TIER[c.mat] === "Exotic" ? Math.floor(c.qty / 2) : Math.max(1, Math.ceil(c.qty / 2));
+      return { mat: c.mat, qty: half };
+    }));
+  };
+
+  /* Templates — one per weapon subtype & armor class. They encode the RULES: fixed attribute, the
+     component slots the item needs, its allowed weight band, and the damage/DS table by quality
+     (Q4 = that subtype's real catalog maximum = the hard cap). Custom-item stats come from the
+     AVERAGE grade of the components used, read off this table and never exceeding Q4. */
+  PC.WEAPON_TEMPLATES = {
+    "Heavy Weapons":   { attr: "STR", slots: ["Bludgeon Head", "Haft"],                    hands: 2, weight: [3, 16], dmg: { 1: "1d10", 2: "1d12", 3: "2d8",  4: "3d8" } },
+    "Fist Weapons":    { attr: "STR", slots: ["Bludgeon Head", "Straps & Fittings"],       hands: 1, weight: [1, 4],  dmg: { 1: "1d4",  2: "1d6",  3: "1d8",  4: "2d6" } },
+    "Archery":         { attr: "STR", slots: ["Bow Limbs", "Straps & Fittings"],           hands: 2, weight: [1, 3],  dmg: { 1: "1d6",  2: "1d8",  3: "2d6",  4: "2d8" } },
+    "Light Weapons":   { attr: "AGI", slots: ["Blade", "Haft"],                            hands: 1, weight: [1, 3],  dmg: { 1: "1d4",  2: "1d6",  3: "1d8",  4: "2d6" } },
+    "Quick Weapons":   { attr: "AGI", slots: ["Blade", "Haft"],                            hands: 1, weight: [1, 4],  dmg: { 1: "1d4",  2: "1d6",  3: "1d6",  4: "1d8" } },
+    "Thrown Weapons":  { attr: "AGI", slots: ["Blade", "Straps & Fittings"],               hands: 1, weight: [1, 1],  dmg: { 1: "1d4",  2: "1d4",  3: "1d6",  4: "1d6" } },
+    "Firearms":        { attr: "CON", slots: ["Barrel", "Trigger Assembly", "Stock"],      hands: 2, weight: [2, 12], dmg: { 1: "1d8",  2: "1d10", 3: "1d12", 4: "2d10" } },
+    "Explosives":      { attr: "CON", slots: ["Warhead", "Trigger Assembly"],              hands: 1, weight: [1, 3],  dmg: { 1: "2d6",  2: "2d8",  3: "3d6",  4: "3d6" } },
+    "Volatile Weapons":{ attr: "CON", slots: ["Warhead", "Barrel", "Trigger Assembly"],    hands: 2, weight: [8, 16], dmg: { 1: "1d8",  2: "2d6",  3: "3d6",  4: "3d6" } },
+    "Laser Weapons":   { attr: "INT", slots: ["Emitter Lens", "Power Core", "Stock"],      hands: 1, weight: [3, 9],  dmg: { 1: "1d8",  2: "1d10", 3: "2d8",  4: "2d8" } },
+    "Plasma Weapons":  { attr: "INT", slots: ["Emitter Lens", "Power Core", "Barrel"],     hands: 2, weight: [3, 22], dmg: { 1: "1d10", 2: "1d12", 3: "3d6",  4: "4d6" } },
+    "Tech Weapons":    { attr: "INT", slots: ["Barrel", "Power Core", "Trigger Assembly"], hands: 2, weight: [4, 12], dmg: { 1: "1d8",  2: "1d10", 3: "1d12", 4: "2d8" } },
+    "Channel Weapons": { attr: "WIS", slots: ["Focus Array", "Haft"],                      hands: 1, weight: [1, 4],  dmg: { 1: "1d6",  2: "1d8",  3: "1d8",  4: "2d6" } },
+    "Ritual Weapons":  { attr: "WIS", slots: ["Focus Array", "Haft"],                      hands: 1, weight: [1, 5],  dmg: { 1: "1d6",  2: "1d6",  3: "1d8",  4: "1d8" } },
+    "Living Weapons":  { attr: "WIS", slots: ["Living Node", "Haft"],                      hands: 1, weight: [2, 4],  dmg: { 1: "1d6",  2: "1d8",  3: "2d6",  4: "2d6" } },
+    "Finesse Weapons": { attr: "CHA", slots: ["Blade", "Haft"],                            hands: 1, weight: [1, 4],  dmg: { 1: "1d6",  2: "1d8",  3: "1d10", 4: "2d8" } },
+    "Art Weapons":     { attr: "CHA", slots: ["Focus Array", "Haft"],                      hands: 1, weight: [1, 4],  dmg: { 1: "1d6",  2: "1d8",  3: "1d8",  4: "2d6" } },
+    "Noise Weapons":   { attr: "CHA", slots: ["Focus Array", "Power Core"],                hands: 2, weight: [5, 10], dmg: { 1: "1d8",  2: "1d10", 3: "2d8",  4: "3d6" } },
+  };
+  PC.ARMOR_TEMPLATES = {
+    "Light":  { slots: ["Armor Weave", "Straps & Fittings"],            weight: [2, 8],   ds: { 1: 1, 2: 2, 3: 2, 4: 2 } },
+    "Medium": { slots: ["Armor Weave", "Plating", "Straps & Fittings"], weight: [6, 18],  ds: { 1: 3, 2: 3, 3: 4, 4: 4 } },
+    "Heavy":  { slots: ["Plating", "Padding", "Straps & Fittings"],     weight: [20, 40], ds: { 1: 5, 2: 5, 3: 6, 4: 6 } },
+  };
+  PC.weaponTemplate = function (t) { return PC.WEAPON_TEMPLATES[t] || null; };
+  PC.armorTemplate = function (c) { return PC.ARMOR_TEMPLATES[c] || null; };
+  // The component slots an item is assembled from (null for non-component items).
+  PC.itemComponentSlots = function (item) {
+    if (!item) return null;
+    if (item.category === "Weapon") { var wt = PC.WEAPON_TEMPLATES[item.weaponType]; return wt ? wt.slots.slice() : ["Blade", "Haft"]; }
+    if (item.category === "Armor") { var at = PC.ARMOR_TEMPLATES[item.armorClass || "Light"]; return at ? at.slots.slice() : ["Armor Weave", "Straps & Fittings"]; }
+    return null;
+  };
+  // Average grade of a set of component grades → clamped 1–4 (the "average of parts" quality rule).
+  PC.qualityFromGrades = function (grades) {
+    if (!grades || !grades.length) return 1;
+    var sum = grades.reduce(function (s, g) { return s + (Number(g) || 1); }, 0);
+    return Math.max(1, Math.min(4, Math.floor(sum / grades.length)));
+  };
+  // The stat a template yields at a given quality: damage die (weapons) or DS bonus (armor).
+  PC.templateDamage = function (weaponType, q) { var t = PC.WEAPON_TEMPLATES[weaponType]; return t ? t.dmg[Math.max(1, Math.min(4, q))] : null; };
+  PC.templateDS = function (armorClass, q) { var t = PC.ARMOR_TEMPLATES[armorClass]; return t ? t.ds[Math.max(1, Math.min(4, q))] : null; };
+
   // Weapon type → [primary basic, secondary basic, exotic] materials.
   var _wmat = {
     "Heavy Weapons":    ["Scrap Metal", "Hardwood",     "Pristine Alloy"],
@@ -716,34 +832,46 @@ window.PC = window.PC || {};
     return order.map(function (mat) { return { mat: mat, qty: m[mat] }; });
   }
 
-  // The recipe to CRAFT an item: [{mat, qty}], or null if it can't be crafted
-  // (Legendary rarity, raw salvage, or currency).
+  var _rolePri = { edge: 0, core: 1, armor: 2, frame: 3, mech: 4, lining: 5, fittings: 6 };
+  function _partOf(item) {
+    return item.part || (PC.isComponent(item.name) ? String(item.name).replace(/^(Crude|Standard|Fine|Masterwork)\s+/, "") : null);
+  }
+  // The recipe to CRAFT an item, as [{mat, qty}] — where `mat` may be a raw salvage material OR a
+  // component name (with component:true, part, quality). null if it can't be crafted (Legendary,
+  // raw salvage, or currency). Weapons & armor are assembled from COMPONENTS (at the grade matching
+  // their rarity); components themselves, and consumables/tools/misc, are made from raw salvage.
   PC.itemRecipe = function (item) {
     if (!item || item.category === "Salvage") return null;
     if (item.rarity === "Legendary") return null;
     if (_nonCraft[item.name]) return null;
-    var tier = _tier(item.rarity);
-    var out = [];
-    if (item.category === "Weapon") {
-      var m = _wmat[item.weaponType] || ["Scrap Metal", "Hardwood", "Pristine Alloy"];
-      out.push({ mat: m[0], qty: _bulk(item.weight) + (tier >= 2 ? 1 : 0) + (tier >= 3 ? 1 : 0) });
-      out.push({ mat: m[1], qty: (Number(item.weight) >= 8 ? 2 : 1) });
-      if (tier >= 1) out.push({ mat: m[2], qty: (tier >= 3 ? 2 : 1) });
-    } else if (item.category === "Armor") {
-      var a = _amat[item.armorClass] || _amat.Light;
-      out.push({ mat: a[0], qty: _bulk(item.weight) + (tier >= 2 ? 1 : 0) + (tier >= 3 ? 1 : 0) });
-      out.push({ mat: a[1], qty: (Number(item.weight) >= 12 ? 2 : 1) });
-      if (item.grants) out.push({ mat: "Circuitry", qty: 1 }); // powered / techy armor
-      if (tier >= 1) out.push({ mat: a[2], qty: (tier >= 3 ? 2 : 1) });
-    } else {
-      var mats = _override[item.name] || _catDefault[item.category] || ["Cloth"];
-      mats.forEach(function (mm) { out.push({ mat: mm, qty: 1 }); });
+    // A component: raw-material recipe at its grade.
+    if (item.category === "Component" || item.part) {
+      return PC.componentRecipe(_partOf(item), item.quality || PC.rarityQuality(item.rarity) || 1);
     }
+    // A weapon or armor: one of each template component slot, at the item's rarity grade.
+    if (item.category === "Weapon" || item.category === "Armor") {
+      var slots = PC.itemComponentSlots(item);
+      var q = PC.rarityQuality(item.rarity);
+      return slots.map(function (part) { return { mat: PC.componentName(part, q), qty: 1, component: true, part: part, quality: q }; });
+    }
+    // Everything else (consumables, tools, misc): raw salvage.
+    var out = [];
+    var mats = _override[item.name] || _catDefault[item.category] || ["Cloth"];
+    mats.forEach(function (mm) { out.push({ mat: mm, qty: 1 }); });
     return _merge(out);
   };
-  // What you RECOVER by breaking an item down: Basic mats ≈ half (min 1), Exotic mats floor(½)
-  // (rare cores are consumed in the teardown). null if the item isn't craftable.
+  // What you RECOVER by breaking an item down. Components/consumables/tools/misc give back RAW salvage
+  // (Basic ≈ half min 1, Exotic floor½). Weapons & armor give back some of their COMPONENTS — the
+  // higher-value ones, ceil(half) of the slots — at the item's grade, so teardown is lossy (no loop).
   PC.itemSalvageYield = function (item) {
+    if (!item) return null;
+    if ((item.category === "Weapon" || item.category === "Armor") && PC.itemRecipe(item)) {
+      var slots = PC.itemComponentSlots(item);
+      var q = PC.rarityQuality(item.rarity);
+      var _pri = function (part) { var r = (PC.componentByPart[part] || {}).role; return _rolePri[r] != null ? _rolePri[r] : 9; };
+      var keep = slots.slice().sort(function (a, b) { return _pri(a) - _pri(b); }).slice(0, Math.ceil(slots.length / 2));
+      return keep.map(function (part) { return { mat: PC.componentName(part, q), qty: 1, component: true, part: part, quality: q }; });
+    }
     var r = PC.itemRecipe(item);
     if (!r) return null;
     return _merge(r.map(function (c) {
@@ -751,8 +879,14 @@ window.PC = window.PC || {};
       return { mat: c.mat, qty: q };
     }));
   };
-  // Advisory crafting skill for an item (from its recipe's primary material), or null.
+  // Advisory crafting skill for an item. Weapons/armor use their primary component's material; a
+  // component uses its own primary material; everything else uses its recipe's primary material.
   PC.craftSkillFor = function (item) {
+    if (!item) return null;
+    var part = _partOf(item);
+    if (item.category === "Component" || part) { var d = PC.componentByPart[part]; return d ? (_craftSkill[d.mats[0]] || null) : null; }
+    var slots = PC.itemComponentSlots(item);
+    if (slots && slots.length) { var d2 = PC.componentByPart[slots[0]]; return d2 ? (_craftSkill[d2.mats[0]] || null) : null; }
     var r = PC.itemRecipe(item);
     return (r && r.length) ? (_craftSkill[r[0].mat] || null) : null;
   };

@@ -28,8 +28,10 @@
   let learnOpen = false;   // whether the "Learn a Recipe" (discovery) browser is expanded
   let learnSearchQ = "";   // discovery-browser search query
   let customOpen = false;  // whether the "Create Custom Item" builder is expanded
+  let compOpen = false;    // whether the "Craft Components" panel is expanded
   // Live state of the custom-item builder form (survives re-renders so type changes don't lose input).
-  let craftForm = { name: "", type: "Weapon", rarity: "Common", weight: "", desc: "", weaponType: "", damage: "", hands: "1", armorClass: "Light", dsBonus: "", hp: "", kp: "", skill: "" };
+  // slotGrade maps a component part → the grade (1–4) chosen for that slot on a weapon/armor build.
+  let craftForm = { name: "", type: "Weapon", rarity: "Common", weight: "", desc: "", weaponType: "", hands: "1", armorClass: "Light", hp: "", kp: "", skill: "", slotGrade: {} };
   const refresh = () => App.render();
 
   const bg = () => PC.background(rec.background);
@@ -499,19 +501,43 @@
   }
 
   /* ---------- crafting / salvage ---------- */
-  // How much of a salvage material the character holds (summed across stacks).
+  // "Ingredients" = raw salvage OR mid-tier components; both are held in inventory and consumed by
+  // crafting. These helpers treat either kind uniformly, matched by their (grade-qualified) name.
+  const isIngredient = (it) => it && (it.category === "Salvage" || it.category === "Component");
+  // How much of an ingredient (by name) the character holds (summed across stacks).
   function ownedMaterial(name) {
-    return (rec.inventory || []).reduce((s, it) => s + (it.category === "Salvage" && it.name === name ? (Number(it.qty) || 0) : 0), 0);
+    return (rec.inventory || []).reduce((s, it) => s + (isIngredient(it) && it.name === name ? (Number(it.qty) || 0) : 0), 0);
   }
-  // All salvage the character holds, as [{name, tier, qty}] in canonical order.
+  // Raw salvage the character holds, as [{name, tier, qty}] in canonical order.
   function ownedMaterials() {
     return (PC.SALVAGE || []).map((s) => ({ name: s.name, tier: s.tier, qty: ownedMaterial(s.name) })).filter((m) => m.qty > 0);
   }
+  // Components the character holds, as [{name, part, quality, qty}] (highest grade first per part).
+  function ownedComponents() {
+    return (rec.inventory || []).filter((it) => it.category === "Component" && (Number(it.qty) || 0) > 0)
+      .map((it) => ({ name: it.name, part: it.part || String(it.name).replace(/^(Crude|Standard|Fine|Masterwork)\s+/, ""), quality: it.quality || 1, qty: Number(it.qty) || 0 }))
+      .sort((a, b) => a.part.localeCompare(b.part) || b.quality - a.quality);
+  }
+  // Parse a component's grade + part from a "Standard Blade"-style name.
+  function parseComponent(name) {
+    const m = String(name).match(/^(Crude|Standard|Fine|Masterwork)\s+(.+)$/);
+    if (!m) return null;
+    return { quality: { Crude: 1, Standard: 2, Fine: 3, Masterwork: 4 }[m[1]], part: m[2] };
+  }
+  // Add an ingredient stack (raw salvage or a graded component) to inventory, merging with a like stack.
   function addMaterial(name, qty) {
     if (qty <= 0) return;
-    const ex = (rec.inventory || []).find((it) => it.category === "Salvage" && it.name === name);
-    if (ex) ex.qty = (Number(ex.qty) || 0) + qty;
-    else rec.inventory.push({
+    const ex = (rec.inventory || []).find((it) => isIngredient(it) && it.name === name);
+    if (ex) { ex.qty = (Number(ex.qty) || 0) + qty; return; }
+    const comp = window.PC.isComponent && PC.isComponent(name) ? parseComponent(name) : null;
+    if (comp) {
+      const def = PC.componentByPart[comp.part];
+      rec.inventory.push({
+        id: "cmp_" + Date.now().toString(36) + "_" + name.replace(/\W+/g, "").slice(0, 6),
+        name: name, category: "Component", part: comp.part, quality: comp.quality,
+        weight: def ? def.weight : 1, qty: qty, desc: PC.itemDesc(name),
+      });
+    } else rec.inventory.push({
       id: "mat_" + Date.now().toString(36) + "_" + name.replace(/\W+/g, "").slice(0, 6),
       name: name, category: "Salvage", tier: PC.SALVAGE_TIER[name] || "Basic",
       weight: PC.SALVAGE_TIER[name] === "Exotic" ? 0.5 : 1, qty: qty, desc: PC.itemDesc(name),
@@ -521,14 +547,16 @@
     let left = qty;
     for (let i = rec.inventory.length - 1; i >= 0 && left > 0; i--) {
       const it = rec.inventory[i];
-      if (it.category === "Salvage" && it.name === name) {
+      if (isIngredient(it) && it.name === name) {
         const take = Math.min(left, Number(it.qty) || 0);
         it.qty -= take; left -= take;
         if (it.qty <= 0) rec.inventory.splice(i, 1);
       }
     }
   }
-  function recipeOf(item) { return window.PC.itemRecipe ? PC.itemRecipe(item) : null; }
+  // An item's recipe: a custom design may carry its own stored `recipe` (the exact graded components
+  // the player chose); otherwise it's derived from the item's stats by the engine.
+  function recipeOf(item) { if (item && item.recipe) return item.recipe; return window.PC.itemRecipe ? PC.itemRecipe(item) : null; }
   // Regular skill proficiency (background-granted or chosen at creation), mirroring rollSkill().
   function isSkillProficient(name) { return bg().skills.includes(name) || (rec.chosenSkills || []).includes(name); }
   // The Skill used to craft an item (from its recipe's primary material), or null.
@@ -559,6 +587,7 @@
   // out-of-domain gear are learned later (salvage one, or a GM/discovery grant).
   function startingRecipes() {
     return (PC.ITEMS || []).filter((it) => {
+      if (it.category === "Component") return false; // components are crafted from their own panel, not "known recipes"
       const r = recipeOf(it); if (!r) return false;
       const sk = craftSkillOf(it);
       return sk && isSkillProficient(sk) && (!it.rarity || it.rarity === "Common");
@@ -1614,7 +1643,7 @@
     const searchRow = el("div", "inv-form");
     const search = el("input"); search.type = "text"; search.placeholder = "Search items (e.g. rifle, staff, stimpak)…"; search.value = invSearchQ; search.className = "inv-name";
     const catFilter = el("select"); catFilter.className = "inv-cat";
-    ["All", "Weapon", "Armor", "Consumable", "Tool", "Misc", "Salvage"].forEach((c) => { const o = el("option", null, c); o.value = c; catFilter.appendChild(o); });
+    ["All", "Weapon", "Armor", "Consumable", "Tool", "Misc", "Component", "Salvage"].forEach((c) => { const o = el("option", null, c); o.value = c; catFilter.appendChild(o); });
     catFilter.value = invSearchCat;
     searchRow.appendChild(search); searchRow.appendChild(catFilter);
     panel.appendChild(searchRow);
@@ -1711,9 +1740,9 @@
     form.appendChild(nameI); form.appendChild(catS); form.appendChild(wtI); form.appendChild(qtyI); form.appendChild(addBtn);
     inv.appendChild(form);
 
-    // item list (salvage materials are shown separately in the Materials panel below)
+    // item list (salvage & components are shown on the Crafting tab, not in the carried-gear list)
     inv.appendChild(el("div", "section-label", "Carried Items"));
-    const gearIdx = rec.inventory.map((it, idx) => idx).filter((idx) => rec.inventory[idx].category !== "Salvage");
+    const gearIdx = rec.inventory.map((it, idx) => idx).filter((idx) => !isIngredient(rec.inventory[idx]));
     if (!gearIdx.length) inv.appendChild(el("div", "muted", "No items yet. Search the catalog, craft, or add a custom item above."));
     else {
       const list = el("div", "inv-list");
@@ -1771,20 +1800,31 @@
     // ---- intro ----
     const intro = el("div", "panel");
     intro.appendChild(el("div", "section-label", "🔨 Crafting Workshop"));
-    intro.appendChild(el("p", "hint", "A <b>downtime</b> activity (never a combat action). You can craft any recipe you <b>know</b>: characters start knowing the Common gear of the craft skills they're <b>proficient</b> in, and learn more by <b>salvaging</b> an example (or a GM grant below). Crafting rolls a <b>skill check</b> — d20 + the craft skill's modifier vs a <b>DC by rarity</b> (Common 10 · Uncommon 13 · Rare 16 · Very Rare 20). <b>Success</b> spends the components and makes the item; <b>failure wastes half</b> of each component (rounded up)."));
+    intro.appendChild(el("p", "hint", "A <b>downtime</b> activity (never a combat action). <b>Weapons &amp; armor are built from components</b> (blades, barrels, plating…), which you craft from raw <b>salvage</b> — the materials set each component's <b>grade</b> (Crude → Masterwork). Better components make better gear. Crafting rolls a <b>skill check</b> — d20 + the craft skill's modifier vs a <b>DC by rarity</b> (Common 10 · Uncommon 13 · Rare 16 · Very Rare 20); <b>success</b> spends the ingredients, <b>failure wastes half</b> (rounded up)."));
     root.appendChild(intro);
 
-    // ---- salvage materials stock ----
+    // ---- salvage materials + components stock ----
     const mats = ownedMaterials();
+    const comps = ownedComponents();
     const mp = el("div", "panel");
     mp.appendChild(el("div", "section-label", "Salvage Materials"));
-    if (!mats.length) mp.appendChild(el("div", "muted", "No materials yet. Salvage an item on the Inventory tab, or add some from the catalog (Salvage category)."));
+    if (!mats.length) mp.appendChild(el("div", "muted", "No raw materials yet. Salvage an item on the Inventory tab, or add some from the catalog (Salvage category)."));
     else {
       const grid = el("div", "salvage-grid");
       mats.forEach((m) => grid.appendChild(materialChip(m.name, m.qty, m.tier)));
       mp.appendChild(grid);
     }
+    mp.appendChild(el("div", "section-label", "Components on hand"));
+    if (!comps.length) mp.appendChild(el("div", "muted", "No components yet. Craft parts below, salvage gear, or find them as loot."));
+    else {
+      const grid = el("div", "salvage-grid");
+      comps.forEach((c) => grid.appendChild(componentChip(c.part, c.quality, c.qty)));
+      mp.appendChild(grid);
+    }
     root.appendChild(mp);
+
+    // ---- craft components (raw → parts) ----
+    root.appendChild(buildComponentsPanel());
 
     // ---- known recipes, grouped by item type (collapsed until a type is opened) ----
     root.appendChild(buildKnownRecipes());
@@ -1797,13 +1837,80 @@
     return root;
   }
 
+  // A component chip (grade-colored) for the on-hand stock display.
+  function componentChip(part, q, qty) {
+    const chip = el("div", "salvage-chip comp-chip q" + q);
+    chip.title = PC.itemDesc(PC.componentName(part, q));
+    chip.innerHTML = `<span class="sv-grade">${PC.qualityName(q)}</span><span class="sv-name">${part}</span><span class="sv-qty">×${qty}</span>`;
+    return chip;
+  }
+
+  // Craft a single component (raw salvage → a graded part). A downtime skill check like any craft.
+  function craftComponent(part, q) {
+    const recipe = PC.componentRecipe(part, q);
+    if (!recipe) { App.toast("Unknown component."); return; }
+    const name = PC.componentName(part, q);
+    const miss = recipe.filter((c) => ownedMaterial(c.mat) < c.qty).map((c) => `${c.qty - ownedMaterial(c.mat)}× ${c.mat}`);
+    if (miss.length) { App.toast(`Missing: ${miss.join(", ")}.`); return; }
+    const compItem = { name: name, category: "Component", part: part, quality: q, rarity: PC.qualityRarity(q) };
+    const ci = craftCheckInfo(compItem);
+    const mode = ci.attr && (isDisadv(ci.attr) || flawDisadvAttr(ci.attr)) ? "dis" : "normal";
+    const roll = PC.rollCheck(ci.mod, mode);
+    const tag = `${ci.name || "Craft"} check d20${PC.fmtMod(ci.mod)} = ${roll.total} vs DC ${ci.dc}`;
+    if (roll.total >= ci.dc) {
+      recipe.forEach((c) => spendMaterial(c.mat, c.qty));
+      addMaterial(name, 1);
+      announce(roll.total, `Crafted ${name} — ${tag} ✓ (used ${fmtMats(recipe)}).`);
+      App.toast(`Crafted ${name}!`);
+    } else {
+      const lost = recipe.map((c) => ({ mat: c.mat, qty: Math.ceil(c.qty / 2) })).filter((c) => c.qty > 0);
+      lost.forEach((c) => spendMaterial(c.mat, c.qty));
+      announce(roll.total, `Craft failed: ${name} — ${tag} ✗. Lost ${fmtMats(lost)} (half).`);
+      App.toast(`Craft failed: ${roll.total} vs DC ${ci.dc}.`);
+    }
+    save(); refresh();
+  }
+
+  // "Craft Components" — a collapsible workbench: for each part, craft it at any grade you can afford.
+  function buildComponentsPanel() {
+    const panel = el("div", "panel");
+    const head = el("div", "section-label collapse-head", `⚙ Craft Components ${compOpen ? "▲" : "▼"}`);
+    head.style.cursor = "pointer";
+    head.onclick = () => { compOpen = !compOpen; refresh(); };
+    panel.appendChild(head);
+    if (!compOpen) { panel.appendChild(el("p", "hint", "Turn raw salvage into parts. Higher grades cost exotic materials — and make better weapons & armor.")); return panel; }
+
+    panel.appendChild(el("p", "hint", "Each grade is a downtime skill check (DC by grade: Crude 10 · Standard 13 · Fine 16 · Masterwork 20). The materials you spend set the grade."));
+    const grid = el("div", "comp-build-grid");
+    PC.COMPONENTS.forEach((def) => {
+      const card = el("div", "comp-card");
+      card.appendChild(el("div", "comp-card-name", `${def.part} <span class="comp-role">${def.role}</span>`));
+      const btns = el("div", "comp-grade-btns");
+      for (let q = 1; q <= 4; q++) {
+        const recipe = PC.componentRecipe(def.part, q);
+        const miss = recipe.filter((c) => ownedMaterial(c.mat) < c.qty);
+        const b = el("button", "btn small comp-grade q" + q, PC.qualityName(q));
+        b.disabled = miss.length > 0;
+        b.title = `${PC.qualityName(q)} ${def.part} — needs ${fmtMats(recipe)} (DC ${craftDC({ rarity: PC.qualityRarity(q) })})`;
+        b.onclick = () => craftComponent(def.part, q);
+        btns.appendChild(b);
+      }
+      card.appendChild(btns);
+      grid.appendChild(card);
+    });
+    panel.appendChild(grid);
+    return panel;
+  }
+
   // Known Recipes — a list of item TYPES; open a type to reveal the recipes you know in it. A switch
   // filters every group down to what you can craft right now, and a search does a flat cross-type find.
   function buildKnownRecipes() {
     const CATS = ["Weapon", "Armor", "Consumable", "Tool", "Misc"];
     // All known recipe entries (custom designs + known catalog items), each with its category.
+    // Components are excluded — they're crafted from the Craft Components panel, not "known recipes".
     const entries = customItems().slice()
-      .concat(knownRecipeNames().map((n) => (PC.ITEMS || []).find((it) => it.name === n)).filter(Boolean));
+      .concat(knownRecipeNames().map((n) => (PC.ITEMS || []).find((it) => it.name === n)).filter(Boolean))
+      .filter((it) => it.category !== "Component");
     const canCraft = (it) => { const m = missingComponents(it); return m && m.length === 0; };
     const q = craftSearchQ.trim().toLowerCase();
     const matchQ = (it) => !q || it.name.toLowerCase().indexOf(q) > -1 || (it.category && it.category.toLowerCase().indexOf(q) > -1) || (it.weaponType && it.weaponType.toLowerCase().indexOf(q) > -1);
@@ -1890,7 +1997,7 @@
       const q = learnSearchQ.trim().toLowerCase();
       results.innerHTML = "";
       if (!q) { results.appendChild(el("div", "muted", "Type to search.")); return; }
-      let matches = (PC.ITEMS || []).filter((it) => recipeOf(it) && knownRecipeNames().indexOf(it.name) === -1 &&
+      let matches = (PC.ITEMS || []).filter((it) => it.category !== "Component" && recipeOf(it) && knownRecipeNames().indexOf(it.name) === -1 &&
         (it.name.toLowerCase().indexOf(q) > -1 || (it.weaponType && it.weaponType.toLowerCase().indexOf(q) > -1)));
       if (!matches.length) { results.appendChild(el("div", "muted", "No unknown craftable items match.")); return; }
       matches.slice(0, 40).forEach((it) => {
@@ -1909,14 +2016,33 @@
     return panel;
   }
 
-  // Build a full custom-item object from the live builder form (its recipe auto-derives from its stats).
+  // The component slots for the current weapon/armor build (from its template), or [] .
+  function formSlots(f) {
+    if (f.type === "Weapon") { const t = PC.weaponTemplate(f.weaponType); return t ? t.slots : []; }
+    if (f.type === "Armor") { const t = PC.armorTemplate(f.armorClass); return t ? t.slots : []; }
+    return [];
+  }
+  // Build a full custom-item object from the live builder form. Weapons & armor are assembled from the
+  // per-slot component GRADES you pick: the item's quality is the AVERAGE of those grades, which sets its
+  // rarity and its (hard-capped) damage/DS off the template. Consumables/tools/misc use raw materials.
   function customItemFromForm() {
     const f = craftForm;
-    const base = { name: (f.name || "").trim(), category: f.type, rarity: f.rarity, weight: Number(f.weight) || 1, custom: true };
+    const base = { name: (f.name || "").trim(), category: f.type, weight: Number(f.weight) || 1, custom: true };
     if ((f.desc || "").trim()) base.desc = f.desc.trim();
-    if (f.type === "Weapon") { base.weaponType = f.weaponType || ""; base.damage = (f.damage || "").trim(); base.hands = Number(f.hands) || 1; }
-    else if (f.type === "Armor") { base.armorClass = f.armorClass || "Light"; base.dsBonus = parseInt(f.dsBonus, 10) || 0; }
-    else if (f.type === "Consumable") {
+    if (f.type === "Weapon" || f.type === "Armor") {
+      const slots = formSlots(f);
+      if (!slots.length) return base; // no subtype chosen yet
+      const grades = slots.map((p) => Number((f.slotGrade || {})[p]) || 1);
+      const q = PC.qualityFromGrades(grades);
+      base._quality = q;
+      base.rarity = PC.qualityRarity(q);
+      base.recipe = slots.map((p, i) => ({ mat: PC.componentName(p, grades[i]), qty: 1, component: true, part: p, quality: grades[i] }));
+      const tmpl = f.type === "Weapon" ? PC.weaponTemplate(f.weaponType) : PC.armorTemplate(f.armorClass);
+      if (f.type === "Weapon") { base.weaponType = f.weaponType; base.damage = PC.templateDamage(f.weaponType, q); base.hands = tmpl.hands || 1; }
+      else { base.armorClass = f.armorClass; base.dsBonus = PC.templateDS(f.armorClass, q); }
+      if (tmpl.weight) base.weight = Math.max(tmpl.weight[0], Math.min(tmpl.weight[1], base.weight || tmpl.weight[0]));
+    } else if (f.type === "Consumable") {
+      base.rarity = f.rarity;
       const eff = {};
       if ((f.hp || "").trim()) eff.hp = /d/i.test(f.hp) ? f.hp.trim() : (Number(f.hp) || 0);
       if ((f.kp || "").trim()) eff.kp = /d/i.test(f.kp) ? f.kp.trim() : (Number(f.kp) || 0);
@@ -1927,18 +2053,20 @@
         if (eff.kp != null) bits.push(`restore ${eff.kp} KP`);
         base.note = bits.join(", ");
       }
-    } else if (f.type === "Tool") { if (f.skill) base.skill = f.skill; }
+    } else { base.rarity = f.rarity; if (f.type === "Tool" && f.skill) base.skill = f.skill; }
     return base;
   }
   function saveCustomItem() {
     const f = craftForm;
     if (!(f.name || "").trim()) { App.toast("Name your custom item."); return; }
+    if ((f.type === "Weapon" || f.type === "Armor") && !formSlots(f).length) { App.toast(`Pick a ${f.type === "Weapon" ? "weapon type" : "armor class"} first.`); return; }
     const item = customItemFromForm();
     if (!recipeOf(item)) { App.toast("This can't be made a recipe (check the type)."); return; }
     customItems().push(item);
-    logLine(`✎ Designed custom ${item.category.toLowerCase()}: ${item.name} — now a known recipe (${fmtMats(recipeOf(item))}).`);
+    const statBit = item.category === "Weapon" ? ` (${item.damage})` : item.category === "Armor" ? ` (+${item.dsBonus} DS)` : "";
+    logLine(`✎ Designed custom ${item.rarity} ${item.category.toLowerCase()}: ${item.name}${statBit} — needs ${fmtMats(recipeOf(item))}.`);
     App.toast(`Custom recipe saved: ${item.name}. Craft it under Known Recipes.`);
-    craftForm = { name: "", type: f.type, rarity: "Common", weight: "", desc: "", weaponType: "", damage: "", hands: "1", armorClass: "Light", dsBonus: "", hp: "", kp: "", skill: "" };
+    craftForm = { name: "", type: f.type, rarity: "Common", weight: "", desc: "", weaponType: "", hands: "1", armorClass: "Light", hp: "", kp: "", skill: "", slotGrade: {} };
     save(); refresh();
   }
   function forgetCustom(item) {
@@ -1950,15 +2078,16 @@
     save(); refresh();
   }
 
-  // "Create Custom Item" — a collapsible full-mechanical item designer. The recipe auto-derives from
-  // the item's own stats (type + weight + rarity), so custom gear is balanced like catalog gear.
+  // "Create Custom Item" — a collapsible template-driven designer. Weapons & armor pick a subtype
+  // template (fixed attribute, allowed weight band, damage/DS capped by grade) and a grade per
+  // component slot; the item's quality is the average of those grades. Consumables/tools/misc are simple.
   function buildCustomBuilder() {
     const panel = el("div", "panel");
     const head = el("div", "section-label collapse-head", `✎ Create Custom Item ${customOpen ? "▲" : "▼"}`);
     head.style.cursor = "pointer";
     head.onclick = () => { customOpen = !customOpen; refresh(); };
     panel.appendChild(head);
-    if (!customOpen) { panel.appendChild(el("p", "hint", "Design your own weapon, armor, consumable, tool, or gear. Its recipe is derived from its stats, and it becomes a known recipe you can craft.")); return panel; }
+    if (!customOpen) { panel.appendChild(el("p", "hint", "Design your own weapon, armor, consumable, tool, or gear within the balance rules. Weapons & armor are built from component slots — the parts' grades set the item's power, hard-capped by its template.")); return panel; }
 
     const f = craftForm;
     const bind = (input, key) => { input.oninput = () => { f[key] = input.value; updatePreview(); }; };
@@ -1972,33 +2101,28 @@
     form.appendChild(labeled("Name", nameI));
     form.appendChild(labeled("Type", typeS));
 
-    // Row 2: rarity + weight
-    const rarS = el("select");
-    ["Common", "Uncommon", "Rare", "Very Rare"].forEach((c) => { const o = el("option", null, c); o.value = c; if (c === f.rarity) o.selected = true; rarS.appendChild(o); });
-    rarS.onchange = () => { f.rarity = rarS.value; updatePreview(); };
+    const isComplex = f.type === "Weapon" || f.type === "Armor";
+    // Rarity is player-set only for simple items; weapons/armor derive it from component grades.
+    if (!isComplex) {
+      const rarS = el("select");
+      ["Common", "Uncommon", "Rare", "Very Rare"].forEach((c) => { const o = el("option", null, c); o.value = c; if (c === f.rarity) o.selected = true; rarS.appendChild(o); });
+      rarS.onchange = () => { f.rarity = rarS.value; updatePreview(); };
+      form.appendChild(labeled("Rarity", rarS));
+    }
     const wtI = el("input"); wtI.type = "number"; wtI.min = 0; wtI.step = "0.5"; wtI.placeholder = "lb"; wtI.value = f.weight; bind(wtI, "weight");
-    form.appendChild(labeled("Rarity", rarS));
     form.appendChild(labeled("Weight (lb)", wtI));
 
     // Type-specific stats
     if (f.type === "Weapon") {
       const wtypeS = el("select");
-      wtypeS.innerHTML = '<option value="">— weapon type —</option>' + PC.WEAPON_TYPES.map((w) => `<option value="${w.name}" ${f.weaponType === w.name ? "selected" : ""}>${w.name} (${w.attr})</option>`).join("");
-      wtypeS.onchange = () => { f.weaponType = wtypeS.value; updatePreview(); };
-      const dmgI = el("input"); dmgI.type = "text"; dmgI.placeholder = "e.g. 1d8"; dmgI.value = f.damage; bind(dmgI, "damage");
-      const handS = el("select");
-      [["1", "One-handed"], ["2", "Two-handed"]].forEach((h) => { const o = el("option", null, h[1]); o.value = h[0]; if (h[0] === String(f.hands)) o.selected = true; handS.appendChild(o); });
-      handS.onchange = () => { f.hands = handS.value; };
+      wtypeS.innerHTML = '<option value="">— weapon type —</option>' + Object.keys(PC.WEAPON_TEMPLATES).map((name) => `<option value="${name}" ${f.weaponType === name ? "selected" : ""}>${name} (${PC.WEAPON_TEMPLATES[name].attr})</option>`).join("");
+      wtypeS.onchange = () => { f.weaponType = wtypeS.value; f.slotGrade = {}; refresh(); };
       form.appendChild(labeled("Weapon type", wtypeS));
-      form.appendChild(labeled("Damage die", dmgI));
-      form.appendChild(labeled("Hands", handS));
     } else if (f.type === "Armor") {
       const clsS = el("select");
-      ["Light", "Medium", "Heavy"].forEach((c) => { const o = el("option", null, c); o.value = c; if (c === f.armorClass) o.selected = true; clsS.appendChild(o); });
-      clsS.onchange = () => { f.armorClass = clsS.value; updatePreview(); };
-      const dsI = el("input"); dsI.type = "number"; dsI.placeholder = "Defense bonus"; dsI.value = f.dsBonus; bind(dsI, "dsBonus");
+      clsS.innerHTML = ["Light", "Medium", "Heavy"].map((c) => `<option value="${c}" ${f.armorClass === c ? "selected" : ""}>${c}</option>`).join("");
+      clsS.onchange = () => { f.armorClass = clsS.value; f.slotGrade = {}; refresh(); };
       form.appendChild(labeled("Armor class", clsS));
-      form.appendChild(labeled("Defense Score bonus", dsI));
     } else if (f.type === "Consumable") {
       const hpI = el("input"); hpI.type = "text"; hpI.placeholder = "HP (e.g. 2d6 or 10)"; hpI.value = f.hp; bind(hpI, "hp");
       const kpI = el("input"); kpI.type = "text"; kpI.placeholder = "KP (e.g. 1d6 or 5)"; kpI.value = f.kp; bind(kpI, "kp");
@@ -2017,15 +2141,42 @@
     form.appendChild(descL);
     panel.appendChild(form);
 
-    // Live recipe preview + save
+    // Component-slot grade pickers (weapons & armor only) + template rule readout.
+    const slots = formSlots(f);
+    if (isComplex && slots.length) {
+      const tmpl = f.type === "Weapon" ? PC.weaponTemplate(f.weaponType) : PC.armorTemplate(f.armorClass);
+      const rules = el("div", "tmpl-rules");
+      const capBits = [1, 2, 3, 4].map((q) => `${PC.qualityName(q)} ${f.type === "Weapon" ? PC.templateDamage(f.weaponType, q) : "+" + PC.templateDS(f.armorClass, q) + " DS"}`).join(" · ");
+      rules.innerHTML = `<b>Template:</b> ${f.type === "Weapon" ? f.weaponType + " · " + tmpl.attr + " · " + (tmpl.hands === 2 ? "two-handed" : "one-handed") : f.armorClass + " armor"} · weight ${tmpl.weight[0]}–${tmpl.weight[1]} lb<br><b>By grade:</b> ${capBits}`;
+      panel.appendChild(rules);
+      const slotWrap = el("div", "slot-grid");
+      slots.forEach((part) => {
+        const cur = Number((f.slotGrade || {})[part]) || 1;
+        const sel = el("select");
+        sel.innerHTML = [1, 2, 3, 4].map((q) => {
+          const have = ownedMaterial(PC.componentName(part, q));
+          return `<option value="${q}" ${q === cur ? "selected" : ""}>${PC.qualityName(q)}${have ? ` (have ${have})` : ""}</option>`;
+        }).join("");
+        sel.onchange = () => { f.slotGrade[part] = sel.value; updatePreview(); };
+        slotWrap.appendChild(labeled(part, sel));
+      });
+      panel.appendChild(slotWrap);
+    } else if (isComplex) {
+      panel.appendChild(el("p", "hint", `Pick a ${f.type === "Weapon" ? "weapon type" : "armor class"} to see its component slots and balance limits.`));
+    }
+
+    // Live preview + save
     const preview = el("div", "custom-preview");
     panel.appendChild(preview);
     function updatePreview() {
       const item = customItemFromForm();
       const r = recipeOf(item);
-      if (!r) { preview.innerHTML = '<span class="craft-dt">Set a valid type to see its recipe.</span>'; return; }
+      if (!r || !r.length) { preview.innerHTML = '<span class="craft-dt">Choose a type (and subtype) to see the recipe.</span>'; return; }
       const ci = craftCheckInfo(item);
-      preview.innerHTML = `<b>Recipe:</b> ${fmtMats(r)} &nbsp;·&nbsp; <b>Craft check:</b> 🎲 ${ci.name || "?"} d20${PC.fmtMod(ci.mod)} vs DC ${ci.dc}`;
+      let statLine = "";
+      if (item.category === "Weapon") statLine = `<b>${PC.qualityName(item._quality)} ${item.rarity}</b> · ${item.damage} · ${item.hands === 2 ? "two-handed" : "one-handed"} · `;
+      else if (item.category === "Armor") statLine = `<b>${PC.qualityName(item._quality)} ${item.rarity}</b> · +${item.dsBonus} Defense · `;
+      preview.innerHTML = `${statLine}<b>Recipe:</b> ${fmtMats(r)} &nbsp;·&nbsp; 🎲 ${ci.name || "?"} d20${PC.fmtMod(ci.mod)} vs DC ${ci.dc}`;
     }
     updatePreview();
     const saveBtn = el("button", "btn small primary", "✎ Save as Custom Recipe");

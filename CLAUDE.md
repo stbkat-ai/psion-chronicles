@@ -29,9 +29,13 @@ in the browser's `localStorage` (key `psion_chronicles_characters`), so saved da
 - `index.html` — entry point; the 6 asset tags carry `?v=N`.
 - `data.js` — all game data on `window.PC` (9 backgrounds, 8 heritages, 18 kinetics, 36 skills,
   18 weapon types, 360 techniques, fighting styles/combat skills, per-background & per-heritage flaws).
-- `items.js` — the weapon/item catalog (~283 items; skill tool kits via `it.skill`; functioning
-  consumables via `it.effect`; crafting/salvage via `PC.SALVAGE` (14 materials) + `PC.itemRecipe()` /
-  `PC.itemSalvageYield()` — every non-Legendary item breaks down into / crafts from salvage).
+- `items.js` — the weapon/item catalog (~283 gear items + 64 component entries; skill tool kits via `it.skill`;
+  functioning consumables via `it.effect`). **Crafting is two-tier:** raw `PC.SALVAGE` (14 materials) →
+  **components** (`PC.COMPONENTS`, 16 parts × 4 quality grades Crude→Masterwork) → weapons & armor. Templates
+  (`PC.WEAPON_TEMPLATES`/`PC.ARMOR_TEMPLATES`) set each subtype's attribute, component slots, weight band, and
+  damage/DS-by-grade **hard caps**; an assembled item's quality = **average of its parts' grades**
+  (`PC.qualityFromGrades`). `PC.itemRecipe()` / `PC.itemSalvageYield()` / `PC.componentRecipe()` flow through
+  components; `null` recipe = Legendary/raw/currency.
 - `rules.js` — pure calculation engine (modifiers, pools, derived stats, chakra effects, proficiency,
   kinetic tier-completion proficiency/expertise). No DOM.
 - `app.js` — `window.PsionApp`: character creator flow, roster, level-up screen.

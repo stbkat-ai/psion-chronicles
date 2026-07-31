@@ -148,26 +148,30 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     or Panacea and it rolls the effect and updates your HP/KP, chakras, and limbs on the spot (capped at
     your max), then logs it. A **← Inventory** button returns.
   - **🔨 Crafting tab** (after Inventory; a **downtime** activity — no combat action) — the whole crafting
-    workshop: your **Salvage Materials** stock, your **Known Recipes**, a **📖 Learn a Recipe** browser, and a
-    **✎ Create Custom Item** builder. You craft from **salvage materials** (14 tiered mats: Scrap Metal,
-    Circuitry, Focus Crystal, … + rarer exotics like Pristine Alloy).
+    workshop: your **Salvage Materials** and **Components** on hand, a **⚙ Craft Components** workbench, your
+    **Known Recipes**, a **📖 Learn a Recipe** browser, and a **✎ Create Custom Item** builder.
+    - **Two-tier crafting.** Raw **salvage** (14 tiered mats) → **components** (blades, barrels, plating…) →
+      **weapons & armor**. Weapons and armor are built from components, not raw materials directly.
+    - **Components have a grade** — **Crude · Standard · Fine · Masterwork** — set by the materials you use
+      (Basic mats = low grades, Exotic mats = high). You get them by crafting on the **Craft Components**
+      workbench, by **♻ Salvaging** gear (returns its higher-value parts), or by finding them as loot. Grades
+      are color-coded on the component chips.
     - **You can only craft recipes you know.** A character **starts** knowing the **Common** gear of the craft
-      skills they're **proficient** in; you **learn** more by **♻ Salvaging** an example (do it from an item's
-      detail on the Inventory tab), or via a GM/discovery grant in the **Learn a Recipe** browser.
-    - **Known Recipes are grouped by type** (Weapons / Armor / Consumables / Tools / Misc) — each type is a
-      collapsible row (with a "known · craftable now" count) that you open to see its recipes, so the list stays
-      short. A **"Only show what I can craft now"** switch hides anything you're missing materials for, and a
-      search box finds recipes across every type at once.
-    - **Crafting** rolls a **skill check** — `d20 + craft-skill modifier` vs a **DC by rarity** (Common 10 ·
-      Uncommon 13 · Rare 16 · Very Rare 20). **Anyone can attempt**; proficiency and a good attribute just
-      improve the odds (craft skill by item: metal → Laborer's Tools, tech → Technology, crystal → Paranormal,
-      chem/plant → Herbalism, wood/hide/cloth → Nature Tools). **Success** spends the materials and makes the
-      item; **failure wastes half of each component** (rounded up). Legendary items can't be crafted; salvaging
-      is deliberately lossy (no infinite loop).
-    - **Custom items:** the **Create Custom Item** builder designs a fully playable weapon, armor, consumable,
-      tool, or gear — set its type, rarity, weight, and stats; its recipe **auto-derives** from those stats
-      (balanced like catalog gear) and it becomes a **known custom recipe** you can craft and equip. A live
-      preview shows the recipe and craft check before you save.
+      skills they're **proficient** in; you **learn** more by **♻ Salvaging** an example (from an item's detail
+      on the Inventory tab), or via a GM/discovery grant in the **Learn a Recipe** browser. Known Recipes are
+      **grouped by type** (collapsible, with a "known · craftable now" count), with a **"Only show what I can
+      craft now"** switch and a cross-type search.
+    - **Crafting** rolls a **skill check** — `d20 + craft-skill modifier` vs a **DC by rarity/grade** (Common 10
+      · Uncommon 13 · Rare 16 · Very Rare 20). **Anyone can attempt**; proficiency and a good attribute improve
+      the odds (skill by material: metal → Laborer's Tools, tech → Technology, crystal → Paranormal, chem/plant →
+      Herbalism, wood/hide/cloth → Nature Tools). **Success** spends the ingredients; **failure wastes half**
+      (rounded up). Legendary items can't be crafted; salvaging is deliberately lossy.
+    - **Custom items — within the balance rules.** The **Create Custom Item** builder designs a fully playable
+      item. **Weapons & armor** pick a **subtype/class template** (fixed attribute, weight band, and damage/DS
+      **hard-capped by grade**) and a **grade for each component slot**; the item's **quality is the average of
+      those grades**, which sets its rarity and stats. Its recipe is the exact components you chose, and it
+      becomes a **known custom recipe** you can craft and equip. Consumables/tools/misc stay simple (heal/effect
+      or aided skill). A live preview shows the result, recipe, and craft check before you save.
   - **Sheet tab** — the core overview:
   - **Body · Mind · Soul pools** — shown side by side as bold colored **current/max** numbers
     (Body/HP in **red**, Mind/KP in **blue**, Soul in **cyan**), pen-and-paper style. Soul shows your

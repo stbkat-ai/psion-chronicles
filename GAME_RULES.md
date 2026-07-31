@@ -469,15 +469,33 @@ built from — **salvage materials**.
 
 - **14 salvage materials, tiered.** Nine **Basic** (Scrap Metal, Hardwood, Leather, Cloth, Circuitry,
   Chemicals, Focus Crystal, Botanicals, Bone & Sinew) and five **Exotic** (Pristine Alloy, Power Cell,
-  Resonant Crystal, Volatile Compound, Ki Core). Exotic materials only appear in the recipes of
-  **Uncommon+** items, so higher-rarity crafting is meaningfully harder.
-- **Recipes are derived, not hand-listed.** Each item's component list comes from its **category, weapon type
-  / armor class, weight, and rarity** — heavier items need more primary material; each rarity step adds an
-  exotic and bumps quantities. (`PC.itemRecipe(item)` in `app/items.js` is the single source; it returns
-  `null` for Legendary, raw materials, and currency.)
-- **Salvaging** an item breaks **one** unit down into materials: you recover about **half** of each Basic
-  component (min 1), and Exotic cores are **consumed** in the teardown (floor of half). So craft→salvage is
-  always lossy — no infinite-material loop.
+  Resonant Crystal, Volatile Compound, Ki Core). Exotic materials appear only in **higher-grade** components,
+  so better gear is meaningfully harder to make.
+- **Components — the mid-tier parts (CONFIRMED Luke).** Weapons and armor are **not** built straight from raw
+  salvage; they're assembled from **components** — recognizable parts like **Blade, Barrel, Trigger Assembly,
+  Bow Limbs, Emitter Lens, Focus Array, Warhead, Plating, Armor Weave, Straps & Fittings** (16 in all). A
+  component:
+  - has a **quality grade** — **Crude (Q1) · Standard (Q2) · Fine (Q3) · Masterwork (Q4)**, aligned to rarity
+    (Common → Very Rare);
+  - is obtained three ways: **crafted from raw salvage** (the materials set the grade — Basic mats make low
+    grades, Exotic mats make high grades), **recovered by salvaging** gear, or **found** as loot (they're real
+    catalog items);
+  - is crafted on the Crafting tab's **⚙ Craft Components** workbench with a skill check (DC by grade).
+- **Templates & balance rules (CONFIRMED Luke).** Each weapon subtype and armor class has a **template** that
+  encodes the rules: its fixed **attribute**, the **component slots** it needs (a sword → Blade + Haft; a
+  rifle → Barrel + Trigger + Stock; heavy armor → Plating + Padding + Straps), a **weight band**, and a
+  **damage/DS table by grade** whose top rung (Masterwork) is that subtype's real catalog maximum — a **hard
+  cap** nothing can exceed.
+- **Higher-grade parts → better gear (CONFIRMED Luke).** An assembled item's **quality is the AVERAGE of its
+  components' grades** (rounded down); that quality sets its **rarity** and its **damage/DS** off the template,
+  never above the cap. So a Fine blade on a Standard haft yields a Standard weapon.
+- **Recipes are derived, not hand-listed.** A weapon/armor recipe is its template's **component slots** at the
+  grade matching its rarity; a component's recipe is raw salvage; consumables/tools/misc are raw salvage keyed
+  by name. (`PC.itemRecipe(item)` in `app/items.js` is the single source; `null` for Legendary, raw salvage,
+  and currency.)
+- **Salvaging** breaks **one** unit down: weapons/armor return **some of their components** (the higher-value
+  half — edge/core parts first — at the item's grade); components and other items return **raw salvage**
+  (Basic ≈ half min 1, Exotic floor half). Teardown is always **lossy** — no infinite loop.
 - **Downtime only (CONFIRMED Luke).** Crafting and salvaging are **not** combat actions — they cost **no**
   Action / Bonus Action and are done during the party's **downtime**, never mid-fight.
 - **You may only craft recipes you KNOW (CONFIRMED Luke).** Crafting is gated to a **known-recipe** list:
@@ -500,14 +518,19 @@ built from — **salvage materials**.
      - **On success:** components are spent and the item is made. **On failure:** the check is logged and you
        **lose half of each component** (rounded up) — a botched craft carries a real cost (CONFIRMED Luke).
   - *(Salvaging needs no check — anyone can break gear down.)*
-- **Custom items (CONFIRMED Luke — shipped).** The Crafting tab's **✎ Create Custom Item** builder designs a
-  fully mechanical item — pick a **type** (Weapon / Armor / Consumable / Tool / Misc), name, **rarity**, weight,
-  and the type's stats (weapon type + damage, armor class + Defense bonus, or heal HP/KP). Its **recipe is
-  auto-derived** from those stats (same engine as catalog gear, so it's balanced identically) and it becomes a
-  **known custom recipe** you can craft, salvage, and — for weapons/armor — equip and attack with like any item.
-- **Where it lives:** crafting has its own **🔨 Crafting tab** (after Inventory) — materials stock, known
-  recipes, the Learn browser, and the custom builder. Salvaging is still triggered from an item on the
-  Inventory tab. **Known Recipes are grouped by item type** (Weapons / Armor / Consumables / Tools / Misc):
+- **Custom items (CONFIRMED Luke — shipped, component-based).** The Crafting tab's **✎ Create Custom Item**
+  builder designs a fully mechanical item **within the balance rules**:
+  - **Weapons & armor** pick a **subtype/class template**, then a **grade for each component slot**. The
+    builder shows the template's limits (attribute, weight band, damage/DS by grade) and computes the result
+    live: the item's **quality = the average of the chosen slot grades**, which fixes its **rarity** and
+    **hard-capped damage/DS**. Its recipe is the **exact graded components** you chose, so building it consumes
+    those parts. The design is saved as a **known custom recipe** you can craft, salvage, equip, and attack
+    with like any catalog item.
+  - **Consumables / tools / misc** stay simple (name, rarity, weight, and a heal/effect or aided skill), built
+    from raw salvage.
+- **Where it lives:** crafting has its own **🔨 Crafting tab** (after Inventory) — raw materials **and
+  components** on hand, the **⚙ Craft Components** workbench, known recipes, the Learn browser, and the custom
+  builder. Salvaging is still triggered from an item on the Inventory tab. **Known Recipes are grouped by item type** (Weapons / Armor / Consumables / Tools / Misc):
   each type is a collapsible row showing how many recipes you know and how many are craftable now — open one
   to see its recipes. A **"Only show what I can craft now"** switch filters every group to recipes you hold all
   components for, and a search box does a flat find across all types.
