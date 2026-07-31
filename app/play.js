@@ -23,6 +23,8 @@
   let limbSel = null;      // which limb's editor is open on the Limbs tab (limb key) | null
   let chakraSel = null;    // which chakra's editor is open on the Chakras tab (attr key) | null
   let craftSearchQ = "";   // Known-Recipes search on the Crafting tab
+  let craftCatOpen = {};   // which Known-Recipes type groups are expanded (by category name)
+  let craftOnlyCraftable = false; // Known-Recipes filter: only show recipes you can craft right now
   let learnOpen = false;   // whether the "Learn a Recipe" (discovery) browser is expanded
   let learnSearchQ = "";   // discovery-browser search query
   let customOpen = false;  // whether the "Create Custom Item" builder is expanded
@@ -1784,33 +1786,8 @@
     }
     root.appendChild(mp);
 
-    // ---- known recipes ----
-    const kp = el("div", "panel");
-    kp.appendChild(el("div", "section-label", "Known Recipes"));
-    // Custom designs first, then known catalog recipes, filtered by the search box.
-    const custom = customItems();
-    const knownNames = knownRecipeNames();
-    const catalogKnown = knownNames.map((n) => (PC.ITEMS || []).find((it) => it.name === n)).filter(Boolean);
-    const q = craftSearchQ.trim().toLowerCase();
-    const matchQ = (it) => !q || it.name.toLowerCase().indexOf(q) > -1 || (it.category && it.category.toLowerCase().indexOf(q) > -1) || (it.weaponType && it.weaponType.toLowerCase().indexOf(q) > -1);
-    const searchRow = el("div", "inv-form");
-    const search = el("input"); search.type = "text"; search.placeholder = "Filter known recipes…"; search.value = craftSearchQ; search.className = "inv-name";
-    search.oninput = () => { craftSearchQ = search.value; refresh(); };
-    searchRow.appendChild(search);
-    kp.appendChild(searchRow);
-
-    const grid = el("div", "recipe-grid");
-    let shown = 0;
-    custom.filter(matchQ).forEach((it, i) => {
-      const card = recipeCard(it, { onForget: () => forgetCustom(i) });
-      if (card) { grid.appendChild(card); shown++; }
-    });
-    const sortedCatalog = catalogKnown.filter(matchQ).sort((a, b) => a.name.localeCompare(b.name));
-    sortedCatalog.slice(0, 120).forEach((it) => { const card = recipeCard(it); if (card) { grid.appendChild(card); shown++; } });
-    if (!shown) kp.appendChild(el("div", "muted", q ? "No known recipes match that filter." : "You don't know any recipes yet — salvage an item, learn one below, or design a custom item."));
-    else kp.appendChild(grid);
-    if (sortedCatalog.length > 120) kp.appendChild(el("div", "muted", `Showing 120 of ${sortedCatalog.length + custom.length} — filter to narrow.`));
-    root.appendChild(kp);
+    // ---- known recipes, grouped by item type (collapsed until a type is opened) ----
+    root.appendChild(buildKnownRecipes());
 
     // ---- learn a recipe (discovery / GM grant) ----
     root.appendChild(buildLearnPanel());
@@ -1818,6 +1795,79 @@
     // ---- create custom item ----
     root.appendChild(buildCustomBuilder());
     return root;
+  }
+
+  // Known Recipes — a list of item TYPES; open a type to reveal the recipes you know in it. A switch
+  // filters every group down to what you can craft right now, and a search does a flat cross-type find.
+  function buildKnownRecipes() {
+    const CATS = ["Weapon", "Armor", "Consumable", "Tool", "Misc"];
+    // All known recipe entries (custom designs + known catalog items), each with its category.
+    const entries = customItems().slice()
+      .concat(knownRecipeNames().map((n) => (PC.ITEMS || []).find((it) => it.name === n)).filter(Boolean));
+    const canCraft = (it) => { const m = missingComponents(it); return m && m.length === 0; };
+    const q = craftSearchQ.trim().toLowerCase();
+    const matchQ = (it) => !q || it.name.toLowerCase().indexOf(q) > -1 || (it.category && it.category.toLowerCase().indexOf(q) > -1) || (it.weaponType && it.weaponType.toLowerCase().indexOf(q) > -1);
+    const passFilters = (it) => matchQ(it) && (!craftOnlyCraftable || canCraft(it));
+
+    const kp = el("div", "panel");
+    kp.appendChild(el("div", "section-label", "Known Recipes"));
+
+    // Top controls: craftable-only switch + a cross-type search.
+    const controls = el("div", "craft-controls");
+    const sw = el("label", "switch");
+    const cb = el("input"); cb.type = "checkbox"; cb.checked = craftOnlyCraftable;
+    cb.onchange = () => { craftOnlyCraftable = cb.checked; refresh(); };
+    sw.appendChild(cb); sw.appendChild(el("span", "switch-track")); sw.appendChild(el("span", "switch-label", "Only show what I can craft now"));
+    controls.appendChild(sw);
+    const search = el("input"); search.type = "text"; search.placeholder = "Search all types…"; search.value = craftSearchQ; search.className = "inv-name craft-search";
+    search.oninput = () => { craftSearchQ = search.value; refresh(); };
+    controls.appendChild(search);
+    kp.appendChild(controls);
+
+    if (!entries.length) { kp.appendChild(el("div", "muted", "You don't know any recipes yet — salvage an item, learn one below, or design a custom item.")); return kp; }
+
+    // When searching, skip the accordion and show a flat filtered grid across every type.
+    if (q) {
+      const hits = entries.filter(passFilters).sort((a, b) => a.name.localeCompare(b.name));
+      if (!hits.length) { kp.appendChild(el("div", "muted", "No known recipes match — try another search or clear the filter.")); return kp; }
+      const grid = el("div", "recipe-grid");
+      hits.slice(0, 120).forEach((it) => { const card = recipeCard(it, it.custom ? { onForget: () => forgetCustom(it) } : null); if (card) grid.appendChild(card); });
+      kp.appendChild(grid);
+      if (hits.length > 120) kp.appendChild(el("div", "muted", `Showing 120 of ${hits.length} — narrow your search.`));
+      return kp;
+    }
+
+    // Otherwise: one collapsible row per item type, showing counts; open a type to see its recipes.
+    const otherCats = Array.from(new Set(entries.map((it) => it.category))).filter((c) => CATS.indexOf(c) === -1);
+    let anyShown = false;
+    CATS.concat(otherCats).forEach((cat) => {
+      const inCat = entries.filter((it) => it.category === cat);
+      if (!inCat.length) return;
+      const visible = inCat.filter(passFilters);
+      anyShown = anyShown || visible.length > 0;
+      const craftableCount = inCat.filter(canCraft).length;
+      const open = !!craftCatOpen[cat];
+      const row = el("div", "type-group");
+      const head = el("div", "type-head");
+      head.innerHTML = `<span class="type-caret">${open ? "▾" : "▸"}</span><span class="type-name">${cat}s</span>` +
+        `<span class="type-count">${craftOnlyCraftable ? `${visible.length} craftable` : `${inCat.length} known · ${craftableCount} craftable now`}</span>`;
+      head.onclick = () => { craftCatOpen[cat] = !open; refresh(); };
+      row.appendChild(head);
+      if (open) {
+        if (!visible.length) row.appendChild(el("div", "muted type-empty", craftOnlyCraftable ? "Nothing here is craftable right now — salvage or gather materials." : "No recipes match."));
+        else {
+          const grid = el("div", "recipe-grid");
+          visible.sort((a, b) => a.name.localeCompare(b.name)).forEach((it) => {
+            const card = recipeCard(it, it.custom ? { onForget: () => forgetCustom(it) } : null);
+            if (card) grid.appendChild(card);
+          });
+          row.appendChild(grid);
+        }
+      }
+      kp.appendChild(row);
+    });
+    if (craftOnlyCraftable && !anyShown) kp.appendChild(el("div", "muted", "No known recipe is craftable right now — gather more materials, or turn off the switch to see everything you know."));
+    return kp;
   }
 
   // "Learn a Recipe" — a collapsible browser of craftable catalog items you don't yet know.
@@ -1891,10 +1941,12 @@
     craftForm = { name: "", type: f.type, rarity: "Common", weight: "", desc: "", weaponType: "", damage: "", hands: "1", armorClass: "Light", dsBonus: "", hp: "", kp: "", skill: "" };
     save(); refresh();
   }
-  function forgetCustom(i) {
-    const it = customItems()[i]; if (!it) return;
-    customItems().splice(i, 1);
-    logLine(`Forgot custom recipe: ${it.name}.`);
+  function forgetCustom(item) {
+    const list = customItems();
+    const i = list.indexOf(item);
+    if (i < 0) return;
+    list.splice(i, 1);
+    logLine(`Forgot custom recipe: ${item.name}.`);
     save(); refresh();
   }
 

@@ -508,6 +508,32 @@ auto-derived; recipe categories/filters if the known list grows large.)
 
 ---
 
+### 28. Known Recipes grouped by item type + "craftable only" switch
+**Decision.** Per the user — "instead of showing the full list at all times it shows a list of item types
+(weapons, armor, consumables) and then when you click on one … it pulls up the recipes you know. with an option
+to only show what can be crafted toggled by a switch at the top." The flat 120-card Known Recipes grid was too
+much scrolling. Now Known Recipes is an **accordion of item-type rows** (Weapons / Armor / Consumables / Tools /
+Misc), each **collapsed by default** and labelled with its count ("81 known · 5 craftable now"); clicking a type
+expands just that group's recipe cards. A **"Only show what I can craft now" switch** at the top filters every
+group (and its counts) down to recipes whose components are fully held.
+**Why.** The flagged-in-#27 concern — a broad craft skill (Nature Tools) yields 120+ known commons — made the
+list unwieldy. Grouping keeps the page short (nothing expanded = five one-line rows) and lets a player jump
+straight to the type they want; the switch answers the most common real question at the table ("what can I
+actually make right now?").
+**How.** `play.js`: new state `craftCatOpen` (per-type open flags) and `craftOnlyCraftable` (switch). Extracted
+`buildKnownRecipes()`: builds one `.type-group` per category with a clickable `.type-head` (caret + name +
+count), rendering `recipeCard()`s only when open and only for entries passing the filters. A non-empty **search
+box** bypasses the accordion and shows a **flat cross-type grid** (so you can find by name without knowing the
+type). `canCraft(it)` = `missingComponents(it).length === 0`. `forgetCustom()` changed to delete by object
+identity (the grouped/filtered views no longer carry a stable index). **CSS:** `.craft-controls`, a CSS-only
+toggle `.switch/.switch-track/.switch-label`, and `.type-group/.type-head/.type-caret/.type-name/.type-count`.
+**Verified in-browser** (Playwright): five type rows render **collapsed** (0 cards visible) with correct
+counts; opening Weapons reveals its 81 cards and flips the caret; the switch drops Weapons 81→0 (no metal held)
+while Armors shows 15→9 with **every** displayed Craft button enabled; a "robe" search returns a flat 2-card
+list with the type rows hidden; no console errors. Cache-buster **v=47**.
+
+---
+
 ## Deferred / future ideas
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before

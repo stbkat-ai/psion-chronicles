@@ -507,7 +507,10 @@ built from — **salvage materials**.
   **known custom recipe** you can craft, salvage, and — for weapons/armor — equip and attack with like any item.
 - **Where it lives:** crafting has its own **🔨 Crafting tab** (after Inventory) — materials stock, known
   recipes, the Learn browser, and the custom builder. Salvaging is still triggered from an item on the
-  Inventory tab.
+  Inventory tab. **Known Recipes are grouped by item type** (Weapons / Armor / Consumables / Tools / Misc):
+  each type is a collapsible row showing how many recipes you know and how many are craftable now — open one
+  to see its recipes. A **"Only show what I can craft now"** switch filters every group to recipes you hold all
+  components for, and a search box does a flat find across all types.
 
 ### Action Economy (CONFIRMED Luke)
 On your turn you may take **one Move, one Action, and one Bonus Action** — each once per turn unless a

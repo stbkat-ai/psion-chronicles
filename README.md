@@ -154,6 +154,10 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     - **You can only craft recipes you know.** A character **starts** knowing the **Common** gear of the craft
       skills they're **proficient** in; you **learn** more by **♻ Salvaging** an example (do it from an item's
       detail on the Inventory tab), or via a GM/discovery grant in the **Learn a Recipe** browser.
+    - **Known Recipes are grouped by type** (Weapons / Armor / Consumables / Tools / Misc) — each type is a
+      collapsible row (with a "known · craftable now" count) that you open to see its recipes, so the list stays
+      short. A **"Only show what I can craft now"** switch hides anything you're missing materials for, and a
+      search box finds recipes across every type at once.
     - **Crafting** rolls a **skill check** — `d20 + craft-skill modifier` vs a **DC by rarity** (Common 10 ·
       Uncommon 13 · Rare 16 · Very Rare 20). **Anyone can attempt**; proficiency and a good attribute just
       improve the odds (craft skill by item: metal → Laborer's Tools, tech → Technology, crystal → Paranormal,
