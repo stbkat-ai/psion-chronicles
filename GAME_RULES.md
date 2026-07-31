@@ -488,9 +488,8 @@ built from — **salvage materials**.
      attempt** — proficiency and a high attribute just improve the odds; you are never locked out.
      - **Craft skill by item** (from its primary material): **metal → Laborer's Tools · tech → Technology ·
        crystal → Paranormal · chem/plant → Herbalism · wood/hide/cloth → Nature Tools**.
-     - **On success:** components are spent and the item is made. **On failure:** the check is logged and your
-       **materials are kept** (the GM paces how many attempts a downtime allows). *[Open: whether a failed
-       craft should instead waste some materials.]*
+     - **On success:** components are spent and the item is made. **On failure:** the check is logged and you
+       **lose half of each component** (rounded up) — a botched craft carries a real cost (CONFIRMED Luke).
   - *(Salvaging needs no check — anyone can break gear down.)*
 - **Custom items** (crafting something not in the catalog) are a **planned** extension — the recipe engine
   already works off generic item fields, so it will carry over.

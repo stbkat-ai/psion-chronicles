@@ -155,7 +155,7 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     rarity** (Common 10 · Uncommon 13 · Rare 16 · Very Rare 20). **Anyone can attempt**; proficiency and a good
     attribute just improve the odds (craft skill by item: metal → Laborer's Tools, tech → Technology, crystal →
     Paranormal, chem/plant → Herbalism, wood/hide/cloth → Nature Tools). Success spends the materials and makes
-    the item; **failure keeps your materials**. Your materials live in a **Salvage Materials** panel on the
+    the item; **failure wastes half of each component** (rounded up). Your materials live in a **Salvage Materials** panel on the
     Inventory tab. Legendary items can't be crafted; salvaging is deliberately lossy (no infinite loop).
     *(Custom-item crafting is planned next.)*
   - **Sheet tab** — the core overview:

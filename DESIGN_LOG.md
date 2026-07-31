@@ -452,6 +452,21 @@ materials on the fail, with each roll announced (e.g. "Laborer's Tools check d20
 
 ---
 
+### 26. Failed craft wastes half the components
+**Decision.** Per the user — "lose half" — a **failed** craft check is no longer non-destructive. On a miss the
+character now **loses half of each recipe component, rounded up** (e.g. a 1× Scrap + 1× Leather recipe loses
+1× each; a 4× material loses 2×). Success is unchanged (spend full recipe, make item).
+**Why.** #25 kept failure non-destructive as a safe default but flagged material-loss as an open option; the
+user chose to add real risk so a botched roll stings. Rounded **up** so single-unit components (the common
+case) still carry a cost — otherwise `floor(1/2)=0` would make failure toothless for most Common recipes.
+**How.** `play.js` `craftItem()` failure branch: `const lost = r.map(c => ({mat:c.mat, qty:Math.ceil(c.qty/2)}))`,
+spend each, and report it — the log line reads "Lost 1× Scrap Metal · 1× Leather (half, rounded up)" and the
+toast echoes it. Reworded the Materials-panel hint (no longer "a failed check keeps your materials" → "wastes
+half your components, rounded up"). Docs (GAME_RULES, README) updated; cache-buster v=45.
+**Open:** custom-item crafting.
+
+---
+
 ## Deferred / future ideas
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before

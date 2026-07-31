@@ -560,8 +560,11 @@
       announce(roll.total, `Crafted ${item.name} — ${tag} ✓ (used ${fmtMats(r)}).`);
       App.toast(`Crafted ${item.name}! (${roll.total} vs DC ${ci.dc})`);
     } else {
-      announce(roll.total, `Craft failed: ${item.name} — ${tag} ✗. Materials kept.`);
-      App.toast(`Craft failed: ${roll.total} vs DC ${ci.dc}.`);
+      // A botched craft wastes half of each component (rounded up), so failure carries a real cost.
+      const lost = r.map((c) => ({ mat: c.mat, qty: Math.ceil(c.qty / 2) })).filter((c) => c.qty > 0);
+      lost.forEach((c) => spendMaterial(c.mat, c.qty));
+      announce(roll.total, `Craft failed: ${item.name} — ${tag} ✗. Lost ${lost.length ? fmtMats(lost) : "nothing"} (half, rounded up).`);
+      App.toast(`Craft failed: ${roll.total} vs DC ${ci.dc}. Lost ${fmtMats(lost)}.`);
     }
     save(); refresh();
   }
@@ -1680,7 +1683,7 @@
     const mats = ownedMaterials();
     const mp = el("div", "panel");
     mp.appendChild(el("div", "section-label", "Salvage Materials"));
-    mp.appendChild(el("p", "hint", "A <b>downtime</b> activity (not a combat action). Break gear down (♻ <b>Salvage</b> on an item) to earn materials, then <b>🔨 Craft</b> any non-legendary item from the catalog once you hold its components. Crafting rolls a <b>skill check</b> (DC by rarity) — anyone can try; proficiency & attributes improve your odds. A failed check keeps your materials."));
+    mp.appendChild(el("p", "hint", "A <b>downtime</b> activity (not a combat action). Break gear down (♻ <b>Salvage</b> on an item) to earn materials, then <b>🔨 Craft</b> any non-legendary item from the catalog once you hold its components. Crafting rolls a <b>skill check</b> (DC by rarity) — anyone can try; proficiency & attributes improve your odds. A failed check <b>wastes half</b> your components (rounded up)."));
     if (!mats.length) mp.appendChild(el("div", "muted", "No materials yet. Salvage an item, or Add some from the catalog (Salvage category)."));
     else {
       const grid = el("div", "salvage-grid");
