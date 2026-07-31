@@ -2099,26 +2099,21 @@
     ["Weapon", "Armor", "Consumable", "Tool", "Misc"].forEach((c) => { const o = el("option", null, c); o.value = c; if (c === f.type) o.selected = true; typeS.appendChild(o); });
     typeS.onchange = () => { f.type = typeS.value; refresh(); };
     form.appendChild(labeled("Name", nameI));
-    form.appendChild(labeled("1 · Type", typeS));
+    form.appendChild(labeled("Item Category", typeS));
 
     const isComplex = f.type === "Weapon" || f.type === "Armor";
-    // Step 2: Subtype — the weapon category (grouped by attribute) or the armor class.
+    // After a Weapon/Armor category, choose the specific kind: the weapon type, or the armor class.
     if (f.type === "Weapon") {
       const wtypeS = el("select");
-      const groups = (PC.ATTRS || []).map((a) => {
-        const names = Object.keys(PC.WEAPON_TEMPLATES).filter((n) => PC.WEAPON_TEMPLATES[n].attr === a);
-        if (!names.length) return "";
-        return `<optgroup label="${a} weapons">` +
-          names.map((n) => `<option value="${n}" ${f.weaponType === n ? "selected" : ""}>${n}</option>`).join("") + "</optgroup>";
-      }).join("");
-      wtypeS.innerHTML = '<option value="">— choose subtype —</option>' + groups;
+      wtypeS.innerHTML = '<option value="">— choose weapon type —</option>' +
+        Object.keys(PC.WEAPON_TEMPLATES).map((n) => `<option value="${n}" ${f.weaponType === n ? "selected" : ""}>${n} (${PC.WEAPON_TEMPLATES[n].attr})</option>`).join("");
       wtypeS.onchange = () => { f.weaponType = wtypeS.value; f.slotGrade = {}; refresh(); };
-      form.appendChild(labeled("2 · Subtype", wtypeS));
+      form.appendChild(labeled("Weapon Type", wtypeS));
     } else if (f.type === "Armor") {
       const clsS = el("select");
-      clsS.innerHTML = '<option value="">— choose subtype —</option>' + ["Light", "Medium", "Heavy"].map((c) => `<option value="${c}" ${f.armorClass === c ? "selected" : ""}>${c} armor</option>`).join("");
+      clsS.innerHTML = '<option value="">— choose armor type —</option>' + ["Light", "Medium", "Heavy"].map((c) => `<option value="${c}" ${f.armorClass === c ? "selected" : ""}>${c} armor</option>`).join("");
       clsS.onchange = () => { f.armorClass = clsS.value; f.slotGrade = {}; refresh(); };
-      form.appendChild(labeled("2 · Subtype", clsS));
+      form.appendChild(labeled("Armor Type", clsS));
     }
 
     // Rarity is player-set only for simple items; weapons/armor derive it from component grades.
