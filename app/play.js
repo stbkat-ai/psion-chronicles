@@ -22,6 +22,12 @@
   let poolEdit = null;     // which pool's inline editor is open on the Sheet tab: "body"|"mind"|"soul"|null
   let limbSel = null;      // which limb's editor is open on the Limbs tab (limb key) | null
   let chakraSel = null;    // which chakra's editor is open on the Chakras tab (attr key) | null
+  let craftSearchQ = "";   // Known-Recipes search on the Crafting tab
+  let learnOpen = false;   // whether the "Learn a Recipe" (discovery) browser is expanded
+  let learnSearchQ = "";   // discovery-browser search query
+  let customOpen = false;  // whether the "Create Custom Item" builder is expanded
+  // Live state of the custom-item builder form (survives re-renders so type changes don't lose input).
+  let craftForm = { name: "", type: "Weapon", rarity: "Common", weight: "", desc: "", weaponType: "", damage: "", hands: "1", armorClass: "Light", dsBonus: "", hp: "", kp: "", skill: "" };
   const refresh = () => App.render();
 
   const bg = () => PC.background(rec.background);
@@ -544,9 +550,49 @@
     return r.filter((c) => ownedMaterial(c.mat) < c.qty).map((c) => `${c.qty - ownedMaterial(c.mat)}× ${c.mat}`);
   }
   function fmtMats(list) { return list.map((c) => `${c.qty}× ${c.mat}`).join(" · "); }
+
+  /* ---------- known recipes (what this character can craft) ---------- */
+  // A brand-new character starts knowing every Common (or unrated) recipe whose craft skill they're
+  // proficient in — a Technologist knows tech gear, a Herbalist knows salves, etc. Rarer recipes and
+  // out-of-domain gear are learned later (salvage one, or a GM/discovery grant).
+  function startingRecipes() {
+    return (PC.ITEMS || []).filter((it) => {
+      const r = recipeOf(it); if (!r) return false;
+      const sk = craftSkillOf(it);
+      return sk && isSkillProficient(sk) && (!it.rarity || it.rarity === "Common");
+    }).map((it) => it.name);
+  }
+  // The character's known catalog recipes (names), initialized lazily from the craft-skill start.
+  function knownRecipeNames() {
+    if (!Array.isArray(rec.knownRecipes)) rec.knownRecipes = startingRecipes();
+    return rec.knownRecipes;
+  }
+  // Custom item-templates the player has designed (each is a full item object with `custom:true`).
+  function customItems() { if (!Array.isArray(rec.customItems)) rec.customItems = []; return rec.customItems; }
+  // Does the character know how to craft this item? Custom designs are always known.
+  function knowsRecipe(item) {
+    if (!item) return false;
+    if (item.custom) return true;
+    return knownRecipeNames().indexOf(item.name) > -1;
+  }
+  // Learn a catalog recipe (from salvaging an example or a GM/discovery grant). Returns true if new.
+  function learnRecipe(name) {
+    const known = knownRecipeNames();
+    if (known.indexOf(name) > -1) return false;
+    known.push(name); return true;
+  }
+  // Per-component ownership status for a recipe, as HTML (owned = ok, short = flagged).
+  function fmtRecipeNeed(recipe) {
+    return recipe.map((c) => {
+      const have = ownedMaterial(c.mat), ok = have >= c.qty;
+      return `<span class="${ok ? "rc-ok" : "rc-no"}">${c.qty}× ${c.mat}${ok ? "" : ` (have ${have})`}</span>`;
+    }).join(" · ");
+  }
+
   function craftItem(item) {
     const r = recipeOf(item);
     if (!r) { App.toast("This can't be crafted."); return; }
+    if (!knowsRecipe(item)) { App.toast("You don't know this recipe yet — salvage one or learn it first."); return; }
     const miss = missingComponents(item);
     if (miss.length) { App.toast(`Missing: ${miss.join(", ")}.`); return; }
     // Downtime skill CHECK (not a proficiency lock): d20 + craft-skill modifier vs a rarity DC.
@@ -575,8 +621,10 @@
     y.forEach((c) => addMaterial(c.mat, c.qty));
     it.qty = (Number(it.qty) || 1) - 1;
     if (it.qty <= 0) { expandedItem = null; rec.inventory.splice(idx, 1); }
-    logLine(`Salvaged ${it.name} → ${y.length ? fmtMats(y) : "nothing usable"}.`);
-    App.toast(`Salvaged ${it.name}.`);
+    // Breaking an item down teaches its recipe (if craftable and not already known).
+    const learned = !it.custom && recipeOf(it) && learnRecipe(it.name);
+    logLine(`Salvaged ${it.name} → ${y.length ? fmtMats(y) : "nothing usable"}.${learned ? ` 📖 Learned to craft ${it.name}.` : ""}`);
+    App.toast(`Salvaged ${it.name}.${learned ? ` Recipe learned!` : ""}`);
     save(); refresh();
   }
 
@@ -763,6 +811,7 @@
       case "traits": body = buildTraitsTab(); break;
       case "description": body = buildDescriptionTab(); break;
       case "inventory": body = catalogOpen ? buildCatalogScreen() : buildInventoryTab(); break;
+      case "crafting": body = buildCraftingTab(); break;
       default: body = buildSheetTab();
     }
     root.appendChild(body);
@@ -784,7 +833,7 @@
 
   function buildTabBar() {
     const bar = el("div", "play-tabs");
-    [["sheet", "Sheet"], ["combat", "⚔ Combat"], ["limbs", "Limbs"], ["chakras", "Chakras"], ["kinetics", "Kinetics"], ["skills", "Skills"], ["traits", "Traits"], ["description", "Description"], ["inventory", "Inventory"]].forEach((pair) => {
+    [["sheet", "Sheet"], ["combat", "⚔ Combat"], ["limbs", "Limbs"], ["chakras", "Chakras"], ["kinetics", "Kinetics"], ["skills", "Skills"], ["traits", "Traits"], ["description", "Description"], ["inventory", "Inventory"], ["crafting", "🔨 Crafting"]].forEach((pair) => {
       const b = el("button", "play-tab" + (activeTab === pair[0] ? " active" : ""), pair[1]);
       b.onclick = () => { activeTab = pair[0]; catalogOpen = false; refresh(); };
       bar.appendChild(b);
@@ -1558,7 +1607,7 @@
     headRow.appendChild(cw);
     panel.appendChild(headRow);
 
-    panel.appendChild(el("p", "hint", "Search the full game catalog. <b>Add</b> drops an item straight in (GM/free); <b>🔨 Craft</b> builds it from your salvage — a <b>downtime</b> activity: you spend the components and roll the listed <b>skill check</b> (DC by rarity). Weapons arrive attack-ready (type + damage set)."));
+    panel.appendChild(el("p", "hint", "Search the full game catalog. <b>Add</b> drops an item straight in (GM/free). The 🔨 line shows an item's recipe and whether you already know it — actual <b>crafting</b> happens on the <b>🔨 Crafting</b> tab (from recipes you know). Weapons arrive attack-ready (type + damage set)."));
 
     const searchRow = el("div", "inv-form");
     const search = el("input"); search.type = "text"; search.placeholder = "Search items (e.g. rifle, staff, stimpak)…"; search.value = invSearchQ; search.className = "inv-name";
@@ -1599,19 +1648,11 @@
         if (recipe) {
           const ci = craftCheckInfo(it);
           const skillTag = ci.name ? ` · <span class="cat-craft-skill">🎲 ${ci.name} DC ${ci.dc}${ci.prof ? " ✓" : ""}</span>` : "";
-          craftLine = `<span class="cat-craft">🔨 ${fmtMats(recipe)}${skillTag}</span>`;
+          const knownTag = knowsRecipe(it) ? ' · <span class="rc-ok">📖 recipe known</span>' : "";
+          craftLine = `<span class="cat-craft">🔨 ${fmtMats(recipe)}${skillTag}${knownTag}</span>`;
         } else if (it.category !== "Salvage" && it.rarity === "Legendary") craftLine = `<span class="cat-craft leg">🔨 Legendary — cannot be crafted</span>`;
         row.innerHTML = `<div class="cat-info"><span class="cat-name">${it.name}${rarityTag}</span><span class="cat-meta">${meta}</span>${descLine}${craftLine}</div><span class="cat-wt">${it.weight} lb</span>`;
         const btns = el("div", "cat-btns");
-        if (recipe) {
-          const miss = missingComponents(it);
-          const ci = craftCheckInfo(it);
-          const craft = el("button", "btn small", "🔨 Craft");
-          craft.disabled = miss.length > 0;
-          craft.title = miss.length ? `Need ${miss.join(", ")}` : `Roll ${ci.name || "craft"} (d20${PC.fmtMod(ci.mod)}) vs DC ${ci.dc}`;
-          craft.onclick = () => craftItem(it);
-          btns.appendChild(craft);
-        }
         const add = el("button", "btn small primary", "＋ Add");
         add.onclick = () => addCatalogItem(it);
         btns.appendChild(add);
@@ -1651,8 +1692,8 @@
     browseBtn.onclick = () => { catalogOpen = true; refresh(); };
     inv.appendChild(browseBtn);
 
-    // ---- custom item ----
-    inv.appendChild(el("div", "section-label", "Add a Custom Item"));
+    // ---- quick-add a found / GM item (mechanical custom crafting lives on the Crafting tab) ----
+    inv.appendChild(el("div", "section-label", "Quick-Add an Item (found / GM)"));
     const form = el("div", "inv-form");
     const nameI = el("input"); nameI.type = "text"; nameI.placeholder = "Item name"; nameI.className = "inv-name";
     const wtI = el("input"); wtI.type = "number"; wtI.placeholder = "lb"; wtI.min = 0; wtI.step = "0.1"; wtI.className = "inv-wt";
@@ -1677,26 +1718,269 @@
       gearIdx.forEach((idx) => { list.appendChild(inventoryItem(rec.inventory[idx], idx)); });
       inv.appendChild(list);
     }
+    // Pointer to the crafting tab (materials & crafting moved there).
+    inv.appendChild(el("p", "hint", "♻ <b>Salvage</b> gear from an item's detail to earn materials — then head to the <b>🔨 Crafting</b> tab to spend them on known recipes or design your own item."));
     root.appendChild(inv);
+    return root;
+  }
 
-    // ---- salvage materials (crafting stock) ----
+  /* ---------- Crafting tab ---------- */
+  // Turn a salvage-material name into a chip element (with tier styling + description tooltip).
+  function materialChip(name, qty, tier) {
+    const chip = el("div", "salvage-chip" + (tier === "Exotic" ? " exotic" : ""));
+    chip.title = PC.itemDesc(name);
+    chip.innerHTML = `<span class="sv-name">${name}</span><span class="sv-qty">×${qty}</span>`;
+    return chip;
+  }
+  // One craftable recipe row (used for known catalog recipes and custom designs).
+  function recipeCard(item, opts) {
+    opts = opts || {};
+    const r = recipeOf(item); if (!r) return null;
+    const ci = craftCheckInfo(item);
+    const miss = missingComponents(item);
+    const card = el("div", "recipe-card");
+    let meta = item.category + (item.rarity && item.rarity !== "Common" ? ` · ${item.rarity}` : "");
+    if (item.category === "Weapon" && item.weaponType) meta += ` · ${item.weaponType}${item.damage ? " · " + item.damage : ""}`;
+    else if (item.category === "Armor") meta += ` · ${item.armorClass || "Light"}${item.dsBonus != null ? " · +" + item.dsBonus + " DS" : ""}`;
+    const head = el("div", "recipe-head");
+    head.innerHTML = `<span class="recipe-name">${item.name}${item.custom ? ' <span class="recipe-custom">custom</span>' : ""}</span><span class="recipe-meta">${meta}</span>`;
+    card.appendChild(head);
+    card.appendChild(el("div", "recipe-mats", `🔩 ${fmtRecipeNeed(r)}`));
+    card.appendChild(el("div", "recipe-check", `🎲 ${ci.name || "Craft"} check d20${PC.fmtMod(ci.mod)} vs DC ${ci.dc}` + (ci.prof ? ' <span class="rc-ok">✓ proficient</span>' : ' <span class="craft-dt">untrained</span>')));
+    const btns = el("div", "recipe-btns");
+    const craft = el("button", "btn small primary", "🔨 Craft");
+    craft.disabled = miss.length > 0;
+    craft.title = miss.length ? `Need ${miss.join(", ")}` : `Roll ${ci.name || "craft"} (d20${PC.fmtMod(ci.mod)}) vs DC ${ci.dc}`;
+    craft.onclick = () => craftItem(item);
+    btns.appendChild(craft);
+    if (opts.onForget) {
+      const forget = el("button", "btn small ghost", "✕ Forget");
+      forget.title = "Delete this custom recipe";
+      forget.onclick = opts.onForget;
+      btns.appendChild(forget);
+    }
+    card.appendChild(btns);
+    return card;
+  }
+
+  function buildCraftingTab() {
+    const root = el("div");
+
+    // ---- intro ----
+    const intro = el("div", "panel");
+    intro.appendChild(el("div", "section-label", "🔨 Crafting Workshop"));
+    intro.appendChild(el("p", "hint", "A <b>downtime</b> activity (never a combat action). You can craft any recipe you <b>know</b>: characters start knowing the Common gear of the craft skills they're <b>proficient</b> in, and learn more by <b>salvaging</b> an example (or a GM grant below). Crafting rolls a <b>skill check</b> — d20 + the craft skill's modifier vs a <b>DC by rarity</b> (Common 10 · Uncommon 13 · Rare 16 · Very Rare 20). <b>Success</b> spends the components and makes the item; <b>failure wastes half</b> of each component (rounded up)."));
+    root.appendChild(intro);
+
+    // ---- salvage materials stock ----
     const mats = ownedMaterials();
     const mp = el("div", "panel");
     mp.appendChild(el("div", "section-label", "Salvage Materials"));
-    mp.appendChild(el("p", "hint", "A <b>downtime</b> activity (not a combat action). Break gear down (♻ <b>Salvage</b> on an item) to earn materials, then <b>🔨 Craft</b> any non-legendary item from the catalog once you hold its components. Crafting rolls a <b>skill check</b> (DC by rarity) — anyone can try; proficiency & attributes improve your odds. A failed check <b>wastes half</b> your components (rounded up)."));
-    if (!mats.length) mp.appendChild(el("div", "muted", "No materials yet. Salvage an item, or Add some from the catalog (Salvage category)."));
+    if (!mats.length) mp.appendChild(el("div", "muted", "No materials yet. Salvage an item on the Inventory tab, or add some from the catalog (Salvage category)."));
     else {
       const grid = el("div", "salvage-grid");
-      mats.forEach((m) => {
-        const chip = el("div", "salvage-chip" + (m.tier === "Exotic" ? " exotic" : ""));
-        chip.title = PC.itemDesc(m.name);
-        chip.innerHTML = `<span class="sv-name">${m.name}</span><span class="sv-qty">×${m.qty}</span>`;
-        grid.appendChild(chip);
-      });
+      mats.forEach((m) => grid.appendChild(materialChip(m.name, m.qty, m.tier)));
       mp.appendChild(grid);
     }
     root.appendChild(mp);
+
+    // ---- known recipes ----
+    const kp = el("div", "panel");
+    kp.appendChild(el("div", "section-label", "Known Recipes"));
+    // Custom designs first, then known catalog recipes, filtered by the search box.
+    const custom = customItems();
+    const knownNames = knownRecipeNames();
+    const catalogKnown = knownNames.map((n) => (PC.ITEMS || []).find((it) => it.name === n)).filter(Boolean);
+    const q = craftSearchQ.trim().toLowerCase();
+    const matchQ = (it) => !q || it.name.toLowerCase().indexOf(q) > -1 || (it.category && it.category.toLowerCase().indexOf(q) > -1) || (it.weaponType && it.weaponType.toLowerCase().indexOf(q) > -1);
+    const searchRow = el("div", "inv-form");
+    const search = el("input"); search.type = "text"; search.placeholder = "Filter known recipes…"; search.value = craftSearchQ; search.className = "inv-name";
+    search.oninput = () => { craftSearchQ = search.value; refresh(); };
+    searchRow.appendChild(search);
+    kp.appendChild(searchRow);
+
+    const grid = el("div", "recipe-grid");
+    let shown = 0;
+    custom.filter(matchQ).forEach((it, i) => {
+      const card = recipeCard(it, { onForget: () => forgetCustom(i) });
+      if (card) { grid.appendChild(card); shown++; }
+    });
+    const sortedCatalog = catalogKnown.filter(matchQ).sort((a, b) => a.name.localeCompare(b.name));
+    sortedCatalog.slice(0, 120).forEach((it) => { const card = recipeCard(it); if (card) { grid.appendChild(card); shown++; } });
+    if (!shown) kp.appendChild(el("div", "muted", q ? "No known recipes match that filter." : "You don't know any recipes yet — salvage an item, learn one below, or design a custom item."));
+    else kp.appendChild(grid);
+    if (sortedCatalog.length > 120) kp.appendChild(el("div", "muted", `Showing 120 of ${sortedCatalog.length + custom.length} — filter to narrow.`));
+    root.appendChild(kp);
+
+    // ---- learn a recipe (discovery / GM grant) ----
+    root.appendChild(buildLearnPanel());
+
+    // ---- create custom item ----
+    root.appendChild(buildCustomBuilder());
     return root;
+  }
+
+  // "Learn a Recipe" — a collapsible browser of craftable catalog items you don't yet know.
+  function buildLearnPanel() {
+    const panel = el("div", "panel");
+    const head = el("div", "section-label collapse-head", `📖 Learn a Recipe (discovery / GM) ${learnOpen ? "▲" : "▼"}`);
+    head.style.cursor = "pointer";
+    head.onclick = () => { learnOpen = !learnOpen; refresh(); };
+    panel.appendChild(head);
+    if (!learnOpen) { panel.appendChild(el("p", "hint", "Salvaging an item teaches its recipe automatically. Expand to grant a recipe directly (a found schematic, a mentor, a GM ruling).")); return panel; }
+
+    panel.appendChild(el("p", "hint", "Add a recipe to your known list without salvaging — for schematics you find or recipes the GM grants."));
+    const searchRow = el("div", "inv-form");
+    const search = el("input"); search.type = "text"; search.placeholder = "Search craftable items to learn…"; search.value = learnSearchQ; search.className = "inv-name";
+    searchRow.appendChild(search);
+    panel.appendChild(searchRow);
+    const results = el("div", "catalog-results");
+    panel.appendChild(results);
+    function render() {
+      const q = learnSearchQ.trim().toLowerCase();
+      results.innerHTML = "";
+      if (!q) { results.appendChild(el("div", "muted", "Type to search.")); return; }
+      let matches = (PC.ITEMS || []).filter((it) => recipeOf(it) && knownRecipeNames().indexOf(it.name) === -1 &&
+        (it.name.toLowerCase().indexOf(q) > -1 || (it.weaponType && it.weaponType.toLowerCase().indexOf(q) > -1)));
+      if (!matches.length) { results.appendChild(el("div", "muted", "No unknown craftable items match.")); return; }
+      matches.slice(0, 40).forEach((it) => {
+        const row = el("div", "catalog-row");
+        const ci = craftCheckInfo(it);
+        row.innerHTML = `<div class="cat-info"><span class="cat-name">${it.name}</span><span class="cat-meta">${it.category}${it.rarity && it.rarity !== "Common" ? " · " + it.rarity : ""} · 🎲 ${ci.name || "?"} DC ${ci.dc}</span></div>`;
+        const learn = el("button", "btn small primary", "📖 Learn");
+        learn.onclick = () => { if (learnRecipe(it.name)) { logLine(`📖 Learned to craft ${it.name}.`); App.toast(`Learned: ${it.name}.`); save(); refresh(); } };
+        row.appendChild(learn);
+        results.appendChild(row);
+      });
+      if (matches.length > 40) results.appendChild(el("div", "muted", `Showing 40 of ${matches.length} — refine.`));
+    }
+    search.oninput = () => { learnSearchQ = search.value; render(); };
+    render();
+    return panel;
+  }
+
+  // Build a full custom-item object from the live builder form (its recipe auto-derives from its stats).
+  function customItemFromForm() {
+    const f = craftForm;
+    const base = { name: (f.name || "").trim(), category: f.type, rarity: f.rarity, weight: Number(f.weight) || 1, custom: true };
+    if ((f.desc || "").trim()) base.desc = f.desc.trim();
+    if (f.type === "Weapon") { base.weaponType = f.weaponType || ""; base.damage = (f.damage || "").trim(); base.hands = Number(f.hands) || 1; }
+    else if (f.type === "Armor") { base.armorClass = f.armorClass || "Light"; base.dsBonus = parseInt(f.dsBonus, 10) || 0; }
+    else if (f.type === "Consumable") {
+      const eff = {};
+      if ((f.hp || "").trim()) eff.hp = /d/i.test(f.hp) ? f.hp.trim() : (Number(f.hp) || 0);
+      if ((f.kp || "").trim()) eff.kp = /d/i.test(f.kp) ? f.kp.trim() : (Number(f.kp) || 0);
+      if (Object.keys(eff).length) {
+        base.effect = eff;
+        const bits = [];
+        if (eff.hp != null) bits.push(`heal ${eff.hp} HP`);
+        if (eff.kp != null) bits.push(`restore ${eff.kp} KP`);
+        base.note = bits.join(", ");
+      }
+    } else if (f.type === "Tool") { if (f.skill) base.skill = f.skill; }
+    return base;
+  }
+  function saveCustomItem() {
+    const f = craftForm;
+    if (!(f.name || "").trim()) { App.toast("Name your custom item."); return; }
+    const item = customItemFromForm();
+    if (!recipeOf(item)) { App.toast("This can't be made a recipe (check the type)."); return; }
+    customItems().push(item);
+    logLine(`✎ Designed custom ${item.category.toLowerCase()}: ${item.name} — now a known recipe (${fmtMats(recipeOf(item))}).`);
+    App.toast(`Custom recipe saved: ${item.name}. Craft it under Known Recipes.`);
+    craftForm = { name: "", type: f.type, rarity: "Common", weight: "", desc: "", weaponType: "", damage: "", hands: "1", armorClass: "Light", dsBonus: "", hp: "", kp: "", skill: "" };
+    save(); refresh();
+  }
+  function forgetCustom(i) {
+    const it = customItems()[i]; if (!it) return;
+    customItems().splice(i, 1);
+    logLine(`Forgot custom recipe: ${it.name}.`);
+    save(); refresh();
+  }
+
+  // "Create Custom Item" — a collapsible full-mechanical item designer. The recipe auto-derives from
+  // the item's own stats (type + weight + rarity), so custom gear is balanced like catalog gear.
+  function buildCustomBuilder() {
+    const panel = el("div", "panel");
+    const head = el("div", "section-label collapse-head", `✎ Create Custom Item ${customOpen ? "▲" : "▼"}`);
+    head.style.cursor = "pointer";
+    head.onclick = () => { customOpen = !customOpen; refresh(); };
+    panel.appendChild(head);
+    if (!customOpen) { panel.appendChild(el("p", "hint", "Design your own weapon, armor, consumable, tool, or gear. Its recipe is derived from its stats, and it becomes a known recipe you can craft.")); return panel; }
+
+    const f = craftForm;
+    const bind = (input, key) => { input.oninput = () => { f[key] = input.value; updatePreview(); }; };
+    const form = el("div", "custom-form");
+
+    // Row 1: name + type
+    const nameI = el("input"); nameI.type = "text"; nameI.placeholder = "Item name"; nameI.value = f.name; bind(nameI, "name");
+    const typeS = el("select");
+    ["Weapon", "Armor", "Consumable", "Tool", "Misc"].forEach((c) => { const o = el("option", null, c); o.value = c; if (c === f.type) o.selected = true; typeS.appendChild(o); });
+    typeS.onchange = () => { f.type = typeS.value; refresh(); };
+    form.appendChild(labeled("Name", nameI));
+    form.appendChild(labeled("Type", typeS));
+
+    // Row 2: rarity + weight
+    const rarS = el("select");
+    ["Common", "Uncommon", "Rare", "Very Rare"].forEach((c) => { const o = el("option", null, c); o.value = c; if (c === f.rarity) o.selected = true; rarS.appendChild(o); });
+    rarS.onchange = () => { f.rarity = rarS.value; updatePreview(); };
+    const wtI = el("input"); wtI.type = "number"; wtI.min = 0; wtI.step = "0.5"; wtI.placeholder = "lb"; wtI.value = f.weight; bind(wtI, "weight");
+    form.appendChild(labeled("Rarity", rarS));
+    form.appendChild(labeled("Weight (lb)", wtI));
+
+    // Type-specific stats
+    if (f.type === "Weapon") {
+      const wtypeS = el("select");
+      wtypeS.innerHTML = '<option value="">— weapon type —</option>' + PC.WEAPON_TYPES.map((w) => `<option value="${w.name}" ${f.weaponType === w.name ? "selected" : ""}>${w.name} (${w.attr})</option>`).join("");
+      wtypeS.onchange = () => { f.weaponType = wtypeS.value; updatePreview(); };
+      const dmgI = el("input"); dmgI.type = "text"; dmgI.placeholder = "e.g. 1d8"; dmgI.value = f.damage; bind(dmgI, "damage");
+      const handS = el("select");
+      [["1", "One-handed"], ["2", "Two-handed"]].forEach((h) => { const o = el("option", null, h[1]); o.value = h[0]; if (h[0] === String(f.hands)) o.selected = true; handS.appendChild(o); });
+      handS.onchange = () => { f.hands = handS.value; };
+      form.appendChild(labeled("Weapon type", wtypeS));
+      form.appendChild(labeled("Damage die", dmgI));
+      form.appendChild(labeled("Hands", handS));
+    } else if (f.type === "Armor") {
+      const clsS = el("select");
+      ["Light", "Medium", "Heavy"].forEach((c) => { const o = el("option", null, c); o.value = c; if (c === f.armorClass) o.selected = true; clsS.appendChild(o); });
+      clsS.onchange = () => { f.armorClass = clsS.value; updatePreview(); };
+      const dsI = el("input"); dsI.type = "number"; dsI.placeholder = "Defense bonus"; dsI.value = f.dsBonus; bind(dsI, "dsBonus");
+      form.appendChild(labeled("Armor class", clsS));
+      form.appendChild(labeled("Defense Score bonus", dsI));
+    } else if (f.type === "Consumable") {
+      const hpI = el("input"); hpI.type = "text"; hpI.placeholder = "HP (e.g. 2d6 or 10)"; hpI.value = f.hp; bind(hpI, "hp");
+      const kpI = el("input"); kpI.type = "text"; kpI.placeholder = "KP (e.g. 1d6 or 5)"; kpI.value = f.kp; bind(kpI, "kp");
+      form.appendChild(labeled("Heals HP", hpI));
+      form.appendChild(labeled("Restores KP", kpI));
+    } else if (f.type === "Tool") {
+      const skS = el("select");
+      skS.innerHTML = '<option value="">— aids no skill —</option>' + (PC.SKILLS || []).map((s) => `<option value="${s.name}" ${f.skill === s.name ? "selected" : ""}>${s.name}</option>`).join("");
+      skS.onchange = () => { f.skill = skS.value; };
+      form.appendChild(labeled("Aids skill", skS));
+    }
+
+    // Description (full width)
+    const descI = el("input"); descI.type = "text"; descI.placeholder = "Flavor description (optional)"; descI.value = f.desc; bind(descI, "desc");
+    const descL = labeled("Description", descI); descL.classList.add("custom-full");
+    form.appendChild(descL);
+    panel.appendChild(form);
+
+    // Live recipe preview + save
+    const preview = el("div", "custom-preview");
+    panel.appendChild(preview);
+    function updatePreview() {
+      const item = customItemFromForm();
+      const r = recipeOf(item);
+      if (!r) { preview.innerHTML = '<span class="craft-dt">Set a valid type to see its recipe.</span>'; return; }
+      const ci = craftCheckInfo(item);
+      preview.innerHTML = `<b>Recipe:</b> ${fmtMats(r)} &nbsp;·&nbsp; <b>Craft check:</b> 🎲 ${ci.name || "?"} d20${PC.fmtMod(ci.mod)} vs DC ${ci.dc}`;
+    }
+    updatePreview();
+    const saveBtn = el("button", "btn small primary", "✎ Save as Custom Recipe");
+    saveBtn.style.marginTop = "8px";
+    saveBtn.onclick = saveCustomItem;
+    panel.appendChild(saveBtn);
+    return panel;
   }
 
   /* ---------- Combat tab ---------- */

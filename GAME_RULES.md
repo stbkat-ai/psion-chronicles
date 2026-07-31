@@ -480,9 +480,18 @@ built from — **salvage materials**.
   always lossy — no infinite-material loop.
 - **Downtime only (CONFIRMED Luke).** Crafting and salvaging are **not** combat actions — they cost **no**
   Action / Bonus Action and are done during the party's **downtime**, never mid-fight.
+- **You may only craft recipes you KNOW (CONFIRMED Luke).** Crafting is gated to a **known-recipe** list:
+  - **Craft-skill start.** A new character starts knowing every **Common** (or unrated) recipe whose **craft
+    skill** they're **proficient** in — a Technologist knows common tech gear, an Herbalist knows common
+    salves, and so on. (Rarer gear and out-of-domain items are learned later.)
+  - **Salvaging teaches.** Breaking an item down (♻ Salvage) permanently **adds its recipe** to your known
+    list — take one apart to learn to make it.
+  - **Discovery / GM grant.** A recipe can also be granted directly (a found schematic, a mentor, a GM ruling)
+    via the Crafting tab's **📖 Learn a Recipe** browser.
 - **Crafting** consumes the recipe from your materials and produces the item. It needs:
-  1. **Components** — you must hold every material (the Craft button disables and lists what you're missing).
-  2. **A craft skill CHECK (CONFIRMED Luke — a check, *not* a proficiency lock).** Crafting rolls
+  1. **A known recipe** (see above) — the crafting UI only surfaces recipes you know.
+  2. **Components** — you must hold every material (the Craft button disables and lists what you're missing).
+  3. **A craft skill CHECK (CONFIRMED Luke — a check, *not* a proficiency lock).** Crafting rolls
      **d20 + the craft skill's modifier** (its attribute mod, chakra-adjusted, **+ proficiency if you have
      it**) against a **DC set by rarity**: **Common 10 · Uncommon 13 · Rare 16 · Very Rare 20**. **Anyone may
      attempt** — proficiency and a high attribute just improve the odds; you are never locked out.
@@ -491,8 +500,14 @@ built from — **salvage materials**.
      - **On success:** components are spent and the item is made. **On failure:** the check is logged and you
        **lose half of each component** (rounded up) — a botched craft carries a real cost (CONFIRMED Luke).
   - *(Salvaging needs no check — anyone can break gear down.)*
-- **Custom items** (crafting something not in the catalog) are a **planned** extension — the recipe engine
-  already works off generic item fields, so it will carry over.
+- **Custom items (CONFIRMED Luke — shipped).** The Crafting tab's **✎ Create Custom Item** builder designs a
+  fully mechanical item — pick a **type** (Weapon / Armor / Consumable / Tool / Misc), name, **rarity**, weight,
+  and the type's stats (weapon type + damage, armor class + Defense bonus, or heal HP/KP). Its **recipe is
+  auto-derived** from those stats (same engine as catalog gear, so it's balanced identically) and it becomes a
+  **known custom recipe** you can craft, salvage, and — for weapons/armor — equip and attack with like any item.
+- **Where it lives:** crafting has its own **🔨 Crafting tab** (after Inventory) — materials stock, known
+  recipes, the Learn browser, and the custom builder. Salvaging is still triggered from an item on the
+  Inventory tab.
 
 ### Action Economy (CONFIRMED Luke)
 On your turn you may take **one Move, one Action, and one Bonus Action** — each once per turn unless a

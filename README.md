@@ -92,7 +92,7 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     and, for Kinetics you're pursuing, spells out what's still needed to unlock its next tier.
 
 - **Live Play Sheet** (▶ Play on a character) — the at-the-table screen, organized into tabs so there's
-  little scrolling: **Sheet · ⚔ Combat · Limbs · Chakras · Kinetics · Skills · Traits · Description · Inventory**.
+  little scrolling: **Sheet · ⚔ Combat · Limbs · Chakras · Kinetics · Skills · Traits · Description · Inventory · 🔨 Crafting**.
   - **Limbs tab** — Fallout-style called-shot damage shown on a **body figure**: a silhouette of head,
     torso, two arms and two legs, with each limb's **HP written over it** in the bold colored pool-number
     style (green/gold when healthy → orange when hurt → red when crippled). **Tap a limb** to open its
@@ -147,17 +147,23 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     **Consumables actually work** — Use a Health Draught, KP Elixir, Stimpak, Vital Tonic, Chakra Salve,
     or Panacea and it rolls the effect and updates your HP/KP, chakras, and limbs on the spot (capped at
     your max), then logs it. A **← Inventory** button returns.
-  - **Crafting & Salvage** (a **downtime** activity — no combat action) — every non-legendary item can be
-    **🔨 crafted** from **salvage materials** (14 tiered mats: Scrap Metal, Circuitry, Focus Crystal, … + rarer
-    exotics like Pristine Alloy). Each item's detail shows what it's **made of**, its **craft skill**, and what
-    **salvaging** returns; **♻ Salvage** an item to break it into materials, and **Craft** any catalog item
-    once you hold its components. Crafting rolls a **skill check** — `d20 + craft-skill modifier` vs a **DC by
-    rarity** (Common 10 · Uncommon 13 · Rare 16 · Very Rare 20). **Anyone can attempt**; proficiency and a good
-    attribute just improve the odds (craft skill by item: metal → Laborer's Tools, tech → Technology, crystal →
-    Paranormal, chem/plant → Herbalism, wood/hide/cloth → Nature Tools). Success spends the materials and makes
-    the item; **failure wastes half of each component** (rounded up). Your materials live in a **Salvage Materials** panel on the
-    Inventory tab. Legendary items can't be crafted; salvaging is deliberately lossy (no infinite loop).
-    *(Custom-item crafting is planned next.)*
+  - **🔨 Crafting tab** (after Inventory; a **downtime** activity — no combat action) — the whole crafting
+    workshop: your **Salvage Materials** stock, your **Known Recipes**, a **📖 Learn a Recipe** browser, and a
+    **✎ Create Custom Item** builder. You craft from **salvage materials** (14 tiered mats: Scrap Metal,
+    Circuitry, Focus Crystal, … + rarer exotics like Pristine Alloy).
+    - **You can only craft recipes you know.** A character **starts** knowing the **Common** gear of the craft
+      skills they're **proficient** in; you **learn** more by **♻ Salvaging** an example (do it from an item's
+      detail on the Inventory tab), or via a GM/discovery grant in the **Learn a Recipe** browser.
+    - **Crafting** rolls a **skill check** — `d20 + craft-skill modifier` vs a **DC by rarity** (Common 10 ·
+      Uncommon 13 · Rare 16 · Very Rare 20). **Anyone can attempt**; proficiency and a good attribute just
+      improve the odds (craft skill by item: metal → Laborer's Tools, tech → Technology, crystal → Paranormal,
+      chem/plant → Herbalism, wood/hide/cloth → Nature Tools). **Success** spends the materials and makes the
+      item; **failure wastes half of each component** (rounded up). Legendary items can't be crafted; salvaging
+      is deliberately lossy (no infinite loop).
+    - **Custom items:** the **Create Custom Item** builder designs a fully playable weapon, armor, consumable,
+      tool, or gear — set its type, rarity, weight, and stats; its recipe **auto-derives** from those stats
+      (balanced like catalog gear) and it becomes a **known custom recipe** you can craft and equip. A live
+      preview shows the recipe and craft check before you save.
   - **Sheet tab** — the core overview:
   - **Body · Mind · Soul pools** — shown side by side as bold colored **current/max** numbers
     (Body/HP in **red**, Mind/KP in **blue**, Soul in **cyan**), pen-and-paper style. Soul shows your

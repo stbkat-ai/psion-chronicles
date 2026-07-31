@@ -36,7 +36,7 @@ in the browser's `localStorage` (key `psion_chronicles_characters`), so saved da
   kinetic tier-completion proficiency/expertise). No DOM.
 - `app.js` — `window.PsionApp`: character creator flow, roster, level-up screen.
 - `play.js` — `window.PsionPlay`: the live play sheet. Tabs: **Sheet · Combat · Limbs · Chakras · Kinetics ·
-  Skills · Traits · Description · Inventory**.
+  Skills · Traits · Description · Inventory · Crafting**.
 - `styles.css` — the "Post-Veil" dark theme (CSS variables: `--psi`, `--gold`, `--hp`, `--kp`,
   `--cyan`, `--danger`, …).
 

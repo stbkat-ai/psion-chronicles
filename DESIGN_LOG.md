@@ -467,6 +467,47 @@ half your components, rounded up"). Docs (GAME_RULES, README) updated; cache-bus
 
 ---
 
+### 27. Crafting gets its own tab — known-recipe gate + custom-item builder
+**Decision.** Per the user — "put the crafting system on its own tab after inventory … crafting should be
+limited by a known recipe system with an option to create your own item." Two design forks were put to the
+user (AskUserQuestion), who chose:
+- **How recipes are known → "Craft-skill based start."** A character **starts** knowing every **Common** (or
+  unrated) recipe whose **craft skill** they're **proficient** in (a Technologist knows common tech gear, etc.),
+  and **learns the rest** by **salvaging** an example or a GM/discovery grant. Crafting is now **gated to known
+  recipes** — you can no longer craft an arbitrary catalog item just because you hold the parts.
+- **Custom items → "Full mechanical item."** The builder produces a fully playable item (weapon/armor/
+  consumable/tool/misc) with real stats, not just flavor.
+**Why.** The catalog-wide "craft anything you have parts for" model had no sense of *learning* a craft; a
+known-recipe list gives progression and makes salvage double as discovery. Craft-skill start keeps a fresh
+character immediately useful in their domain while still walling off rarer/out-of-domain gear. Auto-deriving a
+custom item's recipe from its own stats (via the existing `PC.itemRecipe`) means custom gear is balanced
+identically to catalog gear with no separate balancing pass.
+**How.** `play.js`:
+- **Known recipes:** `rec.knownRecipes` (names) initialized lazily from `startingRecipes()` (Common/unrated
+  items whose `craftSkillFor` is a proficient skill). `knownRecipeNames()`, `knowsRecipe()`, `learnRecipe()`.
+  `craftItem()` gained a **known-recipe guard**. `salvageItem()` now **teaches** the item's recipe (logs
+  "📖 Learned to craft X").
+- **New `🔨 Crafting` tab** (after Inventory in the tab bar + `activeTab` switch): intro, **Salvage Materials**
+  stock (moved off the Inventory tab), searchable **Known Recipes** grid (`recipeCard()` with per-component
+  have/need coloring + the craft check + a Craft button), a collapsible **📖 Learn a Recipe** discovery browser,
+  and a collapsible **✎ Create Custom Item** builder.
+- **Custom builder:** live form state in module-level `craftForm` (survives re-renders); `customItemFromForm()`
+  builds the item object (weapon type+damage / armor class+DS / consumable hp·kp effect / tool skill);
+  `saveCustomItem()` pushes it to `rec.customItems` (a known custom recipe); a **live preview** shows the
+  derived recipe + craft check; `forgetCustom()` deletes one. Custom items craft through the same `craftItem()`
+  (their `custom:true` flag satisfies the known gate; recipe auto-derives).
+- **Inventory tab:** Materials panel removed (now on Crafting); catalog **Craft buttons removed** (crafting
+  lives on its tab) — the catalog now shows a "📖 recipe known" tag instead; quick-add relabeled "found / GM".
+- **CSS:** `.recipe-grid/.recipe-card/.recipe-*`, `.rc-ok/.rc-no`, `.custom-form/.custom-preview/.collapse-head`.
+**Verified in-browser** (Playwright): the Crafting tab renders immediately **after** Inventory; a Nature-Tools-
+proficient character starts with a populated Known Recipes grid; a Plasma weapon (Technology) is **not** known
+until **salvaged**, after which it appears in Known Recipes; the custom builder previews the derived recipe,
+saves a "custom"-tagged recipe, and crafts it into inventory; no console errors. Cache-buster **v=46**.
+**Open:** none outstanding for crafting. (Possible future polish: player-hand-picked components instead of
+auto-derived; recipe categories/filters if the known list grows large.)
+
+---
+
 ## Deferred / future ideas
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before
