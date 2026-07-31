@@ -573,6 +573,22 @@ mixed-grade parts on rebuild rather than the averaged uniform grade.
 
 ---
 
+### 30. Custom builder: explicit Type → Subtype step
+**Decision.** Per the user ("it only lets me pick type … let's have it so you select subtype as well, first
+type then subtype"), the custom builder's subtype selector was easy to miss — it sat *after* Weight and read as
+just another field. Reworked into a clear two-step: **1 · Type** (Weapon/Armor/…) immediately followed by
+**2 · Subtype** (the weapon category or armor class), both numbered.
+**How.** `play.js buildCustomBuilder()`: pulled the weapon-type / armor-class selects out of the trailing
+"type-specific stats" block and up to a dedicated second slot right under Type; relabelled the field pair
+`1 · Type` / `2 · Subtype`; the weapon subtype dropdown is now **grouped by attribute** via `<optgroup>`
+(STR/AGI/CON/INT/WIS/CHA weapons) so the 18 categories are easy to scan, and armor gained a `— choose subtype —`
+placeholder for symmetry. No engine change. **Verified** (Playwright): labels render `1 · Type` → `2 · Subtype`
+for both weapon & armor; weapon subtype has 6 attribute optgroups / 18 options; picking Firearms → 3 slot
+pickers + template rules; switching to Armor → Light/Medium/Heavy → Heavy shows 3 slots; no console errors.
+Cache-buster **v=49**.
+
+---
+
 ## Deferred / future ideas
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before
