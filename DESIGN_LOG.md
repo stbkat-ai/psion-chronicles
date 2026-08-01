@@ -610,6 +610,30 @@ subtypes; Axes shows the ladder **Crude 1d8 · Standard 1d10 · Fine 1d12 · Mas
 
 ---
 
+### 32. Pets tab — controllable NPC companions (bestiary-ready)
+**Decision.** Per the user, players will acquire **pets** — simple NPCs they control (animals, robots, small
+monsters, demons…). The bestiary isn't written yet, so the ask was to **build the tab & systems now** so
+creatures can drop in later. Added a **🐾 Pets** tab (last in the tab bar) with a hand-authored companion
+system.
+**Model.** `rec.pets = [{ id, name, kind, emoji, species, hp, hpMax, defense, speed, initMod, attacks:[{name,
+toHit, damage, note}], traits:[str], notes, active }]`. `kind` ∈ Animal/Robot/Monster/Demon/Construct/Spirit/
+Undead/Other, each with a default emoji (overridable). Deliberately a **lean stat block** ("simple NPCs"), not
+a full 6-attribute sheet — flexible enough for any creature.
+**How.** `play.js`: new `expandedPet` state, tab-bar + switch wiring, and a Pets section — `petList/addPet/
+removePet/setPetField`, `petHP` (damage/heal, clamps, logs, flags "down" at 0), `petInitiative`, `petAttackRoll`
+(d20 + to-hit), `petDamageRoll` (`PC.rollDiceExpr`), and attack/trait add-remove. `buildPetsTab()` → add form
+(name + kind) + `petCard()` per pet: header, HP bar + damage/heal, a Defense/Speed/Initiative strip, per-attack
+**⚔ Hit / 🎲 damage** quick-roll buttons, trait chips, and an expandable **editor** (all fields, attacks &
+traits editors, notes, remove). Every roll flows through the existing `announce()`/roll-log/popup, so pets act
+alongside the character. `styles.css`: `.pet-*` card/stat-strip/attack/editor styles. **Verified** (Playwright):
+Pets tab present & last; empty state; add "Rex" (Animal); damage 10→7; add attack/trait; quick button reads
+"⚔ Hit +5"; attack roll posts "Rex — Bite: d20+5 = 6 (vs Defense Score)" to the popup/log; editor renders all
+fields; no console errors. Docs (GAME_RULES §Pets, README, CLAUDE) synced. Cache-buster **v=52**.
+**Open:** bestiary of pre-statted creatures (drop-in instead of hand-entry); taming/summoning cost,
+command action-economy, and loyalty.
+
+---
+
 ## Deferred / future ideas
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before

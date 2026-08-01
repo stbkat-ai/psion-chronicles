@@ -568,6 +568,23 @@ system (Section 3b), not the regular skills list.
 
 ---
 
+### Pets & Companions (system in place; bestiary pending)
+Players may acquire **pets** — simple NPCs they control during play: **animals** (dogs, cats, hawks, bears…),
+**robots**, **small monsters**, **demons**, constructs, spirits, undead, and the like. The **app system is
+built and ready**; the official **bestiary of pre-statted creatures is still to be written**, so for now pets
+are **added and statted by hand** on the play sheet's **🐾 Pets tab**.
+- **Each companion is a mini stat block:** **HP** (current/max, with damage/heal), **Defense Score**, **Speed**,
+  an **Initiative modifier**, a list of **attacks** (name · to-hit bonus · damage die · optional note), a list
+  of **traits/abilities** (free text), and **notes**. A **kind** (Animal/Robot/Monster/Demon/…) sets a default
+  icon.
+- **You run them from the tab:** tap-to-roll **initiative**, and per attack a **to-hit** roll (d20 + bonus vs a
+  target's Defense Score) and a **damage** roll — all posting to the shared roll log, so a companion acts in
+  combat alongside its owner.
+- **Open / future:** once the bestiary exists, creatures will drop in pre-statted (rather than hand-entered);
+  taming/summoning costs, action-economy for commanding pets, and loyalty are still to be designed.
+
+---
+
 ## The Kinetics (technique schools)
 > Source: **Psion_Chronicles_Base_Kinetics_Overview.pdf** — this is newer/more complete than the
 > Player's Guide and is treated as the authority on the Kinetic roster.

@@ -92,7 +92,7 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     and, for Kinetics you're pursuing, spells out what's still needed to unlock its next tier.
 
 - **Live Play Sheet** (▶ Play on a character) — the at-the-table screen, organized into tabs so there's
-  little scrolling: **Sheet · ⚔ Combat · Limbs · Chakras · Kinetics · Skills · Traits · Description · Inventory · 🔨 Crafting**.
+  little scrolling: **Sheet · ⚔ Combat · Limbs · Chakras · Kinetics · Skills · Traits · Description · Inventory · 🔨 Crafting · 🐾 Pets**.
   - **Limbs tab** — Fallout-style called-shot damage shown on a **body figure**: a silhouette of head,
     torso, two arms and two legs, with each limb's **HP written over it** in the bold colored pool-number
     style (green/gold when healthy → orange when hurt → red when crippled). **Tap a limb** to open its
@@ -174,6 +174,12 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
       Its recipe is the exact components you chose, and it becomes a **known custom recipe** you can craft and
       equip. Consumables/tools/misc stay simple (heal/effect or aided skill). A live preview shows the result,
       recipe, and craft check before you save.
+  - **🐾 Pets tab** — **simple NPC companions you control** (animals, robots, small monsters, demons, …). Add
+    them by hand for now — a bestiary of pre-statted creatures is planned. Each companion gets a mini **stat
+    block**: HP (with damage/heal), Defense Score, Speed, an Initiative modifier, a list of **attacks**
+    (name · to-hit · damage die · note) and **traits/abilities**, plus free-form notes. Tap-to-roll buttons for
+    **initiative**, each attack's **to-hit** and **damage** post straight to your roll log, so you can run a
+    companion in combat right beside your character.
   - **Sheet tab** — the core overview:
   - **Body · Mind · Soul pools** — shown side by side as bold colored **current/max** numbers
     (Body/HP in **red**, Mind/KP in **blue**, Soul in **cyan**), pen-and-paper style. Soul shows your

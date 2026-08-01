@@ -14,6 +14,7 @@
   let rec;   // current character record
   let play;  // shorthand for rec.play
   let expandedItem = null; // inventory item id whose detail/actions are open
+  let expandedPet = null;  // pet id whose detail/stat block is open on the Pets tab
   let activeTab = "sheet"; // "sheet" | "combat"
   let curId = null;        // track which character is open (reset tab on switch)
   let invSearchQ = "";     // inventory catalog search query
@@ -821,7 +822,7 @@
 
   /* ---------- render ---------- */
   function render(container, id) {
-    if (id !== curId) { activeTab = "sheet"; expandedItem = null; catalogOpen = false; poolEdit = null; limbSel = null; chakraSel = null; curId = id; }
+    if (id !== curId) { activeTab = "sheet"; expandedItem = null; expandedPet = null; catalogOpen = false; poolEdit = null; limbSel = null; chakraSel = null; curId = id; }
     rec = App.loadRoster().find((c) => c.id === id);
     if (!rec) { App.goHome(); return; }
     ensurePlay();
@@ -843,6 +844,7 @@
       case "description": body = buildDescriptionTab(); break;
       case "inventory": body = catalogOpen ? buildCatalogScreen() : buildInventoryTab(); break;
       case "crafting": body = buildCraftingTab(); break;
+      case "pets": body = buildPetsTab(); break;
       default: body = buildSheetTab();
     }
     root.appendChild(body);
@@ -864,7 +866,7 @@
 
   function buildTabBar() {
     const bar = el("div", "play-tabs");
-    [["sheet", "Sheet"], ["combat", "⚔ Combat"], ["limbs", "Limbs"], ["chakras", "Chakras"], ["kinetics", "Kinetics"], ["skills", "Skills"], ["traits", "Traits"], ["description", "Description"], ["inventory", "Inventory"], ["crafting", "🔨 Crafting"]].forEach((pair) => {
+    [["sheet", "Sheet"], ["combat", "⚔ Combat"], ["limbs", "Limbs"], ["chakras", "Chakras"], ["kinetics", "Kinetics"], ["skills", "Skills"], ["traits", "Traits"], ["description", "Description"], ["inventory", "Inventory"], ["crafting", "🔨 Crafting"], ["pets", "🐾 Pets"]].forEach((pair) => {
       const b = el("button", "play-tab" + (activeTab === pair[0] ? " active" : ""), pair[1]);
       b.onclick = () => { activeTab = pair[0]; catalogOpen = false; refresh(); };
       bar.appendChild(b);
@@ -2204,6 +2206,215 @@
     saveBtn.onclick = saveCustomItem;
     panel.appendChild(saveBtn);
     return panel;
+  }
+
+  /* ---------- Pets tab ---------- */
+  // Simple NPC companions the player controls (animals, robots, monsters, demons…). Hand-authored for
+  // now; the data model is ready for a future bestiary to drop pre-statted creatures straight in.
+  const PET_KINDS = ["Animal", "Robot", "Monster", "Demon", "Construct", "Spirit", "Undead", "Other"];
+  const PET_EMOJI = { Animal: "🐾", Robot: "🤖", Monster: "👾", Demon: "😈", Construct: "🗿", Spirit: "👻", Undead: "💀", Other: "⭐" };
+
+  function petList() { if (!Array.isArray(rec.pets)) rec.pets = []; return rec.pets; }
+  function addPet(name, kind) {
+    const k = kind || "Animal";
+    petList().push({
+      id: "pet_" + Date.now().toString(36) + "_" + (name || "pet").replace(/\W+/g, "").slice(0, 6),
+      name: name || "New Companion", kind: k, emoji: PET_EMOJI[k] || "🐾", species: "",
+      hp: 10, hpMax: 10, defense: 12, speed: "30 ft", initMod: 0,
+      attacks: [], traits: [], notes: "", active: true,
+    });
+    logLine(`🐾 Gained a companion: ${name || "New Companion"}.`);
+    App.toast(`Added ${name || "companion"}.`);
+    save(); refresh();
+  }
+  function removePet(id) {
+    const i = petList().findIndex((p) => p.id === id);
+    if (i < 0) return;
+    const p = petList()[i];
+    petList().splice(i, 1);
+    if (expandedPet === id) expandedPet = null;
+    logLine(`Dismissed companion: ${p.name}.`);
+    save(); refresh();
+  }
+  function setPetField(p, field, value) { p[field] = value; save(); refresh(); }
+  function petHP(p, delta) {
+    const max = Number(p.hpMax) || 0;
+    const before = Number(p.hp) || 0;
+    p.hp = Math.max(0, Math.min(max, before + delta));
+    const d = p.hp - before;
+    logLine(`${p.emoji || "🐾"} ${p.name}: ${d >= 0 ? "+" : ""}${d} HP → ${p.hp}/${max}${p.hp <= 0 ? " (down!)" : ""}.`);
+    save(); refresh();
+  }
+  function petInitiative(p) {
+    const mod = Number(p.initMod) || 0;
+    const r = PC.rollCheck(mod, "normal");
+    announce(r.total, `${p.emoji || "🐾"} ${p.name} initiative: d20${PC.fmtMod(mod)} = ${r.total}`);
+    save(); refresh();
+  }
+  function petAttackRoll(p, atk) {
+    const mod = Number(atk.toHit) || 0;
+    const r = PC.rollCheck(mod, "normal");
+    announce(r.total, `${p.emoji || "🐾"} ${p.name} — ${atk.name || "attack"}: d20${PC.fmtMod(mod)} = ${r.total} (vs Defense Score)`);
+    save(); refresh();
+  }
+  function petDamageRoll(p, atk) {
+    if (!atk.damage) { App.toast('Set a damage die (e.g. "1d6").'); return; }
+    const dr = PC.rollDiceExpr(atk.damage);
+    if (!dr) { App.toast('Damage die format like "1d6" or "2d6".'); return; }
+    announce(dr.total, `${p.emoji || "🐾"} ${p.name} — ${atk.name || "attack"} damage: ${atk.damage} = [${dr.rolls.join(",")}] → ${dr.total}`);
+    save(); refresh();
+  }
+  function addPetAttack(p) { (p.attacks = p.attacks || []).push({ name: "Bite", toHit: 0, damage: "1d6", note: "" }); save(); refresh(); }
+  function removePetAttack(p, i) { p.attacks.splice(i, 1); save(); refresh(); }
+  function addPetTrait(p) { (p.traits = p.traits || []).push(""); save(); refresh(); }
+  function removePetTrait(p, i) { p.traits.splice(i, 1); save(); refresh(); }
+
+  function buildPetsTab() {
+    const root = el("div");
+    const intro = el("div", "panel");
+    intro.appendChild(el("div", "section-label", "🐾 Pets & Companions"));
+    intro.appendChild(el("p", "hint", "Simple NPC companions you control — animals, robots, small monsters, demons, and more. Add them by hand for now (the <b>bestiary is coming</b>); each gets a mini stat block — HP, Defense, Speed, attacks & traits — with tap-to-roll <b>initiative</b>, <b>attacks</b>, and <b>damage</b> that post to your roll log."));
+    const form = el("div", "inv-form");
+    const nameI = el("input"); nameI.type = "text"; nameI.placeholder = "Companion name"; nameI.className = "inv-name";
+    const kindS = el("select"); kindS.className = "inv-cat";
+    PET_KINDS.forEach((k) => { const o = el("option", null, `${PET_EMOJI[k]} ${k}`); o.value = k; kindS.appendChild(o); });
+    const addBtn = el("button", "btn small primary", "+ Add Pet");
+    addBtn.onclick = () => { if (!nameI.value.trim()) { App.toast("Name your companion."); return; } addPet(nameI.value.trim(), kindS.value); };
+    form.appendChild(nameI); form.appendChild(kindS); form.appendChild(addBtn);
+    intro.appendChild(form);
+    root.appendChild(intro);
+
+    const pets = petList();
+    if (!pets.length) root.appendChild(el("div", "muted", "No companions yet. Add one above — or wait for the bestiary to arrive."));
+    else pets.forEach((p) => root.appendChild(petCard(p)));
+    return root;
+  }
+
+  function petCard(p) {
+    const open = expandedPet === p.id;
+    const max = Number(p.hpMax) || 0, hp = Number(p.hp) || 0;
+    const wrap = el("div", "panel pet-card" + (hp <= 0 ? " pet-down" : ""));
+
+    // Header — emoji · name · kind/species (tap to expand the editor)
+    const head = el("div", "pet-head");
+    head.innerHTML = `<span class="pet-emoji">${p.emoji || "🐾"}</span><span class="pet-name">${p.name}${hp <= 0 ? ' <span class="pet-badge">down</span>' : ""}</span><span class="pet-kind">${p.kind}${p.species ? " · " + p.species : ""}</span><span class="pet-caret">${open ? "▲" : "▼"}</span>`;
+    head.style.cursor = "pointer";
+    head.onclick = () => { expandedPet = open ? null : p.id; refresh(); };
+    wrap.appendChild(head);
+
+    // HP bar + damage/heal
+    const track = el("div", "bar-track"); const fill = el("div", "bar-fill hp"); fill.style.width = (max > 0 ? Math.min(100, hp / max * 100) : 0) + "%"; track.appendChild(fill);
+    const hpHead = el("div", "poolbar-head"); hpHead.innerHTML = `<span>HP</span><span class="poolbar-num">${hp} / ${max}</span>`;
+    wrap.appendChild(hpHead); wrap.appendChild(track);
+    const hpCtl = el("div", "pet-hp-ctl");
+    const amt = el("input"); amt.type = "number"; amt.min = "1"; amt.value = "1"; amt.className = "pet-amt"; amt.title = "amount";
+    const dmg = el("button", "btn small", "− Damage"); dmg.onclick = () => petHP(p, -Math.abs(parseInt(amt.value, 10) || 1));
+    const heal = el("button", "btn small", "+ Heal"); heal.onclick = () => petHP(p, Math.abs(parseInt(amt.value, 10) || 1));
+    hpCtl.appendChild(amt); hpCtl.appendChild(dmg); hpCtl.appendChild(heal);
+    wrap.appendChild(hpCtl);
+
+    // Stat strip — Defense · Speed · Initiative roll
+    const strip = el("div", "pet-stat-strip");
+    strip.appendChild(petStat("Defense", p.defense));
+    strip.appendChild(petStat("Speed", p.speed));
+    const initBtn = el("button", "btn small", `🎯 Init ${PC.fmtMod(Number(p.initMod) || 0)}`);
+    initBtn.onclick = () => petInitiative(p);
+    strip.appendChild(initBtn);
+    wrap.appendChild(strip);
+
+    // Attacks — quick roll buttons
+    const atks = p.attacks || [];
+    if (atks.length) {
+      const ag = el("div", "pet-atk-group");
+      atks.forEach((atk) => {
+        const row = el("div", "pet-atk");
+        row.appendChild(el("span", "pet-atk-name", `${atk.name || "Attack"}${atk.note ? ` <span class="pet-atk-note">${atk.note}</span>` : ""}`));
+        const ab = el("button", "btn small", `⚔ Hit ${PC.fmtMod(Number(atk.toHit) || 0)}`); ab.onclick = () => petAttackRoll(p, atk);
+        const db = el("button", "btn small", `🎲 ${atk.damage || "dmg"}`); db.onclick = () => petDamageRoll(p, atk);
+        row.appendChild(ab); row.appendChild(db);
+        ag.appendChild(row);
+      });
+      wrap.appendChild(ag);
+    }
+
+    // Traits — read-only chips when collapsed
+    if ((p.traits || []).filter((t) => t.trim()).length) {
+      const tw = el("div", "pet-traits");
+      p.traits.filter((t) => t.trim()).forEach((t) => tw.appendChild(el("span", "pet-trait", t)));
+      wrap.appendChild(tw);
+    }
+    if (p.notes && !open) wrap.appendChild(el("div", "pet-notes", p.notes));
+
+    // Editor (expanded)
+    if (open) wrap.appendChild(petEditor(p));
+    return wrap;
+  }
+  function petStat(label, val) {
+    const s = el("div", "pet-stat");
+    s.innerHTML = `<span class="pet-stat-label">${label}</span><span class="pet-stat-val">${val != null && val !== "" ? val : "—"}</span>`;
+    return s;
+  }
+
+  function petEditor(p) {
+    const ed = el("div", "pet-editor");
+    ed.appendChild(el("div", "section-label", "Edit Companion"));
+
+    // Meta + core stats
+    const grid = el("div", "custom-form");
+    const nameI = el("input"); nameI.type = "text"; nameI.value = p.name || ""; nameI.oninput = () => { p.name = nameI.value; save(); };
+    grid.appendChild(labeled("Name", nameI));
+    const kindS = el("select");
+    kindS.innerHTML = PET_KINDS.map((k) => `<option value="${k}" ${p.kind === k ? "selected" : ""}>${k}</option>`).join("");
+    kindS.onchange = () => { p.kind = kindS.value; if (!p._emojiSet) p.emoji = PET_EMOJI[kindS.value] || "🐾"; save(); refresh(); };
+    grid.appendChild(labeled("Kind", kindS));
+    const emojiI = el("input"); emojiI.type = "text"; emojiI.value = p.emoji || ""; emojiI.maxLength = 4; emojiI.oninput = () => { p.emoji = emojiI.value; p._emojiSet = true; save(); };
+    grid.appendChild(labeled("Icon", emojiI));
+    const specI = el("input"); specI.type = "text"; specI.placeholder = "e.g. Hawk, Guard Bot"; specI.value = p.species || ""; specI.oninput = () => { p.species = specI.value; save(); };
+    grid.appendChild(labeled("Species / model", specI));
+    const hpMaxI = el("input"); hpMaxI.type = "number"; hpMaxI.min = "1"; hpMaxI.value = p.hpMax || 0; hpMaxI.onchange = () => { p.hpMax = Math.max(1, parseInt(hpMaxI.value, 10) || 1); p.hp = Math.min(Number(p.hp) || 0, p.hpMax); save(); refresh(); };
+    grid.appendChild(labeled("Max HP", hpMaxI));
+    const defI = el("input"); defI.type = "number"; defI.value = p.defense != null ? p.defense : 12; defI.onchange = () => { p.defense = parseInt(defI.value, 10) || 0; save(); refresh(); };
+    grid.appendChild(labeled("Defense Score", defI));
+    const spdI = el("input"); spdI.type = "text"; spdI.placeholder = "30 ft"; spdI.value = p.speed || ""; spdI.oninput = () => { p.speed = spdI.value; save(); };
+    grid.appendChild(labeled("Speed", spdI));
+    const initI = el("input"); initI.type = "number"; initI.value = p.initMod || 0; initI.onchange = () => { p.initMod = parseInt(initI.value, 10) || 0; save(); refresh(); };
+    grid.appendChild(labeled("Initiative mod", initI));
+    ed.appendChild(grid);
+
+    // Attacks editor
+    ed.appendChild(el("div", "section-label", "Attacks"));
+    (p.attacks || []).forEach((atk, i) => {
+      const r = el("div", "pet-atk-edit");
+      const n = el("input"); n.type = "text"; n.placeholder = "name"; n.value = atk.name || ""; n.className = "pet-atk-n"; n.oninput = () => { atk.name = n.value; save(); };
+      const th = el("input"); th.type = "number"; th.placeholder = "+hit"; th.value = atk.toHit != null ? atk.toHit : 0; th.className = "pet-atk-th"; th.onchange = () => { atk.toHit = parseInt(th.value, 10) || 0; save(); refresh(); };
+      const dm = el("input"); dm.type = "text"; dm.placeholder = "1d6"; dm.value = atk.damage || ""; dm.className = "pet-atk-dm"; dm.oninput = () => { atk.damage = dm.value; save(); };
+      const nt = el("input"); nt.type = "text"; nt.placeholder = "note (e.g. reach, poison)"; nt.value = atk.note || ""; nt.className = "pet-atk-nt"; nt.oninput = () => { atk.note = nt.value; save(); };
+      const rm = el("button", "btn small ghost", "✕"); rm.title = "Remove attack"; rm.onclick = () => removePetAttack(p, i);
+      r.appendChild(n); r.appendChild(th); r.appendChild(dm); r.appendChild(nt); r.appendChild(rm);
+      ed.appendChild(r);
+    });
+    const addA = el("button", "btn small", "+ Add attack"); addA.onclick = () => addPetAttack(p);
+    ed.appendChild(addA);
+
+    // Traits editor
+    ed.appendChild(el("div", "section-label", "Traits & Abilities"));
+    (p.traits || []).forEach((t, i) => {
+      const r = el("div", "pet-trait-row");
+      const ti = el("input"); ti.type = "text"; ti.placeholder = "e.g. Keen Senses — advantage on Perception"; ti.value = t; ti.oninput = () => { p.traits[i] = ti.value; save(); };
+      const rm = el("button", "btn small ghost", "✕"); rm.onclick = () => removePetTrait(p, i);
+      r.appendChild(ti); r.appendChild(rm);
+      ed.appendChild(r);
+    });
+    const addT = el("button", "btn small", "+ Add trait"); addT.onclick = () => addPetTrait(p);
+    ed.appendChild(addT);
+
+    // Notes + remove
+    ed.appendChild(el("div", "section-label", "Notes"));
+    const notes = el("textarea", "pet-notes-edit"); notes.placeholder = "Anything else — origin, loyalty, GM notes…"; notes.value = p.notes || ""; notes.oninput = () => { p.notes = notes.value; save(); };
+    ed.appendChild(notes);
+    const del = el("button", "btn small ghost", "✕ Remove companion"); del.style.marginTop = "10px"; del.onclick = () => { if (confirm(`Remove ${p.name}?`)) removePet(p.id); };
+    ed.appendChild(del);
+    return ed;
   }
 
   /* ---------- Combat tab ---------- */

@@ -617,6 +617,38 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 .log-line:last-child { border-bottom: none; }
 .log-turn { color: var(--psi-bright); font-weight: 700; font-size: .74rem; margin-right: 6px; }
 
+/* ---- Pets & Companions ---- */
+.pet-card.pet-down { border-color: var(--danger); }
+.pet-head { display: flex; align-items: center; gap: 9px; cursor: pointer; }
+.pet-emoji { font-size: 1.5rem; line-height: 1; }
+.pet-name { font-weight: 700; font-size: 1.02rem; }
+.pet-badge { font-size: .58rem; text-transform: uppercase; letter-spacing: .5px; font-weight: 700; color: var(--danger); border: 1px solid currentColor; border-radius: 5px; padding: 0 5px; vertical-align: middle; }
+.pet-kind { font-size: .78rem; color: var(--text-dim); }
+.pet-caret { margin-left: auto; color: var(--text-dim); font-size: .8rem; }
+.pet-card .poolbar-head { margin-top: 10px; }
+.pet-hp-ctl { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
+.pet-amt { width: 62px; }
+.pet-stat-strip { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px; }
+.pet-stat { background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 5px 11px; display: flex; flex-direction: column; }
+.pet-stat-label { font-size: .62rem; text-transform: uppercase; letter-spacing: .5px; color: var(--text-dim); }
+.pet-stat-val { font-weight: 700; font-variant-numeric: tabular-nums; }
+.pet-atk-group { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+.pet-atk { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; padding: 6px 9px; }
+.pet-atk-name { font-weight: 600; font-size: .88rem; margin-right: auto; }
+.pet-atk-note { font-size: .72rem; color: var(--text-dim); font-weight: 400; }
+.pet-traits { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.pet-trait { font-size: .76rem; background: rgba(124,92,255,.12); border: 1px solid var(--border-glow); border-radius: 999px; padding: 3px 10px; }
+.pet-notes { margin-top: 10px; font-size: .82rem; color: var(--text-dim); font-style: italic; white-space: pre-wrap; }
+.pet-editor { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border); }
+.pet-atk-edit { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; align-items: center; }
+.pet-atk-edit .pet-atk-n { flex: 1 1 120px; }
+.pet-atk-edit .pet-atk-th { width: 64px; }
+.pet-atk-edit .pet-atk-dm { width: 74px; }
+.pet-atk-edit .pet-atk-nt { flex: 1 1 140px; }
+.pet-trait-row { display: flex; gap: 6px; margin-bottom: 6px; }
+.pet-trait-row input { flex: 1 1 auto; }
+.pet-notes-edit { width: 100%; box-sizing: border-box; min-height: 60px; resize: vertical; background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); padding: 8px 10px; font: inherit; }
+
 @media (max-width: 680px) {
   .sheet-grid, .pools, .desc-grid { grid-template-columns: 1fr; }
   .attr-grid { grid-template-columns: repeat(2, 1fr); }
