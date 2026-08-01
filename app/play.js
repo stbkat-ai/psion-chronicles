@@ -30,6 +30,10 @@
   let learnSearchQ = "";   // discovery-browser search query
   let customOpen = false;  // whether the "Create Custom Item" builder is expanded
   let compOpen = false;    // whether the "Craft Components" panel is expanded
+  // Combat tab: which action-economy groups are expanded (pull-down menus). Actions open by default so the
+  // most-used group is visible; Bonus/Reactions/Other start collapsed to cut scrolling. Persisted across the
+  // Combat tab's frequent re-renders (each roll refreshes the sheet).
+  let combatGroupOpen = { actions: true, bonus: false, reaction: false, other: false };
   // Live state of the custom-item builder form (survives re-renders so type changes don't lose input).
   // slotGrade maps a component part → the grade (1–4) chosen for that slot on a weapon/armor build.
   let craftForm = { name: "", type: "Weapon", rarity: "Common", weight: "", desc: "", weaponType: "", subtype: "", hands: "1", armorClass: "Light", hp: "", kp: "", skill: "", slotGrade: {} };
@@ -2631,20 +2635,20 @@
     actionCards.push(unarmedStrikeCard()); // basic action anyone can take
     byAction("Action").forEach((t) => actionCards.push(makeTechCard(t)));
     csByAction("Action").forEach((c) => actionCards.push(makeCombatSkillCard(c)));
-    root.appendChild(actionGroup("⚡ Actions", actionCards));
+    root.appendChild(actionGroup("actions", "⚡ Actions", actionCards));
 
     // ✦ Bonus Actions — Bonus techniques + Bonus combat skills
-    root.appendChild(actionGroup("✦ Bonus Actions",
+    root.appendChild(actionGroup("bonus", "✦ Bonus Actions",
       byAction("Bonus Action").map(makeTechCard).concat(csByAction("Bonus Action").map(makeCombatSkillCard))));
 
     // ↩ Reactions — universal Opportunity Attack + Reaction techniques + Reaction combat skills
-    root.appendChild(actionGroup("↩ Reactions",
+    root.appendChild(actionGroup("reaction", "↩ Reactions",
       [opportunityAttackCard()].concat(byAction("Reaction").map(makeTechCard)).concat(csByAction("Reaction").map(makeCombatSkillCard))));
 
     // ⏳ Full-Turn & Other (any non-standard action type)
     const std = ["Action", "Bonus Action", "Reaction"];
     const other = known.filter((t) => !isAug(t) && std.indexOf(t.action) < 0);
-    if (other.length) root.appendChild(actionGroup("⏳ Full-Turn & Other", other.map(makeTechCard)));
+    if (other.length) root.appendChild(actionGroup("other", "⏳ Full-Turn & Other", other.map(makeTechCard)));
 
     // 🎖 Fighting Style Passives (always-on — reference only; the active skills live in the groups above)
     const passives = csByAction("Passive");
@@ -2759,11 +2763,21 @@
     return card;
   }
 
-  function actionGroup(title, cards, emptyMsg) {
-    const p = el("div", "panel");
-    p.appendChild(el("div", "section-label", title));
-    if (!cards.length) p.appendChild(el("div", "muted", emptyMsg || "None available."));
-    else { const g = el("div", "combat-grid"); cards.forEach((c) => g.appendChild(c)); p.appendChild(g); }
+  // A collapsible action-economy group (pull-down menu). The header shows the group name, a count badge,
+  // and a caret; tapping it toggles the card grid. Open/closed state persists in combatGroupOpen so a roll's
+  // refresh doesn't snap the menu shut.
+  function actionGroup(key, title, cards, emptyMsg) {
+    const p = el("div", "panel combat-group");
+    const open = !!combatGroupOpen[key];
+    const head = el("div", "section-label collapse-head combat-group-head");
+    head.style.cursor = "pointer";
+    head.innerHTML = `<span class="cg-title">${title} <span class="cg-count">${cards.length}</span></span><span class="cg-caret">${open ? "▲" : "▼"}</span>`;
+    head.onclick = () => { combatGroupOpen[key] = !open; refresh(); };
+    p.appendChild(head);
+    if (open) {
+      if (!cards.length) p.appendChild(el("div", "muted", emptyMsg || "None available."));
+      else { const g = el("div", "combat-grid"); cards.forEach((c) => g.appendChild(c)); p.appendChild(g); }
+    }
     return p;
   }
 

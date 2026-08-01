@@ -111,11 +111,13 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     rolls with that attribute until you rest). Short rest heals 1 hit on each hurt chakra; long rest heals 2.
     A hidden **7th chakra — Heart** (green) stays concealed until **Soul Level 15**, then **awakens** at the
     center of the chart: the seat of the **Otherkin / Soul Creature** system (powers coming with that design).
-  - **⚔ Combat tab** — everything you can do this turn, grouped by action economy: **Actions** (equipped-weapon
-    attack/damage/augments, a universal **👊 Unarmed Strike** — d20+STR+prof to hit, 1d4+STR damage — and
-    Action techniques), **Bonus Actions**, **Reactions** (a universal **↩ Opportunity Attack** — one melee
-    attack with any melee weapon or unarmed when an enemy enters/leaves your reach, once between turns — plus
-    Reaction techniques), and **Full-Turn & Other**. Your **🎖 Combat Skills** (granted + learned) are folded
+  - **⚔ Combat tab** — everything you can do this turn, grouped by action economy into **collapsible pull-down
+    menus** (each header shows a count badge; tap to expand/collapse — **Actions** opens by default, the rest
+    start collapsed so you're not scrolling to find things, and your choices stick between rolls):
+    **Actions** (equipped-weapon attack/damage/augments, a universal **👊 Unarmed Strike** — d20+STR+prof to hit,
+    1d4+STR damage — and Action techniques), **Bonus Actions**, **Reactions** (a universal **↩ Opportunity
+    Attack** — one melee attack with any melee weapon or unarmed when an enemy enters/leaves your reach, once
+    between turns — plus Reaction techniques), and **Full-Turn & Other**. Your **🎖 Combat Skills** (granted + learned) are folded
     right into those same groups as **clickable 🎖 cards** — using one spends its action-economy slot and logs
     the effect, exactly like a weapon or technique; each is tagged with its origin Fighting Style. Your style's
     always-on **Passive** stays in a separate reference panel below (nothing to click). Topped by a compact

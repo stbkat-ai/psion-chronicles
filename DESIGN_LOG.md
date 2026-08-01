@@ -712,6 +712,24 @@ so specific keep/cut picks and the TP budget can be revisited.
 
 ---
 
+### 36. Combat tab: action groups become collapsible pull-down menus
+**Decision.** Per the user, make the Combat tab friendlier by turning the **Actions / Bonus Actions / Reactions**
+(and Full-Turn & Other) groups into **collapsible pull-down menus** so players scroll less to find the thing
+they want.
+**How.** `play.js`: `actionGroup(title, cards, emptyMsg)` → `actionGroup(key, title, cards, emptyMsg)` — the
+section-label becomes a tappable `.collapse-head` with a **count badge** (`.cg-count`) and a **caret**; the card
+grid renders only when open. Open/closed state lives in a new `combatGroupOpen = { actions:true, bonus:false,
+reaction:false, other:false }`, so **Actions shows by default** (the most-used group) and the rest start
+collapsed. Crucially the state **persists across the Combat tab's frequent re-renders** — every roll calls
+`refresh()`, so without persistence the menus would snap shut mid-turn. `styles.css`: `.combat-group` /
+`.combat-group-head` / `.cg-count` / `.cg-caret`. The always-visible **This Turn** economy tracker and the
+**Combat Skill Passives** reference panel are unchanged (passives aren't actionable, so they're not a pull-down).
+**Verified** (Playwright): fresh character → Combat tab shows Actions open (grid, caret ▲) with Bonus/Reactions
+collapsed (caret ▼, no grid) and correct count badges; expanding Bonus reveals its cards; **after Roll Initiative
+(a refresh) the opened group stays open**; no console errors. Cache-buster **v=56**.
+
+---
+
 ## Deferred / future ideas
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before
