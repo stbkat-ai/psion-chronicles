@@ -38,9 +38,9 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
-| **Nucagrip** | 11 (+3/t) | Action | Kinetic Grip + Blazing Speed | Movement +15 ft; you leave a 5-ft fire trail (creatures entering take 1d6 fire) while active. |
+| **Nucagrip** | 11 (+3/t) | Bonus Action | Kinetic Grip + Blazing Speed | Movement +15 ft; you leave a 5-ft fire trail (creatures entering take 1d6 fire) while active. |
 | **Nucabody** | 20 (+3/t) | Action | Iron Body + Fireball | 15-ft radius within 60 ft; auto-hits for 2d8 + STR fire; targets gain Burning. |
-| **Nucaflame ×2** | 23 (+12/t) | Action | Ki Flame ×2 + Conflagration ×2 | +4 STR, AGI, CON while active. Also drains 1d4 HP each turn (self-cost). |
+| **Nucaflame ×2** | 23 (+12/t) | Bonus Action | Ki Flame ×2 + Conflagration ×2 | +4 STR, AGI, CON while active. Also drains 1d4 HP each turn (self-cost). |
 
 **Expert**
 
@@ -48,7 +48,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 |---|---|---|---|---|
 | **Nucablow** | 25 (+7/t) | Action | Titan's Blow + Firestorm Wall | Melee; 3d8 + STR force and push the target 10 ft. |
 | **Nucaura** | 36 (+6/t) | Action | Bastion Aura + Meteor | 20-ft radius within 90 ft; auto-hits for 4d8 + STR fire; leaves burning ground (1d6/turn) for 3 turns. |
-| **Nucaflame ×5** | 36 (+18/t) | Action | Ki Flame ×5 + Conflagration ×5 | +8 STR, AGI, CON while active. Drains 1d6 HP/turn AND deals 2 hits to your Core chakra on activation. |
+| **Nucaflame ×5** | 36 (+18/t) | Bonus Action | Ki Flame ×5 + Conflagration ×5 | +8 STR, AGI, CON while active. Drains 1d6 HP/turn AND deals 2 hits to your Core chakra on activation. |
 
 **Master**
 
@@ -56,7 +56,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 |---|---|---|---|---|
 | **Nucastrike** | 40 (+10/t) | Action | Titan Strike + Phoenix Form | Melee; 6d6 + STR force, push 20 ft, and the target is Weakened. |
 | **Nucunbreakable** | 45 | Action | Unbreakable + Supernova | 40-ft radius; auto-hits all for 6d6 + STR fire; you take 2d6 recoil fire. |
-| **Nucaflame ×10** | 53 (+8/t) | Action | Ki Flame ×10 + Conflagration ×10 | +15 STR, AGI, CON for the fight. Drains HP each turn AND completely blacks out your Core chakra (locked out of STR/Core until you rest). |
+| **Nucaflame ×10** | 53 (+8/t) | Bonus Action | Ki Flame ×10 + Conflagration ×10 | +15 STR, AGI, CON for the fight. Drains HP each turn AND completely blacks out your Core chakra (locked out of STR/Core until you rest). |
 
 ---
 
@@ -87,7 +87,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 |---|---|---|---|---|
 | **Animastrike** | 52 | Action | Titan Strike + Thundergod's Wrath | Melee; 6d6 + STR force, push 20 ft, and the target is Weakened. |
 | **Animunbreakable** | 40 (+10/t) | Bonus Action | Unbreakable + Rebirth Aura | While active, any ally within 20 ft that drops to 0 HP revives at 1 HP at the start of their next turn. |
-| **Animaflame ×10** | 53 (+1/t) | Action | Ki Flame ×10 + Defibrillate ×10 | +15 STR, AGI, CON for the fight. Drains HP each turn AND completely blacks out your Core chakra (locked out of STR/Core until you rest). |
+| **Animaflame ×10** | 53 (+1/t) | Bonus Action | Ki Flame ×10 + Defibrillate ×10 | +15 STR, AGI, CON for the fight. Drains HP each turn AND completely blacks out your Core chakra (locked out of STR/Core until you rest). |
 
 ---
 
@@ -133,15 +133,15 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 |---|---|---|---|---|
 | **Vapawall** | 12 (+4/t) | Bonus Action | Wind Wall + Shadow Step | 20-ft wall of wind blocks ranged attacks and deflects projectiles while active. |
 | **Vapadash** | 12 | Action | Air Dash + Umbral Drain | Range 30 ft; 2d8 + AGI shadow; you gain temp HP equal to half the damage. |
-| **Vapatempest ×2** | 18 (+10/t) | Action | Tempest ×2 + Nightfall ×2 | 10-ft whirlwind: 2d6 wind + push 10 ft to enemies; +AGI to Defense Score; allies inside are buffeted 5 ft. |
+| **Vapatempest ×2** | 18 (+10/t) | Bonus Action | Tempest ×2 + Nightfall ×2 | 10-ft whirlwind: 2d6 wind + push 10 ft to enemies; +AGI to Defense Score; allies inside are buffeted 5 ft. |
 
 **Expert**
 
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
 | **Vapahurricane** | 36 | Action | Hurricane + Shadow Storm | 20-ft radius; auto-hits for 3d8 + AGI wind; all pushed 15 ft and knocked prone. |
-| **Vapatornado** | 28 (+8/t) | Action | Tornado + Void Grip | A 10-ft tornado you control; creatures inside take 2d6 wind and are Rooted while active. |
-| **Vapatempest ×5** | 36 (+18/t) | Action | Tempest ×5 + Nightfall ×5 | 20-ft whirlwind: 3d6 wind + push; +AGI to DS; now sweeps allies too (1d6 + push). |
+| **Vapatornado** | 28 (+8/t) | Bonus Action | Tornado + Void Grip | A 10-ft tornado you control; creatures inside take 2d6 wind and are Rooted while active. |
+| **Vapatempest ×5** | 36 (+18/t) | Bonus Action | Tempest ×5 + Nightfall ×5 | 20-ft whirlwind: 3d6 wind + push; +AGI to DS; now sweeps allies too (1d6 + push). |
 
 **Master**
 
@@ -149,7 +149,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 |---|---|---|---|---|
 | **Vapamaelstrom** | 54 (+10/t) | Action | Maelstrom + Umbral Form | 40-ft radius; auto-hits for 6d6 + AGI wind; all Rooted and pushed. |
 | **Vapasovereign** | 42 (+10/t) | Action | Sky Sovereign + Shadow Assassinate | Melee; 6d6 + AGI shadow; if the target can't see you, this is an automatic critical (double the dice). |
-| **Vapatempest ×10** | 52 (+16/t) | Action | Tempest ×10 + Nightfall ×10 | 40-ft whirlwind: 5d6 wind + push everything (allies & enemies); +AGI to DS; you can make no single-target actions while active. |
+| **Vapatempest ×10** | 52 (+16/t) | Bonus Action | Tempest ×10 + Nightfall ×10 | 40-ft whirlwind: 5d6 wind + push everything (allies & enemies); +AGI to DS; you can make no single-target actions while active. |
 
 ---
 
@@ -180,7 +180,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 |---|---|---|---|---|
 | **Liqumaelstrom** | 62 | Action | Maelstrom + Great Deluge | 40-ft radius; auto-hits for 6d6 + AGI wind; all Rooted and pushed. |
 | **Liqusovereign** | 44 (+20/t) | Bonus Action | Sky Sovereign + Rejuvenation Font | You fly; +AGI to DS; attacks against you have disadvantage while active. |
-| **Liqutempest ×10** | 52 (+8/t) | Action | Tempest ×10 + Tide ×10 | 40-ft whirlwind: 5d6 wind + push everything (allies & enemies); +AGI to DS; you can make no single-target actions while active. |
+| **Liqutempest ×10** | 52 (+8/t) | Bonus Action | Tempest ×10 + Tide ×10 | 40-ft whirlwind: 5d6 wind + push everything (allies & enemies); +AGI to DS; you can make no single-target actions while active. |
 
 ---
 
@@ -226,23 +226,23 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 |---|---|---|---|---|
 | **Crystawall** | 17 (+4/t) | Action | Stone Wall + Frost Nova | 10-ft radius; auto-hits for 2d8 + CON cold. |
 | **Crystearthquake** | 16 | Action | Earthquake + Rime | 15-ft radius; auto-hits for 2d8 + CON earth; prone + difficult terrain. |
-| **Crystastoneform ×2** | 18 (+5/t) | Action | Stoneform ×2 + Absolute Zero ×2 | Damage reduction = CON mod ×2, +CON to DS, can't be moved; movement halved. |
+| **Crystastoneform ×2** | 18 (+5/t) | Bonus Action | Stoneform ×2 + Absolute Zero ×2 | Damage reduction = CON mod ×2, +CON to DS, can't be moved; movement halved. |
 
 **Expert**
 
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
 | **Crystafissure** | 36 | Action | Fissure + Blizzard | 30-ft line; auto-hits for 3d8 + CON earth; enemies fall prone and are Rooted. |
-| **Crystaegis** | 26 (+6/t) | Action | Mountain's Aegis + Flash Freeze | You and allies within 15 ft gain +CON to DS and damage reduction 1d4 while active. |
-| **Crystastoneform ×5** | 36 (+9/t) | Action | Stoneform ×5 + Absolute Zero ×5 | DR = CON mod ×3, large temp HP each turn, enemies must target you (taunt); you cannot move. |
+| **Crystaegis** | 26 (+6/t) | Bonus Action | Mountain's Aegis + Flash Freeze | You and allies within 15 ft gain +CON to DS and damage reduction 1d4 while active. |
+| **Crystastoneform ×5** | 36 (+9/t) | Bonus Action | Stoneform ×5 + Absolute Zero ×5 | DR = CON mod ×3, large temp HP each turn, enemies must target you (taunt); you cannot move. |
 
 **Master**
 
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
 | **Crystacrush** | 64 | Action | Continental Crush + Ice Age | 40-ft radius; auto-hits for 6d6 + CON earth; prone and Rooted. |
-| **Crystamountain** | 44 (+10/t) | Action | Living Mountain + Absolute Stasis | Your max HP doubles (temp), DR = CON mod, immune to conditions; movement 0 while active. |
-| **Crystastoneform ×10** | 52 (+8/t) | Action | Stoneform ×10 + Absolute Zero ×10 | DR = CON mod ×5, immune to conditions & forced movement, attacks against you have disadvantage — but you are completely immobile and can only strike adjacent foes. |
+| **Crystamountain** | 44 (+10/t) | Bonus Action | Living Mountain + Absolute Stasis | Your max HP doubles (temp), DR = CON mod, immune to conditions; movement 0 while active. |
+| **Crystastoneform ×10** | 52 (+8/t) | Bonus Action | Stoneform ×10 + Absolute Zero ×10 | DR = CON mod ×5, immune to conditions & forced movement, attacks against you have disadvantage — but you are completely immobile and can only strike adjacent foes. |
 
 ---
 
@@ -273,7 +273,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 |---|---|---|---|---|
 | **Construcrush** | 62 | Action | Continental Crush + Mass Resurrection | 40-ft radius; auto-hits for 6d6 + CON earth; prone and Rooted. |
 | **Construmountain** | 44 (+20/t) | Bonus Action | Living Mountain + Eternal Vigor | Your max HP doubles (temp), DR = CON mod, immune to conditions; movement 0 while active. |
-| **Construstoneform ×10** | 52 (+8/t) | Action | Stoneform ×10 + Renewal ×10 | DR = CON mod ×5, immune to conditions & forced movement, attacks against you have disadvantage — but you are completely immobile and can only strike adjacent foes. |
+| **Construstoneform ×10** | 52 (+8/t) | Bonus Action | Stoneform ×10 + Renewal ×10 | DR = CON mod ×5, immune to conditions & forced movement, attacks against you have disadvantage — but you are completely immobile and can only strike adjacent foes. |
 
 ---
 
@@ -295,7 +295,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
 | **Endurablizzard** | 30 | Action | Blizzard + Mass Heal | 20-ft radius; auto-hits for 3d8 + CON cold; targets Slowed. |
-| **Endurafreeze** | 28 (+7/t) | Action | Flash Freeze + Wellspring of Life | 20-ft zone; allies heal 2d6/turn and can't drop below 1 HP while inside. |
+| **Endurafreeze** | 28 (+7/t) | Bonus Action | Flash Freeze + Wellspring of Life | 20-ft zone; allies heal 2d6/turn and can't drop below 1 HP while inside. |
 | **Endurazero ×5** | 36 | Action | Absolute Zero ×5 + Renewal ×5 | Heal all allies within 20 ft 3d8 + CON + regeneration; revive any downed among them. |
 
 **Master**
@@ -303,7 +303,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
 | **Endurage** | 62 | Action | Ice Age + Mass Resurrection | 40-ft radius; auto-hits for 6d6 + CON cold; targets Frozen. |
-| **Endurastasis** | 44 (+10/t) | Action | Absolute Stasis + Eternal Vigor | Allies within 20 ft cannot drop below 1 HP and heal 3d6/turn while active. |
+| **Endurastasis** | 44 (+10/t) | Bonus Action | Absolute Stasis + Eternal Vigor | Allies within 20 ft cannot drop below 1 HP and heal 3d6/turn while active. |
 | **Endurazero ×10** | 52 | Action | Absolute Zero ×10 + Renewal ×10 | All enemies Frozen in stasis. Self-cost: the absolute cold takes you too — you are Frozen for your next turn. |
 
 ---
@@ -317,7 +317,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
-| **Cyclogrip** | 12 (+4/t) | Action | Kinetic Grip + Wind Wall | 20-ft wall of wind blocks ranged attacks and deflects projectiles while active. |
+| **Cyclogrip** | 12 (+4/t) | Bonus Action | Kinetic Grip + Wind Wall | 20-ft wall of wind blocks ranged attacks and deflects projectiles while active. |
 | **Cyclobody** | 11 (+3/t) | Bonus Action | Iron Body + Air Dash | Reduce all incoming damage by your STR mod (min 1) while active. |
 | **Cycloflame ×2** | 18 (+10/t) | Bonus Action | Ki Flame ×2 + Tempest ×2 | +4 STR, AGI, CON while active. Also drains 1d4 HP each turn (self-cost). |
 
@@ -350,15 +350,15 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 |---|---|---|---|---|
 | **Ecligrip** | 10 | Action | Kinetic Grip + Shadow Step | Range 30 ft; the target is Rooted. |
 | **Eclibody** | 13 (+3/t) | Action | Iron Body + Umbral Drain | Range 30 ft; 2d8 + AGI shadow; you gain temp HP equal to half the damage. |
-| **Ecliflame ×2** | 18 (+10/t) | Action | Ki Flame ×2 + Nightfall ×2 | +4 STR, AGI, CON while active. Also drains 1d4 HP each turn (self-cost). |
+| **Ecliflame ×2** | 18 (+10/t) | Bonus Action | Ki Flame ×2 + Nightfall ×2 | +4 STR, AGI, CON while active. Also drains 1d4 HP each turn (self-cost). |
 
 **Expert**
 
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
 | **Ecliblow** | 29 | Action | Titan's Blow + Shadow Storm | Melee; 3d8 + STR force and push the target 10 ft. |
-| **Ecliaura** | 24 (+6/t) | Action | Bastion Aura + Void Grip | You and allies within 15 ft gain +STR mod to Defense Score while active. |
-| **Ecliflame ×5** | 36 (+18/t) | Action | Ki Flame ×5 + Nightfall ×5 | +8 STR, AGI, CON while active. Drains 1d6 HP/turn AND deals 2 hits to your Core chakra on activation. |
+| **Ecliaura** | 24 (+6/t) | Bonus Action | Bastion Aura + Void Grip | You and allies within 15 ft gain +STR mod to Defense Score while active. |
+| **Ecliflame ×5** | 36 (+18/t) | Bonus Action | Ki Flame ×5 + Nightfall ×5 | +8 STR, AGI, CON while active. Drains 1d6 HP/turn AND deals 2 hits to your Core chakra on activation. |
 
 **Master**
 
@@ -366,7 +366,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 |---|---|---|---|---|
 | **Eclistrike** | 42 (+10/t) | Action | Titan Strike + Umbral Form | Melee; 6d6 + STR force, push 20 ft, and the target is Weakened. |
 | **Ecliunbreakable** | 36 | Action | Unbreakable + Shadow Assassinate | Melee; 6d6 + AGI shadow; if the target can't see you, this is an automatic critical (double the dice). |
-| **Ecliflame ×10** | 53 (+8/t) | Action | Ki Flame ×10 + Nightfall ×10 | +15 STR, AGI, CON for the fight. Drains HP each turn AND completely blacks out your Core chakra (locked out of STR/Core until you rest). |
+| **Ecliflame ×10** | 53 (+8/t) | Bonus Action | Ki Flame ×10 + Nightfall ×10 | +15 STR, AGI, CON for the fight. Drains HP each turn AND completely blacks out your Core chakra (locked out of STR/Core until you rest). |
 
 ---
 
@@ -399,7 +399,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 |---|---|---|---|---|
 | **Fluxastrike** | 50 | Action | Titan Strike + Great Deluge | Melee; 6d6 + STR force, push 20 ft, and the target is Weakened. |
 | **Fluxunbreakable** | 38 (+10/t) | Bonus Action | Unbreakable + Rejuvenation Font | 20-ft healing spring; allies inside heal 2d6 + AGI/turn and regenerate KP while active. |
-| **Fluxaflame ×10** | 53 (+1/t) | Action | Ki Flame ×10 + Tide ×10 | +15 STR, AGI, CON for the fight. Drains HP each turn AND completely blacks out your Core chakra (locked out of STR/Core until you rest). |
+| **Fluxaflame ×10** | 53 (+1/t) | Bonus Action | Ki Flame ×10 + Tide ×10 | +15 STR, AGI, CON for the fight. Drains HP each turn AND completely blacks out your Core chakra (locked out of STR/Core until you rest). |
 
 ---
 
@@ -412,7 +412,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
-| **Seismagrip** | 12 (+4/t) | Action | Kinetic Grip + Stone Wall | 20-ft stone wall (full cover; blocks movement & line of sight) while active. |
+| **Seismagrip** | 12 (+4/t) | Bonus Action | Kinetic Grip + Stone Wall | 20-ft stone wall (full cover; blocks movement & line of sight) while active. |
 | **Seismabody** | 16 (+3/t) | Action | Iron Body + Earthquake | 15-ft radius; auto-hits for 2d8 + CON earth; prone + difficult terrain. |
 | **Seismaflame ×2** | 18 (+10/t) | Bonus Action | Ki Flame ×2 + Stoneform ×2 | +4 STR, AGI, CON while active. Also drains 1d4 HP each turn (self-cost). |
 
@@ -444,24 +444,24 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
 | **Glacigrip** | 15 | Action | Kinetic Grip + Frost Nova | 10-ft radius; auto-hits for 2d8 + CON cold. |
-| **Glacibody** | 12 (+3/t) | Action | Iron Body + Rime | Reduce all incoming damage by your STR mod (min 1) while active. |
-| **Glaciflame ×2** | 18 (+5/t) | Action | Ki Flame ×2 + Absolute Zero ×2 | +4 STR, AGI, CON while active. Also drains 1d4 HP each turn (self-cost). |
+| **Glacibody** | 12 (+3/t) | Bonus Action | Iron Body + Rime | Reduce all incoming damage by your STR mod (min 1) while active. |
+| **Glaciflame ×2** | 18 (+5/t) | Bonus Action | Ki Flame ×2 + Absolute Zero ×2 | +4 STR, AGI, CON while active. Also drains 1d4 HP each turn (self-cost). |
 
 **Expert**
 
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
 | **Glaciblow** | 29 | Action | Titan's Blow + Blizzard | Melee; 3d8 + STR force and push the target 10 ft. |
-| **Glaciaura** | 26 (+6/t) | Action | Bastion Aura + Flash Freeze | You and allies within 15 ft gain +STR mod to Defense Score while active. |
-| **Glaciflame ×5** | 36 (+9/t) | Action | Ki Flame ×5 + Absolute Zero ×5 | +8 STR, AGI, CON while active. Drains 1d6 HP/turn AND deals 2 hits to your Core chakra on activation. |
+| **Glaciaura** | 26 (+6/t) | Bonus Action | Bastion Aura + Flash Freeze | You and allies within 15 ft gain +STR mod to Defense Score while active. |
+| **Glaciflame ×5** | 36 (+9/t) | Bonus Action | Ki Flame ×5 + Absolute Zero ×5 | +8 STR, AGI, CON while active. Drains 1d6 HP/turn AND deals 2 hits to your Core chakra on activation. |
 
 **Master**
 
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
 | **Glacistrike** | 52 | Action | Titan Strike + Ice Age | Melee; 6d6 + STR force, push 20 ft, and the target is Weakened. |
-| **Glaciunbreakable** | 38 | Action | Unbreakable + Absolute Stasis | When you would drop to 0 HP, instead drop to 1 HP and gain 4d6 + STR temp HP. Once per long rest. |
-| **Glaciflame ×10** | 53 (+1/t) | Action | Ki Flame ×10 + Absolute Zero ×10 | +15 STR, AGI, CON for the fight. Drains HP each turn AND completely blacks out your Core chakra (locked out of STR/Core until you rest). |
+| **Glaciunbreakable** | 38 | Reaction | Unbreakable + Absolute Stasis | When you would drop to 0 HP, instead drop to 1 HP and gain 4d6 + STR temp HP. Once per long rest. |
+| **Glaciflame ×10** | 53 (+1/t) | Bonus Action | Ki Flame ×10 + Absolute Zero ×10 | +15 STR, AGI, CON for the fight. Drains HP each turn AND completely blacks out your Core chakra (locked out of STR/Core until you rest). |
 
 ---
 
@@ -475,7 +475,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
 | **Auragrip** | 12 | Action | Kinetic Grip + Greater Heal | Heal an ally 2d8 + CON HP. |
-| **Aurabody** | 14 (+3/t) | Action | Iron Body + Second Life | Reduce all incoming damage by your STR mod (min 1) while active. |
+| **Aurabody** | 14 (+3/t) | Bonus Action | Iron Body + Second Life | Reduce all incoming damage by your STR mod (min 1) while active. |
 | **Auraflame ×2** | 18 (+5/t) | Action | Ki Flame ×2 + Renewal ×2 | Heal 2d10 + CON + regeneration 1d6/turn for 3 turns; also revives if the ally is downed. |
 
 **Expert**
@@ -492,7 +492,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 |---|---|---|---|---|
 | **Aurastrike** | 50 | Action | Titan Strike + Mass Resurrection | Melee; 6d6 + STR force, push 20 ft, and the target is Weakened. |
 | **Aurunbreakable** | 38 (+10/t) | Bonus Action | Unbreakable + Eternal Vigor | Allies within 20 ft cannot drop below 1 HP and heal 3d6/turn while active. |
-| **Auraflame ×10** | 53 (+1/t) | Action | Ki Flame ×10 + Renewal ×10 | +15 STR, AGI, CON for the fight. Drains HP each turn AND completely blacks out your Core chakra (locked out of STR/Core until you rest). |
+| **Auraflame ×10** | 53 (+1/t) | Bonus Action | Ki Flame ×10 + Renewal ×10 | +15 STR, AGI, CON for the fight. Drains HP each turn AND completely blacks out your Core chakra (locked out of STR/Core until you rest). |
 
 ---
 
@@ -583,7 +583,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
-| **Phoenixaform** | 50 (+10/t) | Action | Phoenix Form + Mass Resurrection | Emit a 10-ft fire aura (2d6/turn), immune to fire; the first time you'd drop to 0 HP while active, reignite to half HP. |
+| **Phoenixaform** | 50 (+10/t) | Bonus Action | Phoenix Form + Mass Resurrection | Emit a 10-ft fire aura (2d6/turn), immune to fire; the first time you'd drop to 0 HP while active, reignite to half HP. |
 | **Phoenixasupernova** | 51 (+10/t) | Action | Supernova + Eternal Vigor | 40-ft radius; auto-hits all for 6d6 + STR fire; you take 2d6 recoil fire. |
 | **Phoenixaconflagration ×10** | 52 (+8/t) | Action | Conflagration ×10 + Renewal ×10 | 40-ft zone: 5d6 fire + Burning each turn; spreads across the battlefield and consumes everything — allies and the caster included. |
 
@@ -616,7 +616,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 |---|---|---|---|---|
 | **Magnawrath** | 64 | Action | Thundergod's Wrath + Continental Crush | 40-ft radius; auto-hits all for 6d6 + STR lightning; targets Shocked. |
 | **Magnaura** | 46 (+20/t) | Bonus Action | Rebirth Aura + Living Mountain | While active, any ally within 20 ft that drops to 0 HP revives at 1 HP at the start of their next turn. |
-| **Magnadefibrillate ×10** | 52 (+8/t) | Action | Defibrillate ×10 + Stoneform ×10 | DR = CON mod ×5, immune to conditions & forced movement, attacks against you have disadvantage — but you are completely immobile and can only strike adjacent foes. |
+| **Magnadefibrillate ×10** | 52 (+8/t) | Bonus Action | Defibrillate ×10 + Stoneform ×10 | DR = CON mod ×5, immune to conditions & forced movement, attacks against you have disadvantage — but you are completely immobile and can only strike adjacent foes. |
 
 ---
 
@@ -646,7 +646,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
 | **Cryelawrath** | 64 | Action | Thundergod's Wrath + Ice Age | 40-ft radius; auto-hits all for 6d6 + STR lightning; targets Shocked. |
-| **Cryelaura** | 46 (+10/t) | Action | Rebirth Aura + Absolute Stasis | While active, any ally within 20 ft that drops to 0 HP revives at 1 HP at the start of their next turn. |
+| **Cryelaura** | 46 (+10/t) | Bonus Action | Rebirth Aura + Absolute Stasis | While active, any ally within 20 ft that drops to 0 HP revives at 1 HP at the start of their next turn. |
 | **Cryeladefibrillate ×10** | 52 | Action | Defibrillate ×10 + Absolute Zero ×10 | Fully resurrect a dead or downed ally to full HP and KP. Completely blacks out your own Core chakra (locked out of STR/Core until you rest). |
 
 ---
@@ -723,24 +723,24 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
 | **Borewall** | 17 (+4/t) | Action | Wind Wall + Frost Nova | 10-ft radius; auto-hits for 2d8 + CON cold. |
-| **Boredash** | 11 | Action | Air Dash + Rime | Dash 30 ft in any direction; your next attack this turn has advantage. |
-| **Boretempest ×2** | 18 (+5/t) | Action | Tempest ×2 + Absolute Zero ×2 | 10-ft whirlwind: 2d6 wind + push 10 ft to enemies; +AGI to Defense Score; allies inside are buffeted 5 ft. |
+| **Boredash** | 11 | Bonus Action | Air Dash + Rime | Dash 30 ft in any direction; your next attack this turn has advantage. |
+| **Boretempest ×2** | 18 (+5/t) | Bonus Action | Tempest ×2 + Absolute Zero ×2 | 10-ft whirlwind: 2d6 wind + push 10 ft to enemies; +AGI to Defense Score; allies inside are buffeted 5 ft. |
 
 **Expert**
 
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
 | **Borehurricane** | 36 | Action | Hurricane + Blizzard | 20-ft radius; auto-hits for 3d8 + AGI wind; all pushed 15 ft and knocked prone. |
-| **Boretornado** | 30 (+8/t) | Action | Tornado + Flash Freeze | A 10-ft tornado you control; creatures inside take 2d6 wind and are Rooted while active. |
-| **Boretempest ×5** | 36 (+9/t) | Action | Tempest ×5 + Absolute Zero ×5 | 20-ft whirlwind: 3d6 wind + push; +AGI to DS; now sweeps allies too (1d6 + push). |
+| **Boretornado** | 30 (+8/t) | Bonus Action | Tornado + Flash Freeze | A 10-ft tornado you control; creatures inside take 2d6 wind and are Rooted while active. |
+| **Boretempest ×5** | 36 (+9/t) | Bonus Action | Tempest ×5 + Absolute Zero ×5 | 20-ft whirlwind: 3d6 wind + push; +AGI to DS; now sweeps allies too (1d6 + push). |
 
 **Master**
 
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
 | **Boremaelstrom** | 64 | Action | Maelstrom + Ice Age | 40-ft radius; auto-hits for 6d6 + AGI wind; all Rooted and pushed. |
-| **Boresovereign** | 44 (+10/t) | Action | Sky Sovereign + Absolute Stasis | You fly; +AGI to DS; attacks against you have disadvantage while active. |
-| **Boretempest ×10** | 52 (+8/t) | Action | Tempest ×10 + Absolute Zero ×10 | 40-ft whirlwind: 5d6 wind + push everything (allies & enemies); +AGI to DS; you can make no single-target actions while active. |
+| **Boresovereign** | 44 (+10/t) | Bonus Action | Sky Sovereign + Absolute Stasis | You fly; +AGI to DS; attacks against you have disadvantage while active. |
+| **Boretempest ×10** | 52 (+8/t) | Bonus Action | Tempest ×10 + Absolute Zero ×10 | 40-ft whirlwind: 5d6 wind + push everything (allies & enemies); +AGI to DS; you can make no single-target actions while active. |
 
 ---
 
@@ -754,7 +754,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
 | **Zephyrawall** | 14 (+4/t) | Action | Wind Wall + Greater Heal | Heal an ally 2d8 + CON HP. |
-| **Zephyradash** | 13 | Action | Air Dash + Second Life | Dash 30 ft in any direction; your next attack this turn has advantage. |
+| **Zephyradash** | 13 | Bonus Action | Air Dash + Second Life | Dash 30 ft in any direction; your next attack this turn has advantage. |
 | **Zephyratempest ×2** | 18 (+5/t) | Action | Tempest ×2 + Renewal ×2 | Heal 2d10 + CON + regeneration 1d6/turn for 3 turns; also revives if the ally is downed. |
 
 **Expert**
@@ -771,7 +771,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 |---|---|---|---|---|
 | **Zephyramaelstrom** | 62 | Action | Maelstrom + Mass Resurrection | 40-ft radius; auto-hits for 6d6 + AGI wind; all Rooted and pushed. |
 | **Zephyrasovereign** | 44 (+20/t) | Bonus Action | Sky Sovereign + Eternal Vigor | You fly; +AGI to DS; attacks against you have disadvantage while active. |
-| **Zephyratempest ×10** | 52 (+8/t) | Action | Tempest ×10 + Renewal ×10 | 40-ft whirlwind: 5d6 wind + push everything (allies & enemies); +AGI to DS; you can make no single-target actions while active. |
+| **Zephyratempest ×10** | 52 (+8/t) | Bonus Action | Tempest ×10 + Renewal ×10 | 40-ft whirlwind: 5d6 wind + push everything (allies & enemies); +AGI to DS; you can make no single-target actions while active. |
 
 ---
 
@@ -793,7 +793,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
 | **Obsidastorm** | 36 | Action | Shadow Storm + Fissure | 20-ft radius; auto-hits for 3d8 + AGI shadow; targets Blinded. |
-| **Obsidagrip** | 24 (+6/t) | Action | Void Grip + Mountain's Aegis | You and allies within 15 ft gain +CON to DS and damage reduction 1d4 while active. |
+| **Obsidagrip** | 24 (+6/t) | Bonus Action | Void Grip + Mountain's Aegis | You and allies within 15 ft gain +CON to DS and damage reduction 1d4 while active. |
 | **Obsidanightfall ×5** | 36 (+18/t) | Action | Nightfall ×5 + Stoneform ×5 | 20-ft darkness: Blinded + 3d6/turn + Feared; now allies inside are also Blinded. |
 
 **Master**
@@ -855,14 +855,14 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
 | **Morbastorm** | 30 | Action | Shadow Storm + Mass Heal | 20-ft radius; auto-hits for 3d8 + AGI shadow; targets Blinded. |
-| **Morbagrip** | 26 (+7/t) | Action | Void Grip + Wellspring of Life | 20-ft zone; allies heal 2d6/turn and can't drop below 1 HP while inside. |
+| **Morbagrip** | 26 (+7/t) | Bonus Action | Void Grip + Wellspring of Life | 20-ft zone; allies heal 2d6/turn and can't drop below 1 HP while inside. |
 | **Morbanightfall ×5** | 36 (+9/t) | Action | Nightfall ×5 + Renewal ×5 | Heal all allies within 20 ft 3d8 + CON + regeneration; revive any downed among them. |
 
 **Master**
 
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
-| **Morbaform** | 52 (+10/t) | Action | Umbral Form + Mass Resurrection | Immune to physical damage, move through walls, attacks against you have disadvantage while active. |
+| **Morbaform** | 52 (+10/t) | Bonus Action | Umbral Form + Mass Resurrection | Immune to physical damage, move through walls, attacks against you have disadvantage while active. |
 | **Morbassassinate** | 42 (+10/t) | Action | Shadow Assassinate + Eternal Vigor | Melee; 6d6 + AGI shadow; if the target can't see you, this is an automatic critical (double the dice). |
 | **Morbanightfall ×10** | 52 (+8/t) | Action | Nightfall ×10 + Renewal ×10 | The whole battlefield goes dark: everyone but you is Blinded; enemies take 5d6 shadow/turn and are Feared. |
 
@@ -895,7 +895,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 |---|---|---|---|---|
 | **Mudadeluge** | 62 | Action | Great Deluge + Continental Crush | 40-ft flood: heal all allies 4d6 + AGI; enemies take 6d6 + AGI water, Slowed and prone. |
 | **Mudafont** | 44 (+20/t) | Bonus Action | Rejuvenation Font + Living Mountain | 20-ft healing spring; allies inside heal 2d6 + AGI/turn and regenerate KP while active. |
-| **Mudatide ×10** | 52 (+8/t) | Action | Tide ×10 + Stoneform ×10 | DR = CON mod ×5, immune to conditions & forced movement, attacks against you have disadvantage — but you are completely immobile and can only strike adjacent foes. |
+| **Mudatide ×10** | 52 (+8/t) | Bonus Action | Tide ×10 + Stoneform ×10 | DR = CON mod ×5, immune to conditions & forced movement, attacks against you have disadvantage — but you are completely immobile and can only strike adjacent foes. |
 
 ---
 
@@ -925,7 +925,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
 | **Rimedeluge** | 62 | Action | Great Deluge + Ice Age | 40-ft flood: heal all allies 4d6 + AGI; enemies take 6d6 + AGI water, Slowed and prone. |
-| **Rimefont** | 44 (+10/t) | Action | Rejuvenation Font + Absolute Stasis | 20-ft healing spring; allies inside heal 2d6 + AGI/turn and regenerate KP while active. |
+| **Rimefont** | 44 (+10/t) | Bonus Action | Rejuvenation Font + Absolute Stasis | 20-ft healing spring; allies inside heal 2d6 + AGI/turn and regenerate KP while active. |
 | **Rimetide ×10** | 52 | Action | Tide ×10 + Absolute Zero ×10 | Heal all allies to full and cleanse them; sweep all enemies (5d6, push 30 ft, prone, Slowed). |
 
 ---
@@ -971,8 +971,8 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
 | **Spaticrush** | 15 | Action | Crush + Accelerate | Range 30 ft; 2d8 + INT force damage. |
-| **Spatifield** | 13 (+4/t) | Action | Heavy Field + Temporal Lock | 15-ft zone of heavy gravity — enemies Slowed; ranged attacks through it fall short while active. |
-| **Spatiwell ×2** | 18 (+5/t) | Action | Gravity Well ×2 + Slow Time ×2 | 15-ft well: pull + Slowed + 2d6/turn; +INT to DS; you are Rooted while active. |
+| **Spatifield** | 13 (+4/t) | Bonus Action | Heavy Field + Temporal Lock | 15-ft zone of heavy gravity — enemies Slowed; ranged attacks through it fall short while active. |
+| **Spatiwell ×2** | 18 (+5/t) | Bonus Action | Gravity Well ×2 + Slow Time ×2 | 15-ft well: pull + Slowed + 2d6/turn; +INT to DS; you are Rooted while active. |
 
 **Expert**
 
@@ -980,7 +980,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 |---|---|---|---|---|
 | **Spatiburst** | 34 | Action | Graviton Burst + Temporal Rift | 20-ft radius; auto-hits for 3d8 + INT force; pull to center + prone. |
 | **Spatigravity** | 26 (+6/t) | Action | Reverse Gravity + Haste Field | 20-ft area; enemies fall upward then crash down — prone + 2d8 + INT. |
-| **Spatiwell ×5** | 36 (+9/t) | Action | Gravity Well ×5 + Slow Time ×5 | 20-ft well: pull + Slowed + 3d6/turn; +INT to DS; you are Rooted and take 1d6/turn. |
+| **Spatiwell ×5** | 36 (+9/t) | Bonus Action | Gravity Well ×5 + Slow Time ×5 | 20-ft well: pull + Slowed + 3d6/turn; +INT to DS; you are Rooted and take 1d6/turn. |
 
 **Master**
 
@@ -988,7 +988,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 |---|---|---|---|---|
 | **Spatisingularity** | 56 | Action | Singularity + Paradox | 40-ft radius; auto-hits for 6d6 + INT force; all pulled to center and Rooted. |
 | **Spatiprison** | 44 | Action | Gravity Prison + Rewind Death | A target is crushed into stasis: Frozen (pinned) + 3d6/turn. |
-| **Spatiwell ×10** | 56 (+8/t) | Action | Gravity Well ×10 + Slow Time ×10 | 40-ft well pulls in everything each turn, enemies Rooted + 4d6/turn; +INT to DS; you take 2d6/turn and cannot move. |
+| **Spatiwell ×10** | 56 (+8/t) | Bonus Action | Gravity Well ×10 + Slow Time ×10 | 40-ft well pulls in everything each turn, enemies Rooted + 4d6/turn; +INT to DS; you take 2d6/turn and cannot move. |
 
 ---
 
@@ -1019,7 +1019,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 |---|---|---|---|---|
 | **Morphasingularity** | 62 | Action | Singularity + Extinction | 40-ft radius; auto-hits for 6d6 + INT force; all pulled to center and Rooted. |
 | **Morphaprison** | 46 | Action | Gravity Prison + Apotheosis | A target is crushed into stasis: Frozen (pinned) + 3d6/turn. |
-| **Morphawell ×10** | 52 (+8/t) | Action | Gravity Well ×10 + Regenesis ×10 | 40-ft well pulls in everything each turn, enemies Rooted + 4d6/turn; +INT to DS; you take 2d6/turn and cannot move. |
+| **Morphawell ×10** | 52 (+8/t) | Bonus Action | Gravity Well ×10 + Regenesis ×10 | 40-ft well pulls in everything each turn, enemies Rooted + 4d6/turn; +INT to DS; you take 2d6/turn and cannot move. |
 
 ---
 
@@ -1065,7 +1065,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 |---|---|---|---|---|
 | **Venaterrify** | 14 | Action | Terrify + Poison Spores | 15-ft radius; auto-hits for 2d8 + WIS poison; enemies Weakened. |
 | **Venaleech** | 14 | Action | Life Leech + Grasping Roots | Range 30 ft; 2d8 + WIS necrotic; heal yourself half. |
-| **Venaform ×2** | 18 (+10/t) | Action | Demon Form ×2 + Bloom ×2 | +4 STR & WIS, +WIS to DS, claws (1d10), fear aura. Drains 1d6 HP/turn. |
+| **Venaform ×2** | 18 (+10/t) | Bonus Action | Demon Form ×2 + Bloom ×2 | +4 STR & WIS, +WIS to DS, claws (1d10), fear aura. Drains 1d6 HP/turn. |
 
 **Expert**
 
@@ -1073,7 +1073,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 |---|---|---|---|---|
 | **Venahellstorm** | 36 | Action | Hellstorm + Thornstorm | 20-ft radius; auto-hits for 3d8 + WIS necrotic; Feared. |
 | **Venadevour** | 30 (+7/t) | Action | Devour + Wall of Thorns | Melee; 4d8 + WIS; heal equal to the damage dealt. |
-| **Venaform ×5** | 36 (+18/t) | Action | Demon Form ×5 + Bloom ×5 | +8 STR & WIS, claws 2d6, fear aura, DR. Drains HP AND deals 2 hits to your Third Eye chakra (corruption). |
+| **Venaform ×5** | 36 (+18/t) | Bonus Action | Demon Form ×5 + Bloom ×5 | +8 STR & WIS, claws 2d6, fear aura, DR. Drains HP AND deals 2 hits to your Third Eye chakra (corruption). |
 
 **Master**
 
@@ -1081,7 +1081,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 |---|---|---|---|---|
 | **Venapocalypse** | 64 | Action | Apocalypse + Primeval Forest | 40-ft radius; auto-hits for 6d6 + WIS necrotic; Feared and Weakened. |
 | **Venaruin** | 46 (+10/t) | Bonus Action | Pact of Ruin + World Tree | Allies within 30 ft heal 3d6/turn and revive at 1 HP; enemies Rooted while active. |
-| **Venaform ×10** | 52 (+16/t) | Action | Demon Form ×10 + Bloom ×10 | +15 STR & WIS, claws 4d6, DR, fear aura, flight. Completely blacks out your Third Eye chakra (you lose yourself to the demon). |
+| **Venaform ×10** | 52 (+16/t) | Bonus Action | Demon Form ×10 + Bloom ×10 | +15 STR & WIS, claws 4d6, DR, fear aura, flight. Completely blacks out your Third Eye chakra (you lose yourself to the demon). |
 
 ---
 
@@ -1111,8 +1111,8 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
 | **Divinapocalypse** | 64 | Action | Apocalypse + Divine Judgment | 40-ft radius; auto-hits for 6d6 + WIS necrotic; Feared and Weakened. |
-| **Divinaruin** | 48 | Action | Pact of Ruin + Miracle | When you drop to 0 HP, return to half HP and deal 4d6 to all enemies within 20 ft. Once per long rest. |
-| **Divinaform ×10** | 52 (+8/t) | Action | Demon Form ×10 + Sanctuary ×10 | +15 STR & WIS, claws 4d6, DR, fear aura, flight. Completely blacks out your Third Eye chakra (you lose yourself to the demon). |
+| **Divinaruin** | 48 | Reaction | Pact of Ruin + Miracle | When you drop to 0 HP, return to half HP and deal 4d6 to all enemies within 20 ft. Once per long rest. |
+| **Divinaform ×10** | 52 (+8/t) | Bonus Action | Demon Form ×10 + Sanctuary ×10 | +15 STR & WIS, claws 4d6, DR, fear aura, flight. Completely blacks out your Third Eye chakra (you lose yourself to the demon). |
 
 ---
 
@@ -1126,7 +1126,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
 | **Sanctuspores** | 13 | Action | Poison Spores + Radiant Beam | 15-ft radius; auto-hits for 2d8 + WIS poison; enemies Weakened. |
-| **Sancturoots** | 14 (+4/t) | Action | Grasping Roots + Greater Blessing | Allies within 15 ft gain +1d4 to attacks and saves while active. |
+| **Sancturoots** | 14 (+4/t) | Bonus Action | Grasping Roots + Greater Blessing | Allies within 15 ft gain +1d4 to attacks and saves while active. |
 | **Sanctubloom ×2** | 18 (+10/t) | Action | Bloom ×2 + Sanctuary ×2 | 15-ft garden: enemies Rooted + 2d6/turn; allies heal 2d6/turn; spreads 5 ft. |
 
 **Expert**
@@ -1134,7 +1134,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
 | **Sanctuthornstorm** | 34 | Action | Thornstorm + Judgment | 20-ft radius; auto-hits for 3d8 + WIS piercing; Rooted. |
-| **Sanctuthorns** | 30 (+7/t) | Action | Wall of Thorns + Resurrection | 30-ft thorn wall; crossing deals 3d6 and Roots while active. |
+| **Sanctuthorns** | 30 (+7/t) | Bonus Action | Wall of Thorns + Resurrection | 30-ft thorn wall; crossing deals 3d6 and Roots while active. |
 | **Sanctubloom ×5** | 36 (+18/t) | Action | Bloom ×5 + Sanctuary ×5 | 20-ft garden: enemies Rooted + 3d6/turn; allies heal 3d6/turn; spreads 10 ft. |
 
 **Master**
@@ -1142,7 +1142,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
 | **Sanctuforest** | 64 | Action | Primeval Forest + Divine Judgment | 40-ft radius; auto-hits for 6d6 + WIS; all enemies Rooted; terrain becomes dense forest. |
-| **Sanctutree** | 50 (+10/t) | Action | World Tree + Miracle | Allies within 30 ft heal 3d6/turn and revive at 1 HP; enemies Rooted while active. |
+| **Sanctutree** | 50 (+10/t) | Bonus Action | World Tree + Miracle | Allies within 30 ft heal 3d6/turn and revive at 1 HP; enemies Rooted while active. |
 | **Sanctubloom ×10** | 52 (+8/t) | Action | Bloom ×10 + Sanctuary ×10 | 40-ft garden: all enemies Rooted + 4d6/turn; all allies heal 4d6/turn and are sheltered. You remain Rooted as its heart. |
 
 ---
@@ -1157,8 +1157,8 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
 | **Radithunderclap** | 14 | Action | Thunderclap + Laser | 15-ft radius; auto-hits for 2d8 + CHA thunder; push 10 ft + Shocked. |
-| **Radianthem** | 13 (+4/t) | Action | Anthem + Hologram | Allies within 15 ft gain +CHA to DS and +1d4 attacks while active. |
-| **Radicrescendo ×2** | 18 (+10/t) | Action | Crescendo ×2 + Radiance ×2 | Builds +1d6/turn thunder in 10 ft; +CHA to DS; at peak also pushes. |
+| **Radianthem** | 13 (+4/t) | Bonus Action | Anthem + Hologram | Allies within 15 ft gain +CHA to DS and +1d4 attacks while active. |
+| **Radicrescendo ×2** | 18 (+10/t) | Bonus Action | Crescendo ×2 + Radiance ×2 | Builds +1d6/turn thunder in 10 ft; +CHA to DS; at peak also pushes. |
 
 **Expert**
 
@@ -1166,15 +1166,15 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 |---|---|---|---|---|
 | **Radishatter** | 34 | Action | Shatter + Prism Beam | 4d8 + CHA thunder to a target; ignores DR and armor. |
 | **Radiroar** | 26 | Action | Deafening Roar + Illusory Army | 15-ft radius; enemies Stunned 1 turn. |
-| **Radicrescendo ×5** | 36 (+18/t) | Action | Crescendo ×5 + Radiance ×5 | Builds +1d8/turn thunder in 20 ft; +CHA to DS; now allies who stay are Shocked too. |
+| **Radicrescendo ×5** | 36 (+18/t) | Bonus Action | Crescendo ×5 + Radiance ×5 | Builds +1d8/turn thunder in 20 ft; +CHA to DS; now allies who stay are Shocked too. |
 
 **Master**
 
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
 | **Radiboom** | 64 | Action | Sonic Boom + Second Sun | 40-ft radius; auto-hits for 6d6 + CHA thunder; push + Stunned. |
-| **Radiillusion** | 46 | Action | Unbreakable Anthem + Grand Illusion | Allies within 30 ft can't drop below 1 HP for 2 turns and are immune to conditions. |
-| **Radicrescendo ×10** | 52 (+16/t) | Action | Crescendo ×10 + Radiance ×10 | 40-ft, +2d6/turn thunder to all enemies (building), +CHA to DS, allies buffed — but the peak Shocks everyone including allies and you can make no single-target actions. |
+| **Radiillusion** | 46 | Bonus Action | Unbreakable Anthem + Grand Illusion | Allies within 30 ft can't drop below 1 HP for 2 turns and are immune to conditions. |
+| **Radicrescendo ×10** | 52 (+16/t) | Bonus Action | Crescendo ×10 + Radiance ×10 | 40-ft, +2d6/turn thunder to all enemies (building), +CHA to DS, allies buffed — but the peak Shocks everyone including allies and you can make no single-target actions. |
 
 ---
 
@@ -1189,7 +1189,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 |---|---|---|---|---|
 | **Echothunderclap** | 14 | Action | Thunderclap + Vengeful Spirit | 15-ft radius; auto-hits for 2d8 + CHA thunder; push 10 ft + Shocked. |
 | **Echoanthem** | 14 (+4/t) | Action | Anthem + Mend Soul | Heal an ally 2d8 + CHA and end one condition. |
-| **Echocrescendo ×2** | 18 (+5/t) | Action | Crescendo ×2 + Soul Tether ×2 | Builds +1d6/turn thunder in 10 ft; +CHA to DS; at peak also pushes. |
+| **Echocrescendo ×2** | 18 (+5/t) | Bonus Action | Crescendo ×2 + Soul Tether ×2 | Builds +1d6/turn thunder in 10 ft; +CHA to DS; at peak also pushes. |
 
 **Expert**
 
@@ -1197,7 +1197,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 |---|---|---|---|---|
 | **Echoshatter** | 34 | Action | Shatter + Spirit Storm | 4d8 + CHA thunder to a target; ignores DR and armor. |
 | **Echoroar** | 28 | Action | Deafening Roar + Possession | 15-ft radius; enemies Stunned 1 turn. |
-| **Echocrescendo ×5** | 36 (+9/t) | Action | Crescendo ×5 + Soul Tether ×5 | Builds +1d8/turn thunder in 20 ft; +CHA to DS; now allies who stay are Shocked too. |
+| **Echocrescendo ×5** | 36 (+9/t) | Bonus Action | Crescendo ×5 + Soul Tether ×5 | Builds +1d8/turn thunder in 20 ft; +CHA to DS; now allies who stay are Shocked too. |
 
 **Master**
 
@@ -1205,7 +1205,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 |---|---|---|---|---|
 | **Echoboom** | 64 | Action | Sonic Boom + Wrath of the Dead | 40-ft radius; auto-hits for 6d6 + CHA thunder; push + Stunned. |
 | **Echoguard** | 44 (+10/t) | Bonus Action | Unbreakable Anthem + Afterlife's Guard | Allies within 20 ft can't die (stay at 1 HP) and heal 3d6/turn while active. |
-| **Echocrescendo ×10** | 52 (+8/t) | Action | Crescendo ×10 + Soul Tether ×10 | 40-ft, +2d6/turn thunder to all enemies (building), +CHA to DS, allies buffed — but the peak Shocks everyone including allies and you can make no single-target actions. |
+| **Echocrescendo ×10** | 52 (+8/t) | Bonus Action | Crescendo ×10 + Soul Tether ×10 | 40-ft, +2d6/turn thunder to all enemies (building), +CHA to DS, allies buffed — but the peak Shocks everyone including allies and you can make no single-target actions. |
 
 ---
 
@@ -1235,7 +1235,7 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 | Technique | KP | Action | Pair (parent techniques) | Effect |
 |---|---|---|---|---|
 | **Astrasun** | 64 | Action | Second Sun + Wrath of the Dead | 40-ft radius; auto-hits for 6d6 + CHA radiant; Blinded. |
-| **Astraillusion** | 46 (+10/t) | Action | Grand Illusion + Afterlife's Guard | Allies within 20 ft can't die (stay at 1 HP) and heal 3d6/turn while active. |
+| **Astraillusion** | 46 (+10/t) | Bonus Action | Grand Illusion + Afterlife's Guard | Allies within 20 ft can't die (stay at 1 HP) and heal 3d6/turn while active. |
 | **Astraradiance ×10** | 52 (+8/t) | Action | Radiance ×10 + Soul Tether ×10 | 40-ft: everyone but you is Blinded; enemies take 5d6/turn radiant. Overwhelming light. |
 
 ---

@@ -765,7 +765,9 @@ neatly to the "master ~2 + dip a 3rd" TP budget from #35.
 **How (build).** Content is **generated** from the parent data by a script (`scratchpad/gen_fusions.js`): it pairs
 parent techniques index-wise per tier, names each by portmanteau (fusion prefix + the first parent's technique
 word → *Nuc*+*strike* = *Nucastrike*; collisions fall back to the second parent's word), sums KP (fusions are
-expensive), bumps the primary half's damage/heal one die-step, and blends the effect. Output → `PC.FUSIONS` (39
+expensive), bumps the primary half's damage/heal one die-step, and blends the effect. **Action economy follows
+the primary half** (Action / Bonus Action / Reaction) so fusion techniques separate into the Combat tab's action
+groups like everything else (~242 Action / 107 Bonus / 2 Reaction), not all lumped under Actions. Output → `PC.FUSIONS` (39
 registry entries) + `PC.FUSION_TECHNIQUES` (351) appended to `data.js`. `rules.js` gains `PC.grantedFusionTechniques`,
 `PC.unlockedFusions`, `PC.fusion*`, and `PC.technique()` now falls back to fusion techniques (so the play sheet
 can render/roll them) — while the **creator & level-up stay clean** because they iterate `PC.TECHNIQUES` only.
