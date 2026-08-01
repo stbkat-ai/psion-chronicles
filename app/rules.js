@@ -118,7 +118,31 @@ PC.rollCheck = function (mod, mode) {
 PC.background = function (name) { return PC.BACKGROUNDS.find((b) => b.name === name) || null; };
 PC.skill = function (name) { return PC.SKILLS.find((s) => s.name === name) || null; };
 PC.kinetic = function (name) { return PC.KINETICS.find((k) => k.name === name) || null; };
-PC.technique = function (name) { return PC.TECHNIQUES.find((t) => t.name === name) || null; };
+// technique() resolves base techniques first, then fusion techniques — so the play sheet can render/roll a
+// granted fusion technique by name. Fusions are excluded from the creator/level-up because those iterate
+// PC.TECHNIQUES directly (which never contains fusion techniques).
+PC.technique = function (name) {
+  return PC.TECHNIQUES.find((t) => t.name === name) || (PC.FUSION_TECHNIQUES || []).find((t) => t.name === name) || null;
+};
+
+/* ---- Fusion Kinetics ---------------------------------------------------------
+   A fusion is two parent kinetics combined. Each fusion technique is a PAIR of one technique from each
+   parent (offset one tier up: parent Beginner→fusion Adept, Adept→Expert, Expert→Master). A character
+   automatically KNOWS a fusion technique once they know BOTH halves of its pair — no TP, auto-granted.
+   A fusion is "unlocked" (revealed) as soon as the character knows at least one of its techniques.        */
+PC.fusion = function (name) { return (PC.FUSIONS || []).find((f) => f.name === name) || null; };
+PC.fusionTechniques = function (name) { return (PC.FUSION_TECHNIQUES || []).filter((t) => t.kinetic === name); };
+/* Every fusion technique the character has earned, given the set of base technique names they know. */
+PC.grantedFusionTechniques = function (knownNames) {
+  const set = knownNames instanceof Set ? knownNames : new Set(knownNames || []);
+  return (PC.FUSION_TECHNIQUES || []).filter((t) => set.has(t.pair[0]) && set.has(t.pair[1]));
+};
+/* Distinct fusion names currently unlocked (≥1 granted technique). */
+PC.unlockedFusions = function (knownNames) {
+  const names = [];
+  PC.grantedFusionTechniques(knownNames).forEach((t) => { if (names.indexOf(t.kinetic) < 0) names.push(t.kinetic); });
+  return names;
+};
 PC.skillsByAttr = function (attr) { return PC.SKILLS.filter((s) => s.attr === attr); };
 /* Techniques of a Kinetic at a given tier (3 per tier per Kinetic). */
 PC.kineticTierTechniques = function (kinetic, tier) { return PC.TECHNIQUES.filter((t) => t.kinetic === kinetic && t.tier === tier); };

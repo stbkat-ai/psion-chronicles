@@ -244,6 +244,23 @@ an "Awakened" node on the **Chakras** tab once unlocked.
 - *[Mechanics TBD: what the Soul Creature grants, how it's chosen, how it's used, and how the Heart chakra
   is spent/tracked once the system is designed.]*
 
+### Fusion Kinetics (HIDDEN — GM knowledge; players discover in play)
+> **Not in the Player's Guide.** This is a secret system. The GM knows it; players uncover it as they build.
+> Full library (39 fusions × 9 techniques): **`FUSIONS.md`**.
+- A **Fusion Kinetic** is two standard Kinetics combined into a new domain (e.g. **Nuclekinesis** =
+  Robukinesis + Pyrokinesis). There are **39** of them (11 Established / locked-canon, 28 Provisional).
+- Fusions **start at tier 2** — their tiers are **Adept · Expert · Master** (no Beginner), **3 per tier = 9**.
+- Each fusion technique is a **specific pairing of one technique from each parent, offset one tier up**:
+  a fusion's **Adept** techniques pair the parents' **Beginner** techniques, **Expert** pairs the parents'
+  **Adept**, **Master** pairs the parents' **Expert**. (E.g. *Ki Strike + Fire Bolt → Nucastrike*.)
+- **Unlock is automatic and hidden:** the moment a character knows **both** halves of a pair, they gain that
+  fusion technique **free — no Technique Points**. Until the first pair lands, the fusion is invisible. On the
+  play sheet it then reveals on the **Kinetics** tab (one-time *"✨ Fusion discovered"* toast) and is usable in
+  **Combat**. Fusion techniques are **powerful and expensive** (KP = sum of both parent halves).
+- A fusion is tied to **both** parents' attributes & chakras. *Planned (not yet implemented): a damaged parent
+  chakra weakens the fusion's techniques.*
+- Current technique names/effects/costs are a **concept pass** — tune in playtest.
+
 ---
 
 ## Section 3 — Psionic Backgrounds (9)

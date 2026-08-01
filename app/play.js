@@ -257,6 +257,20 @@
     (rec.learnedTechniques || []).forEach((n) => { if (!names.includes(n)) names.push(n); }); // bought with TP as you level
     return names;
   }
+  // Fusion techniques the character has EARNED — auto-granted the moment they know both halves of a pair.
+  // Hidden entirely until then, so a character sees no fusion content until they discover it.
+  function knownFusionTechs() { return PC.grantedFusionTechniques(knownTechniques()); }
+  function unlockedFusionNames() { return PC.unlockedFusions(knownTechniques()); }
+  // Toast a discovery the first time each fusion unlocks (persisted on the record so it fires once).
+  function checkFusionDiscoveries() {
+    const now = unlockedFusionNames();
+    if (!Array.isArray(rec.seenFusions)) rec.seenFusions = [];
+    const fresh = now.filter((n) => rec.seenFusions.indexOf(n) < 0);
+    if (fresh.length) {
+      fresh.forEach((n) => { rec.seenFusions.push(n); App.toast("✨ Fusion Kinetic discovered: " + n + "!"); });
+      save();
+    }
+  }
 
   /* ---------- mutations ---------- */
   function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
@@ -842,6 +856,7 @@
     rec = App.loadRoster().find((c) => c.id === id);
     if (!rec) { App.goHome(); return; }
     ensurePlay();
+    checkFusionDiscoveries();
     container.appendChild(build());
   }
 
@@ -1418,12 +1433,16 @@
   function makeTechCard(t) {
     const active = play.active.indexOf(t.name) > -1;
     const afford = play.kp >= t.kp;
-    const c = el("div", "tech-card" + (active ? " selected" : ""));
+    const c = el("div", "tech-card" + (active ? " selected" : "") + (t.fusion ? " fusion-tech" : ""));
     const costParts = [t.kp + " KP"];
     if (t.upkeep) costParts.push("+" + t.upkeep + "/turn");
+    const fuseTag = t.fusion ? ' <span class="fusion-flag">✨ Fusion</span>' : "";
+    const meta = t.fusion
+      ? `<span class="fusion-meta">${t.kinetic}</span> · ${t.tier} · ${t.action}`
+      : `${t.kinetic} · ${t.tier} · ${t.action}`;
     c.innerHTML =
-      `<div class="thead"><span class="tname">${t.name}${active ? ' <span class="freeflag" style="color:var(--good)">active</span>' : ""}</span><span class="cost">${costParts.join(" ")}</span></div>
-       <div class="tmeta">${t.kinetic} · ${t.tier} · ${t.action}</div>
+      `<div class="thead"><span class="tname">${t.name}${fuseTag}${active ? ' <span class="freeflag" style="color:var(--good)">active</span>' : ""}</span><span class="cost">${costParts.join(" ")}</span></div>
+       <div class="tmeta">${meta}</div>
        <div class="teff">▸ ${t.effect}</div>`;
     if (t.augment && t.augment.kind === "melee-damage") {
       c.appendChild(el("div", "inv-note", "⚔ Melee augment — use it from an equipped melee weapon's damage roll."));
@@ -1740,7 +1759,38 @@
     });
     if (!anyMech) tech.appendChild(el("div", "muted", "No playable techniques yet."));
     root.appendChild(tech);
+    const fusePanel = buildFusionPanel();
+    if (fusePanel) root.appendChild(fusePanel);
     return root;
+  }
+
+  // ✨ Fusion Kinetics — only appears once the character has DISCOVERED at least one fusion (knows both
+  // halves of a pair). Each unlocked fusion shows its parents, combined role, and the fusion techniques
+  // earned so far; more appear automatically as the character learns more paired parent techniques.
+  function buildFusionPanel() {
+    const fus = knownFusionTechs();
+    if (!fus.length) return null; // hidden until unlocked — nothing leaks before discovery
+    const panel = el("div", "panel fusion-panel");
+    panel.appendChild(el("div", "section-label", "✨ Fusion Kinetics — discovered"));
+    panel.appendChild(el("p", "hint", "Advanced kinetics you've unlocked by combining techniques from two Kinetic types. A fusion technique is granted automatically the moment you know <b>both</b> of its parent techniques — no Technique Points spent. More unlock as you learn more paired techniques."));
+    const byFusion = {};
+    fus.forEach((t) => { (byFusion[t.kinetic] = byFusion[t.kinetic] || []).push(t); });
+    const tierRank = { Adept: 0, Expert: 1, Master: 2 };
+    PC.FUSIONS.forEach((f) => {
+      const techs = byFusion[f.name];
+      if (!techs) return;
+      const head = el("div", "fusion-head");
+      head.innerHTML = `<span class="fusion-name">✨ ${f.name}</span>` +
+        `<span class="fusion-parents">${f.parents.join(" + ")}</span>` +
+        `<span class="fusion-role">${f.role}${f.established ? "" : " · provisional"}</span>`;
+      panel.appendChild(head);
+      panel.appendChild(el("div", "fusion-domain", f.domain));
+      const grid = el("div", "combat-grid");
+      techs.sort((a, b) => (tierRank[a.tier] - tierRank[b.tier]));
+      techs.forEach((t) => grid.appendChild(makeTechCard(t)));
+      panel.appendChild(grid);
+    });
+    return panel;
   }
 
   /* ---------- Skills tab ---------- */
@@ -2630,8 +2680,9 @@
     }
     root.appendChild(vit);
 
-    // gather techniques by action economy (augments excluded — they rider onto weapons)
-    const known = knownTechniques().map((n) => PC.technique(n)).filter(Boolean);
+    // gather techniques by action economy (augments excluded — they rider onto weapons).
+    // Fusion techniques the character has earned are folded in alongside base techniques.
+    const known = knownTechniques().map((n) => PC.technique(n)).filter(Boolean).concat(knownFusionTechs());
     const isAug = (t) => t.augment && t.augment.kind === "melee-damage";
     const byAction = (act) => known.filter((t) => !isAug(t) && t.action === act);
     const equipped = (rec.inventory || []).filter((it) => it.equipped && it.category === "Weapon");

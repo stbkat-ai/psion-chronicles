@@ -326,6 +326,19 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 }
 .econ-chip.used:hover { box-shadow: none; }
 .combat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+/* ✨ Fusion Kinetics — a distinct "discovered secret" look (violet→gold) */
+.fusion-tech { border-color: rgba(232, 121, 250, .5); background: linear-gradient(180deg, rgba(232, 121, 250, .08), var(--panel-2)); }
+.fusion-flag { font-size: .62rem; font-weight: 800; letter-spacing: .04em; color: #f0abfc; background: rgba(232, 121, 250, .16);
+  border: 1px solid rgba(232, 121, 250, .4); border-radius: 8px; padding: 1px 6px; vertical-align: middle; }
+.fusion-meta { color: #f0abfc; font-weight: 700; }
+.fusion-panel { border-color: rgba(232, 121, 250, .35); }
+.fusion-panel .section-label { color: #f0abfc; }
+.fusion-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; margin: 16px 0 2px;
+  padding-bottom: 6px; border-bottom: 1px solid rgba(232, 121, 250, .25); }
+.fusion-name { font-weight: 800; font-size: 1.02rem; color: #f5d0fe; }
+.fusion-parents { font-size: .82rem; color: var(--cyan); }
+.fusion-role { font-size: .78rem; color: var(--text-dim); margin-left: auto; }
+.fusion-domain { font-size: .82rem; color: var(--text-dim); font-style: italic; margin: 2px 0 10px; }
 .combat-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; align-items: center; }
 /* Opportunity-attack source label sits before its Attack/Damage buttons */
 .oa-src { font-size: .8rem; font-weight: 600; color: var(--text-dim); margin-right: 2px; min-width: 92px; }

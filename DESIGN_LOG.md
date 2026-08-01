@@ -746,6 +746,43 @@ for the new turn; no console errors. Cache-buster **v=57**.
 
 ---
 
+### 38. Fusion Kinetics — a hidden system unlocked by pairing parent techniques
+**Decision.** Per the user (+ the *Fusion Kinetics Compendium* PDF), add **Fusion Kinetics**: 39 advanced kinetics
+each combining two parents (e.g. **Nuclekinesis** = Robukinesis + Pyrokinesis). They are a **secret** — not in
+the Player's Guide, invisible until discovered in play. The GM knows them (see `FUSIONS.md`).
+**The mechanic (from the user's answers).** Fusions **start at tier 2** — tiers **Adept · Expert · Master**, 3
+per tier = **9 each** (39 × 9 = **351** techniques). Each fusion technique is a **specific pairing of one
+technique from each parent, offset one tier up**: fusion Adept pairs parents' **Beginner**, Expert pairs
+**Adept**, Master pairs **Expert** (the user's example: *Ki Strike + Fire Bolt = Nucastrike*). A character
+**automatically gains** a fusion technique — **free, no TP** — the instant they know **both** halves; the fusion
+stays fully hidden until then, then reveals with a one-time *"✨ Fusion discovered"* toast.
+**Why this shape.** "Start at tier 2" = the fusion is offset one tier above the parent techniques that form it,
+so its first (Adept) tier draws on the parents' Beginner techniques. Auto-grant-on-pairing means a character's
+fusions **emerge from the two Kinetics they actually invest in** — no separate currency, and it ties neatly to
+the "master ~2 + dip a 3rd" TP budget from #35.
+**How (build).** Content is **generated** from the parent data by a script (`scratchpad/gen_fusions.js`): it pairs
+parent techniques index-wise per tier, names each by portmanteau (fusion prefix + the first parent's technique
+word → *Nuc*+*strike* = *Nucastrike*; collisions fall back to the second parent's word), sums KP (fusions are
+expensive), bumps the primary half's damage/heal one die-step, and blends the effect. Output → `PC.FUSIONS` (39
+registry entries) + `PC.FUSION_TECHNIQUES` (351) appended to `data.js`. `rules.js` gains `PC.grantedFusionTechniques`,
+`PC.unlockedFusions`, `PC.fusion*`, and `PC.technique()` now falls back to fusion techniques (so the play sheet
+can render/roll them) — while the **creator & level-up stay clean** because they iterate `PC.TECHNIQUES` only.
+`play.js`: `knownFusionTechs()` folds earned fusions into the Combat action groups; a new **✨ Fusion Kinetics**
+panel on the Kinetics tab lists unlocked fusions (parents, role, domain, granted techniques); `checkFusionDiscoveries()`
+fires the discovery toast once per fusion (persisted on `rec.seenFusions`). Distinct violet styling
+(`.fusion-*`). **Chakra-damage penalty deferred** (documented as planned). Duplicate compendium name
+*Glaciokinesis* resolved: kept for Robu+Cryo, the Hydro+Cryo one renamed **Rimekinesis**.
+**Kept the secret:** `README.md` (the player-facing guide) intentionally says **nothing** about fusions; the GM
+reference lives in `FUSIONS.md` + this log + a HIDDEN section in `GAME_RULES.md`.
+**Verified** (Node + Playwright): 39 fusions / 351 techniques, unique names, all pairs valid, 9 per fusion; a
+seeded character knowing *Ki Strike + Fire Bolt* auto-gains **Nucastrike**, unlocks **Nuclekinesis**, fires the
+discovery toast, shows the fusion in the Kinetics panel and as a usable Combat action; a character with **no
+pair sees no fusion content** (hidden); no console errors. Cache-buster **v=58**.
+**Open:** names/effects/costs are a **concept pass** (the PDF's own framing) — tune in playtest; the chakra-damage
+penalty and any Provisional-fusion renames are still to come.
+
+---
+
 ## Deferred / future ideas
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before

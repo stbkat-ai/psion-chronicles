@@ -29,6 +29,8 @@ in the browser's `localStorage` (key `psion_chronicles_characters`), so saved da
 - `index.html` — entry point; the 6 asset tags carry `?v=N`.
 - `data.js` — all game data on `window.PC` (9 backgrounds, 8 heritages, 18 kinetics, 36 skills,
   18 weapon types, 216 techniques (18 Kinetics × 4 tiers × 3), fighting styles/combat skills, per-background & per-heritage flaws).
+  Also `PC.FUSIONS` (39 **Fusion Kinetics** — hidden until unlocked) + `PC.FUSION_TECHNIQUES` (351 = 39 × 3 tiers × 3);
+  a fusion technique is a **pair of parent techniques** (offset a tier up), auto-granted free when both halves are known.
 - `items.js` — the weapon/item catalog (~283 gear items + 64 component entries; skill tool kits via `it.skill`;
   functioning consumables via `it.effect`). **Crafting is two-tier:** raw `PC.SALVAGE` (14 materials) →
   **components** (`PC.COMPONENTS`, 16 parts × 4 quality grades Crude→Masterwork) → weapons & armor. Templates
@@ -48,6 +50,7 @@ in the browser's `localStorage` (key `psion_chronicles_characters`), so saved da
 ## Docs — human-readable source of truth (keep in sync with `data.js`)
 - `GAME_RULES.md` — the full rules.
 - `TECHNIQUES.md`, `WEAPONS.md` — the libraries.
+- `FUSIONS.md` — the **Fusion Kinetics** library (GM-only; a hidden system players discover in play — keep it out of the README).
 - `README.md` — the player-facing guide.
 
 ## Conventions
