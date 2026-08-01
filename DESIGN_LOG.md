@@ -680,6 +680,38 @@ how the Heart chakra is tracked/spent) — TBD, to be built into this tab when L
 
 ---
 
+### 35. Technique lists trimmed 5→3 per tier (so a build masters ~2 Kinetics + dips a 3rd)
+**Decision.** Per the user, shrink every Kinetic's technique lists from **5 per tier → 3 per tier** (4 tiers kept:
+Beginner · Adept · Expert · Master). That takes each Kinetic from **20 → 12** techniques and the library from
+**360 → 216** (144 cut). Goal: with a **fixed** Technique-Point budget, let a character **master at least two
+Kinetics and dip into a third**, instead of today's "one master + half of a second."
+**Why it works (the math).** TP is `level − 1`, cap 30 → **29 TP + 3 starting techniques (1 background + 2
+chosen) = 32 acquisitions**. At 20/Kinetic: 32 → one full master (20) + ~⅔ of a second. At **12/Kinetic**: 32 →
+**two full masters (24) + 8 into a third** (its Beginner + Adept + into Expert). Exactly the intended breadth.
+The user explicitly chose to keep it at **four tiers** (an earlier "five tiers" was a mis-recall).
+**How the 144 were chosen.** Each Kinetic has a **signature technique that threads all four tiers** (the scaling
+line — *Conflagration → ×2 → ×5 → ×10*, *Ki Flame*, *Sanctuary*, …). Rule: **keep the signature + the 2 that best
+preserve a damage / control / support spread; cut the 2 most redundant.** The user approved "trust my picks,
+proceed." Applied via a script matching **exact `kinetic`+`name`** (so near-duplicates like *Renew* vs *Renewal*,
+*Rewind* vs *Rewind Death* aren't caught wrongly).
+**Gotcha handled — background starting techniques.** Four Backgrounds grant a Beginner technique that my first
+pass had cut (Survivalist→*Mud Skin*, Witch→*Thistle Bush*, Musician→*Resonant Pulse*, Guru→*Phantom Presence*).
+Fix: for those four Beginner tiers, **keep the freeTech and cut a different technique** instead (so no Background
+is orphaned). Verified zero orphaned `freeTech` references afterward.
+**Rules side-effect (intended).** The tier gate "know ≥3 from the previous tier to unlock the next" now means you
+must **complete the whole previous tier** to advance (3 of 3) — and tier-completion proficiency/expertise
+(Adept-complete → proficient, Expert-complete → expertise) now triggers on **all 3**. No engine change needed;
+`kineticTierComplete` already checks "every technique in the tier," and the app's `X/5` progress readouts were
+made **dynamic** (`X/${tier.length}`) so they read `X/3` automatically.
+**Docs/app synced.** `data.js` (−144), `TECHNIQUES.md` (−144 rows + count/gate notes), `GAME_RULES.md`
+(3/tier + the budget rationale), `README.md`, `rules.js` comment, `CLAUDE.md` (216). **Verified** (Node): 216
+total, exactly 3 per Kinetic-tier, all 18 signatures intact across all tiers, no orphaned Background freeTech,
+`items.js` still loads. Cache-buster **v=55**.
+**Open:** numbers are still playtest-tunable — the user flagged "after play testing we may change some things,"
+so specific keep/cut picks and the TP budget can be revisited.
+
+---
+
 ## Deferred / future ideas
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before

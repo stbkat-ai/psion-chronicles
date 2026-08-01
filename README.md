@@ -80,9 +80,10 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
   - **⭐ Level Up** opens a dedicated screen: tap **Level Up** (GM-driven; cap 30) to earn **+1 Technique
     Point** each level, **+1 attribute point** on odd levels, and **+1 Combat Skill Point every 5th level**
     (5/10/15/20/25/30). Spend attribute points (cap 30) and Technique Points to learn new techniques. All
-    **360 techniques** (18 Kinetics × 4 tiers) are in the app, gated two ways: by **Soul Level** (Adept @8,
+    **216 techniques** (18 Kinetics × 4 tiers × 3) are in the app, gated two ways: by **Soul Level** (Adept @8,
     Expert @15, Master @22) **and** by requiring **≥3 techniques from that Kinetic's previous tier** to
-    unlock its next tier. Spend **Combat Skill Points** to learn more **Combat Skills** from **any Fighting
+    unlock its next tier (at 3 per tier, that means completing the whole previous tier). Your Technique-Point
+    budget is tuned so a level-30 character can **master ~2 Kinetics and dip into a 3rd**. Spend **Combat Skill Points** to learn more **Combat Skills** from **any Fighting
     Style** (grouped by style, your own first; a style's signature Passive is learnable too). Your Heritage's
     2 starters + its style Passive are free and permanent. **Completing a Kinetic's Adept tier auto-grants
     proficiency in it; completing its Expert tier auto-grants expertise (double prof)** — the level-up screen
@@ -125,7 +126,7 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     a slot disables all other options of that type until **End Turn**; a "This Turn" tracker shows what's used
     (tap to toggle manually for feats/abilities that grant extras).
   - **Kinetics tab** — all known techniques with their Use/Attack/Activate buttons, topped by a **Kinetic
-    Proficiencies** summary: completing a Kinetic's **Adept** tier (all 5 techniques) grants **proficiency**
+    Proficiencies** summary: completing a Kinetic's **Adept** tier (all 3 techniques) grants **proficiency**
     in it, and completing its **Expert** tier grants **expertise** (double proficiency bonus on that Kinetic's
     technique attacks). Your background focus Kinetic is proficient from the start.
   - **Skills tab** — all 36 skills, tap to roll. Skills under a **flaw** are tagged ⚠ and roll with disadvantage.

@@ -120,7 +120,7 @@ PC.skill = function (name) { return PC.SKILLS.find((s) => s.name === name) || nu
 PC.kinetic = function (name) { return PC.KINETICS.find((k) => k.name === name) || null; };
 PC.technique = function (name) { return PC.TECHNIQUES.find((t) => t.name === name) || null; };
 PC.skillsByAttr = function (attr) { return PC.SKILLS.filter((s) => s.attr === attr); };
-/* Techniques of a Kinetic at a given tier (5 per tier per Kinetic). */
+/* Techniques of a Kinetic at a given tier (3 per tier per Kinetic). */
 PC.kineticTierTechniques = function (kinetic, tier) { return PC.TECHNIQUES.filter((t) => t.kinetic === kinetic && t.tier === tier); };
 /* True if the character knows EVERY technique in a Kinetic's given tier. */
 PC.kineticTierComplete = function (kinetic, tier, knownNames) {

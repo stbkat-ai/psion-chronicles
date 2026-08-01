@@ -1379,12 +1379,13 @@
         const lvl = luProfLevel(kin);
         const statusTag = lvl === "expertise" ? ' <span class="kin-prof-badge exp">✦ Expertise</span>' : lvl === "proficient" ? ' <span class="kin-prof-badge pro">✓ Proficient</span>' : "";
         pane.appendChild(el("div", "kin-pane-head", `<b>${kin}</b> — ${k.attr} · ${k.role} · ${PC.CHAKRAS[k.attr].name} chakra · <span class="muted">${k.domain}</span>${statusTag}`));
-        // Progress toward the next proficiency milestone (all 5 of a tier).
-        const adeptDone = PC.kineticTierTechniques(kin, "Adept").filter((t) => known().indexOf(t.name) > -1).length;
-        const expertDone = PC.kineticTierTechniques(kin, "Expert").filter((t) => known().indexOf(t.name) > -1).length;
+        // Progress toward the next proficiency milestone (all of a tier — 3 per tier).
+        const adeptAll = PC.kineticTierTechniques(kin, "Adept"), expertAll = PC.kineticTierTechniques(kin, "Expert");
+        const adeptDone = adeptAll.filter((t) => known().indexOf(t.name) > -1).length;
+        const expertDone = expertAll.filter((t) => known().indexOf(t.name) > -1).length;
         if (lvl === "expertise") pane.appendChild(el("div", "hint", "✦ Expertise — double proficiency bonus on this Kinetic's technique attacks."));
-        else if (lvl === "proficient") pane.appendChild(el("div", "hint", `Proficient. Learn all Expert-tier techniques (<b>${expertDone}/5</b>) to gain <b>expertise</b> (double prof).`));
-        else pane.appendChild(el("div", "hint", `Learn all Adept-tier techniques (<b>${adeptDone}/5</b>) to gain <b>proficiency</b> in this Kinetic.`));
+        else if (lvl === "proficient") pane.appendChild(el("div", "hint", `Proficient. Learn all Expert-tier techniques (<b>${expertDone}/${expertAll.length}</b>) to gain <b>expertise</b> (double prof).`));
+        else pane.appendChild(el("div", "hint", `Learn all Adept-tier techniques (<b>${adeptDone}/${adeptAll.length}</b>) to gain <b>proficiency</b> in this Kinetic.`));
         const list = byKin[kin] || [];
         if (list.length) list.forEach((t) => pane.appendChild(techLearnCard(t, () => { learnTech(t); }, noTP)));
         else pane.appendChild(el("div", "muted", "Nothing learnable in this Kinetic right now."));

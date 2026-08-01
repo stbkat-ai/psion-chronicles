@@ -210,15 +210,20 @@ an "Awakened" node on the **Chakras** tab once unlocked.
   You earn **+1 TP every level from level 2 onward** (so by level 30 you've gained 29 TP total).
 
 ### Technique tiers (CONFIRMED Luke)
-- Techniques come in **4 tiers** — **Beginner · Adept · Expert · Master** — with **5 techniques per tier per
-  Kinetic** (18 Kinetics × 4 × 5 = 360 total).
+- Techniques come in **4 tiers** — **Beginner · Adept · Expert · Master** — with **3 techniques per tier per
+  Kinetic** (18 Kinetics × 4 × 3 = **216 total**). One of each tier's three is the **signature** (its scaling
+  line — e.g. *Conflagration → ×2 → ×5 → ×10*); the other two are a role-spread pick.
 - A character's **Soul Level gates which tier they may learn/buy** (Adept @8, Expert @15, Master @22), **and**
-  a tier only opens once you already know **≥3 techniques from that Kinetic's previous tier**.
+  a tier only opens once you already know **≥3 techniques from that Kinetic's previous tier** — which, at 3 per
+  tier, means you must **complete the whole previous tier** to advance it.
+- **Why only 3 per tier?** The TP budget is fixed: **29 TP by level 30 + 3 starting techniques = 32 acquisitions**.
+  At 12 techniques per Kinetic, that budget **masters ~2 full Kinetics (24) and dips into a 3rd (8)** — the
+  intended breadth. (At the old 20/Kinetic it only reached one master plus half of a second.)
 
 ### Kinetic proficiency by tier completion (CONFIRMED Luke)
-- Completing **every technique in a Kinetic's Adept tier** (all 5) **auto-grants proficiency** in that Kinetic
+- Completing **every technique in a Kinetic's Adept tier** (all 3) **auto-grants proficiency** in that Kinetic
   — relevant for Kinetics outside your background focus (the focus Kinetic is already proficient).
-- Completing **every technique in its Expert tier** (all 5) **auto-grants expertise** — you add **double your
+- Completing **every technique in its Expert tier** (all 3) **auto-grants expertise** — you add **double your
   proficiency bonus** to that Kinetic's technique attack rolls.
 - This is **derived automatically** from the techniques a character knows (no separate bookkeeping); the app
   shows current status on the play sheet's **Kinetics** tab and toasts the moment a threshold is crossed.

@@ -1688,19 +1688,20 @@
     if (!kins.length) return null;
     const panel = el("div", "panel");
     panel.appendChild(el("div", "section-label", "Kinetic Proficiencies"));
-    panel.appendChild(el("p", "hint", "Complete a Kinetic's <b>Adept</b> tier (all 5 techniques) to gain <b>proficiency</b> in it; complete its <b>Expert</b> tier (all 5) for <b>expertise</b> — double proficiency bonus on that Kinetic's technique attacks. Your background focus Kinetic is proficient from the start."));
+    panel.appendChild(el("p", "hint", "Complete a Kinetic's <b>Adept</b> tier (all 3 techniques) to gain <b>proficiency</b> in it; complete its <b>Expert</b> tier (all 3) for <b>expertise</b> — double proficiency bonus on that Kinetic's technique attacks. Your background focus Kinetic is proficient from the start."));
     kins.forEach((kin) => {
       const lvl = kineticProfLevel(kin);
-      const adeptDone = PC.kineticTierTechniques(kin, "Adept").filter((t) => known.indexOf(t.name) > -1).length;
-      const expertDone = PC.kineticTierTechniques(kin, "Expert").filter((t) => known.indexOf(t.name) > -1).length;
+      const adeptAll = PC.kineticTierTechniques(kin, "Adept"), expertAll = PC.kineticTierTechniques(kin, "Expert");
+      const adeptDone = adeptAll.filter((t) => known.indexOf(t.name) > -1).length;
+      const expertDone = expertAll.filter((t) => known.indexOf(t.name) > -1).length;
       const focus = isFocusKinetic(kin);
       const badge = lvl === "expertise" ? '<span class="kin-prof-badge exp">✦ Expertise</span>'
         : lvl === "proficient" ? '<span class="kin-prof-badge pro">✓ Proficient</span>'
         : '<span class="kin-prof-badge none">—</span>';
       let note;
       if (lvl === "expertise") note = `+${PC.kineticProfBonus(rec.level, lvl)} to hit (2× prof)`;
-      else if (lvl === "proficient") note = `Expert ${expertDone}/5 → expertise`;
-      else note = `Adept ${adeptDone}/5 → proficiency`;
+      else if (lvl === "proficient") note = `Expert ${expertDone}/${expertAll.length} → expertise`;
+      else note = `Adept ${adeptDone}/${adeptAll.length} → proficiency`;
       const row = el("div", "kin-prof-row");
       row.innerHTML = `<span class="kin-prof-name">${kin}${focus ? ' <span class="tag">focus</span>' : ""}</span>${badge}<span class="kin-prof-note">${note}</span>`;
       panel.appendChild(row);

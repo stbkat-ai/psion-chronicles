@@ -28,7 +28,7 @@ in the browser's `localStorage` (key `psion_chronicles_characters`), so saved da
 ## Files (all under `app/`)
 - `index.html` — entry point; the 6 asset tags carry `?v=N`.
 - `data.js` — all game data on `window.PC` (9 backgrounds, 8 heritages, 18 kinetics, 36 skills,
-  18 weapon types, 360 techniques, fighting styles/combat skills, per-background & per-heritage flaws).
+  18 weapon types, 216 techniques (18 Kinetics × 4 tiers × 3), fighting styles/combat skills, per-background & per-heritage flaws).
 - `items.js` — the weapon/item catalog (~283 gear items + 64 component entries; skill tool kits via `it.skill`;
   functioning consumables via `it.effect`). **Crafting is two-tier:** raw `PC.SALVAGE` (14 materials) →
   **components** (`PC.COMPONENTS`, 16 parts × 4 quality grades Crude→Masterwork) → weapons & armor. Templates
