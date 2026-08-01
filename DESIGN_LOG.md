@@ -752,14 +752,16 @@ each combining two parents (e.g. **Nuclekinesis** = Robukinesis + Pyrokinesis). 
 the Player's Guide, invisible until discovered in play. The GM knows them (see `FUSIONS.md`).
 **The mechanic (from the user's answers).** Fusions **start at tier 2** — tiers **Adept · Expert · Master**, 3
 per tier = **9 each** (39 × 9 = **351** techniques). Each fusion technique is a **specific pairing of one
-technique from each parent, offset one tier up**: fusion Adept pairs parents' **Beginner**, Expert pairs
-**Adept**, Master pairs **Expert** (the user's example: *Ki Strike + Fire Bolt = Nucastrike*). A character
-**automatically gains** a fusion technique — **free, no TP** — the instant they know **both** halves; the fusion
-stays fully hidden until then, then reveals with a one-time *"✨ Fusion discovered"* toast.
-**Why this shape.** "Start at tier 2" = the fusion is offset one tier above the parent techniques that form it,
-so its first (Adept) tier draws on the parents' Beginner techniques. Auto-grant-on-pairing means a character's
-fusions **emerge from the two Kinetics they actually invest in** — no separate currency, and it ties neatly to
-the "master ~2 + dip a 3rd" TP budget from #35.
+technique from each parent at the same tier — Adept and above only**: fusion Adept pairs parents' **Adept**,
+Expert pairs **Expert**, Master pairs **Master**. Parents' **Beginner** techniques never form fusions (the user
+corrected an earlier Beginner-fed draft: *"not beginner techniques, only adept and above"*). E.g.
+*Kinetic Grip + Blazing Speed → Nucagrip*. A character **automatically gains** a fusion technique — **free, no
+TP** — the instant they know **both** halves; the fusion stays fully hidden until then, then reveals with a
+one-time *"✨ Fusion discovered"* toast.
+**Why this shape.** Both halves must be **Adept+**, so a fusion only surfaces once a character has invested past
+Beginner in **both** parents — meaningfully gated, no low-level accidental unlocks. Auto-grant-on-pairing means a
+character's fusions **emerge from the two Kinetics they actually invest in** — no separate currency, and it ties
+neatly to the "master ~2 + dip a 3rd" TP budget from #35.
 **How (build).** Content is **generated** from the parent data by a script (`scratchpad/gen_fusions.js`): it pairs
 parent techniques index-wise per tier, names each by portmanteau (fusion prefix + the first parent's technique
 word → *Nuc*+*strike* = *Nucastrike*; collisions fall back to the second parent's word), sums KP (fusions are
@@ -775,9 +777,10 @@ fires the discovery toast once per fusion (persisted on `rec.seenFusions`). Dist
 **Kept the secret:** `README.md` (the player-facing guide) intentionally says **nothing** about fusions; the GM
 reference lives in `FUSIONS.md` + this log + a HIDDEN section in `GAME_RULES.md`.
 **Verified** (Node + Playwright): 39 fusions / 351 techniques, unique names, all pairs valid, 9 per fusion; a
-seeded character knowing *Ki Strike + Fire Bolt* auto-gains **Nucastrike**, unlocks **Nuclekinesis**, fires the
-discovery toast, shows the fusion in the Kinetics panel and as a usable Combat action; a character with **no
-pair sees no fusion content** (hidden); no console errors. Cache-buster **v=58**.
+seeded character knowing *Kinetic Grip + Blazing Speed* (both Adept) auto-gains **Nucagrip**, unlocks
+**Nuclekinesis**, fires the discovery toast, shows the fusion in the Kinetics panel and as a usable Combat
+action; a Beginner-only pair (*Ki Strike + Fire Bolt*) grants **nothing**, and a character with **no qualifying
+pair sees no fusion content** (hidden); no console errors. Cache-buster **v=59**.
 **Open:** names/effects/costs are a **concept pass** (the PDF's own framing) — tune in playtest; the chakra-damage
 penalty and any Provisional-fusion renames are still to come.
 

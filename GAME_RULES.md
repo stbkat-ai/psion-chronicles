@@ -250,9 +250,10 @@ an "Awakened" node on the **Chakras** tab once unlocked.
 - A **Fusion Kinetic** is two standard Kinetics combined into a new domain (e.g. **Nuclekinesis** =
   Robukinesis + Pyrokinesis). There are **39** of them (11 Established / locked-canon, 28 Provisional).
 - Fusions **start at tier 2** — their tiers are **Adept · Expert · Master** (no Beginner), **3 per tier = 9**.
-- Each fusion technique is a **specific pairing of one technique from each parent, offset one tier up**:
-  a fusion's **Adept** techniques pair the parents' **Beginner** techniques, **Expert** pairs the parents'
-  **Adept**, **Master** pairs the parents' **Expert**. (E.g. *Ki Strike + Fire Bolt → Nucastrike*.)
+- Each fusion technique is a **specific pairing of one technique from each parent at the same tier — Adept and
+  above only**: a fusion's **Adept** techniques pair the parents' **Adept** techniques, **Expert** pairs the
+  parents' **Expert**, **Master** pairs the parents' **Master**. Parents' **Beginner** techniques never form
+  fusions. (E.g. *Kinetic Grip + Blazing Speed → Nucagrip*.)
 - **Unlock is automatic and hidden:** the moment a character knows **both** halves of a pair, they gain that
   fusion technique **free — no Technique Points**. Until the first pair lands, the fusion is invisible. On the
   play sheet it then reveals on the **Kinetics** tab (one-time *"✨ Fusion discovered"* toast) and is usable in

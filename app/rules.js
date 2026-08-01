@@ -127,9 +127,10 @@ PC.technique = function (name) {
 
 /* ---- Fusion Kinetics ---------------------------------------------------------
    A fusion is two parent kinetics combined. Each fusion technique is a PAIR of one technique from each
-   parent (offset one tier up: parent Beginner→fusion Adept, Adept→Expert, Expert→Master). A character
-   automatically KNOWS a fusion technique once they know BOTH halves of its pair — no TP, auto-granted.
-   A fusion is "unlocked" (revealed) as soon as the character knows at least one of its techniques.        */
+   parent at the SAME tier, Adept and above only (parent Adept→fusion Adept, Expert→Expert, Master→Master;
+   parents' Beginner techniques never form fusions). A character automatically KNOWS a fusion technique once
+   they know BOTH halves of its pair — no TP, auto-granted. A fusion is "unlocked" (revealed) as soon as the
+   character knows at least one of its techniques.                                                          */
 PC.fusion = function (name) { return (PC.FUSIONS || []).find((f) => f.name === name) || null; };
 PC.fusionTechniques = function (name) { return (PC.FUSION_TECHNIQUES || []).filter((t) => t.kinetic === name); };
 /* Every fusion technique the character has earned, given the set of base technique names they know. */
