@@ -93,6 +93,7 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
 
 - **Live Play Sheet** (▶ Play on a character) — the at-the-table screen, organized into tabs so there's
   little scrolling: **Sheet · ⚔ Combat · Limbs · Chakras · Kinetics · Skills · Traits · Description · Inventory · 🔨 Crafting · 🐾 Pets**.
+  (A hidden **♥ Otherkin** tab joins the row — right after Chakras — once a character reaches **Soul Level 15** and the Heart chakra awakens.)
   - **Limbs tab** — Fallout-style called-shot damage shown on a **body figure**: a silhouette of head,
     torso, two arms and two legs, with each limb's **HP written over it** in the bold colored pool-number
     style (green/gold when healthy → orange when hurt → red when crippled). **Tap a limb** to open its

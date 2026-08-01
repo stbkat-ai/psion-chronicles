@@ -657,6 +657,29 @@ sync (per-device, like characters).
 
 ---
 
+### 34. Otherkin tab — level-15-gated placeholder (mirrors the Heart chakra)
+**Decision.** Per the user, add the **♥ Otherkin** play-sheet tab now, but keep it **hidden until Soul Level
+15** — the same reveal moment as the Heart chakra. The Otherkin *system* (Soul Creature bond/forms/powers)
+isn't written yet, so for now the tab is a **themed placeholder** that will host it, so the shell is ready
+the day Luke hands over the mechanics.
+**Why gated at 15.** The Otherkin is the **Soul Creature seated at the Heart chakra**, and the Heart chakra
+already stays concealed until Soul Level 15 (`PC.HEART_CHAKRA.unlockLevel: 15`, `system: "Otherkin"`). The
+two are one reveal — so the tab uses the **exact same gate** (`heartUnlocked()`) and the same green accent.
+**How.** `play.js`: `buildTabBar()` builds the tab array conditionally — `if (heartUnlocked()) tabs.push(["otherkin","♥ Otherkin"])`,
+inserted **right after Chakras** (the Otherkin lives at their center). Added `case "otherkin"` → `buildOtherkinTab()`,
+plus a defensive guard: if `activeTab === "otherkin"` but the character is no longer awakened (e.g. a level-down),
+the view **falls back to Sheet** so it can't strand on a hidden tab. `buildOtherkinTab()` renders a themed
+panel (label ♥ The Otherkin), an **awakened note** echoing the Heart chakra reveal wording, and a pulsing green
+heart glyph over the chakra theme (`PC.HEART_CHAKRA.theme`) with a "System coming soon" line. `styles.css`:
+`.play-tab.otherkin` + `.otherkin-panel/.otherkin-note/.otherkin-glyph/.ok-heart` (`ok-pulse` animation), all
+in the Heart green (`#46c46e`). **Verified** (Playwright): at Level 1 the tab is **absent**; bumped to Level 15
+it **appears right after Chakras**, opens, and renders panel + note + glyph with the active-tab styling; no
+console errors. Cache-buster **v=54**.
+**Open:** the Otherkin mechanics themselves (what the Soul Creature is, how it's chosen, bonded, and used, and
+how the Heart chakra is tracked/spent) — TBD, to be built into this tab when Luke designs the system.
+
+---
+
 ## Deferred / future ideas
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before

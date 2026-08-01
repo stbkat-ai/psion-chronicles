@@ -834,8 +834,12 @@
     const root = el("div");
     root.appendChild(buildHeader());
     root.appendChild(buildTabBar());
+    // If the Otherkin tab was open but the Soul Creature is no longer awakened (e.g. a level-down),
+    // fall back to the Sheet so the view never strands on a hidden tab.
+    if (activeTab === "otherkin" && !heartUnlocked()) activeTab = "sheet";
     let body;
     switch (activeTab) {
+      case "otherkin": body = buildOtherkinTab(); break;
       case "combat": body = buildCombat(); break;
       case "limbs": body = buildLimbsTab(); break;
       case "chakras": body = buildChakraTab(); break;
@@ -875,8 +879,13 @@
 
   function buildTabBar() {
     const bar = el("div", "play-tabs");
-    [["sheet", "Sheet"], ["combat", "⚔ Combat"], ["limbs", "Limbs"], ["chakras", "Chakras"], ["kinetics", "Kinetics"], ["skills", "Skills"], ["traits", "Traits"], ["description", "Description"], ["inventory", "Inventory"], ["crafting", "🔨 Crafting"], ["pets", "🐾 Pets"]].forEach((pair) => {
-      const b = el("button", "play-tab" + (activeTab === pair[0] ? " active" : ""), pair[1]);
+    const tabs = [["sheet", "Sheet"], ["combat", "⚔ Combat"], ["limbs", "Limbs"], ["chakras", "Chakras"]];
+    // The Otherkin tab stays hidden until the Soul Creature awakens (Soul Level 15+), mirroring the
+    // Heart chakra reveal — it sits right after Chakras, since the Otherkin lives at their center.
+    if (heartUnlocked()) tabs.push(["otherkin", "♥ Otherkin"]);
+    tabs.push(["kinetics", "Kinetics"], ["skills", "Skills"], ["traits", "Traits"], ["description", "Description"], ["inventory", "Inventory"], ["crafting", "🔨 Crafting"], ["pets", "🐾 Pets"]);
+    tabs.forEach((pair) => {
+      const b = el("button", "play-tab" + (pair[0] === "otherkin" ? " otherkin" : "") + (activeTab === pair[0] ? " active" : ""), pair[1]);
       b.onclick = () => { activeTab = pair[0]; catalogOpen = false; refresh(); };
       bar.appendChild(b);
     });
@@ -2390,6 +2399,31 @@
   function removePetAttack(p, i) { p.attacks.splice(i, 1); save(); refresh(); }
   function addPetTrait(p) { (p.traits = p.traits || []).push(""); save(); refresh(); }
   function removePetTrait(p, i) { p.traits.splice(i, 1); save(); refresh(); }
+
+  // ── Otherkin tab ─────────────────────────────────────────────────────────
+  // Revealed only at Soul Level 15+ (same gate as the Heart chakra). The Otherkin — the Soul Creature
+  // that has lived within since creation — awakens here. The mechanical system is still to be written;
+  // this tab is the placeholder that will host it, kept in step with the Heart chakra reveal note.
+  function buildOtherkinTab() {
+    const h = PC.HEART_CHAKRA;
+    const root = el("div");
+    const intro = el("div", "panel otherkin-panel");
+    intro.appendChild(el("div", "section-label", "♥ The Otherkin"));
+    intro.appendChild(el("p", "hint",
+      `Your <b class="ok-hl">Soul Creature</b> — the Otherkin that has lived in your soul since creation — <b>awakens at Soul Level 15</b>, at the center of your chakras where the <b class="ok-hl">Heart</b> now beats.`));
+
+    // Awakened banner — mirrors the Heart chakra note so the two reveals read as one moment.
+    const banner = el("div", "otherkin-note");
+    banner.innerHTML = `<b class="ok-hl">♥ Your Otherkin has awakened.</b> Its bond, forms, and powers are still being forged. When the <b>Otherkin system</b> is complete, this is where you'll commune with your Soul Creature, shape it, and call on it in play.`;
+    intro.appendChild(banner);
+
+    // Quiet placeholder heart, so the tab feels alive even before the system lands.
+    const glyph = el("div", "otherkin-glyph");
+    glyph.innerHTML = `<div class="ok-heart" style="--cc:${h.color}">♥</div><div class="ok-theme">${h.theme}</div><div class="ok-soon">System coming soon</div>`;
+    root.appendChild(intro);
+    root.appendChild(glyph);
+    return root;
+  }
 
   function buildPetsTab() {
     const root = el("div");

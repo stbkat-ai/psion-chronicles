@@ -464,6 +464,28 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 }
 .chakra-heart-note .heart-hl { color: #46c46e; }
 
+/* Otherkin — the awakened Soul Creature tab (Soul Level 15+) */
+.play-tab.otherkin { color: #6fdc93; border-color: rgba(70, 196, 110, .4); }
+.play-tab.otherkin:hover { color: #8fe8ab; }
+.play-tab.otherkin.active {
+  background: linear-gradient(180deg, rgba(70, 196, 110, .22), var(--panel));
+  color: #fff; border-color: #46c46e; box-shadow: 0 -2px 14px rgba(70, 196, 110, .3);
+}
+.otherkin-panel { border-color: rgba(70, 196, 110, .32); }
+.otherkin-note {
+  margin-top: 12px; font-size: .85rem; color: var(--text-dim); line-height: 1.55;
+  background: rgba(70, 196, 110, .08); border: 1px solid rgba(70, 196, 110, .32); border-radius: 10px; padding: 11px 13px;
+}
+.otherkin-note .ok-hl, .otherkin-panel .ok-hl { color: #46c46e; }
+.otherkin-glyph { text-align: center; padding: 30px 16px 20px; }
+.ok-heart {
+  font-size: 3.4rem; line-height: 1; color: var(--cc, #46c46e);
+  text-shadow: 0 0 22px rgba(70, 196, 110, .55); animation: ok-pulse 2.8s ease-in-out infinite;
+}
+@keyframes ok-pulse { 0%, 100% { opacity: .7; transform: scale(1); } 50% { opacity: 1; transform: scale(1.08); } }
+.ok-theme { margin-top: 10px; color: #8fe8ab; font-style: italic; font-size: .95rem; }
+.ok-soon { margin-top: 4px; color: var(--text-faint); font-size: .78rem; letter-spacing: .04em; text-transform: uppercase; }
+
 /* inventory */
 .carry-box { margin-bottom: 14px; }
 .carry-box.over .poolbar-num { color: var(--danger); }

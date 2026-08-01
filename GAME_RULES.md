@@ -233,6 +233,9 @@ an "Awakened" node on the **Chakras** tab once unlocked.
 - Examples: **dragon, phoenix, werewolf, vampire, sprite, fairy**, etc.
 - Seated at the **Heart chakra** (the hidden 7th, green): it stays concealed until Soul Level 15, then
   **awakens** at the center of the chakra chart. The Heart chakra is the Otherkin's in-app home.
+- **In the app:** a dedicated **♥ Otherkin** play-sheet tab appears (right after Chakras) the moment a
+  character reaches **Soul Level 15**, and is hidden before then — the same gate as the Heart chakra. For
+  now it's a themed placeholder announcing the awakening; the mechanics screen will live here.
 - *[Mechanics TBD: what the Soul Creature grants, how it's chosen, how it's used, and how the Heart chakra
   is spent/tracked once the system is designed.]*
 
