@@ -113,7 +113,9 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     center of the chart: the seat of the **Otherkin / Soul Creature** system (powers coming with that design).
   - **⚔ Combat tab** — everything you can do this turn, grouped by action economy into **collapsible pull-down
     menus** (each header shows a count badge; tap to expand/collapse — **Actions** opens by default, the rest
-    start collapsed so you're not scrolling to find things, and your choices stick between rolls):
+    start collapsed so you're not scrolling to find things, and your choices stick between rolls. A group also
+    **auto-collapses the moment you spend its slot** — take your Action and the Actions menu folds away — and a
+    new turn (End Turn) reopens Actions; you can always reopen a spent group by tapping it):
     **Actions** (equipped-weapon attack/damage/augments, a universal **👊 Unarmed Strike** — d20+STR+prof to hit,
     1d4+STR damage — and Action techniques), **Bonus Actions**, **Reactions** (a universal **↩ Opportunity
     Attack** — one melee attack with any melee weapon or unarmed when an enemy enters/leaves your reach, once

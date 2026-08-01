@@ -223,10 +223,12 @@
     return play.econ.action; // "Action" (default)
   }
   function consumeEcon(actionType) {
-    if (actionType === "Bonus Action") play.econ.bonus = true;
-    else if (actionType === "Reaction") play.econ.reaction = true;
-    else if (actionType === "Full Turn") { play.econ.action = true; play.econ.bonus = true; }
-    else play.econ.action = true; // "Action"
+    // Spending a slot also auto-collapses that action-economy group on the Combat tab (its pull-down menu),
+    // since you can't use it again this turn — one less thing to scroll past. You can still reopen it manually.
+    if (actionType === "Bonus Action") { play.econ.bonus = true; combatGroupOpen.bonus = false; }
+    else if (actionType === "Reaction") { play.econ.reaction = true; combatGroupOpen.reaction = false; }
+    else if (actionType === "Full Turn") { play.econ.action = true; play.econ.bonus = true; combatGroupOpen.actions = false; combatGroupOpen.bonus = false; combatGroupOpen.other = false; }
+    else { play.econ.action = true; combatGroupOpen.actions = false; } // "Action"
   }
   function econName(actionType) {
     if (actionType === "Bonus Action") return "Bonus Action";
@@ -234,7 +236,14 @@
     if (actionType === "Full Turn") return "turn (Action + Bonus)";
     return "Action";
   }
-  function toggleEconSlot(slot) { play.econ[slot] = !play.econ[slot]; save(); refresh(); }
+  function toggleEconSlot(slot) {
+    play.econ[slot] = !play.econ[slot];
+    // Keep the matching Combat pull-down in step with a manual slot toggle: spending it collapses the menu,
+    // freeing it again reopens it.
+    const key = slot === "action" ? "actions" : slot === "bonus" ? "bonus" : slot === "reaction" ? "reaction" : null;
+    if (key) combatGroupOpen[key] = !play.econ[slot];
+    save(); refresh();
+  }
 
   function knownCombatSkills() {
     const names = PC.heritageGrantedSkills(rec.heritage); // 2 active starters + the style's Passive
@@ -301,6 +310,7 @@
     play.active = []; play.turn = 1;
     play.hp = maxHP(); play.kp = maxKP();
     play.econ = { action: false, bonus: false, reaction: false, move: false };
+    combatGroupOpen = { actions: true, bonus: false, reaction: false, other: false }; // fresh menus
     PC.LIMBS.forEach((L) => { play.limbs[L.key] = limbMaxFor(L.key); }); // limbs fully restored
     logLine("Long rest — HP & KP fully restored, chakras +2, limbs fully healed, sustained techniques ended.");
     App.toast("Long rest — fully restored.");
@@ -318,6 +328,7 @@
     }
     play.turn += 1;
     play.econ = { action: false, bonus: false, reaction: false, move: false }; // refresh for the new turn
+    combatGroupOpen = { actions: true, bonus: false, reaction: false, other: false }; // reopen Actions for the new turn
     save(); refresh();
   }
 

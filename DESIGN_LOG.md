@@ -730,6 +730,22 @@ collapsed (caret ▼, no grid) and correct count badges; expanding Bonus reveals
 
 ---
 
+### 37. Combat groups auto-collapse when their slot is spent (follows #36)
+**Decision.** Per the user, take the pull-downs a step further: when you **spend an action-economy slot**, its
+group **auto-collapses** — use your Action and the Actions menu folds away on its own, so what's left to do
+this turn is what's still on screen.
+**How.** `play.js`: the single spend choke-point `consumeEcon(actionType)` now also sets the matching
+`combatGroupOpen[...] = false` (Action→actions, Bonus→bonus, Reaction→reaction, Full Turn→actions+bonus+other).
+The manual **This-Turn** tracker (`toggleEconSlot`) stays in step both ways — marking a slot used collapses its
+menu, freeing it reopens it. A **new turn** (`endTurn`) and a **long rest** reset the menus to the default
+(Actions open, rest collapsed) so the next turn starts fresh. Auto-collapse is a one-time nudge at spend time,
+not a forced state — you can always tap a spent group open again to re-read a card.
+**Verified** (Playwright): spending the Action collapses Actions (▲→▼, grid gone) and marks the tracker's Action
+slot ✓; opening Bonus then marking its slot used collapses it, un-marking reopens it; **End Turn reopens Actions**
+for the new turn; no console errors. Cache-buster **v=57**.
+
+---
+
 ## Deferred / future ideas
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before
