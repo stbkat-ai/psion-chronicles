@@ -291,6 +291,7 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
   border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px; box-shadow: var(--shadow);
 }
 .play-head > div:nth-child(2) { flex: 1; }
+.play-head .phead-title { flex: 1; }
 
 .muted { color: var(--text-dim); font-size: .88rem; }
 
@@ -648,6 +649,20 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 .pet-trait-row { display: flex; gap: 6px; margin-bottom: 6px; }
 .pet-trait-row input { flex: 1 1 auto; }
 .pet-notes-edit { width: 100%; box-sizing: border-box; min-height: 60px; resize: vertical; background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); padding: 8px 10px; font: inherit; }
+
+/* ---- Character artwork & thumbnails ---- */
+.head-thumb { width: 46px; height: 46px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border-glow); cursor: pointer; flex: 0 0 auto; }
+.rhead { display: flex; align-items: center; gap: 11px; }
+.roster-thumb { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border-glow); flex: 0 0 auto; }
+.art-crop-wrap { position: relative; display: inline-block; max-width: 100%; overflow: hidden; line-height: 0; border-radius: 8px; margin: 4px 0 12px; }
+.art-img { display: block; max-width: min(360px, 100%); width: 100%; height: auto; user-select: none; -webkit-user-drag: none; }
+.art-sel { position: absolute; box-sizing: border-box; border: 2px solid var(--psi-bright); border-radius: 4px; box-shadow: 0 0 0 9999px rgba(6, 9, 16, .55); cursor: move; touch-action: none; }
+.art-ctl { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.art-size { flex: 1 1 auto; max-width: 260px; }
+.art-size-label { font-size: .74rem; color: var(--text-dim); }
+.art-manage { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.art-thumb-preview { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border-glow); }
+.file-btn { cursor: pointer; }
 
 @media (max-width: 680px) {
   .sheet-grid, .pools, .desc-grid { grid-template-columns: 1fr; }

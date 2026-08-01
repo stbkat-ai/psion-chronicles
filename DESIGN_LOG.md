@@ -634,6 +634,29 @@ command action-economy, and loyalty.
 
 ---
 
+### 33. Character artwork — upload + face-crop thumbnail
+**Decision.** Per the user, an **optional** feature on the Description tab: players upload their own character
+artwork, **crop a face into a thumbnail**, and that thumbnail shows **next to the name atop the play sheet**
+and **on the character-select roster**.
+**How.** `play.js`: Description tab gains a **Character Artwork** panel (`buildArtworkPanel`). Upload
+(`fileButton` → hidden `<input type=file>`) runs `handlePortraitFile`, which downscales the image to ≤1000px
+long-edge and stores a **compressed JPEG data URL** as `rec.portrait` (keeps localStorage small). A **cropper**
+overlays a draggable, slider-sized **square** on the image (pointer events, dim-outside via a big `box-shadow`
+clipped by an `overflow:hidden` wrap); **Set as thumbnail** maps the selection from display → natural pixels,
+draws a 240px square canvas, and stores `rec.thumb` (data URL) + `rec.crop` (fractional rect, to restore the
+selector). The header (`buildHeader`) shows a round `.head-thumb` by the name (click → Description tab); the
+roster card (`app.js rosterCard`) shows a `.roster-thumb`. **Storage safety:** `App.saveRoster` now **returns a
+boolean** (and gives a clearer *storage-full* message on `QuotaExceededError`); `play.js save()` returns it, so
+`handlePortraitFile`/`makeThumbFrom` **roll back** the image and toast if the write won't fit. All per-device,
+flavor-only. Fixed the `.play-head > div:nth-child(2)` flex selector (the new `<img>` shifted child order) by
+tagging the title `.phead-title`. **Verified** (Playwright, real canvas-generated PNG fed to the input): upload
+→ `rec.portrait` set (compressed) → cropper visible → Set thumbnail → `rec.thumb` + `crop` saved → thumbnail
+appears in header, preview, and roster; no console errors. Cache-buster **v=53**.
+**Open:** EXIF auto-rotation for phone photos isn't handled (desktop art is the common case); no cross-device
+sync (per-device, like characters).
+
+---
+
 ## Deferred / future ideas
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before

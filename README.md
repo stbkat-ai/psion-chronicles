@@ -134,6 +134,10 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
   - **Description tab** — your character's appearance & basic info (Basics, Physical appearance, and
     distinguishing features) as filled in at creation. Fully editable here too — each field saves as you
     go — so you can flesh out or change a look mid-campaign. Flavor only; nothing here touches the rules.
+    - **Character Artwork (optional):** upload your own art for the character, then **drag a square over the
+      face and crop it** into a round **thumbnail**. The thumbnail then shows **next to your name at the top of
+      the sheet** and **on the character-select screen**. Images are automatically downscaled/compressed and
+      saved **on this device only** (per-device, like everything else). Replace or remove the art anytime.
   - **Inventory tab** — carry weight, carried items (equip, actions, config), a custom-item form, and a
     **🔍 Browse Item Catalog** button that opens a dedicated **catalog screen**: search/filter the item
     catalog (weapons + armor, consumables, tools, gear) and Add any of them (weapons arrive attack-ready

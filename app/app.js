@@ -51,8 +51,11 @@
     catch (e) { return []; }
   }
   function saveRoster(list) {
-    try { localStorage.setItem(STORE_KEY, JSON.stringify(list)); }
-    catch (e) { toast("⚠ Couldn't save — this browser is blocking local storage."); }
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(list)); return true; }
+    catch (e) {
+      toast(/quota/i.test(String(e && e.name)) ? "⚠ Couldn't save — device storage is full (large artwork?)." : "⚠ Couldn't save — this browser is blocking local storage.");
+      return false;
+    }
   }
 
   function toast(msg) {
@@ -233,8 +236,14 @@
 
   function rosterCard(c) {
     const card = el("div", "roster-card");
-    card.appendChild(el("h3", null, c.name || "Unnamed"));
-    card.appendChild(el("div", "rmeta", `${c.background || "—"} · Soul Level ${c.level}`));
+    // Header: optional character thumbnail (uploaded on the Description tab) next to the name.
+    const rhead = el("div", "rhead");
+    if (c.thumb) { const th = el("img", "roster-thumb"); th.src = c.thumb; th.alt = c.name || "portrait"; rhead.appendChild(th); }
+    const rtitle = el("div");
+    rtitle.appendChild(el("h3", null, c.name || "Unnamed"));
+    rtitle.appendChild(el("div", "rmeta", `${c.background || "—"} · Soul Level ${c.level}`));
+    rhead.appendChild(rtitle);
+    card.appendChild(rhead);
     const eff = PC.effectiveScores(c.baseScores, (PC.background(c.background) || {}).boosts || {}, null);
     const pb = (PC.background(c.background) || {}).pool || { body: 0, mind: 0 };
     const hp = PC.bodyPool(eff, pb), kp = PC.mindPool(eff, pb);

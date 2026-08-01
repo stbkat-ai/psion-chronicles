@@ -79,7 +79,8 @@
   function save() {
     const list = App.loadRoster();
     const i = list.findIndex((c) => c.id === rec.id);
-    if (i > -1) { list[i] = rec; App.saveRoster(list); }
+    if (i > -1) { list[i] = rec; return App.saveRoster(list); }
+    return false;
   }
 
   /* ---------- computations ---------- */
@@ -855,12 +856,20 @@
     const head = el("div", "play-head");
     const back = el("button", "btn ghost small", "← Characters");
     back.onclick = () => App.goHome();
-    const title = el("div");
+    head.appendChild(back);
+    // Character thumbnail (uploaded on the Description tab), if set — sits next to the name.
+    if (rec.thumb) {
+      const th = el("img", "head-thumb"); th.src = rec.thumb; th.alt = rec.name || "portrait";
+      th.title = "Character artwork — edit on the Description tab";
+      th.onclick = () => { activeTab = "description"; refresh(); };
+      head.appendChild(th);
+    }
+    const title = el("div", "phead-title");
     title.innerHTML = `<h2 style="margin:0">${rec.name || "Unnamed"}</h2>
       <div style="color:var(--text-dim);font-size:.86rem">${rec.background} · Soul Level ${rec.level} · Turn ${play.turn}</div>`;
     const endTurnBtn = el("button", "btn small", `⏭ End Turn${activeUpkeep() ? " (−" + activeUpkeep() + " KP)" : ""}`);
     endTurnBtn.onclick = endTurn;
-    head.appendChild(back); head.appendChild(title); head.appendChild(endTurnBtn);
+    head.appendChild(title); head.appendChild(endTurnBtn);
     return head;
   }
 
@@ -943,7 +952,120 @@
       p.appendChild(ta);
     }
     root.appendChild(p);
+    root.appendChild(buildArtworkPanel());
     return root;
+  }
+
+  /* ---------- character artwork (optional) ---------- */
+  // A file-input styled as a button (label wraps a hidden input, so the click opens the picker).
+  function fileButton(label, onFile) {
+    const wrap = el("label", "btn small primary file-btn", label);
+    const inp = el("input"); inp.type = "file"; inp.accept = "image/*"; inp.style.display = "none";
+    inp.onchange = () => { if (inp.files && inp.files[0]) onFile(inp.files[0]); inp.value = ""; };
+    wrap.appendChild(inp);
+    return wrap;
+  }
+  // Read an uploaded image, downscale to a sane size (≤1000px long edge) and store a compressed JPEG
+  // data URL as the character's portrait — keeps localStorage small. Rolls back if the save won't fit.
+  function handlePortraitFile(file) {
+    if (!file || !/^image\//.test(file.type)) { App.toast("Please pick an image file."); return; }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const maxDim = 1000, scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+        const w = Math.max(1, Math.round(img.width * scale)), h = Math.max(1, Math.round(img.height * scale));
+        const cv = document.createElement("canvas"); cv.width = w; cv.height = h;
+        cv.getContext("2d").drawImage(img, 0, 0, w, h);
+        let url; try { url = cv.toDataURL("image/jpeg", 0.82); } catch (e) { App.toast("Couldn't process that image."); return; }
+        const prev = { p: rec.portrait, c: rec.crop, t: rec.thumb };
+        rec.portrait = url; rec.crop = null; // new image → reset the crop selection (keep any old thumb until re-cropped)
+        if (!save()) { rec.portrait = prev.p; rec.crop = prev.c; rec.thumb = prev.t; }
+        else App.toast("Artwork uploaded — now crop a face for the thumbnail.");
+        refresh();
+      };
+      img.onerror = () => App.toast("Couldn't read that image.");
+      img.src = reader.result;
+    };
+    reader.onerror = () => App.toast("Couldn't read that file.");
+    reader.readAsDataURL(file);
+  }
+  // Render the current square selection to a small round-ready thumbnail and store it.
+  function makeThumbFrom(img, box) {
+    const sc = img.naturalWidth / img.clientWidth; // uniform (height is auto → same scale)
+    const out = 240, cv = document.createElement("canvas"); cv.width = out; cv.height = out;
+    cv.getContext("2d").drawImage(img, box.left * sc, box.top * sc, box.side * sc, box.side * sc, 0, 0, out, out);
+    let url; try { url = cv.toDataURL("image/jpeg", 0.85); } catch (e) { App.toast("Couldn't make the thumbnail."); return; }
+    const prev = { t: rec.thumb, c: rec.crop };
+    rec.thumb = url;
+    rec.crop = { xf: box.left / img.clientWidth, yf: box.top / img.clientHeight, sf: box.side / img.clientWidth };
+    if (!save()) { rec.thumb = prev.t; rec.crop = prev.c; } else App.toast("Thumbnail set! It shows by your name and on the roster.");
+    refresh();
+  }
+  function removeArtwork() {
+    if (!confirm("Remove this character's artwork and thumbnail?")) return;
+    delete rec.portrait; delete rec.thumb; delete rec.crop;
+    save(); refresh();
+  }
+
+  function buildArtworkPanel() {
+    const p = el("div", "panel");
+    p.appendChild(el("div", "section-label", "Character Artwork (optional)"));
+    if (!rec.portrait) {
+      p.appendChild(el("p", "hint", "Upload your own artwork for this character, then crop a face for the <b>thumbnail</b> that appears next to your name at the top of the sheet and on the character-select screen. Images are downscaled and stored <b>on this device only</b> (per-device, like your characters)."));
+      p.appendChild(fileButton("＋ Upload artwork", handlePortraitFile));
+      return p;
+    }
+    p.appendChild(el("p", "hint", "Drag the square over the face, size it with the slider, then <b>Set as thumbnail</b>. Stored on this device only."));
+
+    // Cropper: the image with a draggable square selection overlaid.
+    const wrap = el("div", "art-crop-wrap");
+    const img = el("img", "art-img"); img.src = rec.portrait; img.draggable = false; img.alt = rec.name || "portrait";
+    const sel = el("div", "art-sel");
+    wrap.appendChild(img); wrap.appendChild(sel);
+    p.appendChild(wrap);
+
+    const ctl = el("div", "art-ctl");
+    const slider = el("input"); slider.type = "range"; slider.className = "art-size";
+    const setBtn = el("button", "btn small primary", "✂ Set as thumbnail");
+    ctl.appendChild(el("span", "art-size-label", "Size")); ctl.appendChild(slider); ctl.appendChild(setBtn);
+    p.appendChild(ctl);
+
+    // Live thumbnail preview + manage buttons.
+    const manage = el("div", "art-manage");
+    if (rec.thumb) { const tp = el("img", "art-thumb-preview"); tp.src = rec.thumb; tp.alt = "thumbnail"; manage.appendChild(tp); }
+    manage.appendChild(fileButton("⟳ Replace artwork", handlePortraitFile));
+    const rm = el("button", "btn small ghost", "✕ Remove artwork"); rm.onclick = removeArtwork;
+    manage.appendChild(rm);
+    p.appendChild(manage);
+
+    // Wire the cropper once the image has real display dimensions.
+    let box = null;
+    const initCropper = () => {
+      const W = img.clientWidth, H = img.clientHeight;
+      if (!W || !H) return;
+      let side, left, top;
+      if (rec.crop) { side = rec.crop.sf * W; left = rec.crop.xf * W; top = rec.crop.yf * H; }
+      else { side = Math.min(W, H) * 0.5; left = (W - side) / 2; top = (H - side) / 2; }
+      slider.min = 40; slider.max = Math.round(Math.min(W, H)); slider.step = 1;
+      const clampPlace = () => {
+        side = Math.max(30, Math.min(Math.min(W, H), side));
+        left = Math.max(0, Math.min(W - side, left));
+        top = Math.max(0, Math.min(H - side, top));
+        sel.style.width = sel.style.height = side + "px"; sel.style.left = left + "px"; sel.style.top = top + "px";
+        slider.value = Math.round(side);
+      };
+      box = { get: () => ({ left: left, top: top, side: side }) };
+      clampPlace();
+      slider.oninput = () => { const cx = left + side / 2, cy = top + side / 2; side = Number(slider.value); left = cx - side / 2; top = cy - side / 2; clampPlace(); };
+      let drag = false, sx = 0, sy = 0, ol = 0, ot = 0;
+      sel.onpointerdown = (e) => { drag = true; try { sel.setPointerCapture(e.pointerId); } catch (x) {} sx = e.clientX; sy = e.clientY; ol = left; ot = top; e.preventDefault(); };
+      sel.onpointermove = (e) => { if (!drag) return; left = ol + (e.clientX - sx); top = ot + (e.clientY - sy); clampPlace(); };
+      sel.onpointerup = sel.onpointercancel = () => { drag = false; };
+    };
+    if (img.complete && img.naturalWidth) initCropper(); else img.onload = initCropper;
+    setBtn.onclick = () => { if (box) makeThumbFrom(img, box.get()); else App.toast("Give the image a moment to load."); };
+    return p;
   }
 
   // Movement speeds (walk / climb / jump / swim) — shown on both the Sheet and Combat tabs. Walk uses
