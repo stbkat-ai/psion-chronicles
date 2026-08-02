@@ -29,9 +29,10 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
 - Fusion techniques are **powerful and expensive** — their KP cost is the sum of both parent halves.
 - A fusion is tied to **both** parents' attributes and chakras. *Planned rule (not yet implemented): if
   either parent chakra is damaged, the fusion's techniques are less effective.*
-- **Compendium framing:** the source text says Fusion Kinetics "become available beginning at Level 15" and
-  require proficiency investment in both parents. The app's implemented trigger is the pairing rule above
-  (know both Adept+ halves); no hard Level-15 floor is enforced in code yet.
+- **Compendium framing (intentionally not gated in code):** the source text says Fusion Kinetics "become
+  available beginning at Level 15" and require proficiency investment in both parents. The app **deliberately**
+  uses the pairing rule above instead (know both Adept+ halves → auto-grant, any level); the "Level 15" line is
+  kept as **GM guidance/flavor**, not a coded floor. *(Confirmed design choice — Aug 2026.)*
 - **Established** fusions are the ones the compendium fully specifies (Combat Role + description); **Provisional**
   ones are listed with a domain only and their technique names/effects are concept-pass and may change.
 - Technique names, effects, and costs below are a **concept pass** — tune in playtest.

@@ -809,9 +809,10 @@ Pollikinesis** (vs Florakinesis).
 *Established*; the **96** listed with only a domain are *Provisional* (their generated technique names/effects are
 concept-pass). No app code needed changing — the Kinetics panel, discovery toast, and Combat integration all
 iterate `PC.FUSIONS` / `grantedFusionTechniques` generically, so they scaled to 153 for free.
-**Compendium framing noted, not enforced.** The full PDF says fusions "become available beginning at Level 15" and
-require proficiency investment in both parents. The app keeps the user's chosen trigger from #38 (know both
-**Adept+** halves → auto-grant); **no hard Level-15 floor is coded** — flagged for the user to decide.
+**Compendium framing noted, not enforced (confirmed).** The full PDF says fusions "become available beginning at
+Level 15" and require proficiency investment in both parents. The user **confirmed** the app should keep the #38
+trigger instead (know both **Adept+** halves → auto-grant, any level); the "Level 15" line stays **GM
+flavor/guidance**, deliberately not a coded floor.
 **Verified** (Node): 153 fusions / 1,377 techniques, all fusion names unique, all pairs valid, 9 per fusion, no
 base-name collisions; a seeded pair on a **new** fusion (*Blazing Speed + Frost Nova* → **Calorispeed**, Calorikinesis)
 auto-grants and unlocks correctly; empty known-set grants nothing. Action spread ~981 Action / 386 Bonus / 10
