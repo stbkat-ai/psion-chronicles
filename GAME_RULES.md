@@ -246,14 +246,17 @@ an "Awakened" node on the **Chakras** tab once unlocked.
 
 ### Fusion Kinetics (HIDDEN — GM knowledge; players discover in play)
 > **Not in the Player's Guide.** This is a secret system. The GM knows it; players uncover it as they build.
-> Full library (39 fusions × 9 techniques): **`FUSIONS.md`**.
+> Full library (153 fusions × 9 techniques = 1,377): **`FUSIONS.md`**.
 - A **Fusion Kinetic** is two standard Kinetics combined into a new domain (e.g. **Nuclekinesis** =
-  Robukinesis + Pyrokinesis). There are **39** of them (11 Established / locked-canon, 28 Provisional).
+  Robukinesis + Pyrokinesis). With 18 base Kinetics there are **153** of them — the complete set of pairings
+  (57 Established / fully-specified in the compendium, 96 Provisional / domain-only concept-pass techniques).
 - Fusions **start at tier 2** — their tiers are **Adept · Expert · Master** (no Beginner), **3 per tier = 9**.
 - Each fusion technique is a **specific pairing of one technique from each parent at the same tier — Adept and
   above only**: a fusion's **Adept** techniques pair the parents' **Adept** techniques, **Expert** pairs the
   parents' **Expert**, **Master** pairs the parents' **Master**. Parents' **Beginner** techniques never form
-  fusions. (E.g. *Kinetic Grip + Blazing Speed → Nucagrip*.)
+  fusions. (E.g. *Kinetic Grip + Blazing Speed → Nuclegrip*.) The compendium reuses four names across two
+  pairings each; the app renames one member of each clash to keep unique keys (Hydro+Cryo → **Rimekinesis**,
+  Terra+Holy → **Templakinesis**, Holy+Lumo → **Empyreakinesis**, Aero+Natura → **Pollikinesis**).
 - **Unlock is automatic and hidden:** the moment a character knows **both** halves of a pair, they gain that
   fusion technique **free — no Technique Points**. Until the first pair lands, the fusion is invisible. On the
   play sheet it then reveals on the **Kinetics** tab (one-time *"✨ Fusion discovered"* toast) and is usable in

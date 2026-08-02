@@ -788,6 +788,37 @@ penalty and any Provisional-fusion renames are still to come.
 
 ---
 
+### 39. Fusion Kinetics expanded to the full 153 (the earlier PDF was incomplete)
+**Decision.** The user supplied the **complete** *Fusion Kinetics Compendium* — the earlier list (#38) was only a
+partial **39**. With 18 base Kinetics there are **C(18,2) = 153** unique pairings, so the app now carries **all
+153** fusions × 9 techniques = **1,377** (up from 39 / 351). The missing 114 were every pairing that involved an
+Intelligence / Wisdom / Charisma kinetic against a Strength / Agility / Constitution one, plus the cross pairings
+among the INT·WIS·CHA groups.
+**How (build).** Rather than keep hand-curating, the generator now treats the **compendium as the single source of
+truth**: `scratchpad/parse_full.js` extracts `{name, parents, domain}` for all 153 from the PDF text (via
+`pdftotext`), and `gen_fusions_v2.js` **derives** each fusion's attributes and combat **role from the parent
+Kinetics** (e.g. Robukinesis=Tank + Pyrokinesis=Controller → "Tank + Controller"), matching the compendium's own
+role lines exactly. Technique generation is unchanged from #38 (same pairing/naming/KP/action-economy rules). Net
+churn to the deployed 39: a **single** rename — the compendium uses *Thermokinesis* for Pyro+**Hydro**, so the old
+Pyro+**Cryo** "Thermokinesis" takes its canonical name **Calorikinesis**.
+**Duplicate names.** The compendium **reuses four names** across two pairings each. To keep every fusion a unique
+key, the app renames one member of each clash: **Hydro+Cryo → Rimekinesis** (vs Glaciokinesis), **Terra+Holy →
+Templakinesis** (vs Sanctukinesis), **Holy+Lumo → Empyreakinesis** (vs Seraphkinesis), **Aero+Natura →
+Pollikinesis** (vs Florakinesis).
+**Established vs Provisional** now means: **57** fusions the compendium fully specifies (Combat Role + prose) are
+*Established*; the **96** listed with only a domain are *Provisional* (their generated technique names/effects are
+concept-pass). No app code needed changing — the Kinetics panel, discovery toast, and Combat integration all
+iterate `PC.FUSIONS` / `grantedFusionTechniques` generically, so they scaled to 153 for free.
+**Compendium framing noted, not enforced.** The full PDF says fusions "become available beginning at Level 15" and
+require proficiency investment in both parents. The app keeps the user's chosen trigger from #38 (know both
+**Adept+** halves → auto-grant); **no hard Level-15 floor is coded** — flagged for the user to decide.
+**Verified** (Node): 153 fusions / 1,377 techniques, all fusion names unique, all pairs valid, 9 per fusion, no
+base-name collisions; a seeded pair on a **new** fusion (*Blazing Speed + Frost Nova* → **Calorispeed**, Calorikinesis)
+auto-grants and unlocks correctly; empty known-set grants nothing. Action spread ~981 Action / 386 Bonus / 10
+Reaction. Docs (`FUSIONS.md`, `GAME_RULES.md`, `CLAUDE.md`) updated to 153 / 1,377. Cache-buster **v=61**.
+
+---
+
 ## Deferred / future ideas
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before
