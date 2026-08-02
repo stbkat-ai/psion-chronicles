@@ -306,6 +306,11 @@ old-world ancestry, grouped into **8 broad regions**.
 
 **Heritage grants — and only grants:**
 - **1 Fighting Style** (below), and from it **2 Combat Skills** + the style's **signature Passive**.
+- **1 weapon-subtype proficiency** — a **fixed, signature weapon** matching the heritage's flavor (see table
+  below). Unlike a background's whole-**type** proficiency, this trains you in **one specific subtype**: you
+  add your proficiency bonus to attacks with any weapon of that subtype, even without the parent type's
+  proficiency (e.g. Europe grants **Great Swords** — you're proficient with Great Swords but not the rest of
+  Heavy Weapons). It also may add nothing new if you're already proficient with the whole parent type.
 - **2 Traits** — always-on roleplay/utility perks (advantage on certain checks, an extra language, etc.).
 - **1 flaw** — a **narrow, situational** disadvantage on **one specific skill** (never a whole attribute).
   Kept deliberately small so that, whatever Background a player pairs with a Heritage, the flaw can't land on
@@ -322,6 +327,19 @@ old-world ancestry, grouped into **8 broad regions**.
 
 Heritage never touches attribute scores or pools. Two characters of the same Background differ by the
 Fighting Style, Combat Skills, and Traits their Heritage opened up.
+
+**Signature weapon-subtype proficiency (fixed per heritage):**
+
+| Heritage | Fighting Style | Signature weapon subtype | Parent type (attr) |
+|---|---|---|---|
+| North America | Frontier Gunslinging | **Revolvers** | Firearms (CON) |
+| South America | Flowing Movement | **Blowguns** | Quick Weapons (AGI) |
+| Europe | Chivalric Swordplay | **Great Swords** | Heavy Weapons (STR) |
+| United Kingdom | Fencing | **Fencing Swords** | Finesse Weapons (CHA) |
+| Africa | Warden's Bulwark | **Maces** | Heavy Weapons (STR) |
+| Middle East | Desert Whirlwind | **Short Swords** | Light Weapons (AGI) |
+| East Asia | Way of the Open Hand | **Full Fists** | Fist Weapons (STR) |
+| Oceania | Twin Fang | **Daggers** | Light Weapons (AGI) |
 
 ### Fighting Styles & Combat Skills (the mechanic)
 Combat Skills work like Kinetic Techniques: there are **many**, organized into categories called

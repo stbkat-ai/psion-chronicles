@@ -492,6 +492,15 @@
         if (sg) notes.push(`<b>+${sg} skill proficiency</b> — choose ${2 + sg} skills on the <b>Skills</b> step`);
         d.appendChild(el("p", "hint", "This heritage grants " + notes.join("; ") + "."));
       }
+      // Weapon proficiency: this heritage grants one specific weapon SUBTYPE (its signature weapon).
+      if (h.weaponSubtype) {
+        const wt = PC.weaponTypeOfSubtype(h.weaponSubtype);
+        d.appendChild(el("div", "section-label", "Weapon Proficiency"));
+        const wl = el("div", "pill-list");
+        wl.appendChild(el("span", "pill prof", "⚔ " + h.weaponSubtype));
+        d.appendChild(wl);
+        d.appendChild(el("p", "hint", `Trained in <b>${h.weaponSubtype}</b>${wt ? ` (a ${wt} subtype)` : ""} — you add your proficiency bonus to attacks with any ${h.weaponSubtype} weapon, even without the full weapon-type proficiency.`));
+      }
       // Armor proficiency (everyone gets Light; this heritage may add Medium/Heavy).
       const ap = (h.armorProf || []).filter((c) => c !== "Light");
       d.appendChild(el("div", "section-label", "Armor Proficiency"));
@@ -1083,6 +1092,9 @@
     const cp = el("div", "pill-list");
     b.combat.forEach((c) => cp.appendChild(el("span", "pill psi", c)));
     (state.bonusWeaponProfs || []).forEach((wt) => { if (wt) cp.appendChild(el("span", "pill psi", wt + " ＋")); });
+    // Heritage's granted weapon subtype (a specific-weapon proficiency, narrower than a whole type).
+    const hSub = state.heritage && PC.heritageWeaponSubtype(state.heritage);
+    if (hSub) cp.appendChild(el("span", "pill prof", "⚔ " + hSub));
     // Armor proficiency: Light for everyone, plus the Heritage's grants.
     const armorClasses = ["Light"].concat((((state.heritage && PC.heritage(state.heritage)) || {}).armorProf || []).filter((c) => c !== "Light"));
     armorClasses.forEach((c) => cp.appendChild(el("span", "pill prof", c + " armor")));

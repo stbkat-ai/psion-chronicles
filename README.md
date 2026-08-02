@@ -42,7 +42,10 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
      **2 Traits** and **one flaw** (a narrow, situational disadvantage on a single skill — e.g. North America →
      *Rough Around the Edges*: disadvantage on Etiquette). *No* attribute changes. Combat Skills are organized
      into Fighting Styles the way techniques are organized into Kinetics (48 skills across 8 styles); they cost
-     no KP and only use action economy (Action / Bonus Action / Reaction / Passive). Your Heritage also sets your
+     no KP and only use action economy (Action / Bonus Action / Reaction / Passive). Each Heritage also grants a
+     **signature weapon-subtype proficiency** — one specific weapon that fits its style (e.g. Europe →
+     **Great Swords**, Oceania → **Daggers**, North America → **Revolvers**). You add your proficiency bonus to
+     attacks with that subtype even without the whole weapon-type proficiency. Your Heritage also sets your
      **armor proficiency** — everyone can wear **Light**, and martial regions add **Medium/Heavy** (see the
      armor system on the Inventory tab).
   3. Attributes — roll 8d12 (drop 2 lowest, +10) or enter manually, then assign

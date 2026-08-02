@@ -802,9 +802,12 @@
   function weaponAttr(it) { const w = PC.WEAPON_TYPES.find((x) => x.name === it.weaponType); return w ? w.attr : null; }
   function proficientWithType(it) {
     if (it.proficient) return true;
+    // A heritage grants proficiency with one specific weapon SUBTYPE (e.g. Europe → Great Swords) — it
+    // applies to any weapon of that subtype even when the character isn't proficient with the whole type.
+    if (it.subtype && it.subtype === PC.heritageWeaponSubtype(rec.heritage)) return true;
     if (!it.weaponType) return false;
     if (bg().combat.indexOf(it.weaponType) > -1) return true;
-    return (rec.bonusWeaponProfs || []).indexOf(it.weaponType) > -1; // extra proficiency from a heritage grant
+    return (rec.bonusWeaponProfs || []).indexOf(it.weaponType) > -1; // extra weapon-type proficiency (chosen grant)
   }
   // econType: which action-economy slot the swing spends — "Action" for a normal attack,
   // "Reaction" for an Opportunity Attack. Defaults to "Action".
@@ -977,6 +980,16 @@
       pos.appendChild(el("div", "muted", "No heritage traits on this character."));
     }
     root.appendChild(pos);
+
+    // Weapon proficiency granted by the heritage (one specific subtype — its signature weapon).
+    const hSub = PC.heritageWeaponSubtype(rec.heritage);
+    if (hSub) {
+      const wp = el("div", "panel");
+      wp.appendChild(el("div", "section-label", "Weapon Proficiency — " + (h ? h.name : "")));
+      const wt = PC.weaponTypeOfSubtype(hSub);
+      wp.appendChild(el("div", "inv-note", `<b>⚔ ${hSub}</b>${wt ? ` <span class="tag">${wt}</span>` : ""} — you add your proficiency bonus (${PC.fmtMod(PC.profBonus(rec.level))}) to attacks with any <b>${hSub}</b> weapon, even without the full ${wt || "weapon-type"} proficiency.`));
+      root.appendChild(wp);
+    }
 
     // Negative traits (Flaws)
     const neg = el("div", "panel");

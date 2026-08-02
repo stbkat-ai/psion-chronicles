@@ -167,6 +167,14 @@ PC.kineticProfBonus = function (level, profLevel) {
   return profLevel === "expertise" ? p * 2 : profLevel === "proficient" ? p : 0;
 };
 PC.heritage = function (name) { return (PC.HERITAGES || []).find((h) => h.name === name) || null; };
+/* The single weapon SUBTYPE (e.g. "Great Swords") a heritage grants proficiency with, or null. */
+PC.heritageWeaponSubtype = function (heritageName) { const h = PC.heritage(heritageName); return (h && h.weaponSubtype) || null; };
+/* The weapon TYPE that owns a given subtype name (e.g. "Great Swords" → "Heavy Weapons"), or null. */
+PC.weaponTypeOfSubtype = function (subtypeName) {
+  if (!subtypeName) return null;
+  const t = (PC.WEAPON_TYPES || []).find((w) => (w.subtypes || []).indexOf(subtypeName) > -1);
+  return t ? t.name : null;
+};
 PC.combatSkill = function (name) { return (PC.COMBAT_SKILLS || []).find((s) => s.name === name) || null; };
 PC.fightingStyle = function (name) { return (PC.FIGHTING_STYLES || []).find((s) => s.name === name) || null; };
 /* The Fighting Style granted by a heritage. */

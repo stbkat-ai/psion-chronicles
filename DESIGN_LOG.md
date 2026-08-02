@@ -854,6 +854,38 @@ back to 0 restores it. No console errors. Docs (`FUSIONS.md`, `GAME_RULES.md` HI
 
 ---
 
+### 41. Heritages grant a fixed signature weapon-subtype proficiency
+**Decision.** Each of the 8 Regional Heritages now grants proficiency with **one specific weapon subtype** — its
+**signature weapon** — on top of its Fighting Style, Combat Skills, armor proficiency, traits, and flaw. The user
+chose **fixed per heritage** (thematically assigned, like every other heritage grant) over a player-chosen pick.
+Assignments: North America → **Revolvers**, South America → **Blowguns**, Europe → **Great Swords**, United
+Kingdom → **Fencing Swords**, Africa → **Maces**, Middle East → **Short Swords**, East Asia → **Full Fists**,
+Oceania → **Daggers** — each matching its Fighting Style flavor (Fencing→Fencing Swords, Twin Fang→Daggers,
+Frontier Gunslinging→Revolvers, etc.).
+**Subtype vs. type — why it matters.** Backgrounds grant whole-**type** proficiency (all of "Heavy Weapons").
+This grant is finer: it's one **subtype** (e.g. *Great Swords*), so a Europe character is proficient with Great
+Swords but **not** the rest of Heavy Weapons. Items already carried `it.subtype` (from the crafting/catalog
+system), so the mechanic keys straight off it. If a character is already proficient with the whole parent type,
+the subtype grant simply adds nothing — no double-dip, no conflict.
+**How (code).** `data.js` — added `weaponSubtype: "…"` to all 8 heritages. `rules.js` — new
+`PC.heritageWeaponSubtype(name)` and `PC.weaponTypeOfSubtype(subtypeName)` (maps a subtype back to its parent
+weapon type via `PC.WEAPON_TYPES[].subtypes`). `play.js` — `proficientWithType(it)` gains a first check:
+`it.subtype === PC.heritageWeaponSubtype(rec.heritage)` → proficient. The whole attack/damage/called-shot chain
+already routes through `proficientWithType`, so the proficiency bonus, the ✓prof tag, and the inventory
+"(not proficient)" line all update for free. Also surfaced the grant in three places: the creator **Heritage
+step** ("Weapon Proficiency" section), the **Review** summary (a ⚔ prof pill), and the play sheet's **Traits**
+tab (a "Weapon Proficiency" panel).
+**Verified** (Node + Playwright). Node: all 8 heritage→subtype→parent-type mappings resolve and are valid catalog
+subtypes; a replicated `proficientWithType` returns **true** for the granted subtype, **false** for a
+different subtype of the *same* parent type (Europe: Great Swords ✓, Axes ✗), false for unrelated weapons, true
+for an item flagged `proficient`. Playwright (real UI, Europe + Assassin background which lacks Heavy Weapons):
+the Traits tab shows the panel; an equipped **Zweihander (Great Swords)** reads *"Attack adds STR +1 + prof +3"*
+while a **War Axe (Axes, same Heavy Weapons type)** reads *"(not proficient)"*; the creator Heritage step shows
+the *"Trained in Great Swords"* hint. No console errors. Docs updated (`GAME_RULES.md` §3b + a heritage→subtype
+table, `README.md`, this log). Cache-buster **v=63**.
+
+---
+
 ## Deferred / future ideas
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before
