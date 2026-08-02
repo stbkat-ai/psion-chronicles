@@ -27,8 +27,13 @@ Master** — "start at tier 2", no Beginner. 3 per tier = **9 each**.
   **Nuclegrip** (Nuclekinesis, Adept). Because both halves must be **Adept+**, fusions only surface once a
   character has invested past Beginner in both parents.
 - Fusion techniques are **powerful and expensive** — their KP cost is the sum of both parent halves.
-- A fusion is tied to **both** parents' attributes and chakras. *Planned rule (not yet implemented): if
-  either parent chakra is damaged, the fusion's techniques are less effective.*
+- A fusion is tied to **both** parents' attributes and chakras. **If *either* parent chakra is damaged, the
+  fusion's techniques are less effective** — a fusion answers to whichever of its two parent chakras is the
+  **more damaged**: it rolls at **disadvantage** if either is hit, its modifier takes the **worse** chakra's
+  penalty (halved at 2 hits, removed at 3), and it **locks out entirely** if *either* parent chakra locks
+  (4 hits). A fusion whose parents share one attribute (e.g. Nuclekinesis = STR + STR) simply answers to that
+  single chakra. On the play sheet a damaged parent chakra shows a red *"⚠ … chakra (parent) damaged"* note on
+  the fusion's card. *(Implemented Aug 2026 — the app enforces this; the earlier note called it planned.)*
 - **Compendium framing (intentionally not gated in code):** the source text says Fusion Kinetics "become
   available beginning at Level 15" and require proficiency investment in both parents. The app **deliberately**
   uses the pairing rule above instead (know both Adept+ halves → auto-grant, any level); the "Level 15" line is

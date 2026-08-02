@@ -261,8 +261,12 @@ an "Awakened" node on the **Chakras** tab once unlocked.
   fusion technique **free — no Technique Points**. Until the first pair lands, the fusion is invisible. On the
   play sheet it then reveals on the **Kinetics** tab (one-time *"✨ Fusion discovered"* toast) and is usable in
   **Combat**. Fusion techniques are **powerful and expensive** (KP = sum of both parent halves).
-- A fusion is tied to **both** parents' attributes & chakras. *Planned (not yet implemented): a damaged parent
-  chakra weakens the fusion's techniques.*
+- A fusion is tied to **both** parents' attributes & chakras. **A damaged parent chakra weakens the fusion:**
+  a fusion technique answers to whichever of its two parent chakras is the **more damaged** — it rolls at
+  **disadvantage** if either is hit, its modifier takes the **worse** chakra's penalty (halved at 2 hits,
+  removed at 3), and it **locks out entirely** if *either* parent chakra reaches 4 hits. (A same-attribute
+  fusion like Nuclekinesis just answers to that one chakra.) The play sheet flags a damaged parent chakra on
+  the fusion's card. *(Implemented Aug 2026.)*
 - Current technique names/effects/costs are a **concept pass** — tune in playtest.
 
 ---

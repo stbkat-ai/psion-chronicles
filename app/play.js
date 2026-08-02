@@ -122,6 +122,44 @@
   // If the attribute's chakra is locked out (4 hits), a reason string for disabling its rolls; else null.
   function lockReason(attr) { return attr && isLocked(attr) ? `${PC.CHAKRAS[attr].name} chakra locked out — no ${attr} rolls` : null; }
 
+  // --- Fusion chakra penalty (FUSIONS.md: a fusion is tied to BOTH parents' chakras — "if either
+  // parent chakra is damaged, the fusion's techniques are less effective"). A fusion technique answers
+  // to the MORE-DAMAGED of its two parent chakras: it rolls at disadvantage if either is hit, its
+  // modifier suffers the worse chakra's penalty, and it locks out if either parent chakra is locked.
+  // A base technique answers only to its own attribute's chakra, so these collapse to the single case.
+  function techChakraAttrs(t) {
+    if (t && t.fusion && Array.isArray(t.parents)) {
+      const attrs = t.parents.map((p) => (PC.kinetic(p) || {}).attr).filter(Boolean);
+      if (attrs.length) return Array.from(new Set(attrs));
+    }
+    return t && t.attr ? [t.attr] : [];
+  }
+  // The governing (most-damaged) chakra attribute for this technique.
+  function techChakraAttr(t) {
+    const attrs = techChakraAttrs(t);
+    if (!attrs.length) return t && t.attr;
+    return attrs.reduce((worst, a) => (chakraOf(a) > chakraOf(worst) ? a : worst), attrs[0]);
+  }
+  function techIsDisadv(t) { return isDisadv(techChakraAttr(t)); }
+  function techIsLocked(t) { return isLocked(techChakraAttr(t)); }
+  function techLockReason(t) { return techLockName(t) ? lockReason(techChakraAttr(t)) : null; }
+  function techLockName(t) { const a = techChakraAttr(t); return a && isLocked(a) ? PC.CHAKRAS[a].name : null; }
+  // Chakra-adjusted modifier for a technique roll: the worse parent chakra's penalty (for a fusion)
+  // applied to the base modifier of whichever attribute the roll actually scales on (modAttr).
+  function techAdjMod(t, modAttr) { return PC.chakraEffect(chakraOf(techChakraAttr(t))).effMod(baseMod(modAttr)); }
+  // For a FUSION card note: the damaged-but-not-locked governing (worse) parent chakra's status label, or
+  // null when healthy or fully locked (a lock is already shown via the disabled button + title). Only shown
+  // for fusions — a base technique's chakra hit is self-evident from its own attribute, and its card behaves
+  // exactly as before; a fusion's penalty can come from the parent chakra that ISN'T its listed attribute, so
+  // it needs surfacing.
+  function techChakraPenaltyNote(t) {
+    if (!t || !t.fusion) return null;
+    const a = techChakraAttr(t); if (!a) return null;
+    const h = chakraOf(a); if (h < 1 || h >= 4) return null; // 0 = healthy, 4 = shown via lock instead
+    const parent = techChakraAttrs(t).length > 1 ? " (parent)" : "";
+    return `⚠ ${PC.CHAKRAS[a].name} chakra${parent} damaged — ${PC.chakraEffect(h).label.toLowerCase()}`;
+  }
+
   /* ---------- limbs ---------- */
   function limbDef(key) { return PC.LIMBS.find((L) => L.key === key); }
   function limbMaxFor(key) { return Math.ceil(maxHP() * limbDef(key).frac); }
@@ -359,16 +397,16 @@
 
   // Single-target ranged technique: spend KP, roll d20 + attr mod + prof (if Kinetic-proficient) to hit.
   function attackTechnique(t) {
-    if (isLocked(t.attr)) { App.toast(`${PC.CHAKRAS[t.attr].name} chakra locked — can't use ${t.kinetic}.`); return; }
+    if (techIsLocked(t)) { App.toast(`${techLockName(t)} chakra locked — can't use ${t.kinetic}.`); return; }
     if (econBlocked(t.action)) { App.toast(`You've already used your ${econName(t.action)} this turn.`); return; }
     if (play.kp < t.kp) { App.toast(`Not enough KP (need ${t.kp}).`); return; }
     play.kp -= t.kp; consumeEcon(t.action);
     const profLvl = kineticProfLevel(t.kinetic);
-    const mod = adjMod(t.attr) + PC.kineticProfBonus(rec.level, profLvl);
+    const mod = techAdjMod(t, t.attr) + PC.kineticProfBonus(rec.level, profLvl);
     const profTag = profLvl === "expertise" ? " ✦expertise (2× prof)" : profLvl === "proficient" ? " ✓prof" : "";
-    // Disadvantage: chakra hit, head crippled, a background flaw on this attribute, or non-proficient
-    // armor on an AGI-based technique attack.
-    const r = PC.rollCheck(mod, (isDisadv(t.attr) || headCrippled() || flawDisadvAttr(t.attr) || (t.attr === "AGI" && wearingUnproficientArmor())) ? "dis" : "normal");
+    // Disadvantage: chakra hit (either parent chakra for a fusion), head crippled, a background flaw on
+    // this attribute, or non-proficient armor on an AGI-based technique attack.
+    const r = PC.rollCheck(mod, (techIsDisadv(t) || headCrippled() || flawDisadvAttr(t.attr) || (t.attr === "AGI" && wearingUnproficientArmor())) ? "dis" : "normal");
     const dis = r.mode === "dis" ? ` (disadv [${r.d20s.join(",")}]→${r.picked})` : "";
     announce(r.total, `${t.name} attack: d20${dis}${PC.fmtMod(mod)} = ${r.total} to hit${profTag} (−${t.kp} KP; roll Damage if it hits)`);
     save(); refresh();
@@ -376,19 +414,19 @@
   // Roll a technique's damage (no KP — the KP was spent on the attack/cast).
   function damageTechnique(t) {
     const r = PC.rollDiceExpr(t.damage.dice);
-    const m = adjMod(t.damage.mod);
+    const m = techAdjMod(t, t.damage.mod);
     let loc = t.damage.range ? ` (${t.damage.range})` : "";
     announce(r.total + m, `${t.name} damage: ${t.damage.dice}${PC.fmtMod(m)} = [${r.rolls.join(",")}]${PC.fmtMod(m)} = ${r.total + m} ${t.damage.type}${loc}`);
     save(); refresh();
   }
   // AoE technique: spend KP, auto-hit, roll damage applied to each target in the area.
   function castAoE(t) {
-    if (isLocked(t.attr)) { App.toast(`${PC.CHAKRAS[t.attr].name} chakra locked — can't use ${t.kinetic}.`); return; }
+    if (techIsLocked(t)) { App.toast(`${techLockName(t)} chakra locked — can't use ${t.kinetic}.`); return; }
     if (econBlocked(t.action)) { App.toast(`You've already used your ${econName(t.action)} this turn.`); return; }
     if (play.kp < t.kp) { App.toast(`Not enough KP (need ${t.kp}).`); return; }
     play.kp -= t.kp; consumeEcon(t.action);
     const r = PC.rollDiceExpr(t.damage.dice);
-    const m = adjMod(t.damage.mod);
+    const m = techAdjMod(t, t.damage.mod);
     announce(r.total + m, `${t.name}: auto-hits ${t.damage.area || "the area"} — ${t.damage.dice}${PC.fmtMod(m)} = [${r.rolls.join(",")}]${PC.fmtMod(m)} = ${r.total + m} ${t.damage.type} to each target (−${t.kp} KP)`);
     save(); refresh();
   }
@@ -401,7 +439,7 @@
     if (t.sustained) { toggleSustained(t); return; }
     if (techniqueIsAoE(t)) { castAoE(t); return; }
     if (techniqueNeedsToHit(t)) { attackTechnique(t); return; }
-    if (isLocked(t.attr)) { App.toast(`${PC.CHAKRAS[t.attr].name} chakra locked — can't use ${t.kinetic}.`); return; }
+    if (techIsLocked(t)) { App.toast(`${techLockName(t)} chakra locked — can't use ${t.kinetic}.`); return; }
     if (econBlocked(t.action)) { App.toast(`You've already used your ${econName(t.action)} this turn.`); return; }
     if (play.kp < t.kp) { App.toast(`Not enough KP (need ${t.kp}).`); return; }
     play.kp -= t.kp; consumeEcon(t.action);
@@ -409,7 +447,7 @@
     let flashTotal = null;
     if (t.heal) {
       const r = PC.rollDiceExpr(t.heal.dice);
-      const m = adjMod(t.heal.mod);
+      const m = techAdjMod(t, t.heal.mod);
       const amt = r.total + m; flashTotal = amt;
       if (t.heal.target === "self") {
         play.hp = clamp(play.hp + amt, 0, maxHP());
@@ -419,7 +457,7 @@
       }
     } else if (t.grantKP) {
       const r = PC.rollDiceExpr(t.grantKP.dice);
-      const m = adjMod(t.grantKP.mod);
+      const m = techAdjMod(t, t.grantKP.mod);
       const amt = r.total + m; flashTotal = amt;
       msg += ` → grant ${amt} KP to an ally ([${r.rolls.join(",")}]${PC.fmtMod(m)})`;
     }
@@ -430,7 +468,7 @@
     const i = play.active.indexOf(t.name);
     if (i > -1) { play.active.splice(i, 1); logLine(`${t.name} ended.`); } // ending is free
     else {
-      if (isLocked(t.attr)) { App.toast(`${PC.CHAKRAS[t.attr].name} chakra locked — can't use ${t.kinetic}.`); return; }
+      if (techIsLocked(t)) { App.toast(`${techLockName(t)} chakra locked — can't use ${t.kinetic}.`); return; }
       if (econBlocked(t.action)) { App.toast(`You've already used your ${econName(t.action)} this turn.`); return; }
       if (play.kp < t.kp) { App.toast(`Not enough KP (need ${t.kp}).`); return; }
       // Capture the pre-activation maxes so a *full* bar can stay full when this buff raises the pool.
@@ -821,7 +859,7 @@
       if (play.kp < t.kp) { App.toast(`Not enough KP for ${t.name} (need ${t.kp}).`); return; }
       play.kp -= t.kp;
       const ar = PC.rollDiceExpr(t.damage.dice);
-      const am = adjMod(t.damage.mod);
+      const am = techAdjMod(t, t.damage.mod);
       total += ar.total + am;
       parts.push(`${t.name} ${t.damage.dice}${PC.fmtMod(am)} = [${ar.rolls.join(",")}]${PC.fmtMod(am)}`);
       kpNote = ` (−${t.kp} KP)`;
@@ -1444,13 +1482,16 @@
       `<div class="thead"><span class="tname">${t.name}${fuseTag}${active ? ' <span class="freeflag" style="color:var(--good)">active</span>' : ""}</span><span class="cost">${costParts.join(" ")}</span></div>
        <div class="tmeta">${meta}</div>
        <div class="teff">▸ ${t.effect}</div>`;
+    // Fusion chakra penalty: a damaged parent chakra makes the fusion "less effective" — surface it.
+    const penNote = techChakraPenaltyNote(t);
+    if (penNote) c.appendChild(el("div", "inv-note fusion-penalty", penNote));
     if (t.augment && t.augment.kind === "melee-damage") {
       c.appendChild(el("div", "inv-note", "⚔ Melee augment — use it from an equipped melee weapon's damage roll."));
     } else if (techniqueNeedsToHit(t)) {
       // single-target ranged: roll to-hit (spends KP + Action), then damage if it hits
       const row = el("div", "combat-actions");
       const blocked = econBlocked(t.action);
-      const lk = lockReason(t.attr);
+      const lk = techLockReason(t);
       const atk = el("button", "btn small primary", `⚔ Attack (−${t.kp} KP)`);
       atk.disabled = !!lk || !afford || blocked;
       atk.title = lk || (blocked ? `${econName(t.action)} already used this turn` : "d20 + attr mod + proficiency to hit");
@@ -1467,7 +1508,7 @@
       // Ending a sustained technique is always allowed (even when locked); everything else is
       // gated by KP + action economy, and by the governing chakra's lockout.
       const blocked = econBlocked(t.action);
-      const lk = active ? null : lockReason(t.attr);
+      const lk = active ? null : techLockReason(t);
       btn.disabled = active ? false : (!!lk || !afford || blocked);
       if (!active) btn.title = lk || (blocked ? `${econName(t.action)} already used this turn` : "");
       btn.style.marginTop = "8px";

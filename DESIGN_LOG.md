@@ -820,6 +820,40 @@ Reaction. Docs (`FUSIONS.md`, `GAME_RULES.md`, `CLAUDE.md`) updated to 153 / 1,3
 
 ---
 
+### 40. Fusion chakra penalty — a damaged parent chakra weakens the fusion (the deferred rule, now built)
+**Decision.** Entry #38 shipped fusions with the chakra-damage penalty **deferred** and `FUSIONS.md` flagged it
+"planned, not yet implemented." Now implemented. A fusion is tied to **both** parent Kinetics' chakras, so the
+rule the compendium implied — *"if either parent chakra is damaged, the fusion's techniques are less
+effective"* — is enforced as: **a fusion answers to whichever of its two parent chakras is the more damaged.**
+Concretely it inherits the same 4-step chakra track base techniques already use, but keyed on the **worse** of
+the two parents: **disadvantage** if *either* parent chakra has ≥1 hit, modifier **halved** at 2 / **removed**
+at 3 (worse chakra's multiplier applied to the technique's own scaling attribute), and **locked out** if
+*either* parent chakra hits 4. A fusion whose parents share one attribute (e.g. Nuclekinesis = STR + STR)
+collapses to the single-chakra case — identical to a base technique.
+**Why "worse of the two" (not average / not primary-only).** The design note already said *"if **either**
+parent chakra is damaged."* Worst-of-two is the faithful reading and the punishing-but-clean one: a fusion
+demands **both** channels open, so hurting *either* half degrades it. It's also a one-line extension of the
+existing single-chakra logic (no new penalty math), and it makes the chakra-targeting game matter more against
+fusion-users — you can shut a fusion down by hitting the *undamaged-looking* half.
+**How (code).** `app/play.js` gained fusion-aware helpers — `techChakraAttrs(t)` (a fusion's two parent attrs,
+from `PC.kinetic(parent).attr`; a base technique's single `t.attr`), `techChakraAttr(t)` (the most-damaged of
+them), and `techAdjMod` / `techIsDisadv` / `techIsLocked` / `techLockReason` built on it. Every
+technique-use path (`attackTechnique`, `castAoE`, `damageTechnique`, `useTechnique` heal/grant, sustained
+`toggleSustained`, melee-augment `damageWith`) and the technique-card renderer now route through these instead
+of the raw `t.attr`. Base techniques and same-attr fusions are byte-for-byte unchanged (helpers collapse to the
+single attr). Added a red **`.fusion-penalty`** card note (*"⚠ Sacral chakra (parent) damaged — modifier
+halved"*) so the "less effective" state is visible, not just felt on the dice.
+**Verified** (Node + Playwright). Node: a STR-primary fusion (**Ecligrip** = Robukinesis STR + Umbrakinesis AGI)
+resolves its governing chakra to **AGI** when AGI is the hurt half, to **STR** when STR is locked; a base STR
+technique stays *Healthy* while AGI is damaged (no regression); a STR+STR fusion answers only to STR. Playwright
+(real UI, seeded character knowing *Kinetic Grip* + *Shadow Step* → auto-granted **Ecligrip**): at **AGI 0** no
+penalty / usable; at **AGI 2** the STR-primary fusion shows *"⚠ Sacral chakra (parent) damaged — modifier
+halved"* though STR is untouched; at **AGI 4** the Use button disables with *"Sacral chakra locked out"*; healing
+back to 0 restores it. No console errors. Docs (`FUSIONS.md`, `GAME_RULES.md` HIDDEN section) flipped from
+"planned" to implemented; `README.md` untouched (fusions stay secret). Cache-buster **v=62**.
+
+---
+
 ## Deferred / future ideas
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before

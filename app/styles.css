@@ -333,6 +333,8 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 .fusion-meta { color: #f0abfc; font-weight: 700; }
 .fusion-panel { border-color: rgba(232, 121, 250, .35); }
 .fusion-panel .section-label { color: #f0abfc; }
+/* Chakra penalty note on a technique card (a damaged governing chakra makes it less effective). */
+.fusion-penalty { color: var(--danger); font-weight: 600; }
 .fusion-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; margin: 16px 0 2px;
   padding-bottom: 6px; border-bottom: 1px solid rgba(232, 121, 250, .25); }
 .fusion-name { font-weight: 800; font-size: 1.02rem; color: #f5d0fe; }
