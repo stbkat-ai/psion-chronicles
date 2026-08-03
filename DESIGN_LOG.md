@@ -1124,9 +1124,28 @@ button. No console errors. Docs (`GAME_RULES.md`, `README.md`) updated. Cache-bu
 
 ---
 
+### 50. Otherkin #7 — the Sphynx (Sphynx Riddles); INT gets a standalone, only hybrids remain
+**Decision (with Luke).** Seventh Otherkin, the last pure-mind creature (INT). **Sphynx** · Kinetic **Sphynx
+Riddles** (INT) · Boost **+3 INT / +10 Mind Pool**. Signature **Cosmic Knowledge** — a plain **activated** signature
+(no transform, so it reused the existing use-counter path with no new engine work): once per long rest (1 → 6 uses,
++1/tier) gain **advantage on any INT skill check** or **cast any INT kinetic technique regardless of level,
+knowledge, or KP cost** — a GM-adjudicated genius-insight the app just meters. Six riddles themed on riddles / time
+/ otherworldly knowledge: *Vexing Riddle* (15, Confuse) · *Ancient Lore* (18, knowledge utility) · *Temporal Slip*
+(21, Slow) · *Psychic Lance* (24, INT psychic attack) · *Foresight* (27, sustained — uses the existing
+`buff.dsFromMod` to add INT to Defense + advantage on saves) · *Temporal Collapse* (30, INT-psychic AoE + lose next
+turn).
+**Verified** (Node + Playwright): 7 Otherkin / 42 techniques, 0 collisions; the signature shows a plain "Use Cosmic
+Knowledge" button (no shift banner) and meters 6 → 5 uses; **Foresight** raised Defense by the INT modifier
+(9 → 14) when activated. No console errors. Docs updated to 7 of 9. Cache-buster **v=76**.
+**Roster status:** all six attributes now have a standalone Otherkin (STR Troll, AGI Kitsune, CON Lycan, INT
+Sphynx, WIS Unicorn, CHA Siren), plus the Gryphon (INT/STR hybrid). **Two hybrids remain.**
+
+---
+
 ## Deferred / future ideas
-- **The other 3 Otherkin** — build one at a time with Luke. The transform system now covers stat buffs (Lycan/
-  Troll), natural weapons/armor (Lycan), and movement multipliers (Unicorn), plus plain activated signatures.
+- **The last 2 Otherkin** — both hybrids, built one at a time with Luke. The signature toolkit now covers plain
+  activated abilities, physical transformations, invocations, stat buffs past the cap, natural weapons/armor, and
+  movement multipliers.
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before
   full sync.

@@ -1068,6 +1068,49 @@ PC.OTHERKIN = [
       ],
     },
   },
+  {
+    name: "Sphynx",
+    emoji: "🦁",
+    kinetic: "Sphynx Riddles",
+    attr: "INT",
+    pairing: "Scholar",             // thematic affinity only — any character may choose any Otherkin
+    theme: "An ancient guardian of riddles and forbidden lore — it bends time and speaks truths from beyond the veil.",
+    boosts: { INT: 3 },             // background-style attribute boost
+    pool: { body: 0, mind: 10 },    // background-style pool boost (+10 Mind Pool = +10 KP)
+    techniques: [
+      { name: "Vexing Riddle", otherkin: true, kinetic: "Sphynx Riddles", attr: "INT", tail: 1, level: 15, tier: "Riddle I",
+        action: "Action", kp: 12,
+        effect: "Pose an unanswerable riddle — a creature that hears you resists (INT) or is Confused: it can't take actions and acts erratically for a turn." },
+      { name: "Ancient Lore", otherkin: true, kinetic: "Sphynx Riddles", attr: "INT", tail: 2, level: 18, tier: "Riddle II",
+        action: "Action", kp: 8,
+        effect: "Draw on forbidden knowledge — non-combat: advantage to recall lore, decipher any text or tongue, detect lies, or sense the otherworldly. No damage." },
+      { name: "Temporal Slip", otherkin: true, kinetic: "Sphynx Riddles", attr: "INT", tail: 3, level: 21, tier: "Riddle III",
+        action: "Action", kp: 15,
+        effect: "Snag a creature in a fold of time — it is Slowed: disadvantage, halved movement, and no reactions until its next turn (INT)." },
+      { name: "Psychic Lance", otherkin: true, kinetic: "Sphynx Riddles", attr: "INT", tail: 4, level: 24, tier: "Riddle IV",
+        action: "Action", kp: 18, damage: { dice: "3d8", mod: "INT", type: "psychic" },
+        effect: "A spear of otherworldly thought (d20 + INT to hit): 3d8 + INT psychic that ignores physical armor." },
+      { name: "Foresight", otherkin: true, kinetic: "Sphynx Riddles", attr: "INT", tail: 5, level: 27, tier: "Riddle V",
+        action: "Bonus Action", kp: 20, sustained: true, upkeep: 0, buff: { dsFromMod: "INT" },
+        effect: "See moments before they happen (sustained): add your INT modifier to Defense and roll saves with advantage while active." },
+      { name: "Temporal Collapse", otherkin: true, kinetic: "Sphynx Riddles", attr: "INT", tail: 6, level: 30, tier: "Riddle VI",
+        action: "Action", kp: 25, damage: { dice: "5d8", mod: "INT", type: "psychic", area: "20-ft radius" }, aoe: true,
+        effect: "Fracture time in a 20-ft radius: auto-hits for 5d8 + INT psychic, and caught enemies lose their next turn." },
+    ],
+    signature: {
+      name: "Cosmic Knowledge",
+      rest: "long",
+      blurb: "Once per long rest (scaling +1 use per tier), you may either gain advantage on any INT skill check, OR cast any Intelligence kinetic technique — regardless of its level, whether you know it, or its KP cost.",
+      tiers: [
+        { tier: 1, level: 15, uses: 1, effect: "Gain advantage on any INT skill check, or cast any INT kinetic technique regardless of level, knowledge, or KP cost." },
+        { tier: 2, level: 18, uses: 2, effect: "As Tier I — one more use per long rest." },
+        { tier: 3, level: 21, uses: 3, effect: "As Tier I — one more use per long rest." },
+        { tier: 4, level: 24, uses: 4, effect: "As Tier I — one more use per long rest." },
+        { tier: 5, level: 27, uses: 5, effect: "As Tier I — one more use per long rest." },
+        { tier: 6, level: 30, uses: 6, effect: "As Tier I — one more use per long rest." },
+      ],
+    },
+  },
 ];
 // Flattened lookup of every Otherkin technique (so PC.technique() can resolve them by name).
 PC.OTHERKIN_TECHNIQUES = PC.OTHERKIN.reduce(function (acc, o) { return acc.concat(o.techniques.map(function (t) { return Object.assign({ otherkinName: o.name }, t); })); }, []);

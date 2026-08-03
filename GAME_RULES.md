@@ -285,7 +285,7 @@ app it is invisible before 15 and, once awakened, appears with a full pip track 
   signature card with a rest-gated **use counter** and its tier ladder; before a choice is made it simply points
   the player to the Level Up screen. Otherkin techniques are also playable from the **Combat** tab.
 
-**First-edition roster (6 of 9 built — the rest added one at a time):**
+**First-edition roster (7 of 9 built — two hybrids remain):**
 - **Kitsune** · Kinetic **Fox Mischief** (AGI) · Boost **+3 AGI / +10 Body Pool** · Signature **Kitsune Disguise**
   (take another humanoid's form; **short-rest** refresh; 1 use at Tier I scaling to 6 at Tier VI). Its six tails:
   *Foxstep* (15, ignore difficult terrain) · *Foxfire Feint* (18, non-combat misdirection) · *Mistveil* (21,
@@ -326,8 +326,14 @@ app it is invisible before 15 and, once awakened, appears with a full pip track 
   elusive / enchanting / healing: *Healing Horn* (15, **heal**
   2d8 + WIS) · *Elusive Grace* (18, evade/hide) · *Enchanting Gaze* (21, single-target charm) · *Radiant Beauty*
   (24, 15-ft radius, 3d8 + WIS radiant + dazzle) · *Purifying Light* (27, cleanse a condition + heal 2d6 + WIS) ·
-  *Aurora Blessing* (30, mass heal 4d8 + WIS + advantage). *(With the Unicorn/WIS and Siren/CHA, all six attributes
-  now have an Otherkin.)*
+  *Aurora Blessing* (30, mass heal 4d8 + WIS + advantage).
+- **Sphynx** · Kinetic **Sphynx Riddles** (INT) · Boost **+3 INT / +10 Mind Pool** · Signature **Cosmic Knowledge**
+  — once per long rest (1 → 6 uses, +1/tier): gain **advantage on any INT skill check**, OR **cast any Intelligence
+  kinetic technique regardless of its level, whether you know it, or its KP cost**. Its six riddles lean into riddles
+  / time / otherworldly knowledge: *Vexing Riddle* (15, Confuse) · *Ancient Lore* (18, knowledge/utility) ·
+  *Temporal Slip* (21, Slow) · *Psychic Lance* (24, 3d8 + INT psychic) · *Foresight* (27, sustained: +INT to Defense
+  + advantage on saves) · *Temporal Collapse* (30, 20-ft radius, 5d8 + INT psychic + lose next turn). *(With the
+  Sphynx/INT, all six attributes now have a standalone Otherkin; two hybrids remain.)*
 
 ### Fusion Kinetics (HIDDEN — GM knowledge; players discover in play)
 > **Not in the Player's Guide.** This is a secret system. The GM knows it; players uncover it as they build.
