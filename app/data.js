@@ -927,6 +927,53 @@ PC.OTHERKIN = [
       ],
     },
   },
+  {
+    name: "Lycan",                  // deliberately "Lycan", NOT "Werewolf" — a distinct being in this setting
+    emoji: "🐺",
+    kinetic: "Lycanthropy",
+    attr: "CON",
+    pairing: "Survivalist",         // thematic affinity only — any character may choose any Otherkin
+    theme: "Primal body enhancement and regeneration — the beast made flesh. Not a werewolf: a Lycan commands the change.",
+    boosts: { CON: 3 },             // background-style attribute boost
+    pool: { body: 10, mind: 0 },    // background-style pool boost (+10 Body Pool = +10 HP)
+    techniques: [
+      { name: "Lunar Leap", otherkin: true, kinetic: "Lycanthropy", attr: "STR", tail: 1, level: 15, tier: "Blood I",
+        action: "Bonus Action", kp: 6,
+        effect: "Coil and spring — leap out to twice your normal jump height and distance." },
+      { name: "Regeneration", otherkin: true, kinetic: "Lycanthropy", attr: "CON", tail: 2, level: 18, tier: "Blood II",
+        action: "Action", kp: 10, heal: { dice: "2d8", mod: "CON", target: "self" },
+        effect: "Knit your wounds — heal 2d8 + CON HP." },
+      { name: "Thick Hide", otherkin: true, kinetic: "Lycanthropy", attr: "CON", tail: 3, level: 21, tier: "Blood III",
+        action: "Bonus Action", kp: 12, sustained: true, upkeep: 0,
+        effect: "A coarsened pelt (sustained): reduce all incoming damage by 3 while active." },
+      { name: "Savage Pounce", otherkin: true, kinetic: "Lycanthropy", attr: "STR", tail: 4, level: 24, tier: "Blood IV",
+        action: "Action", kp: 15, damage: { dice: "3d8", mod: "STR", type: "slashing" },
+        effect: "Leap up to 20 ft and strike (d20 + STR to hit): 3d8 + STR slashing, and the target is knocked prone." },
+      { name: "Rampage", otherkin: true, kinetic: "Lycanthropy", attr: "STR", tail: 5, level: 27, tier: "Blood V",
+        action: "Action", kp: 18, damage: { dice: "3d8", mod: "STR", type: "slashing", area: "10-ft radius" }, aoe: true,
+        effect: "Tear through every enemy within 10 ft: auto-hits for 3d8 + STR slashing." },
+      { name: "Bloodrage", otherkin: true, kinetic: "Lycanthropy", attr: "STR", tail: 6, level: 30, tier: "Blood VI",
+        action: "Bonus Action", kp: 20, sustained: true, upkeep: 4, buff: { attrFlat: { STR: 4, CON: 4 } },
+        effect: "A sustained frenzy: +4 STR and +4 CON while active (stacks with a Shift)." },
+    ],
+    signature: {
+      name: "Lycan Shift",
+      rest: "long",
+      // A TRANSFORMATION signature: toggling it grants a scaling body-attribute buff (past the 30 cap), natural
+      // claws (better unarmed strikes) and thick fur (+Defense). Revert at will; 0 HP reverts you to human at
+      // half HP. `transform` marks it for the toggle UI + the buff/DS/claw hooks in play.js.
+      transform: { attrs: ["STR", "AGI", "CON"], perTier: 3, dsBonus: 2, clawDie: "2d6" },
+      blurb: "Transform into a man-wolf hybrid. Refreshes on a long rest; both its power and its number of uses grow every third level. While shifted you gain natural claws (unarmed becomes 2d6) and +2 Defense from thick fur; revert at will, and at 0 HP you revert to human form at half HP.",
+      tiers: [
+        { tier: 1, level: 15, uses: 1, effect: "+3 STR, AGI and CON (breaking the cap of 30), natural claws, and +2 Defense." },
+        { tier: 2, level: 18, uses: 2, effect: "+6 STR, AGI and CON while shifted." },
+        { tier: 3, level: 21, uses: 3, effect: "+9 STR, AGI and CON while shifted." },
+        { tier: 4, level: 24, uses: 4, effect: "+12 STR, AGI and CON while shifted." },
+        { tier: 5, level: 27, uses: 5, effect: "+15 STR, AGI and CON while shifted." },
+        { tier: 6, level: 30, uses: 6, effect: "+18 STR, AGI and CON while shifted — the apex of the change." },
+      ],
+    },
+  },
 ];
 // Flattened lookup of every Otherkin technique (so PC.technique() can resolve them by name).
 PC.OTHERKIN_TECHNIQUES = PC.OTHERKIN.reduce(function (acc, o) { return acc.concat(o.techniques.map(function (t) { return Object.assign({ otherkinName: o.name }, t); })); }, []);

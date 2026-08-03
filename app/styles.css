@@ -548,6 +548,10 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 .ok-sig-step .ok-sig-t { color: var(--gold); font-weight: 600; }
 .tech-card.otherkin-locked { opacity: .55; border-style: dashed; }
 .tech-card.otherkin-locked .tname { color: var(--text-dim); }
+/* transformation (Lycan Shift) live banner */
+.ok-shift-banner { margin: 8px 0; padding: 9px 12px; border-radius: 9px; font-weight: 650; font-size: .86rem;
+  color: #ffd27a; background: rgba(245, 193, 90, .12); border: 1px solid rgba(245, 193, 90, .45); box-shadow: 0 0 14px rgba(245,193,90,.18); }
+.ok-shift-banner.suppressed { color: var(--danger); background: rgba(255, 92, 114, .1); border-color: rgba(255, 92, 114, .4); box-shadow: none; }
 
 /* inventory */
 .carry-box { margin-bottom: 14px; }

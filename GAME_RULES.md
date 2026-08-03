@@ -270,14 +270,17 @@ app it is invisible before 15 and, once awakened, appears with a full pip track 
      a time. They **cost KP** like any technique and are **governed by the Heart chakra** (not their roll attribute).
   3. **One signature ability** — **rest-gated like a Barbarian's Rage**: a set number of activations that refresh on
      rest. It **upgrades every 3rd level** (6 tiers on the same beat), growing **both** in power **and** in number of
-     uses. Each Otherkin declares whether it refreshes on a **short** or **long** rest.
+     uses. Each Otherkin declares whether it refreshes on a **short** or **long** rest. Some signatures are
+     **transformations** — a toggled state (activate spends a use; revert is free) that grants a scaling stat buff
+     (which may **break the soft cap of 30**) plus natural weapons/armor; dropping to 0 HP while transformed reverts
+     you rather than dropping you (see the Lycan).
   4. All of the above answer to the **Heart chakra** — hits weaken every Otherkin power; a locked Heart (4) shuts
      the Soul Creature off until you rest.
 - **In the app:** the **♥ Otherkin** tab (appears at 15) is a **picker** until you choose, then becomes the Soul
   Creature sheet — boost, the six "tails" (unlocked + upcoming), and the signature card with a rest-gated **use
   counter** and its tier ladder. Otherkin techniques are also playable from the **Combat** tab.
 
-**First-edition roster (3 of 9 built — the rest added one at a time):**
+**First-edition roster (4 of 9 built — the rest added one at a time):**
 - **Kitsune** · Kinetic **Fox Mischief** (AGI) · Boost **+3 AGI / +10 Body Pool** · Signature **Kitsune Disguise**
   (take another humanoid's form; **short-rest** refresh; 1 use at Tier I scaling to 6 at Tier VI). Its six tails:
   *Foxstep* (15, ignore difficult terrain) · *Foxfire Feint* (18, non-combat misdirection) · *Mistveil* (21,
@@ -295,6 +298,13 @@ app it is invisible before 15 and, once awakened, appears with a full pip track 
   *Take Wing* (15, **flying speed**) · *Eagle's Eye* (18, keen-sight scouting) · *Buffeting Gale* (21, 15-ft cone,
   2d6 + STR + prone) · *Rending Talons* (24, 3d8 + STR dive strike) · *Guardian's Aegis* (27, +2 Defense ally aura)
   · *Sovereign's Descent* (30, 15-ft radius, 5d8 + STR + prone).
+- **Lycan** (a distinct being — **not** a Werewolf) · Kinetic **Lycanthropy** (CON) · Boost **+3 CON / +10 Body
+  Pool** · Signature **Lycan Shift** — a **transformation** into a man-wolf hybrid (**long** rest; 1 → 6 uses).
+  While shifted you gain **+3 × tier to STR/AGI/CON** (breaking the cap of 30), **natural claws** (unarmed → 2d6),
+  and **+2 Defense** from thick fur; revert at will, and at 0 HP you revert to human at half HP. Its six techniques:
+  *Lunar Leap* (15, jump twice your normal height/distance) · *Regeneration* (18, **self-heal** 2d8 + CON) ·
+  *Thick Hide* (21, −3 incoming damage) · *Savage Pounce* (24, 3d8 + STR leap-strike + prone) · *Rampage* (27,
+  10-ft radius, 3d8 + STR) · *Bloodrage* (30, sustained +4 STR / +4 CON).
 
 ### Fusion Kinetics (HIDDEN — GM knowledge; players discover in play)
 > **Not in the Player's Guide.** This is a secret system. The GM knows it; players uncover it as they build.

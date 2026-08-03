@@ -62,6 +62,15 @@
     if (typeof play.turn !== "number") play.turn = 1;
     // Action economy for the current turn (true = already used this turn).
     if (!play.econ) play.econ = { action: false, bonus: false, reaction: false, move: false };
+    // A transformation (the Lycan's Shift) that drops to 0 HP reverts you to human form at half HP instead of
+    // going down. Enforced here so it catches every damage path. Reverting first drops the CON buff, so the
+    // "half" is of your human max HP.
+    if (play.transformed && play.hp <= 0) {
+      play.transformed = false;
+      play.hp = Math.max(1, Math.floor(maxHP() / 2));
+      logLine("Struck down while shifted — you revert to human form at half HP.");
+      save(); // persist the revert so it survives a reload, not just the current render
+    }
     // Clamp current HP/KP to the CURRENT (buff-aware) max. An active attribute buff raises the max, so
     // current is left as-is (you gain headroom, not free HP); when the buff ends — or an attribute is
     // edited down — the lower max clamps current back down on the next render.
@@ -119,7 +128,14 @@
     });
     return buff;
   }
-  function liveScores() { return PC.effectiveScores(rec.baseScores, charBoosts(), activeAttrBuffs()); }
+  // All live attribute buffs = sustained-technique buffs + an active transformation's body buff.
+  function allAttrBuffs() {
+    const b = activeAttrBuffs();
+    const tb = transformAttrBuff();
+    Object.keys(tb).forEach((k) => { b[k] = (b[k] || 0) + tb[k]; });
+    return b;
+  }
+  function liveScores() { return PC.effectiveScores(rec.baseScores, charBoosts(), allAttrBuffs()); }
   // The character's awakened Otherkin (Soul Creature), or null before level 15 / if none chosen.
   function myOtherkin() { return (rec.level >= PC.otherkinUnlockLevel() && rec.otherkin) ? PC.otherkin(rec.otherkin) : null; }
   // The Otherkin techniques unlocked so far (auto-granted by Soul Level; cost KP; Heart-chakra governed).
@@ -135,9 +151,42 @@
     const o = myOtherkin(); if (!o || !sigTier()) return;
     if (kind === "long" || o.signature.rest === kind) play.sigUses = sigMaxUses();
   }
+  // --- Transformation signatures (the Lycan's Shift): a toggled state that buffs body attributes past the
+  // 30 cap, grants natural claws + thick fur, reverts at will or at 0 HP, and is suppressed by a locked Heart.
+  function sigTransform() { const o = myOtherkin(); return (o && o.signature && o.signature.transform) ? o.signature.transform : null; }
+  // True while the character is actually benefiting from the shift (not suppressed by a locked Heart chakra).
+  function transformActive() { return !!(play.transformed && sigTransform() && chakraOf("HEART") < 4); }
+  // The flat attribute buff from an active transformation (e.g. +3×tier to each listed body attribute).
+  function transformAttrBuff() {
+    if (!transformActive()) return {};
+    const tr = sigTransform(), t = sigTier(); if (!t) return {};
+    const amt = t.tier * (tr.perTier || 0), buff = {};
+    (tr.attrs || []).forEach((a) => { buff[a] = (buff[a] || 0) + amt; });
+    return buff;
+  }
+  function revertTransform() {
+    if (!play.transformed) return;
+    play.transformed = false;
+    const o = myOtherkin();
+    logLine(`${o ? o.name : "You"} revert to human form.`);
+    App.toast("Reverted to human form.");
+    save(); refresh();
+  }
   function useSignature() {
     const o = myOtherkin(), t = sigTier(); if (!o || !t) return;
-    if (chakraOf("HEART") >= 4) { App.toast(`${PC.HEART_CHAKRA.name} chakra locked — ${o.signature.name} is dormant until you rest.`); return; }
+    if (chakraOf("HEART") >= 4 && !play.transformed) { App.toast(`${PC.HEART_CHAKRA.name} chakra locked — ${o.signature.name} is dormant until you rest.`); return; }
+    if (sigTransform()) {
+      // Toggle: activating spends a use and shifts you; reverting is free.
+      if (play.transformed) { revertTransform(); return; }
+      if (sigUsesLeft() <= 0) { App.toast(`No ${o.signature.name} uses left — take a ${o.signature.rest} rest.`); return; }
+      play.sigUses = sigUsesLeft() - 1;
+      play.transformed = true;
+      const amt = t.tier * (sigTransform().perTier || 0);
+      logLine(`${o.signature.name} — transformed (Tier ${t.tier}: +${amt} to ${sigTransform().attrs.join("/")}). ${sigUsesLeft()}/${sigMaxUses()} uses left.`);
+      App.toast(`Transformed — ${o.name} unleashed!`);
+      save(); refresh();
+      return;
+    }
     if (sigUsesLeft() <= 0) { App.toast(`No ${o.signature.name} uses left — take a ${o.signature.rest} rest.`); return; }
     play.sigUses = sigUsesLeft() - 1;
     logLine(`${o.signature.name} activated (Tier ${t.tier}) — ${sigUsesLeft()}/${sigMaxUses()} uses left.`);
@@ -291,6 +340,8 @@
     equippedArmor().forEach((it) => {
       if (it.dsBonus && proficientWithArmorClass(it.armorClass)) ds += Number(it.dsBonus) || 0;
     });
+    // A transformation's natural armor (e.g. the Lycan's thick fur) adds to Defense while shifted.
+    if (transformActive() && sigTransform().dsBonus) ds += sigTransform().dsBonus;
     return ds;
   }
   function activeUpkeep() {
@@ -406,8 +457,8 @@
     PC.ATTRS.forEach((a) => { if (play.chakraHits[a] > 0) play.chakraHits[a] = Math.max(0, play.chakraHits[a] - 2); });
     if (heartUnlocked() && play.chakraHits.HEART > 0) play.chakraHits.HEART = Math.max(0, play.chakraHits.HEART - 2);
     refreshSignature("long"); // a long rest recharges any signature
-    // End sustained techniques first, so "fully restored" fills the permanent (unbuffed) pools.
-    play.active = []; play.turn = 1;
+    // End sustained techniques and any transformation first, so "fully restored" fills the permanent pools.
+    play.active = []; play.transformed = false; play.turn = 1;
     play.hp = maxHP(); play.kp = maxKP();
     play.econ = { action: false, bonus: false, reaction: false, move: false };
     combatGroupOpen = { actions: true, bonus: false, reaction: false, other: false }; // fresh menus
@@ -881,6 +932,13 @@
   // Unarmed Strike — a punch or kick anyone can throw. STR-based melee, 1d4 + STR mod,
   // proficient by default (it's your own body). econType lets it double as an Opportunity Attack.
   const UNARMED = { name: "Unarmed Strike", damage: "1d4" }; // no weaponType → damageWith uses STR
+  // While a transformation grants natural claws (e.g. the Lycan's Shift), unarmed strikes use the bigger claw
+  // die instead of 1d4. Everything else about the unarmed strike is unchanged.
+  function unarmedProfile() {
+    const tr = sigTransform();
+    if (transformActive() && tr && tr.clawDie) return { name: "Claws", damage: tr.clawDie, claws: true };
+    return UNARMED;
+  }
   function unarmedAttack(econType) {
     econType = econType || "Action";
     const attr = "STR";
@@ -1261,7 +1319,7 @@
       const isBody = PC.BODY_ATTRS.includes(a);
       const hits = chakraOf(a);
       const card = el("div", "attr-card " + (isBody ? "body" : "mind"));
-      const buff = activeAttrBuffs()[a];
+      const buff = allAttrBuffs()[a];
       let statusHtml = "";
       if (isLocked(a)) statusHtml = '<div class="attr-status locked">LOCKED</div>';
       else if (hits === 2) statusHtml = '<div class="attr-status warn">mod halved</div>';
@@ -2688,18 +2746,29 @@
     panel.appendChild(el("p", "hint", sig.blurb));
     if (!tier) { panel.appendChild(el("div", "muted", "Not yet awakened.")); return panel; }
     const uses = sigUsesLeft(), max = sigMaxUses(), heartLocked = chakraOf("HEART") >= 4;
+    const tr = sigTransform(), shifted = !!play.transformed;
     const cur = el("div", "ok-sig-current");
     cur.innerHTML = `<div class="ok-sig-tier">Tier ${tier.tier} of 6</div><div class="ok-sig-eff">${tier.effect}</div>`;
     panel.appendChild(cur);
+    // Transform signatures show a live "shifted" banner with the active bonuses; a locked Heart suppresses them.
+    if (tr && shifted) {
+      const amt = tier.tier * (tr.perTier || 0);
+      const bits = [`+${amt} ${tr.attrs.join("/")}`];
+      if (tr.dsBonus) bits.push(`+${tr.dsBonus} Defense`);
+      if (tr.clawDie) bits.push(`claws (${tr.clawDie})`);
+      panel.appendChild(el("div", "ok-shift-banner" + (heartLocked ? " suppressed" : ""),
+        heartLocked ? `🐺 Shifted, but the Heart chakra is locked — the change is suppressed until you rest.` : `🐺 SHIFTED — ${bits.join(" · ")}.`));
+    }
     const row = el("div", "ok-sig-uses");
     row.appendChild(el("span", "ok-sig-usenum", `${uses} / ${max} uses`));
     const pips = el("div", "pips");
     for (let i = 0; i < max; i++) pips.appendChild(el("span", "pip lg" + (i < uses ? " filled" : "")));
     row.appendChild(pips);
     panel.appendChild(row);
-    const btn = el("button", "btn primary small", `Use ${sig.name}`);
-    btn.disabled = heartLocked || uses <= 0;
-    btn.title = heartLocked ? "Heart chakra locked — Otherkin dormant" : uses <= 0 ? `No uses left — take a ${sig.rest} rest` : "";
+    // Transform: toggle Transform/Revert (revert is free); otherwise a plain "Use".
+    const btn = el("button", "btn primary small", tr ? (shifted ? "Revert (free)" : "⭐ Transform") : `Use ${sig.name}`);
+    btn.disabled = shifted ? false : (heartLocked || uses <= 0);
+    btn.title = shifted ? "End the transformation" : heartLocked ? "Heart chakra locked — Otherkin dormant" : uses <= 0 ? `No uses left — take a ${sig.rest} rest` : "";
     btn.onclick = () => useSignature();
     const brow = el("div", "ok-sig-btnrow");
     brow.appendChild(btn);
@@ -2993,9 +3062,12 @@
   function unarmedStrikeCard() {
     const card = el("div", "tech-card");
     const m = adjMod("STR");
+    const up = unarmedProfile();
+    const title = up.claws ? "🐺 Claws" : "👊 Unarmed Strike";
+    const flavor = up.claws ? `Natural claws — melee attack for ${up.damage}${PC.fmtMod(m)} slashing.` : `A punch or kick — melee attack for ${up.damage}${PC.fmtMod(m)} damage.`;
     card.innerHTML =
-      `<div class="thead"><span class="tname">👊 Unarmed Strike</span><span class="tmeta">Action · STR · 1d4</span></div>` +
-      `<div class="teff">▸ A punch or kick — melee attack for 1d4${PC.fmtMod(m)} damage.</div>`;
+      `<div class="thead"><span class="tname">${title}</span><span class="tmeta">Action · STR · ${up.damage}</span></div>` +
+      `<div class="teff">▸ ${flavor}</div>`;
     const row = el("div", "combat-actions");
     const lk = lockReason("STR");
     const atk = el("button", "btn small primary", "⚔ Attack");
@@ -3004,7 +3076,7 @@
     atk.onclick = () => unarmedAttack("Action");
     const dmg = el("button", "btn small", "🎲 Damage");
     dmg.disabled = !!lk; if (lk) dmg.title = lk;
-    dmg.onclick = () => damageWith(UNARMED);
+    dmg.onclick = () => damageWith(unarmedProfile());
     row.appendChild(atk); row.appendChild(dmg);
     card.appendChild(row);
     return card;
@@ -3034,9 +3106,10 @@
       row.appendChild(atk); row.appendChild(dmg);
       card.appendChild(row);
     });
-    // Unarmed is always a melee option.
+    // Unarmed is always a melee option (claws while shifted).
+    const uprof = unarmedProfile();
     const urow = el("div", "combat-actions");
-    urow.appendChild(el("span", "oa-src", "👊 Unarmed (1d4)"));
+    urow.appendChild(el("span", "oa-src", `${uprof.claws ? "🐺 Claws" : "👊 Unarmed"} (${uprof.damage})`));
     const ulk = lockReason("STR");
     const uatk = el("button", "btn small primary", "⚔ Attack");
     uatk.disabled = !!ulk || blocked;
@@ -3044,7 +3117,7 @@
     uatk.onclick = () => unarmedAttack("Reaction");
     const udmg = el("button", "btn small", "🎲 Damage");
     udmg.disabled = !!ulk; if (ulk) udmg.title = ulk;
-    udmg.onclick = () => damageWith(UNARMED);
+    udmg.onclick = () => damageWith(unarmedProfile());
     urow.appendChild(uatk); urow.appendChild(udmg);
     card.appendChild(urow);
     return card;

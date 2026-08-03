@@ -1010,8 +1010,36 @@ Siren's short-rest signature still refreshes on a short rest (regression check p
 
 ---
 
+### 46. Otherkin #4 — the Lycan (Lycanthropy), and a new signature archetype: TRANSFORMATIONS
+**Decision (with Luke).** Fourth Otherkin, and the first whose signature isn't a simple activation — it's a
+**transformation**. **Lycan** (emphatically **not** a Werewolf — a distinct being in Luke's setting) · Kinetic
+**Lycanthropy** (CON) · Boost **+3 CON / +10 Body Pool**. Signature **Lycan Shift**: toggle into a man-wolf hybrid
+(long rest, 1 → 6 uses). While shifted you gain **+3 × tier to STR/AGI/CON breaking the soft cap of 30**, **natural
+claws** (unarmed strikes become 2d6), and **+2 Defense** from thick fur; **revert at will** (free), and **at 0 HP
+you revert to human form at half HP** instead of dropping. Six techniques (theme: body enhancement, ≥1 self-heal):
+*Lunar Leap* (15, mobility) · *Regeneration* (18, self-heal) · *Thick Hide* (21, damage reduction) · *Savage
+Pounce* (24, leap-strike) · *Rampage* (27, AoE) · *Bloodrage* (30, sustained body buff). **Mid-build tweaks from
+Luke:** cut the original "Apex Predator" (redundant with the Shift's own buff, too strong) for **Lunar Leap**, and
+moved Lunar Leap to the level-15 opener slot.
+**New engine capability — `signature.transform`.** A signature can now carry a `transform: { attrs, perTier,
+dsBonus, clawDie }` block. play.js gained: `transformActive()`/`transformAttrBuff()` (folded into `liveScores` via
+a new `allAttrBuffs()`, so the buff flows through every derived stat and can exceed 30 since the mod table already
+extends past it); `useSignature()` now **toggles** the shift (activate spends a use, `revertTransform()` is free);
+`defenseScore()` adds the fur bonus; `unarmedProfile()` swaps in the claw die (both the Unarmed card and the
+opportunity-attack card show "🐺 Claws"); the **0-HP revert** is enforced in `ensurePlay` (catches every damage
+path) and **persists**; long rest ends the shift; a locked **Heart** chakra suppresses the whole transformation
+(the signature card shows a "suppressed" banner). The Otherkin signature card renders **Transform/Revert** with a
+live "🐺 SHIFTED — +N STR/AGI/CON · +2 Defense · claws (2d6)" banner.
+**Verified** (Node + Playwright): 4 Otherkin / 24 techniques, 0 name collisions; choosing Lycan applies the boost;
+transforming at Tier VI gives **+18 to each body attribute** (maxHP 82 → 136 as the body pool absorbs it, past the
+cap), **+2 Defense**, **claws 2d6**; **revert** and the **0-HP → human at half HP** (41/82) both work and persist;
+the long-rest signature refills only on a long rest (which also ends the shift), not a short one. No console errors.
+Docs updated to 4 of 9 (incl. a note that some signatures are transformations). Cache-buster **v=69**.
+
+---
+
 ## Deferred / future ideas
-- **The other 6 Otherkin** — build one at a time with Luke (Kitsune, Siren, Gryphon are the shipped templates).
+- **The other 5 Otherkin** — build one at a time with Luke (Kitsune, Siren, Gryphon, Lycan are the shipped templates).
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before
   full sync.
