@@ -277,7 +277,7 @@ app it is invisible before 15 and, once awakened, appears with a full pip track 
   Creature sheet — boost, the six "tails" (unlocked + upcoming), and the signature card with a rest-gated **use
   counter** and its tier ladder. Otherkin techniques are also playable from the **Combat** tab.
 
-**First-edition roster (2 of 9 built — the rest added one at a time):**
+**First-edition roster (3 of 9 built — the rest added one at a time):**
 - **Kitsune** · Kinetic **Fox Mischief** (AGI) · Boost **+3 AGI / +10 Body Pool** · Signature **Kitsune Disguise**
   (take another humanoid's form; **short-rest** refresh; 1 use at Tier I scaling to 6 at Tier VI). Its six tails:
   *Foxstep* (15, ignore difficult terrain) · *Foxfire Feint* (18, non-combat misdirection) · *Mistveil* (21,
@@ -289,6 +289,12 @@ app it is invisible before 15 and, once awakened, appears with a full pip track 
   non-combat charm) · *Enthralling Note* (21, single-target charm) · *Undertow* (24, 15-ft line, 3d6 cold + prone)
   · *Siren's Lament* (27, disadvantage aura that draws enemies in) · *Charybdis* (30, 20-ft whirlpool, 5d6 cold +
   drag to center).
+- **Gryphon** · Kinetic **Sovereign Wing** (hybrid INT/STR) · Boost **+2 INT / +1 STR / +5 Body / +5 Mind** ·
+  Signature **Sovereign's Presence** — a regal fear/rally aura on a **LONG rest** (the first signature that isn't
+  short-rest; 1 → 6 uses, growing from a brief fright to a battlefield-wide command). Its six "ascensions":
+  *Take Wing* (15, **flying speed**) · *Eagle's Eye* (18, keen-sight scouting) · *Buffeting Gale* (21, 15-ft cone,
+  2d6 + STR + prone) · *Rending Talons* (24, 3d8 + STR dive strike) · *Guardian's Aegis* (27, +2 Defense ally aura)
+  · *Sovereign's Descent* (30, 15-ft radius, 5d8 + STR + prone).
 
 ### Fusion Kinetics (HIDDEN — GM knowledge; players discover in play)
 > **Not in the Player's Guide.** This is a secret system. The GM knows it; players uncover it as they build.

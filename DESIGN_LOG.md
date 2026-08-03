@@ -987,8 +987,31 @@ VI 6/6, and Charybdis is playable in Combat. No console errors. Docs (`GAME_RULE
 
 ---
 
+### 45. Otherkin #3 — the Gryphon (Sovereign Wing), + a rest-type bug the long-rest signature exposed
+**Decision (with Luke).** Third Otherkin. **Gryphon** · Kinetic **Sovereign Wing** (hybrid INT/STR) · Boost
+**+2 INT / +1 STR / +5 Body / +5 Mind** (a split boost for its split eagle-lion nature) · Signature **Sovereign's
+Presence** — a regal fear/rally aura. Luke gave the boost + the two anchors ("regal presence" and "grant flight
+somehow"); the rest was drafted to spec and approved. Six "ascensions": Take Wing (15, **flying speed** — the
+flight ask) · Eagle's Eye (18, keen-sight scouting) · Buffeting Gale (21, cone AoE + prone) · Rending Talons (24,
+STR dive strike, advantage if you flew) · Guardian's Aegis (27, +2-Defense ally aura — griffins as guardians) ·
+Sovereign's Descent (30, radius AoE + prone). Mixes STR (talons/wings) and INT (sight/command) per-technique.
+**First LONG-rest signature — and the bug it caught.** Sovereign's Presence refreshes on a **long** rest (a
+battle-shaping aura should be rationed), unlike the Kitsune/Siren short-rest signatures. That exposed a latent bug:
+`refreshSignature()` refilled the signature on **any** rest, ignoring `signature.rest` — so a long-rest signature
+would have wrongly recharged on a short rest. Fixed: `refreshSignature(kind)` now refills only when
+`kind === "long"` (a full recovery refills everything) **or** `signature.rest === kind`; the short/long rest paths
+and the awaken-on-pick init pass the right kind. This was invisible with two short-rest creatures — the third
+creature's variety surfaced it.
+**Verified** (Node + Playwright): 3 Otherkin / 18 techniques, 0 name collisions across all pools (the safety check
+from #44); picker shows all three with emoji; choosing Gryphon applies **INT 16→21, STR 16→17, +5 HP / +5 KP**;
+the long-rest signature **does not** refresh on a short rest (5/6 → 5/6) but does on a long rest (→ 6/6), while the
+Siren's short-rest signature still refreshes on a short rest (regression check passed). No console errors. Docs
+(`GAME_RULES.md`, `README.md`) updated to 3 of 9. Cache-buster **v=68**.
+
+---
+
 ## Deferred / future ideas
-- **The other 7 Otherkin** — build one at a time with Luke (Kitsune + Siren are the shipped templates).
+- **The other 6 Otherkin** — build one at a time with Luke (Kitsune, Siren, Gryphon are the shipped templates).
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before
   full sync.

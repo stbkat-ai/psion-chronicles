@@ -129,7 +129,12 @@
   function sigTier() { const o = myOtherkin(); return o ? PC.otherkinSignatureTier(o.name, rec.level) : null; }
   function sigMaxUses() { const t = sigTier(); return t ? t.uses : 0; }
   function sigUsesLeft() { const m = sigMaxUses(); if (typeof play.sigUses !== "number") return m; return Math.min(play.sigUses, m); }
-  function refreshSignature() { if (myOtherkin() && sigTier()) play.sigUses = sigMaxUses(); }
+  // Recharge the signature on rest. A short rest only refills a short-rest signature; a long rest (a full
+  // recovery) refills any signature. `kind` is "short" | "long".
+  function refreshSignature(kind) {
+    const o = myOtherkin(); if (!o || !sigTier()) return;
+    if (kind === "long" || o.signature.rest === kind) play.sigUses = sigMaxUses();
+  }
   function useSignature() {
     const o = myOtherkin(), t = sigTier(); if (!o || !t) return;
     if (chakraOf("HEART") >= 4) { App.toast(`${PC.HEART_CHAKRA.name} chakra locked — ${o.signature.name} is dormant until you rest.`); return; }
@@ -390,7 +395,7 @@
     let healed = 0;
     PC.ATTRS.forEach((a) => { if (play.chakraHits[a] > 0) { play.chakraHits[a] = Math.max(0, play.chakraHits[a] - 1); healed++; } });
     if (heartUnlocked() && play.chakraHits.HEART > 0) { play.chakraHits.HEART = Math.max(0, play.chakraHits.HEART - 1); healed++; }
-    refreshSignature(); // rest-gated Otherkin signature recharges
+    refreshSignature("short"); // recharges a short-rest signature
     // Short rest restores half of each limb's max.
     PC.LIMBS.forEach((L) => { play.limbs[L.key] = Math.min(limbMaxFor(L.key), limbCurrent(L.key) + Math.ceil(limbMaxFor(L.key) / 2)); });
     logLine(`Short rest — healed 1 hit on ${healed} chakra${healed === 1 ? "" : "s"}; limbs +½ each.`);
@@ -400,7 +405,7 @@
   function longRest() {
     PC.ATTRS.forEach((a) => { if (play.chakraHits[a] > 0) play.chakraHits[a] = Math.max(0, play.chakraHits[a] - 2); });
     if (heartUnlocked() && play.chakraHits.HEART > 0) play.chakraHits.HEART = Math.max(0, play.chakraHits.HEART - 2);
-    refreshSignature(); // rest-gated Otherkin signature recharges
+    refreshSignature("long"); // a long rest recharges any signature
     // End sustained techniques first, so "fully restored" fills the permanent (unbuffed) pools.
     play.active = []; play.turn = 1;
     play.hp = maxHP(); play.kp = maxKP();
@@ -2627,7 +2632,7 @@
     btn.onclick = () => {
       if (!confirm(`Choose ${o.name} as your Otherkin? This is a permanent, one-time decision.`)) return;
       rec.otherkin = o.name;
-      refreshSignature();
+      refreshSignature("long"); // awaken fully charged
       logLine(`Otherkin awakened: ${o.name}.`);
       App.toast(`${o.name} awakened!`);
       save(); refresh();

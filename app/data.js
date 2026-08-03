@@ -884,6 +884,49 @@ PC.OTHERKIN = [
       ],
     },
   },
+  {
+    name: "Gryphon",
+    emoji: "🦅",
+    kinetic: "Sovereign Wing",
+    attr: "INT",                    // hybrid INT/STR — the lead attribute for display; techniques carry their own
+    pairing: "Scholar",             // thematic affinity only — any character may choose any Otherkin
+    theme: "The regal eagle-lion — majesty, keen sight, and dominion of the skies. Foes falter under its presence; the heavens are its road.",
+    boosts: { INT: 2, STR: 1 },     // background-style attribute boost (split, matching its dual nature)
+    pool: { body: 5, mind: 5 },     // background-style pool boost (+5 HP / +5 KP)
+    techniques: [
+      { name: "Take Wing", otherkin: true, kinetic: "Sovereign Wing", attr: "STR", tail: 1, level: 15, tier: "Ascension I",
+        action: "Bonus Action", kp: 6, sustained: true, upkeep: 0,
+        effect: "Sprout wings — gain a flying speed equal to your movement while active." },
+      { name: "Eagle's Eye", otherkin: true, kinetic: "Sovereign Wing", attr: "INT", tail: 2, level: 18, tier: "Ascension II",
+        action: "Action", kp: 8,
+        effect: "Non-combat: advantage to spot, scout, track, or assess; see clearly at great distance and pierce concealment." },
+      { name: "Buffeting Gale", otherkin: true, kinetic: "Sovereign Wing", attr: "STR", tail: 3, level: 21, tier: "Ascension III",
+        action: "Action", kp: 15, damage: { dice: "2d6", mod: "STR", type: "bludgeoning", area: "15-ft cone" }, aoe: true,
+        effect: "Beat your wings — 15-ft cone: auto-hits for 2d6 + STR bludgeoning, targets pushed 10 ft and knocked prone." },
+      { name: "Rending Talons", otherkin: true, kinetic: "Sovereign Wing", attr: "STR", tail: 4, level: 24, tier: "Ascension IV",
+        action: "Action", kp: 18, damage: { dice: "3d8", mod: "STR", type: "slashing" },
+        effect: "Diving talon strike (d20 + STR to hit): 3d8 + STR slashing; advantage if you flew this turn." },
+      { name: "Guardian's Aegis", otherkin: true, kinetic: "Sovereign Wing", attr: "INT", tail: 5, level: 27, tier: "Ascension V",
+        action: "Bonus Action", kp: 22, sustained: true, upkeep: 0,
+        effect: "A regal ward (aura): allies within 15 ft gain +2 Defense, and you may intercept an attack aimed at a nearby ally." },
+      { name: "Sovereign's Descent", otherkin: true, kinetic: "Sovereign Wing", attr: "STR", tail: 6, level: 30, tier: "Ascension VI",
+        action: "Action", kp: 25, damage: { dice: "5d8", mod: "STR", type: "bludgeoning", area: "15-ft radius" }, aoe: true,
+        effect: "Soar and crash down into a 15-ft radius: auto-hits for 5d8 + STR bludgeoning, all knocked prone — and you may carry one ally with you." },
+    ],
+    signature: {
+      name: "Sovereign's Presence",
+      rest: "long",                 // a battle-shaping aura — rationed to a long rest, unlike the short-rest signatures
+      blurb: "Radiate overwhelming regal majesty. Refreshes on a long rest; both its power and its number of uses grow every third level.",
+      tiers: [
+        { tier: 1, level: 15, uses: 1, effect: "Enemies who can see you resist or are Frightened (disadvantage, can't advance) briefly; nearby allies take heart." },
+        { tier: 2, level: 18, uses: 2, effect: "Larger radius; allies gain advantage on their next save." },
+        { tier: 3, level: 21, uses: 3, effect: "The dread lingers longer and is harder to shrug off." },
+        { tier: 4, level: 24, uses: 4, effect: "Allies in your presence also gain a bonus to attacks while it holds." },
+        { tier: 5, level: 27, uses: 5, effect: "Even the fearless feel it — creatures normally immune to fear are affected." },
+        { tier: 6, level: 30, uses: 6, effect: "A sovereign's command over the field — frighten all foes who see you and rally the whole party." },
+      ],
+    },
+  },
 ];
 // Flattened lookup of every Otherkin technique (so PC.technique() can resolve them by name).
 PC.OTHERKIN_TECHNIQUES = PC.OTHERKIN.reduce(function (acc, o) { return acc.concat(o.techniques.map(function (t) { return Object.assign({ otherkinName: o.name }, t); })); }, []);
