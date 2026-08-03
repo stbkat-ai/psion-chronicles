@@ -103,7 +103,7 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     grants a fixed **attribute + pool boost**, a **unique Kinetic** whose **6 techniques auto-unlock** as you level
     (15/18/21/24/27/30, no Technique Points), and a **signature ability** that refreshes on rest and grows every
     3rd level. The tab shows your unlocked and upcoming powers plus the signature's rest-gated uses; the techniques
-    are also playable from Combat. Some signatures are **transformations** — a toggled beast-form with stat buffs and natural weapons/armor. *(In the app so far: **Kitsune** — Fox Mischief, **Siren** — Seductive Voice, **Gryphon** — Sovereign Wing, **Lycan** — Lycanthropy, **Troll** — Troll's Fury, and **Unicorn** — Mystic Grace. More on the way.)*
+    are also playable from Combat. Some signatures are **toggled states** — either a **physical transformation** (a beast-form with stat buffs and natural weapons/armor) or an **invocation** (you gain a creature's abilities without changing shape). *(In the app so far: **Kitsune** — Fox Mischief, **Siren** — Seductive Voice, **Gryphon** — Sovereign Wing, **Lycan** — Lycanthropy, **Troll** — Troll's Fury, and **Unicorn** — Mystic Grace. More on the way.)*
   - **Limbs tab** — Fallout-style called-shot damage shown on a **body figure**: a silhouette of head,
     torso, two arms and two legs, with each limb's **HP written over it** in the bold colored pool-number
     style (green/gold when healthy → orange when hurt → red when crippled). **Tap a limb** to open its

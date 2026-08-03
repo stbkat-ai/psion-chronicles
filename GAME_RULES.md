@@ -271,9 +271,11 @@ app it is invisible before 15 and, once awakened, appears with a full pip track 
   3. **One signature ability** — **rest-gated like a Barbarian's Rage**: a set number of activations that refresh on
      rest. It **upgrades every 3rd level** (6 tiers on the same beat), growing **both** in power **and** in number of
      uses. Each Otherkin declares whether it refreshes on a **short** or **long** rest. Some signatures are
-     **transformations** — a toggled state (activate spends a use; revert is free) that grants a scaling stat buff
-     (which may **break the soft cap of 30**) plus natural weapons/armor; dropping to 0 HP while transformed reverts
-     you rather than dropping you (see the Lycan).
+     **toggled states** — activate spends a use, turning it off is free — that grant a scaling stat buff (which may
+     **break the soft cap of 30**) and other perks. These come in two flavors: a **physical transformation** (you
+     change shape — e.g. the Lycan and Troll; dropping to 0 HP reverts you to normal at half HP instead of dropping
+     you) and an **invocation** (you don't change shape, you just gain a creature's abilities — e.g. the Unicorn's
+     Mystic Steed; no 0-HP revert).
   4. All of the above answer to the **Heart chakra** — hits weaken every Otherkin power; a locked Heart (4) shuts
      the Soul Creature off until you rest.
 - **In the app:** the **♥ Otherkin** tab (appears at 15) is a **picker** until you choose, then becomes the Soul
@@ -314,10 +316,11 @@ app it is invisible before 15 and, once awakened, appears with a full pip track 
   3d12 + STR + Weakened) · *Pulverize* (24, 4d10 + STR, ignores cover/armor) · *Grapple Slam* (27, 4d12 + STR +
   prone) · *Cataclysm* (30, 6d12 + STR + Stunned). *(The Kitsune/AGI, Lycan/CON and Troll/STR complete the
   body-attribute Otherkin.)*
-- **Unicorn** · Kinetic **Mystic Grace** (WIS) · Boost **+3 WIS / +10 Mind Pool** · Signature **Mystic Steed** — a
-  **transformation** into a radiant steed (**long** rest; 1 → 6 uses) granting a gentle **WIS/CHA climb (+2 → +7,
-  breaking the cap)** **and double movement speed** (the movement multiplier does **not** scale); revert at will,
-  0-HP reverts you at half HP. Its six graces lean elusive / enchanting / healing: *Healing Horn* (15, **heal**
+- **Unicorn** · Kinetic **Mystic Grace** (WIS) · Boost **+3 WIS / +10 Mind Pool** · Signature **Mystic Steed** — an
+  **invocation** (you don't change shape — you channel a steed's grace; **long** rest; 1 → 6 uses) granting a gentle
+  **WIS/CHA climb (+2 → +7, breaking the cap)** **and double movement speed** (the movement multiplier does **not**
+  scale); dismiss at will. (No 0-HP revert, since there's no form to collapse.) Its six graces lean
+  elusive / enchanting / healing: *Healing Horn* (15, **heal**
   2d8 + WIS) · *Elusive Grace* (18, evade/hide) · *Enchanting Gaze* (21, single-target charm) · *Radiant Beauty*
   (24, 15-ft radius, 3d8 + WIS radiant + dazzle) · *Purifying Light* (27, cleanse a condition + heal 2d6 + WIS) ·
   *Aurora Blessing* (30, mass heal 4d8 + WIS + advantage). *(With the Unicorn/WIS and Siren/CHA, all six attributes

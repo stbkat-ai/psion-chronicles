@@ -888,7 +888,7 @@ PC.OTHERKIN = [
     name: "Gryphon",
     emoji: "🦅",
     kinetic: "Sovereign Wing",
-    attr: "INT",                    // hybrid INT/STR — the lead attribute for display; techniques carry their own
+    attr: "INT/STR",                // hybrid (display only) — its techniques carry their own INT or STR
     pairing: "Scholar",             // thematic affinity only — any character may choose any Otherkin
     theme: "The regal eagle-lion — majesty, keen sight, and dominion of the skies. Foes falter under its presence; the heavens are its road.",
     boosts: { INT: 2, STR: 1 },     // background-style attribute boost (split, matching its dual nature)
@@ -962,7 +962,7 @@ PC.OTHERKIN = [
       // A TRANSFORMATION signature: toggling it grants a scaling body-attribute buff (past the 30 cap), natural
       // claws (better unarmed strikes) and thick fur (+Defense). Revert at will; 0 HP reverts you to human at
       // half HP. `transform` marks it for the toggle UI + the buff/DS/claw hooks in play.js.
-      transform: { attrs: ["STR", "AGI", "CON"], base: 3, step: 3, dsBonus: 2, clawDie: "2d6" },
+      transform: { attrs: ["STR", "AGI", "CON"], base: 3, step: 3, dsBonus: 2, clawDie: "2d6", physical: true },
       blurb: "Transform into a man-wolf hybrid. Refreshes on a long rest; both its power and its number of uses grow every third level. While shifted you gain natural claws (unarmed becomes 2d6) and +2 Defense from thick fur; revert at will, and at 0 HP you revert to human form at half HP.",
       tiers: [
         { tier: 1, level: 15, uses: 1, effect: "+3 STR, AGI and CON (breaking the cap of 30), natural claws, and +2 Defense." },
@@ -1009,7 +1009,7 @@ PC.OTHERKIN = [
       // A TRANSFORMATION signature (see the Lycan): grow to giant size and gain a gentle STR/CON climb
       // (+2 at Tier I, +1 each tier after → +7 at Tier VI). The buff breaks the soft cap of 30. Size and the
       // number of uses scale faster than the attribute bonus.
-      transform: { attrs: ["STR", "CON"], base: 2, step: 1 },
+      transform: { attrs: ["STR", "CON"], base: 2, step: 1, physical: true },
       blurb: "Swell to giant size. Refreshes on a long rest; its size, uses, and (gently) its STR/CON grow every third level — and the bonus ignores the soft cap of 30. Revert at will, and at 0 HP you shrink back to normal at half HP.",
       tiers: [
         { tier: 1, level: 15, uses: 1, effect: "1.5× your height and weight — +2 STR and +2 CON while enlarged (breaking the cap of 30)." },
@@ -1053,12 +1053,13 @@ PC.OTHERKIN = [
     signature: {
       name: "Mystic Steed",
       rest: "long",
-      // A TRANSFORMATION signature (see the Lycan): become a mystic steed. Grants a gentle WIS/CHA climb
-      // (+2 at Tier I, +1 each tier, breaking the cap) AND doubles movement — the move multiplier does NOT scale.
+      // An INVOCATION (not a physical transformation — no `physical` flag): you don't become a unicorn, you
+      // channel its grace. Gentle WIS/CHA climb (+2 at Tier I, +1 each tier, breaking the cap) AND doubled
+      // movement (the move multiplier does NOT scale). No 0-HP revert, since there's no form to collapse.
       transform: { attrs: ["WIS", "CHA"], base: 2, step: 1, moveMult: 2 },
-      blurb: "Take the form of a mystic steed. Refreshes on a long rest; its WIS/CHA and uses grow every third level (breaking the cap of 30), while your movement is always doubled. Revert at will, and at 0 HP you return to normal at half HP.",
+      blurb: "Channel the grace of a mystic steed — you don't change shape, you gain its powers. Refreshes on a long rest; its WIS/CHA and uses grow every third level (breaking the cap of 30), while your movement is always doubled. Dismiss it at will.",
       tiers: [
-        { tier: 1, level: 15, uses: 1, effect: "Become a radiant steed: +2 WIS and +2 CHA and double movement speed (breaking the cap of 30)." },
+        { tier: 1, level: 15, uses: 1, effect: "Draw on a mystic steed's grace: +2 WIS and +2 CHA and double movement speed (breaking the cap of 30)." },
         { tier: 2, level: 18, uses: 2, effect: "+3 WIS and +3 CHA (movement still doubled)." },
         { tier: 3, level: 21, uses: 3, effect: "+4 WIS and +4 CHA." },
         { tier: 4, level: 24, uses: 4, effect: "+5 WIS and +5 CHA." },

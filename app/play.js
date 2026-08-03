@@ -65,10 +65,12 @@
     // A transformation (the Lycan's Shift) that drops to 0 HP reverts you to human form at half HP instead of
     // going down. Enforced here so it catches every damage path. Reverting first drops the CON buff, so the
     // "half" is of your human max HP.
-    if (play.transformed && play.hp <= 0) {
+    // Only a PHYSICAL transformation (Lycan, Troll) reverts at 0 HP — an ability-grant invocation (Unicorn's
+    // Mystic Steed) has no form to collapse, so it doesn't trigger the half-HP revert.
+    if (play.transformed && play.hp <= 0 && (sigTransform() || {}).physical) {
       play.transformed = false;
       play.hp = Math.max(1, Math.floor(maxHP() / 2));
-      logLine("Struck down while shifted — you revert to human form at half HP.");
+      logLine("Struck down while transformed — you revert to your normal form at half HP.");
       save(); // persist the revert so it survives a reload, not just the current render
     }
     // Clamp current HP/KP to the CURRENT (buff-aware) max. An active attribute buff raises the max, so
@@ -156,6 +158,15 @@
   function sigTransform() { const o = myOtherkin(); return (o && o.signature && o.signature.transform) ? o.signature.transform : null; }
   // True while the character is actually benefiting from the shift (not suppressed by a locked Heart chakra).
   function transformActive() { return !!(play.transformed && sigTransform() && chakraOf("HEART") < 4); }
+  // A `physical: true` transform is a real body change (Lycan, Troll): it reverts at 0 HP and reads as "Transform".
+  // Without it (Unicorn's Mystic Steed) the signature merely GRANTS abilities — no form change, no 0-HP revert —
+  // so it reads as "Invoke". Verbs/labels drive the button, banner, and log wording.
+  function transformPhysical() { return !!((sigTransform() || {}).physical); }
+  function transformLabels() {
+    return transformPhysical()
+      ? { on: "⭐ Transform", off: "Revert (free)", state: "TRANSFORMED", onMsg: "transformed", offMsg: "revert to their normal form", suppressed: "Transformed, but the Heart chakra is locked — the change is suppressed until you rest." }
+      : { on: "⭐ Invoke", off: "Dismiss (free)", state: "INVOKED", onMsg: "invoked", offMsg: "let the invocation fade", suppressed: "Invoked, but the Heart chakra is locked — the power is suppressed until you rest." };
+  }
   // The per-tier attribute bonus a transformation grants: base at Tier I, then +step each tier after
   // (e.g. Lycan base 3/step 3 → +3/+6/…/+18; Troll base 2/step 1 → +2/+3/…/+7).
   function transformAmount(tierNum) {
@@ -172,10 +183,11 @@
   }
   function revertTransform() {
     if (!play.transformed) return;
+    const lab = transformLabels();
     play.transformed = false;
     const o = myOtherkin();
-    logLine(`${o ? o.name : "You"} revert to human form.`);
-    App.toast("Reverted to human form.");
+    logLine(`${o ? o.name : "You"} ${lab.offMsg}.`);
+    App.toast(transformPhysical() ? "Reverted to normal form." : "Invocation ended.");
     save(); refresh();
   }
   function useSignature() {
@@ -187,9 +199,9 @@
       if (sigUsesLeft() <= 0) { App.toast(`No ${o.signature.name} uses left — take a ${o.signature.rest} rest.`); return; }
       play.sigUses = sigUsesLeft() - 1;
       play.transformed = true;
-      const amt = transformAmount(t.tier);
-      logLine(`${o.signature.name} — transformed (Tier ${t.tier}: +${amt} to ${sigTransform().attrs.join("/")}). ${sigUsesLeft()}/${sigMaxUses()} uses left.`);
-      App.toast(`Transformed — ${o.name} unleashed!`);
+      const amt = transformAmount(t.tier), lab = transformLabels();
+      logLine(`${o.signature.name} — ${lab.onMsg} (Tier ${t.tier}: +${amt} to ${sigTransform().attrs.join("/")}). ${sigUsesLeft()}/${sigMaxUses()} uses left.`);
+      App.toast(transformPhysical() ? `Transformed — ${o.name} unleashed!` : `${o.signature.name} invoked!`);
       save(); refresh();
       return;
     }
@@ -2692,7 +2704,7 @@
   function otherkinChoiceCard(o) {
     const card = el("div", "panel otherkin-choice");
     card.innerHTML =
-      `<div class="ok-choice-head"><span class="ok-name">${o.emoji || "♥"} ${o.name}</span><span class="ok-kin">${o.kinetic}</span></div>` +
+      `<div class="ok-choice-head"><span class="ok-name">${o.emoji || "♥"} ${o.name}</span><span class="ok-kin">${o.kinetic}${o.attr ? " · " + o.attr : ""}</span></div>` +
       `<div class="ok-theme-line">${o.theme}</div>` +
       `<div class="ok-grants"><span class="ok-pill boost">${otherkinBoostText(o)}</span><span class="ok-pill">Kinetic: <b>${o.kinetic}</b> · 6 techniques</span><span class="ok-pill">Signature: <b>${o.signature.name}</b></span></div>`;
     const btn = el("button", "btn primary small", `Choose ${o.name} (permanent)`);
@@ -2715,7 +2727,7 @@
     const idl = el("div", "ok-identity");
     idl.innerHTML =
       `<div class="ok-heart" style="--cc:${PC.HEART_CHAKRA.color}">♥</div>` +
-      `<div class="ok-id-txt"><div class="ok-name">${o.emoji || "♥"} ${o.name}</div><div class="ok-kin">${o.kinetic}</div><div class="ok-theme-line">${o.theme}</div></div>`;
+      `<div class="ok-id-txt"><div class="ok-name">${o.emoji || "♥"} ${o.name}</div><div class="ok-kin">${o.kinetic}${o.attr ? " · " + o.attr : ""}</div><div class="ok-theme-line">${o.theme}</div></div>`;
     head.appendChild(idl);
     head.appendChild(el("div", "ok-grants", `<span class="ok-pill boost">${otherkinBoostText(o)} — applied</span>`));
     const hh = chakraOf("HEART"), heff = PC.chakraEffect(hh);
@@ -2759,7 +2771,8 @@
     const cur = el("div", "ok-sig-current");
     cur.innerHTML = `<div class="ok-sig-tier">Tier ${tier.tier} of 6</div><div class="ok-sig-eff">${tier.effect}</div>`;
     panel.appendChild(cur);
-    // Transform signatures show a live "shifted" banner with the active bonuses; a locked Heart suppresses them.
+    // Transform signatures show a live "active" banner with the current bonuses; a locked Heart suppresses them.
+    const lab = tr ? transformLabels() : null;
     if (tr && shifted) {
       const amt = transformAmount(tier.tier);
       const bits = [`+${amt} ${tr.attrs.join("/")}`];
@@ -2768,7 +2781,7 @@
       if (tr.clawDie) bits.push(`claws (${tr.clawDie})`);
       const em = o.emoji || "⭐";
       panel.appendChild(el("div", "ok-shift-banner" + (heartLocked ? " suppressed" : ""),
-        heartLocked ? `${em} Transformed, but the Heart chakra is locked — the change is suppressed until you rest.` : `${em} TRANSFORMED — ${bits.join(" · ")}.`));
+        heartLocked ? `${em} ${lab.suppressed}` : `${em} ${lab.state} — ${bits.join(" · ")}.`));
     }
     const row = el("div", "ok-sig-uses");
     row.appendChild(el("span", "ok-sig-usenum", `${uses} / ${max} uses`));
@@ -2776,10 +2789,10 @@
     for (let i = 0; i < max; i++) pips.appendChild(el("span", "pip lg" + (i < uses ? " filled" : "")));
     row.appendChild(pips);
     panel.appendChild(row);
-    // Transform: toggle Transform/Revert (revert is free); otherwise a plain "Use".
-    const btn = el("button", "btn primary small", tr ? (shifted ? "Revert (free)" : "⭐ Transform") : `Use ${sig.name}`);
+    // Transform: toggle on/off (turning it off is free); otherwise a plain "Use".
+    const btn = el("button", "btn primary small", tr ? (shifted ? lab.off : lab.on) : `Use ${sig.name}`);
     btn.disabled = shifted ? false : (heartLocked || uses <= 0);
-    btn.title = shifted ? "End the transformation" : heartLocked ? "Heart chakra locked — Otherkin dormant" : uses <= 0 ? `No uses left — take a ${sig.rest} rest` : "";
+    btn.title = shifted ? "End it" : heartLocked ? "Heart chakra locked — Otherkin dormant" : uses <= 0 ? `No uses left — take a ${sig.rest} rest` : "";
     btn.onclick = () => useSignature();
     const brow = el("div", "ok-sig-btnrow");
     brow.appendChild(btn);

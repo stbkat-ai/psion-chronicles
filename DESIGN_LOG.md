@@ -1086,6 +1086,16 @@ bonus scales — matching Luke's "don't scale the movement." Only walking moveme
 separate speeds and untouched.
 **Milestone:** with the Unicorn (WIS) and the earlier Siren (CHA), **all six attributes now have an Otherkin** —
 STR (Troll), AGI (Kitsune), CON (Lycan), INT (Gryphon), WIS (Unicorn), CHA (Siren).
+
+**Follow-up (v=74) — invocation vs. physical transformation, + Gryphon shown as a hybrid.** Luke clarified the
+Mystic Steed is **not** a physical transformation — the character doesn't become a unicorn, they **channel its
+abilities**. Added a `transform.physical` flag: the Lycan and Troll are `physical: true` (they change shape → read
+as "Transform/Revert", banner "TRANSFORMED", and **revert at 0 HP** to normal at half HP), while the Unicorn omits
+it → reads as "Invoke/Dismiss", banner "INVOKED", and has **no 0-HP revert** (there's no form to collapse). Wording
+is driven by a `transformLabels()` helper; the 0-HP revert in `ensurePlay` now gates on `physical`. Verified: the
+Unicorn shows Invoke/INVOKED and stays active at 0 HP; the Lycan still shows Transform and reverts at 0 HP to half.
+Also, per Luke, the **Gryphon is an INT/STR hybrid** — its boosts were already `{INT:2, STR:1}`; surfaced the
+governing attribute on the Otherkin picker/sheet (now "Sovereign Wing · INT/STR", single-attr for the others).
 **Verified** (Node + Playwright): 6 Otherkin / 36 techniques, 0 collisions; choosing Unicorn applies +3 WIS;
 transforming at Tier VI gives **+7 WIS/CHA** (WIS 39, CHA 31 — past the cap) and **doubles movement (35 → 70 ft)**
 with a "🦄 TRANSFORMED — +7 WIS/CHA · ×2 movement" banner; climb/jump/swim stay un-doubled. No console errors. Docs
