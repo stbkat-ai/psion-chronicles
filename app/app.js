@@ -244,8 +244,9 @@
     rtitle.appendChild(el("div", "rmeta", `${c.background || "—"} · Soul Level ${c.level}`));
     rhead.appendChild(rtitle);
     card.appendChild(rhead);
-    const eff = PC.effectiveScores(c.baseScores, (PC.background(c.background) || {}).boosts || {}, null);
-    const pb = (PC.background(c.background) || {}).pool || { body: 0, mind: 0 };
+    // Boosts include the Otherkin's grant once awakened (level 15+), so roster HP/KP match the play sheet.
+    const eff = PC.effectiveScores(c.baseScores, PC.charAttrBoosts(c), null);
+    const pb = PC.charPoolBoost(c);
     const hp = PC.bodyPool(eff, pb), kp = PC.mindPool(eff, pb);
     const stats = el("div", "rstats");
     stats.innerHTML = `<div><b class="hpn">${hp}</b><span class="rmeta">HP</span></div>

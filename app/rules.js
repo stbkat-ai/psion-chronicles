@@ -155,7 +155,10 @@ PC.kinetic = function (name) { return PC.KINETICS.find((k) => k.name === name) |
 // granted fusion technique by name. Fusions are excluded from the creator/level-up because those iterate
 // PC.TECHNIQUES directly (which never contains fusion techniques).
 PC.technique = function (name) {
-  return PC.TECHNIQUES.find((t) => t.name === name) || (PC.FUSION_TECHNIQUES || []).find((t) => t.name === name) || null;
+  return PC.TECHNIQUES.find((t) => t.name === name)
+    || (PC.FUSION_TECHNIQUES || []).find((t) => t.name === name)
+    || (PC.OTHERKIN_TECHNIQUES || []).find((t) => t.name === name)
+    || null;
 };
 
 /* ---- Fusion Kinetics ---------------------------------------------------------
@@ -200,6 +203,41 @@ PC.kineticProfBonus = function (level, profLevel) {
   return profLevel === "expertise" ? p * 2 : profLevel === "proficient" ? p : 0;
 };
 PC.heritage = function (name) { return (PC.HERITAGES || []).find((h) => h.name === name) || null; };
+
+/* ---- Otherkin (the Soul Creature, chosen at Soul Level 15) --------------------------------------- */
+PC.otherkin = function (name) { return (PC.OTHERKIN || []).find((o) => o.name === name) || null; };
+/* The Otherkin's Soul-Level unlock (mirrors the Heart chakra reveal). */
+PC.otherkinUnlockLevel = function () { return (PC.HEART_CHAKRA && PC.HEART_CHAKRA.unlockLevel) || 15; };
+/* The Otherkin techniques a character has EARNED at a given Soul Level (auto-granted, level-gated). */
+PC.otherkinTechniquesAt = function (name, level) {
+  const o = PC.otherkin(name); if (!o) return [];
+  return o.techniques.filter((t) => (level || 0) >= t.level);
+};
+/* The signature ability's current tier object at a given level (highest reached), or null before unlock. */
+PC.otherkinSignatureTier = function (name, level) {
+  const o = PC.otherkin(name); if (!o || !o.signature) return null;
+  let cur = null;
+  o.signature.tiers.forEach((t) => { if ((level || 0) >= t.level) cur = t; });
+  return cur;
+};
+/* A character's TRUE attribute boosts = background boosts + (once awakened) their Otherkin's boosts.
+   Shared by play.js and the roster so HP/scores stay consistent everywhere. */
+PC.charAttrBoosts = function (rec) {
+  const bg = PC.background(rec && rec.background);
+  const out = Object.assign({}, (bg && bg.boosts) || {});
+  const o = (rec && (rec.level || 0) >= PC.otherkinUnlockLevel() && rec.otherkin) ? PC.otherkin(rec.otherkin) : null;
+  if (o && o.boosts) Object.keys(o.boosts).forEach((k) => { out[k] = (out[k] || 0) + o.boosts[k]; });
+  return out;
+};
+/* A character's TRUE pool boost = background pool + (once awakened) their Otherkin's pool boost. */
+PC.charPoolBoost = function (rec) {
+  const bg = PC.background(rec && rec.background);
+  const out = Object.assign({ body: 0, mind: 0 }, (bg && bg.pool) || {});
+  const o = (rec && (rec.level || 0) >= PC.otherkinUnlockLevel() && rec.otherkin) ? PC.otherkin(rec.otherkin) : null;
+  if (o && o.pool) { out.body = (out.body || 0) + (o.pool.body || 0); out.mind = (out.mind || 0) + (o.pool.mind || 0); }
+  return out;
+};
+
 /* The single weapon SUBTYPE (e.g. "Great Swords") a heritage grants proficiency with, or null. */
 PC.heritageWeaponSubtype = function (heritageName) { const h = PC.heritage(heritageName); return (h && h.weaponSubtype) || null; };
 /* The weapon TYPE that owns a given subtype name (e.g. "Great Swords" → "Heavy Weapons"), or null. */

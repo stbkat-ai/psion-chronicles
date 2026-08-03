@@ -169,9 +169,11 @@ that attribute's rolls **and** all its Kinetics.
 
 **The hidden 7th — Heart chakra (Otherkin).** A **seventh** chakra, **Heart** (green), stays fully concealed
 until **Soul Level 15**, when it **awakens** at the *center* of the chart (between Throat and Core). It is
-**not** bound to an attribute and has **no hit-track** — it is the seat of the **Otherkin / Soul Creature**
-system (below), and its powers arrive with that design. In the app it is invisible before 15 and appears as
-an "Awakened" node on the **Chakras** tab once unlocked.
+**not** bound to an attribute, but it **does** carry the same **4-hit track** as the other six — it is the seat
+of the **Otherkin / Soul Creature** (below), so **its hits weaken the Otherkin's powers** instead of an
+attribute's: 1 = disadvantage, 2 = modifier halved, 3 = removed, **4 = the Soul Creature falls dormant** (no
+Otherkin techniques or signature until you rest). It heals on rest like the others (short +1, long +2). In the
+app it is invisible before 15 and, once awakened, appears with a full pip track on the **Chakras** tab.
 
 
 | Hits on a chakra | Effect on that attribute's attacks / skills / techniques |
@@ -256,15 +258,32 @@ an "Awakened" node on the **Chakras** tab once unlocked.
 - **CSP = Combat Skill Points** — earned **+1 every 5th level** (5/10/15/20/25/30). Spent to *permanently learn* Combat Skills (1 CSP each) from any **Fighting Style**. See Section 3b.
 
 ### Otherkin System (unlocks at Soul Level 15)
-- Your **Soul Creature** — a being that has lived in your soul since creation.
-- Examples: **dragon, phoenix, werewolf, vampire, sprite, fairy**, etc.
-- Seated at the **Heart chakra** (the hidden 7th, green): it stays concealed until Soul Level 15, then
-  **awakens** at the center of the chakra chart. The Heart chakra is the Otherkin's in-app home.
-- **In the app:** a dedicated **♥ Otherkin** play-sheet tab appears (right after Chakras) the moment a
-  character reaches **Soul Level 15**, and is hidden before then — the same gate as the Heart chakra. For
-  now it's a themed placeholder announcing the awakening; the mechanics screen will live here.
-- *[Mechanics TBD: what the Soul Creature grants, how it's chosen, how it's used, and how the Heart chakra
-  is spent/tracked once the system is designed.]*
+- Your **Soul Creature** — a being that has lived in your soul since creation, awakening at the **Heart chakra**.
+- **Chosen once at Soul Level 15, permanent — and a FREE choice** (not tied to your background). First edition
+  ships **9 Otherkin** (one themed to each background; expansions later), but any character may pick any of them.
+  Because each grants a **fixed** boost, the choice has teeth — no sense taking +3 to an attribute you've maxed.
+- **Every Otherkin grants four things:**
+  1. **An attribute + pool boost** — background-style (e.g. **+3 AGI, +10 Body Pool**), fixed, applied once at 15,
+     **no scaling**. It **stacks** on top of your background's boost (a real level-15 power spike).
+  2. **One unique Kinetic** — named to *embody the creature* (never "-kinesis"). Its **6 techniques** are
+     **auto-granted free** (no Technique Points) on the every-3-levels beat **15 / 18 / 21 / 24 / 27 / 30**, one at
+     a time. They **cost KP** like any technique and are **governed by the Heart chakra** (not their roll attribute).
+  3. **One signature ability** — **rest-gated like a Barbarian's Rage**: a set number of activations that refresh on
+     rest. It **upgrades every 3rd level** (6 tiers on the same beat), growing **both** in power **and** in number of
+     uses. Each Otherkin declares whether it refreshes on a **short** or **long** rest.
+  4. All of the above answer to the **Heart chakra** — hits weaken every Otherkin power; a locked Heart (4) shuts
+     the Soul Creature off until you rest.
+- **In the app:** the **♥ Otherkin** tab (appears at 15) is a **picker** until you choose, then becomes the Soul
+  Creature sheet — boost, the six "tails" (unlocked + upcoming), and the signature card with a rest-gated **use
+  counter** and its tier ladder. Otherkin techniques are also playable from the **Combat** tab.
+
+**First-edition roster (worked example — the Kitsune):**
+- **Kitsune** · Kinetic **Fox Mischief** (AGI) · Boost **+3 AGI / +10 Body Pool** · Signature **Kitsune Disguise**
+  (take another humanoid's form; **short-rest** refresh; 1 use at Tier I scaling to 6 at Tier VI). Its six tails:
+  *Foxstep* (15, ignore difficult terrain) · *Foxfire Feint* (18, non-combat misdirection) · *Mistveil* (21,
+  invisibility) · *Bewitching Flame* (24, ranged foxfire + dazzle) · *Shadow Clone* (27, ¼-HP decoy that draws
+  attacks) · *Foxfire Rush* (30, teleport + vanish, advantage on the next attack). The other 8 Otherkin are built
+  the same way (one at a time).
 
 ### Fusion Kinetics (HIDDEN — GM knowledge; players discover in play)
 > **Not in the Player's Guide.** This is a secret system. The GM knows it; players uncover it as they build.
@@ -763,7 +782,9 @@ Chapter Two, which isn't in the file I have. **This is the biggest missing piece
 1. **Kinetic Technique content** — only Robukinesis (8 Beginner) drafted; other 17 schools + higher tiers TBD.
 2. **Tier names above Beginner** and their Soul-Level gates.
 3. **XP thresholds** per level (being tuned).
-4. **Otherkin mechanics** — what the Soul Creature grants / how it's used.
+4. *(Resolved)* **Otherkin mechanics** — chosen at 15 (free), grant a boost + a unique Kinetic (6 auto-granted
+   techniques) + a rest-gated signature that scales every 3rd level, all governed by the Heart chakra. Kitsune is
+   the built example; the other 8 creatures are still to be written (one at a time).
 5. **Weapon damage-die table** — each weapon/subtype's die; unarmed (STR) damage die.
 6. *(Resolved)* Attack-modifying maneuvers are the **Combat Skills** system (Section 3b), not regular skills.
 7. **INT crafting/repair** scaling; **WIS/CHA** any extra mechanics.

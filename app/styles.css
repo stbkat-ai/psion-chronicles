@@ -511,6 +511,44 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 .ok-theme { margin-top: 10px; color: #8fe8ab; font-style: italic; font-size: .95rem; }
 .ok-soon { margin-top: 4px; color: var(--text-faint); font-size: .78rem; letter-spacing: .04em; text-transform: uppercase; }
 
+/* Otherkin — picker + sheet */
+.otherkin-choice, .otherkin-sig { border-color: rgba(70, 196, 110, .32); }
+.ok-choice-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.ok-name { font-size: 1.15rem; font-weight: 800; color: #8fe8ab; }
+.ok-kin { color: #46c46e; font-weight: 700; font-size: .9rem; }
+.ok-theme-line { margin: 6px 0 10px; color: var(--text-dim); font-style: italic; font-size: .9rem; line-height: 1.5; }
+.ok-grants { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.ok-pill { font-size: .76rem; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg); color: var(--text-dim); }
+.ok-pill.boost { color: #8fe8ab; border-color: rgba(70, 196, 110, .5); background: rgba(70, 196, 110, .1); font-weight: 650; }
+.ok-pill b { color: var(--text); }
+.ok-identity { display: flex; align-items: center; gap: 14px; margin: 6px 0 12px; }
+.ok-identity .ok-heart { font-size: 2.4rem; flex: 0 0 auto; }
+.ok-id-txt .ok-name { font-size: 1.25rem; }
+.ok-heart-status { font-size: .84rem; padding: 8px 11px; border-radius: 9px; background: rgba(70, 196, 110, .1); border: 1px solid rgba(70, 196, 110, .3); color: #8fe8ab; }
+.ok-heart-status.hurt { background: rgba(245, 193, 90, .1); border-color: rgba(245, 193, 90, .35); color: var(--gold); }
+.ok-heart-status.locked { background: rgba(255, 92, 114, .1); border-color: rgba(255, 92, 114, .4); color: var(--danger); font-weight: 650; }
+/* signature card */
+.ok-sig-current { margin: 4px 0 10px; padding: 10px 12px; border-radius: 9px; background: rgba(245, 193, 90, .08); border: 1px solid rgba(245, 193, 90, .28); }
+.ok-sig-tier { color: var(--gold); font-weight: 800; font-size: .82rem; letter-spacing: .03em; text-transform: uppercase; }
+.ok-sig-eff { margin-top: 4px; color: var(--text); font-size: .9rem; line-height: 1.5; }
+.ok-sig-uses { display: flex; align-items: center; gap: 12px; margin: 8px 0; }
+.ok-sig-usenum { font-weight: 700; color: var(--gold); font-size: .9rem; }
+.ok-sig-uses .pips { margin-top: 0; }
+.pip.lg { width: 18px; height: 18px; }
+.pip.lg.filled { background: var(--gold); border-color: var(--gold); box-shadow: 0 0 8px rgba(245, 193, 90, .55); }
+.ok-sig-btnrow { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.ok-sig-rest { font-size: .8rem; color: var(--text-dim); }
+.ok-sig-rest b { color: #8fe8ab; }
+.ok-sig-ladder { display: flex; flex-direction: column; gap: 4px; border-top: 1px dashed var(--border); padding-top: 10px; }
+.ok-sig-step { display: grid; grid-template-columns: 42px 92px 1fr; gap: 8px; align-items: baseline; font-size: .8rem; color: var(--text-faint); opacity: .6; }
+.ok-sig-step.on { opacity: 1; color: var(--text-dim); }
+.ok-sig-step.cur { color: var(--text); }
+.ok-sig-step .ok-sig-lvl { color: var(--text-faint); font-weight: 700; }
+.ok-sig-step.on .ok-sig-lvl { color: #46c46e; }
+.ok-sig-step .ok-sig-t { color: var(--gold); font-weight: 600; }
+.tech-card.otherkin-locked { opacity: .55; border-style: dashed; }
+.tech-card.otherkin-locked .tname { color: var(--text-dim); }
+
 /* inventory */
 .carry-box { margin-bottom: 14px; }
 .carry-box.over .poolbar-num { color: var(--danger); }

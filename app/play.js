@@ -55,6 +55,8 @@
     }
     play = rec.play;
     if (!play.chakraHits) play.chakraHits = { STR: 0, AGI: 0, CON: 0, INT: 0, WIS: 0, CHA: 0 };
+    // The Heart chakra (Otherkin) tracks hits just like the other six once it awakens at Soul Level 15.
+    if (play.chakraHits.HEART == null) play.chakraHits.HEART = 0;
     if (!Array.isArray(play.active)) play.active = [];
     if (!Array.isArray(play.log)) play.log = [];
     if (typeof play.turn !== "number") play.turn = 1;
@@ -99,10 +101,13 @@
   // matching pool for as long as it's active — body-attribute buffs grow max HP, mind-attribute buffs
   // grow max KP (bodyPool/mindPool sum the attribute scores, so the increase is exactly the buff).
   // The buff-free "permanent" pools are computed separately in ensurePlay to seed a new play session.
-  function maxHP() { return PC.bodyPool(liveScores(), bg().pool); }
-  function maxKP() { return PC.mindPool(liveScores(), bg().pool); }
-  function permMaxHP() { return PC.bodyPool(PC.effectiveScores(rec.baseScores, bg().boosts, null), bg().pool); }
-  function permMaxKP() { return PC.mindPool(PC.effectiveScores(rec.baseScores, bg().boosts, null), bg().pool); }
+  // Boosts/pools include the Otherkin's grant once the Soul Creature is awakened (level 15 + chosen).
+  function charBoosts() { return PC.charAttrBoosts(rec); }
+  function charPool() { return PC.charPoolBoost(rec); }
+  function maxHP() { return PC.bodyPool(liveScores(), charPool()); }
+  function maxKP() { return PC.mindPool(liveScores(), charPool()); }
+  function permMaxHP() { return PC.bodyPool(PC.effectiveScores(rec.baseScores, charBoosts(), null), charPool()); }
+  function permMaxKP() { return PC.mindPool(PC.effectiveScores(rec.baseScores, charBoosts(), null), charPool()); }
 
   function activeAttrBuffs() {
     const buff = {};
@@ -114,7 +119,26 @@
     });
     return buff;
   }
-  function liveScores() { return PC.effectiveScores(rec.baseScores, bg().boosts, activeAttrBuffs()); }
+  function liveScores() { return PC.effectiveScores(rec.baseScores, charBoosts(), activeAttrBuffs()); }
+  // The character's awakened Otherkin (Soul Creature), or null before level 15 / if none chosen.
+  function myOtherkin() { return (rec.level >= PC.otherkinUnlockLevel() && rec.otherkin) ? PC.otherkin(rec.otherkin) : null; }
+  // The Otherkin techniques unlocked so far (auto-granted by Soul Level; cost KP; Heart-chakra governed).
+  function knownOtherkinTechs() { const o = myOtherkin(); return o ? PC.otherkinTechniquesAt(o.name, rec.level) : []; }
+  // --- Signature ability (rest-gated, like a Barbarian's Rage). Current tier + a remaining-uses counter that
+  // refreshes on rest and scales with the tier. Heart lockout suppresses it, same as the Otherkin techniques.
+  function sigTier() { const o = myOtherkin(); return o ? PC.otherkinSignatureTier(o.name, rec.level) : null; }
+  function sigMaxUses() { const t = sigTier(); return t ? t.uses : 0; }
+  function sigUsesLeft() { const m = sigMaxUses(); if (typeof play.sigUses !== "number") return m; return Math.min(play.sigUses, m); }
+  function refreshSignature() { if (myOtherkin() && sigTier()) play.sigUses = sigMaxUses(); }
+  function useSignature() {
+    const o = myOtherkin(), t = sigTier(); if (!o || !t) return;
+    if (chakraOf("HEART") >= 4) { App.toast(`${PC.HEART_CHAKRA.name} chakra locked — ${o.signature.name} is dormant until you rest.`); return; }
+    if (sigUsesLeft() <= 0) { App.toast(`No ${o.signature.name} uses left — take a ${o.signature.rest} rest.`); return; }
+    play.sigUses = sigUsesLeft() - 1;
+    logLine(`${o.signature.name} activated (Tier ${t.tier}) — ${sigUsesLeft()}/${sigMaxUses()} uses left.`);
+    App.toast(`${o.signature.name} activated!`);
+    save(); refresh();
+  }
   function baseMod(attr) { return PC.abilityMod(liveScores()[attr]); }       // before chakra
   function chakraOf(attr) { return play.chakraHits[attr] || 0; }
   function adjMod(attr) { return PC.chakraEffect(chakraOf(attr)).effMod(baseMod(attr)); } // after chakra
@@ -126,8 +150,15 @@
   function heritageFlaw() { const h = PC.heritage(rec.heritage); return h && h.flaw ? h.flaw : null; }
   function flawDisadvAttr(attr) { const f = bgFlaw(); return !!(f && f.disadvAttr === attr); }
   function flawDisadvSkill(name) { const f = heritageFlaw(); return !!(f && f.disadvSkill === name); }
-  // If the attribute's chakra is locked out (4 hits), a reason string for disabling its rolls; else null.
-  function lockReason(attr) { return attr && isLocked(attr) ? `${PC.CHAKRAS[attr].name} chakra locked out — no ${attr} rolls` : null; }
+  // Display name for a chakra key — the six attribute chakras plus the Heart (Otherkin) chakra.
+  function chakraName(key) { return key === "HEART" ? PC.HEART_CHAKRA.name : (PC.CHAKRAS[key] ? PC.CHAKRAS[key].name : key); }
+  // If the chakra is locked out (4 hits), a reason string for disabling its rolls; else null.
+  function lockReason(attr) {
+    if (!attr || !isLocked(attr)) return null;
+    return attr === "HEART"
+      ? `${PC.HEART_CHAKRA.name} chakra locked out — your Otherkin is dormant until you rest`
+      : `${PC.CHAKRAS[attr].name} chakra locked out — no ${attr} rolls`;
+  }
 
   // --- Fusion chakra penalty (FUSIONS.md: a fusion is tied to BOTH parents' chakras — "if either
   // parent chakra is damaged, the fusion's techniques are less effective"). A fusion technique answers
@@ -135,6 +166,8 @@
   // modifier suffers the worse chakra's penalty, and it locks out if either parent chakra is locked.
   // A base technique answers only to its own attribute's chakra, so these collapse to the single case.
   function techChakraAttrs(t) {
+    // Otherkin techniques answer to the HEART chakra — the seat of the Soul Creature — not their roll attribute.
+    if (t && t.otherkin) return ["HEART"];
     if (t && t.fusion && Array.isArray(t.parents)) {
       const attrs = t.parents.map((p) => (PC.kinetic(p) || {}).attr).filter(Boolean);
       if (attrs.length) return Array.from(new Set(attrs));
@@ -150,21 +183,20 @@
   function techIsDisadv(t) { return isDisadv(techChakraAttr(t)); }
   function techIsLocked(t) { return isLocked(techChakraAttr(t)); }
   function techLockReason(t) { return techLockName(t) ? lockReason(techChakraAttr(t)) : null; }
-  function techLockName(t) { const a = techChakraAttr(t); return a && isLocked(a) ? PC.CHAKRAS[a].name : null; }
+  function techLockName(t) { const a = techChakraAttr(t); return a && isLocked(a) ? chakraName(a) : null; }
   // Chakra-adjusted modifier for a technique roll: the worse parent chakra's penalty (for a fusion)
   // applied to the base modifier of whichever attribute the roll actually scales on (modAttr).
   function techAdjMod(t, modAttr) { return PC.chakraEffect(chakraOf(techChakraAttr(t))).effMod(baseMod(modAttr)); }
-  // For a FUSION card note: the damaged-but-not-locked governing (worse) parent chakra's status label, or
-  // null when healthy or fully locked (a lock is already shown via the disabled button + title). Only shown
-  // for fusions — a base technique's chakra hit is self-evident from its own attribute, and its card behaves
-  // exactly as before; a fusion's penalty can come from the parent chakra that ISN'T its listed attribute, so
-  // it needs surfacing.
+  // Card note for the damaged-but-not-locked governing chakra, or null when healthy/locked (a lock is shown
+  // via the disabled button + title). Shown for FUSION cards (penalty can come from a parent chakra that
+  // isn't the listed attribute) and OTHERKIN cards (governed by the Heart chakra, not their roll attribute).
+  // Base techniques skip it — their chakra hit is self-evident from their own attribute.
   function techChakraPenaltyNote(t) {
-    if (!t || !t.fusion) return null;
+    if (!t || (!t.fusion && !t.otherkin)) return null;
     const a = techChakraAttr(t); if (!a) return null;
     const h = chakraOf(a); if (h < 1 || h >= 4) return null; // 0 = healthy, 4 = shown via lock instead
-    const parent = techChakraAttrs(t).length > 1 ? " (parent)" : "";
-    return `⚠ ${PC.CHAKRAS[a].name} chakra${parent} damaged — ${PC.chakraEffect(h).label.toLowerCase()}`;
+    const parent = t.fusion && techChakraAttrs(t).length > 1 ? " (parent)" : "";
+    return `⚠ ${chakraName(a)} chakra${parent} damaged — ${PC.chakraEffect(h).label.toLowerCase()}`;
   }
 
   /* ---------- limbs ---------- */
@@ -357,6 +389,8 @@
   function shortRest() {
     let healed = 0;
     PC.ATTRS.forEach((a) => { if (play.chakraHits[a] > 0) { play.chakraHits[a] = Math.max(0, play.chakraHits[a] - 1); healed++; } });
+    if (heartUnlocked() && play.chakraHits.HEART > 0) { play.chakraHits.HEART = Math.max(0, play.chakraHits.HEART - 1); healed++; }
+    refreshSignature(); // rest-gated Otherkin signature recharges
     // Short rest restores half of each limb's max.
     PC.LIMBS.forEach((L) => { play.limbs[L.key] = Math.min(limbMaxFor(L.key), limbCurrent(L.key) + Math.ceil(limbMaxFor(L.key) / 2)); });
     logLine(`Short rest — healed 1 hit on ${healed} chakra${healed === 1 ? "" : "s"}; limbs +½ each.`);
@@ -365,6 +399,8 @@
   }
   function longRest() {
     PC.ATTRS.forEach((a) => { if (play.chakraHits[a] > 0) play.chakraHits[a] = Math.max(0, play.chakraHits[a] - 2); });
+    if (heartUnlocked() && play.chakraHits.HEART > 0) play.chakraHits.HEART = Math.max(0, play.chakraHits.HEART - 2);
+    refreshSignature(); // rest-gated Otherkin signature recharges
     // End sustained techniques first, so "fully restored" fills the permanent (unbuffed) pools.
     play.active = []; play.turn = 1;
     play.hp = maxHP(); play.kp = maxKP();
@@ -1711,12 +1747,15 @@
     // The awakened Heart chakra sits at the chart's center (mid-chest), between Throat and Core.
     if (heartUnlocked()) {
       const h = PC.HEART_CHAKRA;
+      const hits = chakraOf("HEART");
+      const st = hits >= 4 ? "locked" : hits > 0 ? "hurt" : "ok";
       const sel = chakraSel === "HEART" ? " sel" : "";
       dots +=
-        `<g class="chakra heart awakened${sel}" data-attr="HEART" style="--cc:${h.color}">` +
+        `<g class="chakra heart awakened ${st}${sel}" data-attr="HEART" style="--cc:${h.color}">` +
         `<circle class="ch-halo" cx="150" cy="99" r="20"/>` +
         `<circle class="ch-disc" cx="150" cy="99" r="13"/>` +
         `<circle class="ch-core" cx="150" cy="99" r="5"/>` +
+        (hits >= 4 ? `<text class="ch-x" x="150" y="99" text-anchor="middle" dominant-baseline="central">✕</text>` : "") +
         `</g>`;
     }
     return `<svg class="chakra-figure" viewBox="0 0 300 268" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Chakras — tap one">${body}${dots}</svg>`;
@@ -1725,8 +1764,8 @@
   function buildChakraTab() {
     const root = el("div");
     const p = el("div", "panel");
-    p.appendChild(el("div", "section-label", "Chakras — one per attribute"));
-    p.appendChild(el("p", "hint", "Each chakra governs an attribute. Taking <b>hits</b> weakens it: 1 = disadvantage, 2 = modifier halved, 3 = modifier removed, 4 = <b>locked out</b> (no rolls with that attribute until you rest). <b>Tap a chakra</b> on the figure — or a row below — to set its hits. Short rest heals 1 hit each; long rest heals 2."));
+    p.appendChild(el("div", "section-label", "Chakras — one per attribute" + (heartUnlocked() ? " (+ the Heart)" : "")));
+    p.appendChild(el("p", "hint", "Each chakra governs an attribute. Taking <b>hits</b> weakens it: 1 = disadvantage, 2 = modifier halved, 3 = modifier removed, 4 = <b>locked out</b> (no rolls with that attribute until you rest). <b>Tap a chakra</b> on the figure — or a row below — to set its hits. Short rest heals 1 hit each; long rest heals 2." + (heartUnlocked() ? " The <b class=\"heart-hl\">Heart</b> chakra works the same, but governs your <b>Otherkin</b> — its hits weaken every Soul-Creature technique and the signature ability, and lock the Otherkin out entirely at 4." : "")));
 
     const figWrap = el("div", "chakra-figure-wrap");
     figWrap.innerHTML = chakraFigureSVG();
@@ -1762,24 +1801,31 @@
     // The Heart chakra joins the list only once it has awakened (Soul Level 15+).
     if (heartUnlocked()) {
       const h = PC.HEART_CHAKRA;
-      const row = el("div", "chakra-leg heart" + (chakraSel === "HEART" ? " sel" : ""));
+      const hits = chakraOf("HEART");
+      const eff = PC.chakraEffect(hits);
+      const row = el("div", "chakra-leg heart" + (hits >= 4 ? " locked" : hits > 0 ? " hurt" : "") + (chakraSel === "HEART" ? " sel" : ""));
       row.style.setProperty("--cc", h.color);
       const info = el("div", "chakra-leg-info");
       info.innerHTML =
         `<span class="chakra-swatch"></span>` +
         `<span class="chakra-nm">${h.name}</span>` +
         `<span class="chakra-at">Otherkin · Soul Creature</span>` +
-        `<span class="chakra-eff">Awakened</span>`;
+        `<span class="chakra-eff">${eff.label}</span>`;
       info.onclick = () => { chakraSel = chakraSel === "HEART" ? null : "HEART"; refresh(); };
-      row.appendChild(info);
-      row.appendChild(el("div", "chakra-heart-badge", "★"));
+      const pips = el("div", "pips");
+      for (let i = 0; i < 4; i++) {
+        const pip = el("span", "pip" + (i < hits ? " filled" : ""));
+        pip.onclick = () => setChakra("HEART", hits === i + 1 ? i : i + 1);
+        pips.appendChild(pip);
+      }
+      row.appendChild(info); row.appendChild(pips);
       list.appendChild(row);
     }
     p.appendChild(list);
     // Reveal note — explains the newly awakened Heart chakra and that its powers are still to come.
     if (heartUnlocked()) {
       p.appendChild(el("div", "chakra-heart-note",
-        `<b class="heart-hl">♥ The Heart chakra has awakened.</b> At Soul Level 15 your <b>Soul Creature</b> stirs at the center of your chakras — the <b>Otherkin</b> that has lived in your soul since creation. Its powers are still being forged; this node will come alive when the Otherkin system is complete.`));
+        `<b class="heart-hl">♥ The Heart chakra is awake.</b> It is the seat of your <b>Otherkin</b> — the Soul Creature at the center of your chakras. A hit here weakens <b>all</b> of its powers (techniques and signature); at 4 hits the Soul Creature falls <b>dormant</b> until you rest. Shape and use your Otherkin on the <b>♥ Otherkin</b> tab.`));
     }
     root.appendChild(p);
     return root;
@@ -2544,25 +2590,125 @@
   // Revealed only at Soul Level 15+ (same gate as the Heart chakra). The Otherkin — the Soul Creature
   // that has lived within since creation — awakens here. The mechanical system is still to be written;
   // this tab is the placeholder that will host it, kept in step with the Heart chakra reveal note.
+  // Boost summary line for an Otherkin (attribute + pool), e.g. "+3 AGI · +10 Body (HP)".
+  function otherkinBoostText(o) {
+    const parts = [];
+    Object.keys(o.boosts || {}).forEach((k) => parts.push(`+${o.boosts[k]} ${k}`));
+    if (o.pool && o.pool.body) parts.push(`+${o.pool.body} Body (HP)`);
+    if (o.pool && o.pool.mind) parts.push(`+${o.pool.mind} Mind (KP)`);
+    return parts.join(" · ");
+  }
+
   function buildOtherkinTab() {
-    const h = PC.HEART_CHAKRA;
     const root = el("div");
+    const chosen = myOtherkin();
+    return chosen ? buildOtherkinSheet(root, chosen) : buildOtherkinPicker(root);
+  }
+
+  // The one-time chooser, shown once the Heart awakens (level 15) until an Otherkin is selected.
+  function buildOtherkinPicker(root) {
     const intro = el("div", "panel otherkin-panel");
-    intro.appendChild(el("div", "section-label", "♥ The Otherkin"));
+    intro.appendChild(el("div", "section-label", "♥ Choose your Otherkin"));
     intro.appendChild(el("p", "hint",
-      `Your <b class="ok-hl">Soul Creature</b> — the Otherkin that has lived in your soul since creation — <b>awakens at Soul Level 15</b>, at the center of your chakras where the <b class="ok-hl">Heart</b> now beats.`));
-
-    // Awakened banner — mirrors the Heart chakra note so the two reveals read as one moment.
-    const banner = el("div", "otherkin-note");
-    banner.innerHTML = `<b class="ok-hl">♥ Your Otherkin has awakened.</b> Its bond, forms, and powers are still being forged. When the <b>Otherkin system</b> is complete, this is where you'll commune with your Soul Creature, shape it, and call on it in play.`;
-    intro.appendChild(banner);
-
-    // Quiet placeholder heart, so the tab feels alive even before the system lands.
-    const glyph = el("div", "otherkin-glyph");
-    glyph.innerHTML = `<div class="ok-heart" style="--cc:${h.color}">♥</div><div class="ok-theme">${h.theme}</div><div class="ok-soon">System coming soon</div>`;
+      `Your <b class="ok-hl">Soul Creature</b> has awakened at the Heart chakra. <b>Choose one</b> — a <b>permanent</b> decision. Each grants a fixed attribute + pool boost, a unique Kinetic whose six techniques unlock as you level, and a signature ability that grows every third level. The boost is a real trade-off — no sense taking +3 to an attribute you've already maxed.`));
     root.appendChild(intro);
-    root.appendChild(glyph);
+    PC.OTHERKIN.forEach((o) => root.appendChild(otherkinChoiceCard(o)));
+    if (PC.OTHERKIN.length < 9) root.appendChild(el("div", "muted", `More Otherkin are on the way — ${PC.OTHERKIN.length} of 9 in this build.`));
     return root;
+  }
+
+  function otherkinChoiceCard(o) {
+    const card = el("div", "panel otherkin-choice");
+    card.innerHTML =
+      `<div class="ok-choice-head"><span class="ok-name">🦊 ${o.name}</span><span class="ok-kin">${o.kinetic}</span></div>` +
+      `<div class="ok-theme-line">${o.theme}</div>` +
+      `<div class="ok-grants"><span class="ok-pill boost">${otherkinBoostText(o)}</span><span class="ok-pill">Kinetic: <b>${o.kinetic}</b> · 6 techniques</span><span class="ok-pill">Signature: <b>${o.signature.name}</b></span></div>`;
+    const btn = el("button", "btn primary small", `Choose ${o.name} (permanent)`);
+    btn.onclick = () => {
+      if (!confirm(`Choose ${o.name} as your Otherkin? This is a permanent, one-time decision.`)) return;
+      rec.otherkin = o.name;
+      refreshSignature();
+      logLine(`Otherkin awakened: ${o.name}.`);
+      App.toast(`${o.name} awakened!`);
+      save(); refresh();
+    };
+    card.appendChild(btn);
+    return card;
+  }
+
+  // The chosen-Otherkin sheet: identity + boost, Heart status, signature, and the six tails.
+  function buildOtherkinSheet(root, o) {
+    const head = el("div", "panel otherkin-panel");
+    head.appendChild(el("div", "section-label", "♥ Your Otherkin"));
+    const idl = el("div", "ok-identity");
+    idl.innerHTML =
+      `<div class="ok-heart" style="--cc:${PC.HEART_CHAKRA.color}">♥</div>` +
+      `<div class="ok-id-txt"><div class="ok-name">🦊 ${o.name}</div><div class="ok-kin">${o.kinetic}</div><div class="ok-theme-line">${o.theme}</div></div>`;
+    head.appendChild(idl);
+    head.appendChild(el("div", "ok-grants", `<span class="ok-pill boost">${otherkinBoostText(o)} — applied</span>`));
+    const hh = chakraOf("HEART"), heff = PC.chakraEffect(hh);
+    head.appendChild(el("div", "ok-heart-status" + (hh >= 4 ? " locked" : hh > 0 ? " hurt" : ""),
+      hh >= 4 ? "♥ Heart chakra LOCKED — your Otherkin is dormant until you rest."
+      : hh > 0 ? `♥ Heart chakra hurt (${heff.label}) — your Otherkin powers are weakened.`
+      : "♥ Heart chakra healthy — your Soul Creature is at full power."));
+    root.appendChild(head);
+
+    root.appendChild(otherkinSignatureCard(o));
+
+    const tp = el("div", "panel");
+    tp.appendChild(el("div", "section-label", `${o.kinetic} — the tails`));
+    tp.appendChild(el("p", "hint", "Auto-granted free as you level (no Technique Points), one every third level. They cost KP and are governed by the Heart chakra. Play them here or from the Combat tab."));
+    const grid = el("div", "combat-grid");
+    o.techniques.forEach((t) => grid.appendChild((rec.level || 0) >= t.level ? makeTechCard(t) : otherkinLockedCard(t)));
+    tp.appendChild(grid);
+    root.appendChild(tp);
+    return root;
+  }
+
+  // A greyed placeholder card for a tail the character hasn't reached yet.
+  function otherkinLockedCard(t) {
+    const c = el("div", "tech-card otherkin-locked");
+    c.innerHTML =
+      `<div class="thead"><span class="tname">🔒 ${t.name}</span><span class="cost">${t.kp} KP</span></div>` +
+      `<div class="tmeta">${t.kinetic} · ${t.tier} · <b>unlocks at Level ${t.level}</b></div>` +
+      `<div class="teff">▸ ${t.effect}</div>`;
+    return c;
+  }
+
+  // The signature ability card — current tier + effect, rest-gated uses (pips + Use button), and the tier ladder.
+  function otherkinSignatureCard(o) {
+    const sig = o.signature, tier = sigTier();
+    const panel = el("div", "panel otherkin-sig");
+    panel.appendChild(el("div", "section-label", `★ Signature — ${sig.name}`));
+    panel.appendChild(el("p", "hint", sig.blurb));
+    if (!tier) { panel.appendChild(el("div", "muted", "Not yet awakened.")); return panel; }
+    const uses = sigUsesLeft(), max = sigMaxUses(), heartLocked = chakraOf("HEART") >= 4;
+    const cur = el("div", "ok-sig-current");
+    cur.innerHTML = `<div class="ok-sig-tier">Tier ${tier.tier} of 6</div><div class="ok-sig-eff">${tier.effect}</div>`;
+    panel.appendChild(cur);
+    const row = el("div", "ok-sig-uses");
+    row.appendChild(el("span", "ok-sig-usenum", `${uses} / ${max} uses`));
+    const pips = el("div", "pips");
+    for (let i = 0; i < max; i++) pips.appendChild(el("span", "pip lg" + (i < uses ? " filled" : "")));
+    row.appendChild(pips);
+    panel.appendChild(row);
+    const btn = el("button", "btn primary small", `Use ${sig.name}`);
+    btn.disabled = heartLocked || uses <= 0;
+    btn.title = heartLocked ? "Heart chakra locked — Otherkin dormant" : uses <= 0 ? `No uses left — take a ${sig.rest} rest` : "";
+    btn.onclick = () => useSignature();
+    const brow = el("div", "ok-sig-btnrow");
+    brow.appendChild(btn);
+    brow.appendChild(el("div", "ok-sig-rest", `Refreshes on a <b>${sig.rest} rest</b> · uses scale with tier`));
+    panel.appendChild(brow);
+    const ladder = el("div", "ok-sig-ladder");
+    sig.tiers.forEach((tt) => {
+      const on = (rec.level || 0) >= tt.level;
+      const li = el("div", "ok-sig-step" + (on ? " on" : "") + (tier && tt.tier === tier.tier ? " cur" : ""));
+      li.innerHTML = `<span class="ok-sig-lvl">${on ? "✓" : "L" + tt.level}</span><span class="ok-sig-t">Tier ${tt.tier} · ${tt.uses} use${tt.uses > 1 ? "s" : ""}</span><span class="ok-sig-d">${tt.effect}</span>`;
+      ladder.appendChild(li);
+    });
+    panel.appendChild(ladder);
+    return panel;
   }
 
   function buildPetsTab() {
@@ -2756,7 +2902,7 @@
 
     // gather techniques by action economy (augments excluded — they rider onto weapons).
     // Fusion techniques the character has earned are folded in alongside base techniques.
-    const known = knownTechniques().map((n) => PC.technique(n)).filter(Boolean).concat(knownFusionTechs());
+    const known = knownTechniques().map((n) => PC.technique(n)).filter(Boolean).concat(knownFusionTechs()).concat(knownOtherkinTechs());
     const isAug = (t) => t.augment && t.augment.kind === "melee-damage";
     const byAction = (act) => known.filter((t) => !isAug(t) && t.action === act);
     const equipped = (rec.inventory || []).filter((it) => it.equipped && it.category === "Weapon");

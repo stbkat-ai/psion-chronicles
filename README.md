@@ -99,7 +99,11 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
 
 - **Live Play Sheet** (▶ Play on a character) — the at-the-table screen, organized into tabs so there's
   little scrolling: **Sheet · ⚔ Combat · Limbs · Chakras · Kinetics · Skills · Traits · Description · Inventory · 🔨 Crafting · 🐾 Pets**.
-  (A hidden **♥ Otherkin** tab joins the row — right after Chakras — once a character reaches **Soul Level 15** and the Heart chakra awakens.)
+  - **♥ Otherkin tab** (appears at **Soul Level 15**) — choose your **Soul Creature** (a permanent, free pick). It
+    grants a fixed **attribute + pool boost**, a **unique Kinetic** whose **6 techniques auto-unlock** as you level
+    (15/18/21/24/27/30, no Technique Points), and a **signature ability** that refreshes on rest and grows every
+    3rd level. The tab shows your unlocked and upcoming powers plus the signature's rest-gated uses; the techniques
+    are also playable from Combat. *(First creature in the app: the **Kitsune** — Fox Mischief. More on the way.)*
   - **Limbs tab** — Fallout-style called-shot damage shown on a **body figure**: a silhouette of head,
     torso, two arms and two legs, with each limb's **HP written over it** in the bold colored pool-number
     style (green/gold when healthy → orange when hurt → red when crippled). **Tap a limb** to open its
@@ -115,7 +119,8 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     row to set its hits: 1 = disadvantage, 2 = modifier halved, 3 = modifier removed, 4 = **locked out** (no
     rolls with that attribute until you rest). Short rest heals 1 hit on each hurt chakra; long rest heals 2.
     A hidden **7th chakra — Heart** (green) stays concealed until **Soul Level 15**, then **awakens** at the
-    center of the chart: the seat of the **Otherkin / Soul Creature** system (powers coming with that design).
+    center of the chart with its own 4-hit track. It's the seat of your **Otherkin** — its hits weaken every
+    Soul-Creature power, and a locked Heart (4) leaves the Otherkin dormant until you rest.
   - **⚔ Combat tab** — everything you can do this turn, grouped by action economy into **collapsible pull-down
     menus** (each header shows a count badge; tap to expand/collapse — **Actions** opens by default, the rest
     start collapsed so you're not scrolling to find things, and your choices stick between rolls. A group also

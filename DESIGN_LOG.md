@@ -925,7 +925,48 @@ persists 28,550. No console errors.
 
 ---
 
+### 43. Otherkin system — the Soul Creature (built with the Kitsune as the worked example)
+**Decision (with Luke, the system's designer).** Built the whole Otherkin framework and shipped the **Kitsune** as
+the first of a planned **9** (one themed per background; the rest added one at a time). Locked rules:
+- **Chosen once at Soul Level 15, permanent, and a FREE choice** (not background-locked) — deliberately, so the
+  **fixed** boost is a real trade-off (a maxed-AGI character won't want +3 AGI).
+- Grants **four** things: (1) a background-style **attribute + pool boost** (fixed, no scaling, stacks on the
+  background boost); (2) **one unique Kinetic** named to embody the creature (never "-kinesis"), whose **6
+  techniques auto-grant free** (no TP) on the every-3-levels beat **15/18/21/24/27/30**, cost KP, and are governed
+  by the **Heart chakra**; (3) **one signature ability**, rest-gated like a **Barbarian's Rage** — a use count that
+  refreshes on rest and scales **both power and number of uses** across **6 tiers** (same beat); (4) all of it
+  answers to the **Heart chakra**.
+- **Heart chakra now acts like the other six** (Luke's call): a real **4-hit track** (disadvantage → halve →
+  remove → **dormant at 4**), healing on rest, but instead of an attribute it weakens **all** Otherkin powers.
+**The Kitsune** (schema-defining example): Kinetic **Fox Mischief** (AGI), boost **+3 AGI / +10 Body Pool**,
+signature **Kitsune Disguise** (short-rest refresh, 1 use → 6 across tiers). Six "tails": Foxstep (15) · Foxfire
+Feint (18) · Mistveil (21) · Bewitching Flame (24) · Shadow Clone (27) · Foxfire Rush (30). Luke gave the boost,
+signature, and three technique concepts (shadow clone, non-combat distraction, terrain-ignore mobility); the other
+three + the KP/action/ordering were drafted to spec and approved.
+**How (code).** `data.js` — `PC.OTHERKIN` (+ flattened `PC.OTHERKIN_TECHNIQUES`). `rules.js` — `otherkin()`,
+`otherkinTechniquesAt()`, `otherkinSignatureTier()`, and shared `charAttrBoosts()/charPoolBoost()` (background +
+awakened Otherkin) now used by BOTH play.js and the roster so HP/scores match everywhere; `technique()` resolves
+Otherkin techniques. `play.js` — boosts flow through the shared helpers into `liveScores`/`maxHP`; Otherkin techs
+fold into Combat and answer to the **Heart** chakra via the existing `techChakraAttrs` path (Heart lockout
+suppresses them and the signature; a hurt Heart shows the "⚠ Heart chakra damaged" note); the **Heart chakra** got
+a real pip track on the Chakras tab + rest healing; the **♥ Otherkin tab** became a permanent-choice **picker** →
+Soul-Creature **sheet** (boost, six tails unlocked/upcoming, signature card with a rest-gated **use counter**, tier
+ladder, Heart status). Signature uses tracked on `play.sigUses`, refreshed by `refreshSignature()` on short/long
+rest. `styles.css` — Otherkin picker/sheet/signature + Heart-pip styling.
+**Verified** (Node + Playwright). Node: level-gated unlocks (1 tech + tier I at 15 → 6 + tier VI at 30), boost merge
+(Body Builder + Kitsune → STR3/AGI3, Body 20), `technique()` resolution. Playwright (real UI): picker shows Kitsune
+with "+3 AGI · +10 Body (HP)"; choosing sets it and boosts **maxHP 65→78, AGI 16→19**; sheet shows Tier I 1/1 use +
+Foxstep unlocked with the other five locked at their levels; **Heart set to 4** disables Foxstep and the signature
+Use button ("dormant until you rest"); **Heart at 2** shows "⚠ Heart chakra damaged — modifier halved" on the tail
+and the hurt status line; signature **Use → 0/1**, **Short Rest → 1/1**; the Heart legend row has a real 4-pip
+track; L30 shows all six tails + Tier VI 6/6 and the tails appear in Combat (Action-tail visible, Bonus-tails under
+the pull-down). No console errors. Docs: `GAME_RULES.md` (Otherkin section + Heart chakra now a hit-track + resolved
+open-question), `README.md`. Cache-buster **v=66**.
+
+---
+
 ## Deferred / future ideas
+- **The other 8 Otherkin** — build one at a time with Luke (Kitsune is the shipped template).
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before
   full sync.
