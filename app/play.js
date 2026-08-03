@@ -174,12 +174,20 @@
     return (tr.base || 0) + Math.max(0, (tierNum || 1) - 1) * (tr.step || 0);
   }
   // A transformation's movement multiplier at a tier. `moveMult` is either a flat number (Unicorn's ×2 walking)
-  // or {base, step, fly} that scales (Wyvern's flight 1.5× → 4×). Returns { mult, fly } or null.
+  // or {base, step, fly, fromTier} that scales (Wyvern's flight 1.5× → 4×) and may be tier-gated (Strigoi wings
+  // at Tier VI). Returns { mult, fly } or null.
   function transformMoveMult(tierNum) {
     const tr = sigTransform(); if (!tr || tr.moveMult == null) return null;
     const mm = tr.moveMult;
+    if (typeof mm === "object" && mm.fromTier && (tierNum || 1) < mm.fromTier) return null;
     const mult = (typeof mm === "number") ? mm : ((mm.base || 0) + Math.max(0, (tierNum || 1) - 1) * (mm.step || 0));
     return { mult: mult, fly: !!(typeof mm === "object" && mm.fly) };
+  }
+  // A scaling Defense-Score MULTIPLIER (Strigoi's pale skin: ×1.5 at Tier I → ×4 at VI). Returns 1 if none.
+  function transformDsMult(tierNum) {
+    const tr = sigTransform(); if (!tr || !tr.dsMult) return 1;
+    const dm = tr.dsMult;
+    return (typeof dm === "number") ? dm : ((dm.base || 0) + Math.max(0, (tierNum || 1) - 1) * (dm.step || 0));
   }
   // Tier-gated natural-armor bonus (Wyvern's scaled hide appears at Tier III; Lycan's fur has no gate → always).
   function transformDsBonus(tierNum) {
@@ -190,11 +198,6 @@
   function transformClawDie(tierNum) {
     const tr = sigTransform(); if (!tr || !tr.clawDie) return null;
     return (tierNum || 1) >= (tr.clawFromTier || 1) ? tr.clawDie : null;
-  }
-  // The tail-whip config once its tier gate is met (Wyvern grows a tail at Tier II), else null.
-  function transformTailWhip(tierNum) {
-    const tr = sigTransform(); if (!tr || !tr.tailWhip) return null;
-    return (tierNum || 1) >= (tr.tailWhip.fromTier || 1) ? tr.tailWhip : null;
   }
   // The active flight speed (a transformation whose moveMult is a flight multiplier), or null. Flight does NOT
   // replace walking — it's shown as its own Fly speed = mult × your ground movement.
@@ -232,9 +235,18 @@
       play.sigUses = sigUsesLeft() - 1;
       play.transformed = true;
       const lab = transformLabels(), attrs = sigTransform().attrs;
-      const gain = (attrs && attrs.length) ? `+${transformAmount(t.tier)} to ${attrs.join("/")}` : `Tier ${t.tier}`;
+      const gain = (attrs && attrs.length && transformAmount(t.tier)) ? `+${transformAmount(t.tier)} to ${attrs.length >= 6 ? "all attributes" : attrs.join("/")}` : `Tier ${t.tier}`;
       logLine(`${o.signature.name} — ${lab.onMsg} (${gain}). ${sigUsesLeft()}/${sigMaxUses()} uses left.`);
       App.toast(transformPhysical() ? `Transformed — ${o.name} unleashed!` : `${o.signature.name} invoked!`);
+      // An on-activation burst (the Strigoi's "elemental current" at Tier V+): heal a % of max HP and clear
+      // any damaged limbs and chakras.
+      const oa = sigTransform().onActivate;
+      if (oa && t.tier >= (oa.fromTier || 1)) {
+        if (oa.healPct) play.hp = clamp(play.hp + Math.floor(maxHP() * oa.healPct / 100), 0, maxHP());
+        if (oa.recoverLimbs) PC.LIMBS.forEach((L) => { play.limbs[L.key] = limbMaxFor(L.key); });
+        if (oa.recoverChakras) { PC.ATTRS.forEach((a) => { play.chakraHits[a] = 0; }); if (play.chakraHits.HEART != null) play.chakraHits.HEART = 0; }
+        logLine(`Elemental current — regained ${oa.healPct || 0}% HP${oa.recoverLimbs || oa.recoverChakras ? " and cleared damaged limbs & chakras" : ""}.`);
+      }
       save(); refresh();
       return;
     }
@@ -398,8 +410,9 @@
     equippedArmor().forEach((it) => {
       if (it.dsBonus && proficientWithArmorClass(it.armorClass)) ds += Number(it.dsBonus) || 0;
     });
-    // A transformation's natural armor (Lycan's fur, Wyvern's scaled hide) adds to Defense while shifted.
-    if (transformActive()) { const t = sigTier(); if (t) ds += transformDsBonus(t.tier); }
+    // A transformation's natural armor (Lycan's fur, Wyvern's scaled hide) adds to Defense while shifted; a
+    // Defense MULTIPLIER (the Strigoi's pale skin) then scales the whole score.
+    if (transformActive()) { const t = sigTier(); if (t) { ds += transformDsBonus(t.tier); ds = Math.round(ds * transformDsMult(t.tier)); } }
     return ds;
   }
   function activeUpkeep() {
@@ -1015,9 +1028,12 @@
     if (!it.damage) { App.toast('Set a damage die (e.g. "1d10").'); return; }
     const dr = PC.rollDiceExpr(it.damage);
     if (!dr) { App.toast('Damage die format: like "1d10" or "2d6".'); return; }
-    const m = adjMod(attr);
+    // A natural weapon may add a SECOND attribute modifier (the Strigoi's Blood Weapon = CON + CHA).
+    const m = adjMod(attr) + (it.attr2 ? adjMod(it.attr2) : 0);
     let total = dr.total + m;
-    const parts = [`${it.damage}${PC.fmtMod(m)} = [${dr.rolls.join(",")}]${PC.fmtMod(m)}`];
+    const baseHit = total; // for lifesteal, before any augment dice
+    const modLabel = PC.fmtMod(m) + (it.attr2 ? ` (${attr}+${it.attr2})` : "");
+    const parts = [`${it.damage}${modLabel} = [${dr.rolls.join(",")}]${PC.fmtMod(m)}`];
     let kpNote = "";
     if (augmentName) {
       const t = PC.technique(augmentName);
@@ -1030,7 +1046,10 @@
       parts.push(`${t.name} ${t.damage.dice}${PC.fmtMod(am)} = [${ar.rolls.join(",")}]${PC.fmtMod(am)}`);
       kpNote = ` (−${t.kp} KP)`;
     }
-    announce(total, `${it.name} damage${augmentName ? " + " + augmentName : ""}: ${parts.join(" + ")} → ${total} total${kpNote}`);
+    // Lifesteal (the Strigoi's Bite / Blood Moon): heal for half the strike's damage.
+    let steal = "";
+    if (it.lifesteal) { const h = Math.max(0, Math.floor(baseHit / 2)); play.hp = clamp(play.hp + h, 0, maxHP()); steal = ` · lifesteal +${h} HP`; }
+    announce(total, `${it.name} damage${augmentName ? " + " + augmentName : ""}: ${parts.join(" + ")} → ${total} total${kpNote}${steal}`);
     save(); refresh();
   }
 
@@ -2797,14 +2816,18 @@
     const lab = tr ? transformLabels() : null;
     if (tr && shifted) {
       const bits = [];
-      if (tr.attrs && tr.attrs.length) bits.push(`+${transformAmount(tier.tier)} ${tr.attrs.join("/")}`);
-      const mm = transformMoveMult(tier.tier);
-      if (mm) bits.push(`×${mm.mult} ${mm.fly ? "flight" : "movement"}`);
+      const amt = transformAmount(tier.tier);
+      if (tr.attrs && tr.attrs.length && amt) bits.push(`+${amt} ${tr.attrs.length >= 6 ? "all attributes" : tr.attrs.join("/")}`);
+      const dm = transformDsMult(tier.tier);
+      if (dm !== 1) bits.push(`×${dm} Defense`);
       const ds = transformDsBonus(tier.tier);
       if (ds) bits.push(`+${ds} Defense`);
+      const mm = transformMoveMult(tier.tier);
+      if (mm) bits.push(`×${mm.mult} ${mm.fly ? "flight" : "movement"}`);
       const claw = transformClawDie(tier.tier);
       if (claw) bits.push(`claws (${claw})`);
-      if (transformTailWhip(tier.tier)) bits.push("tail");
+      const nats = activeNaturalAttacks();
+      if (nats.length) bits.push(nats.map((n) => n.name.toLowerCase()).join(" / "));
       const em = o.emoji || "⭐";
       panel.appendChild(el("div", "ok-shift-banner" + (heartLocked ? " suppressed" : ""),
         heartLocked ? `${em} ${lab.suppressed}` : `${em} ${lab.state} — ${bits.join(" · ")}.`));
@@ -3035,17 +3058,22 @@
     const csAll = knownCombatSkills().map((n) => PC.combatSkill(n)).filter(Boolean);
     const csByAction = (act) => csAll.filter((c) => c.action === act);
 
-    // ⚡ Actions — equipped weapons + universal Unarmed Strike + Action techniques + Action combat skills
+    // A transformation's natural attacks (Tail Whip / Scratch / Bite / Blood Weapon), split by action slot.
+    const nats = activeNaturalAttacks();
+    const natsByAction = (act) => nats.filter((n) => n.action === act);
+
+    // ⚡ Actions — equipped weapons + universal Unarmed Strike + Action natural attacks + Action techniques/skills
     const actionCards = [];
     equipped.forEach((it) => actionCards.push(weaponActionCard(it)));
     actionCards.push(unarmedStrikeCard()); // basic action anyone can take
+    natsByAction("Action").forEach((na) => actionCards.push(naturalAttackCard(na)));
     byAction("Action").forEach((t) => actionCards.push(makeTechCard(t)));
     csByAction("Action").forEach((c) => actionCards.push(makeCombatSkillCard(c)));
     root.appendChild(actionGroup("actions", "⚡ Actions", actionCards));
 
-    // ✦ Bonus Actions — a transformation's Tail Whip (if grown) + Bonus techniques + Bonus combat skills
+    // ✦ Bonus Actions — Bonus natural attacks (Tail Whip / Scratch / Bite) + Bonus techniques + Bonus combat skills
     const bonusCards = [];
-    if (tailWhipAvailable()) bonusCards.push(tailWhipCard());
+    natsByAction("Bonus Action").forEach((na) => bonusCards.push(naturalAttackCard(na)));
     byAction("Bonus Action").forEach((t) => bonusCards.push(makeTechCard(t)));
     csByAction("Bonus Action").forEach((c) => bonusCards.push(makeCombatSkillCard(c)));
     root.appendChild(actionGroup("bonus", "✦ Bonus Actions", bonusCards));
@@ -3111,36 +3139,49 @@
     return card;
   }
 
-  // 🐉 Tail Whip — a Bonus-Action strike a transformation's tail grants (Wyvern, Tier II+). Uses AGI, and the
-  // claw die if the transform has grown fangs & claws (else the base 1d4).
-  function tailWhipAvailable() { if (!transformActive()) return false; const t = sigTier(); return !!(t && transformTailWhip(t.tier)); }
-  function tailWhipProfile() { const t = sigTier(); const claw = t ? transformClawDie(t.tier) : null; return { name: "Tail Whip", damage: claw || "1d4", attr: "AGI", tail: true }; }
-  function tailWhipAttack() {
-    if (isLocked("AGI")) { App.toast(`${chakraName("AGI")} chakra locked — can't strike.`); return; }
-    if (econBlocked("Bonus Action")) { App.toast("You've already used your Bonus Action this turn."); return; }
-    consumeEcon("Bonus Action");
-    const mod = adjMod("AGI") + PC.profBonus(rec.level);
-    const mode = isDisadv("AGI") ? "dis" : "normal";
-    const r = PC.rollCheck(mod, mode);
-    const dis = mode === "dis" ? ` (disadv [${r.d20s.join(",")}]→${r.picked})` : "";
-    announce(r.total, `Tail Whip attack: d20${dis}${PC.fmtMod(mod)} = ${r.total} ✓prof (vs Defense Score)`);
+  // 🩸 Natural attacks a transformation grants once their tier gate is met (Wyvern's Tail Whip, the Strigoi's
+  // Scratch / Bite / Blood Weapon). Each is a to-hit strike using its own attribute(s), action slot, and die.
+  function naturalAttackDie(na, tierNum) {
+    if (na.useClaw) return transformClawDie(tierNum) || na.die || "1d4";
+    if (na.dieLadder && na.dieLadder.length) { const i = Math.max(0, Math.min(na.dieLadder.length - 1, (tierNum || 1) - (na.fromTier || 1))); return na.dieLadder[i]; }
+    return na.die || "1d4";
+  }
+  // Resolved natural attacks available right now (tier gate met), with their die and mods filled in.
+  function activeNaturalAttacks() {
+    if (!transformActive()) return [];
+    const tr = sigTransform(), t = sigTier();
+    if (!tr || !tr.naturalAttacks || !t) return [];
+    return tr.naturalAttacks.filter((na) => t.tier >= (na.fromTier || 1)).map((na) => ({
+      name: na.name, attr: na.attr, attr2: na.attr2 || null, action: na.action || "Bonus Action",
+      damage: naturalAttackDie(na, t.tier), lifesteal: !!na.lifesteal,
+    }));
+  }
+  function naturalAttackToHit(na) {
+    if (isLocked(na.attr)) { App.toast(`${chakraName(na.attr)} chakra locked — can't strike.`); return; }
+    if (econBlocked(na.action)) { App.toast(`You've already used your ${econName(na.action)} this turn.`); return; }
+    consumeEcon(na.action);
+    const mod = adjMod(na.attr) + PC.profBonus(rec.level);
+    const r = PC.rollCheck(mod, isDisadv(na.attr) ? "dis" : "normal");
+    const dis = r.mode === "dis" ? ` (disadv [${r.d20s.join(",")}]→${r.picked})` : "";
+    announce(r.total, `${na.name} attack: d20${dis}${PC.fmtMod(mod)} = ${r.total} ✓prof (vs Defense Score)`);
     save(); refresh();
   }
-  function tailWhipCard() {
+  function naturalAttackCard(na) {
     const card = el("div", "tech-card");
-    const prof = tailWhipProfile(), m = adjMod("AGI");
+    const mods = na.attr + (na.attr2 ? " + " + na.attr2 : "");
+    const bonus = na.action !== "Action";
     card.innerHTML =
-      `<div class="thead"><span class="tname">🐉 Tail Whip</span><span class="tmeta">Bonus · AGI · ${prof.damage}</span></div>` +
-      `<div class="teff">▸ Lash out with your wyvern tail — melee attack for ${prof.damage}${PC.fmtMod(m)} using AGI.</div>`;
+      `<div class="thead"><span class="tname">🩸 ${na.name}</span><span class="tmeta">${bonus ? "Bonus" : "Action"} · ${mods} · ${na.damage}${na.lifesteal ? " · lifesteal" : ""}</span></div>` +
+      `<div class="teff">▸ A natural strike — ${na.damage} + ${mods}${na.lifesteal ? "; you heal for half the damage" : ""}.</div>`;
     const row = el("div", "combat-actions");
-    const lk = lockReason("AGI"), blocked = econBlocked("Bonus Action");
+    const lk = lockReason(na.attr), blocked = econBlocked(na.action);
     const atk = el("button", "btn small primary", "⚔ Attack");
     atk.disabled = !!lk || blocked;
-    atk.title = lk || (blocked ? "Bonus Action already used this turn" : "");
-    atk.onclick = () => tailWhipAttack();
+    atk.title = lk || (blocked ? `${econName(na.action)} already used this turn` : "");
+    atk.onclick = () => naturalAttackToHit(na);
     const dmg = el("button", "btn small", "🎲 Damage");
     dmg.disabled = !!lk; if (lk) dmg.title = lk;
-    dmg.onclick = () => damageWith(tailWhipProfile());
+    dmg.onclick = () => damageWith({ name: na.name, damage: na.damage, attr: na.attr, attr2: na.attr2, lifesteal: na.lifesteal });
     row.appendChild(atk); row.appendChild(dmg);
     card.appendChild(row);
     return card;

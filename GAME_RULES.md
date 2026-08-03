@@ -285,7 +285,7 @@ app it is invisible before 15 and, once awakened, appears with a full pip track 
   signature card with a rest-gated **use counter** and its tier ladder; before a choice is made it simply points
   the player to the Level Up screen. Otherkin techniques are also playable from the **Combat** tab.
 
-**First-edition roster (8 of 9 built — one hybrid remains):**
+**First-edition roster (all 9 built — complete):**
 - **Kitsune** · Kinetic **Fox Mischief** (AGI) · Boost **+3 AGI / +10 Body Pool** · Signature **Kitsune Disguise**
   (take another humanoid's form; **short-rest** refresh; 1 use at Tier I scaling to 6 at Tier VI). Its six tails:
   *Foxstep* (15, ignore difficult terrain) · *Foxfire Feint* (18, non-combat misdirection) · *Mistveil* (21,
@@ -341,7 +341,15 @@ app it is invisible before 15 and, once awakened, appears with a full pip track 
   hide at III, **d8 fangs & claws** (unarmed + Tail Whip) at IV, fire resistance at V, and +1 Draconic-Fire damage
   die at VI. Six fire techniques: *Ember Bolt* (15) · *Draconic Roar* (18, Frighten) · *Fire Breath* (21, 15-ft
   cone) · *Scorching Talons* (24, AGI fire) · *Molten Scales* (27, sustained +WIS Defense + retaliation) ·
-  *Inferno* (30, 20-ft firestorm). *(One hybrid remains.)*
+  *Inferno* (30, 20-ft firestorm).
+- **Strigoi** (hybrid **CON/CHA**) · Kinetic **Blood Rites** · Boost **+2 CHA / +1 CON / +5 Body / +5 Mind** ·
+  Signature **Vampiric Form** — a **staged physical transformation** (**long** rest; 1 → 6 uses) where every tier
+  **adds** a trait: **×1.5 Defense** (→ ×4), **+1 to all attributes** (→ +5, breaking the cap), **Scratch & Bite**
+  bonus attacks (Bite lifesteals), a dual-mod **Blood Weapon** (1d6 → 1d10 + CON + CHA), an on-activation **50% HP
+  heal + full limb/chakra recovery**, and finally a **flight speed = your movement**. A benevolent apex vampire that
+  hunts the predators (real Romanian folklore, reinterpreted). Six vampiric techniques: *Hemal Bolt* (15) ·
+  *Mesmerize* (18, Charm) · *Sanguine Drain* (21, self-heal) · *Mist Form* (24, sustained evasion) · *Nightswarm*
+  (27, necrotic AoE) · *Blood Moon* (30, necrotic AoE + heal half). *(The roster is complete.)*
 
 ### Fusion Kinetics (HIDDEN — GM knowledge; players discover in play)
 > **Not in the Player's Guide.** This is a secret system. The GM knows it; players uncover it as they build.

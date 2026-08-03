@@ -1151,7 +1151,7 @@ PC.OTHERKIN = [
         moveMult: { base: 1.5, step: 0.5, fly: true },
         dsBonus: 2, dsFromTier: 3,
         clawDie: "1d8", clawFromTier: 4,
-        tailWhip: { fromTier: 2, attr: "AGI" },
+        naturalAttacks: [{ name: "Tail Whip", attr: "AGI", action: "Bonus Action", useClaw: true, fromTier: 2 }],
       },
       blurb: "Grow scaly dragon wings (and more as you mature). Refreshes on a short rest; the flight speed and uses grow every third level. While winged you gain a flight speed of 1.5× your movement (+0.5× per tier), and further wyvern traits appear at higher tiers. Revert at will, and at 0 HP you revert to normal at half HP.",
       tiers: [
@@ -1161,6 +1161,66 @@ PC.OTHERKIN = [
         { tier: 4, level: 24, uses: 4, effect: "Flight ×3; fangs and claws — your unarmed strikes and Tail Whip use a d8." },
         { tier: 5, level: 27, uses: 5, effect: "Flight ×3.5; fire-blooded — resistance to fire and advantage on saves vs heat and fear." },
         { tier: 6, level: 30, uses: 6, effect: "Flight ×4; apex wyvern — your Draconic Fire techniques deal +1 damage die." },
+      ],
+    },
+  },
+  {
+    name: "Strigoi",
+    emoji: "🦇",
+    kinetic: "Blood Rites",
+    attr: "CON/CHA",                 // hybrid (display only) — its techniques carry their own CON or CHA
+    pairing: "Guru",                // thematic affinity only — any character may choose any Otherkin
+    theme: "A benevolent apex of the old Romanian tales — an undying hunter that preys on the predators and drinks the blood of other vampires.",
+    boosts: { CHA: 2, CON: 1 },     // background-style attribute boost (split, matching its hybrid nature)
+    pool: { body: 5, mind: 5 },     // background-style pool boost (+5 HP / +5 KP)
+    techniques: [
+      { name: "Hemal Bolt", otherkin: true, kinetic: "Blood Rites", attr: "CHA", tail: 1, level: 15, tier: "Rite I",
+        action: "Action", kp: 10, damage: { dice: "2d8", mod: "CHA", type: "necrotic" },
+        effect: "Hurl a lance of blood (d20 + CHA to hit): 2d8 + CHA necrotic." },
+      { name: "Mesmerize", otherkin: true, kinetic: "Blood Rites", attr: "CHA", tail: 2, level: 18, tier: "Rite II",
+        action: "Action", kp: 12,
+        effect: "A hypnotic gaze — a creature that sees you resists (CHA) or is Charmed: it can't attack you and heeds you for a turn." },
+      { name: "Sanguine Drain", otherkin: true, kinetic: "Blood Rites", attr: "CON", tail: 3, level: 21, tier: "Rite III",
+        action: "Action", kp: 14, heal: { dice: "2d8", mod: "CON", target: "self" },
+        effect: "Feed on a foe within reach — heal yourself 2d8 + CON HP." },
+      { name: "Mist Form", otherkin: true, kinetic: "Blood Rites", attr: "CON", tail: 4, level: 24, tier: "Rite IV",
+        action: "Bonus Action", kp: 15, sustained: true, upkeep: 0,
+        effect: "Dissolve into mist (sustained): attackers roll against you at disadvantage, and you can slip through any gap." },
+      { name: "Nightswarm", otherkin: true, kinetic: "Blood Rites", attr: "CHA", tail: 5, level: 27, tier: "Rite V",
+        action: "Action", kp: 20, damage: { dice: "3d8", mod: "CHA", type: "necrotic", area: "15-ft radius" }, aoe: true,
+        effect: "Summon a swarm — 15-ft radius: auto-hits for 3d8 + CHA necrotic." },
+      { name: "Blood Moon", otherkin: true, kinetic: "Blood Rites", attr: "CHA", tail: 6, level: 30, tier: "Rite VI",
+        action: "Action", kp: 25, damage: { dice: "5d8", mod: "CHA", type: "necrotic", area: "20-ft radius" }, aoe: true,
+        effect: "A crimson nova — 20-ft radius: auto-hits for 5d8 + CHA necrotic, and you heal for half the total dealt." },
+    ],
+    signature: {
+      name: "Vampiric Form",
+      rest: "long",
+      // A staged PHYSICAL transformation — every tier ADDS a trait (none replace). Uses several optional transform
+      // fields: dsMult (scaling Defense multiplier), a full-attribute buff (base 0/step 1 → +0/+1/…/+5 from Tier II),
+      // naturalAttacks (Scratch/Bite bonus strikes + a dual-mod, die-scaling Blood Weapon), onActivate (the Tier-V
+      // "elemental current" burst-heal), and a Tier-VI flight speed. No appearance is written in — players describe
+      // their own wings and weapons.
+      transform: {
+        physical: true,
+        attrs: ["STR", "AGI", "CON", "INT", "WIS", "CHA"], base: 0, step: 1,   // +0 at I, then +1/tier → +5 at VI
+        dsMult: { base: 1.5, step: 0.5 },                                       // ×1.5 DS at I → ×4 at VI
+        naturalAttacks: [
+          { name: "Scratch", attr: "AGI", action: "Bonus Action", die: "1d6", fromTier: 3 },
+          { name: "Bite", attr: "CON", action: "Bonus Action", die: "1d6", fromTier: 3, lifesteal: true },
+          { name: "Blood Weapon", attr: "CON", attr2: "CHA", action: "Action", dieLadder: ["1d6", "1d8", "1d10"], fromTier: 4 },
+        ],
+        onActivate: { fromTier: 5, healPct: 50, recoverLimbs: true, recoverChakras: true },
+        moveMult: { base: 1, step: 0, fly: true, fromTier: 6 },                 // flight = 1× movement, from Tier VI
+      },
+      blurb: "Ascend into your vampiric form in stages — each tier adds a new trait, none replace. Refreshes on a long rest; the uses grow every third level. Revert at will, and at 0 HP you return to normal at half HP.",
+      tiers: [
+        { tier: 1, level: 15, uses: 1, effect: "Pale skin — your Defense Score is multiplied by 1.5 (scaling +0.5× per tier)." },
+        { tier: 2, level: 18, uses: 2, effect: "Glowing eyes — +1 to all attributes (scaling +1 per tier), breaking the cap of 30." },
+        { tier: 3, level: 21, uses: 3, effect: "Fangs & claws — gain Scratch and Bite as bonus-action attacks (Bite heals you for half its damage)." },
+        { tier: 4, level: 24, uses: 4, effect: "Blood weapon — a melee weapon (Action) dealing 1d6 + CON + CHA, its die growing d6 → d8 → d10 through Tiers IV–VI." },
+        { tier: 5, level: 27, uses: 5, effect: "Elemental current — on activating, regain 50% of your max HP and clear all damaged limbs and chakras." },
+        { tier: 6, level: 30, uses: 6, effect: "Vampiric wings — gain a flight speed equal to your movement." },
       ],
     },
   },

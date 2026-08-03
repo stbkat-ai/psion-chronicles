@@ -1165,10 +1165,39 @@ to 8 of 9. Cache-buster **v=77**.
 
 ---
 
+### 52. Otherkin #9 — the Strigoi (Blood Rites): the roster is COMPLETE (9 of 9)
+**Decision (with Luke).** The ninth and final Otherkin — a **Crusnik-inspired** apex vampire, renamed and reworked
+to avoid IP and to root it in real folklore (the Romanian **strigoi**, reinterpreted as a benevolent apex that
+preys on predators). **No appearance is written into the mechanics** — per Luke, each Strigoi's wings and weapons
+are the player's to describe. **Strigoi** (CON/CHA) · Kinetic **Blood Rites** · Boost **+2 CHA / +1 CON / +5 Body
+/ +5 Mind**. Six vampiric techniques (Hemal Bolt, Mesmerize, Sanguine Drain self-heal, Mist Form, Nightswarm,
+Blood Moon).
+**Signature — Vampiric Form: the most elaborate build, a STAGED additive transformation.** Every tier adds a trait,
+none replace: **Tier I** a scaling **Defense MULTIPLIER** (×1.5 → ×4); **II** **+1 to all attributes** (→ +5,
+breaking the cap); **III** **Scratch & Bite** bonus attacks (Bite lifesteals); **IV** a **Blood Weapon** — a
+dual-modifier (CON + CHA), die-scaling (d6→d8→d10) melee Action; **V** an on-activation **"elemental current"**
+burst (heal 50% max HP + clear all damaged limbs and chakras); **VI** a **flight speed = movement**.
+**New engine capabilities (all optional/backward-compatible on the transform block):** `dsMult` (scaling Defense
+multiplier), a full-attribute buff via `base:0/step:1` (naturally +0 at Tier I, +1/tier after), `moveMult.fromTier`
+(tier-gated flight), `onActivate {fromTier, healPct, recoverLimbs, recoverChakras}`, and — the big one — a general
+**`naturalAttacks`** array that replaced the Wyvern's one-off `tailWhip`: each entry is a to-hit strike with its own
+attribute(s), action slot, and die (fixed / `dieLadder` / `useClaw`), rendered as its own combat card. `damageWith`
+gained **`attr2`** (a second modifier) and **`lifesteal`** (heal half the strike). The shift banner lists whatever
+the current tier grants and collapses six attrs to "all attributes."
+**Verified** (Node + Playwright): **9 Otherkin / 54 techniques, 0 collisions**; at Tier VI the Strigoi shows
+"+5 all attributes · ×4 Defense · ×1 flight · scratch / bite / blood weapon", attributes hit 28 (past cap),
+**Defense = 64 (×4)**, Blood Weapon reads "Action · CON + CHA · 1d10", Fly = movement (40 ft); the **elemental
+current** healed 5 → 43 HP (~50%) and cleared damaged limbs + chakras; the **Wyvern's Tail Whip still works**
+(regression) via the shared natural-attack system. No console errors. Docs updated to **9 of 9 — complete**.
+Cache-buster **v=78**.
+**The Otherkin system is finished** — 9 Soul Creatures (all six attributes + three hybrids), a signature toolkit
+spanning plain activated abilities, physical transformations, invocations, and staged transforms, with stat buffs
+past the cap, natural weapons/armor, scaling movement & flight, DS multipliers, lifesteal, on-activation heals, and
+tier-gated traits. All chosen at the level-15 Heart-chakra reveal, governed by the Heart chakra, playable in Combat.
+
+---
+
 ## Deferred / future ideas
-- **The last Otherkin** — one more hybrid, built with Luke. The signature toolkit now covers plain activated
-  abilities, physical transformations, invocations, stat buffs past the cap, natural weapons/armor, scaling
-  movement/flight, and tier-gated traits (armor, claws, a tail attack).
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before
   full sync.
