@@ -913,6 +913,16 @@ Playwright (real UI): L7 with 12,000 XP shows "2,900 / 4,900 · 2,000 XP to Leve
 L30 shows "Maximum Soul Level reached." No console errors. Docs: `GAME_RULES.md` (curve + full threshold table),
 `README.md` (player-facing bar description), this log. Cache-buster **v=64**.
 
+**Follow-up fix (v=65) — XP kept consistent with level.** First playtest surfaced a bug: adding XP didn't move the
+bar for an existing character. Cause — leveling is button-driven, so level and XP had **decoupled** (a character
+leveled to 10 with the button still had 0 XP). The bar measures from the *current level's* floor upward, so any XP
+below that floor (28,500 at L10) showed 0% and small awards did nothing visible. Fix: enforce the game's own rule
+that the **Soul Pool is cumulative XP** — a level-L character always has at least `PC.xpForLevel(L)`. Normalized on
+load (`ensurePlay` in play.js, and the Level Up screen in app.js) so existing characters backfill to their level's
+floor, and the Level Up button now bumps `rec.xp` to the new level's floor (preserving any overflow). Verified:
+a seeded L10/0-XP character backfills to 28,500 on open, and +50 XP then moves the bar to 0.5% ("50 / 10,000") and
+persists 28,550. No console errors.
+
 ---
 
 ## Deferred / future ideas

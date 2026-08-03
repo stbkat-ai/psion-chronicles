@@ -79,8 +79,13 @@
     if (!rec.description) rec.description = App.defaultDescription ? App.defaultDescription() : {};
     // Inventory lives on the character record (persistent gear, not session state).
     if (!Array.isArray(rec.inventory)) rec.inventory = [];
-    // Soul Pool = accumulated XP (persistent). Leveling is GM-driven; thresholds are TBD.
+    // Soul Pool = accumulated XP (persistent). Leveling is GM-driven, so level and XP can drift apart
+    // (e.g. a character leveled with the button before XP was tracked). Keep them consistent: a character
+    // at level L must have at least the XP their level requires, so the "XP to next level" bar always
+    // measures real progress within the current level instead of sitting empty below the level's floor.
     if (typeof rec.xp !== "number") rec.xp = 0;
+    const xpFloor = PC.xpForLevel(rec.level || 1);
+    if (rec.xp < xpFloor) rec.xp = xpFloor;
   }
   function save() {
     const list = App.loadRoster();

@@ -1276,12 +1276,15 @@
     const lvlReady = level < 30 && PC.xpBar(rec.xp || 0, level).ready;
     const lvlBtn = el("button", "btn primary small" + (lvlReady ? " xp-ready-btn" : ""), level >= 30 ? "Max Level (30)" : `⭐ Level Up → ${level + 1}`);
     lvlBtn.disabled = level >= 30;
-    lvlBtn.onclick = () => { if (rec.level < 30) { rec.level++; toast(`Leveled up to Soul Level ${rec.level}!`); persist(); } };
+    lvlBtn.onclick = () => { if (rec.level < 30) { rec.level++; rec.xp = Math.max(rec.xp || 0, PC.xpForLevel(rec.level)); toast(`Leveled up to Soul Level ${rec.level}!`); persist(); } };
     head.appendChild(back); head.appendChild(title); head.appendChild(lvlBtn);
     wrap.appendChild(head);
 
     // XP / Soul Pool panel — progress bar toward the next Soul Level.
+    // Keep XP consistent with level (see play.js): a level-L character has at least level L's XP floor,
+    // so the bar reflects real within-level progress rather than sitting empty below the floor.
     if (typeof rec.xp !== "number") rec.xp = 0;
+    if (rec.xp < PC.xpForLevel(level)) rec.xp = PC.xpForLevel(level);
     const bar = PC.xpBar(rec.xp, level);
     const xp = el("div", "panel");
     xp.appendChild(el("div", "section-label", "Soul Pool (XP)"));

@@ -201,7 +201,9 @@ an "Awakened" node on the **Chakras** tab once unlocked.
 - **How you level:** XP **threshold** system — the **Soul Pool IS your cumulative XP**. When your total reaches the
   next level's threshold, you may level up. Leveling stays **GM-driven** in the app: the XP bar fills and the
   **Level Up** button lights up "ready," but a player/GM still taps to confirm (so the GM controls pacing and can
-  level a character at their discretion). XP is **cumulative** — it never resets on level-up.
+  level a character at their discretion). XP is **cumulative** — it never resets on level-up, and is kept
+  consistent with level: a level-*L* character always holds at least level *L*'s XP total (leveling up tops the
+  Soul Pool up to the new level's floor if it was behind), so the progress bar always reflects real progress.
 - **XP curve (PLACEHOLDER — Luke can retune).** Advancing from level *L* to *L+1* costs **100 × L² XP**; totals are
   the running sum. This is a starting curve, defined in `app/data.js` (`PC.XP_STEP` / `PC.XP_THRESHOLDS`) and
   swappable in one line without touching the engine.
