@@ -29,6 +29,39 @@ PC.profBonus = function (level) {
   return 3;
 };
 
+/* ---- XP / Soul Pool ----------------------------------------------------------
+   Cumulative XP needed to be AT a given Soul Level (from PC.XP_THRESHOLDS). */
+PC.xpForLevel = function (level) {
+  const t = PC.XP_THRESHOLDS || [0, 0];
+  const cap = PC.RULES.LEVEL_CAP;
+  if (level <= 1) return 0;
+  if (level >= cap) return t[cap];
+  return t[level] || 0;
+};
+/* The Soul Level a given XP total has earned (highest level whose threshold ≤ xp). */
+PC.levelForXP = function (xp) {
+  const cap = PC.RULES.LEVEL_CAP;
+  let lvl = 1;
+  for (let L = 2; L <= cap; L++) { if ((xp || 0) >= PC.xpForLevel(L)) lvl = L; else break; }
+  return lvl;
+};
+/* Progress toward the next level, for the play sheet's XP bar. `level` is the character's CURRENT
+   (GM-driven) Soul Level; the bar measures xp from this level's floor to the next level's threshold.
+   Returns { maxed, curFloor, nextAt, into, span, remaining, pct, ready }. */
+PC.xpBar = function (xp, level) {
+  xp = Math.max(0, xp || 0);
+  if (level >= PC.RULES.LEVEL_CAP) {
+    const floor = PC.xpForLevel(PC.RULES.LEVEL_CAP);
+    return { maxed: true, curFloor: floor, nextAt: floor, into: 0, span: 0, remaining: 0, pct: 100, ready: false };
+  }
+  const curFloor = PC.xpForLevel(level);
+  const nextAt = PC.xpForLevel(level + 1);
+  const span = Math.max(1, nextAt - curFloor);
+  const into = Math.max(0, xp - curFloor);
+  const pct = Math.max(0, Math.min(100, (into / span) * 100));
+  return { maxed: false, curFloor, nextAt, into: Math.min(into, span), span, remaining: Math.max(0, nextAt - xp), pct, ready: xp >= nextAt };
+};
+
 /* Roll a die (used by the stat generator + dice roller). */
 PC.rollDie = function (sides) { return 1 + Math.floor(Math.random() * sides); };
 

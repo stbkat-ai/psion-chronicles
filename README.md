@@ -80,9 +80,11 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
   - **Edit** reopens a character in the creator with everything prefilled; change anything (name, stats,
     background, skills, techniques) and Update saves it in place — your live play session (current HP/KP,
     chakra hits) is kept and auto-adjusted if the maximums changed
-  - **⭐ Level Up** opens a dedicated screen: tap **Level Up** (GM-driven; cap 30) to earn **+1 Technique
-    Point** each level, **+1 attribute point** on odd levels, and **+1 Combat Skill Point every 5th level**
-    (5/10/15/20/25/30). Spend attribute points (cap 30) and Technique Points to learn new techniques. All
+  - **⭐ Level Up** opens a dedicated screen with your **Soul Pool (XP) bar** — your GM awards XP with the
+    +/− controls, and when the bar fills to the next level's threshold the **Level Up** button lights up
+    "ready." Tap **Level Up** (GM-driven; cap 30) to earn **+1 Technique Point** each level, **+1 attribute
+    point** on odd levels, and **+1 Combat Skill Point every 5th level** (5/10/15/20/25/30). XP is cumulative
+    and the thresholds are a starting curve (100 × L² per level; your GM can retune them). Spend attribute points (cap 30) and Technique Points to learn new techniques. All
     **216 techniques** (18 Kinetics × 4 tiers × 3) are in the app, gated two ways: by **Soul Level** (Adept @8,
     Expert @15, Master @22) **and** by requiring **≥3 techniques from that Kinetic's previous tier** to
     unlock its next tier (at 3 per tier, that means completing the whole previous tier). Your Technique-Point

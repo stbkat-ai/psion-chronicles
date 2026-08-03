@@ -1273,15 +1273,38 @@
     const title = el("div");
     title.innerHTML = `<h2 style="margin:0">${rec.name || "Unnamed"} — Level Up</h2>
       <div style="color:var(--text-dim);font-size:.86rem">${rec.background} · Soul Level ${level} · Prof ${PC.fmtMod(PC.profBonus(level))}</div>`;
-    const lvlBtn = el("button", "btn primary small", level >= 30 ? "Max Level (30)" : `⭐ Level Up → ${level + 1}`);
+    const lvlReady = level < 30 && PC.xpBar(rec.xp || 0, level).ready;
+    const lvlBtn = el("button", "btn primary small" + (lvlReady ? " xp-ready-btn" : ""), level >= 30 ? "Max Level (30)" : `⭐ Level Up → ${level + 1}`);
     lvlBtn.disabled = level >= 30;
     lvlBtn.onclick = () => { if (rec.level < 30) { rec.level++; toast(`Leveled up to Soul Level ${rec.level}!`); persist(); } };
     head.appendChild(back); head.appendChild(title); head.appendChild(lvlBtn);
     wrap.appendChild(head);
 
-    // XP note
+    // XP / Soul Pool panel — progress bar toward the next Soul Level.
+    if (typeof rec.xp !== "number") rec.xp = 0;
+    const bar = PC.xpBar(rec.xp, level);
     const xp = el("div", "panel");
-    xp.appendChild(el("p", "hint", "Leveling is GM-driven: when your GM says you've reached the next XP threshold, tap <b>Level Up</b>. Each level grants +1 Technique Point; odd levels also grant +1 attribute point. (Exact XP thresholds are being tuned.)"));
+    xp.appendChild(el("div", "section-label", "Soul Pool (XP)"));
+    const xpWrap = el("div", "xp-wrap");
+    if (bar.maxed) {
+      xpWrap.appendChild(el("div", "xp-head", `<span>Maximum Soul Level (30) reached</span><span class="xp-num">${rec.xp.toLocaleString()} XP</span>`));
+      const track = el("div", "bar-track"); const f = el("div", "bar-fill"); f.style.width = "100%"; f.style.background = "var(--gold)"; track.appendChild(f); xpWrap.appendChild(track);
+    } else {
+      xpWrap.appendChild(el("div", "xp-head", `<span>${bar.ready ? '<b class="xp-ready">Ready to level up →</b>' : "Progress to Level " + (level + 1)}</span><span class="xp-num">${bar.into.toLocaleString()} / ${bar.span.toLocaleString()}</span>`));
+      const track = el("div", "bar-track"); const f = el("div", "bar-fill"); f.style.width = bar.pct + "%"; f.style.background = bar.ready ? "var(--gold)" : "var(--cyan)"; track.appendChild(f); xpWrap.appendChild(track);
+      xpWrap.appendChild(el("div", "xp-sub", `Total Soul Pool: <b>${rec.xp.toLocaleString()}</b> XP · ${bar.ready ? `enough for Level ${level + 1}` : `${bar.remaining.toLocaleString()} XP to Level ${level + 1}`}`));
+    }
+    xp.appendChild(xpWrap);
+    // XP adjusters (GM awards / corrects XP).
+    const xrow = el("div", "adjust-row");
+    [[-100, "−100"], [-10, "−10"], [10, "+10"], [100, "+100"]].forEach(([n, t]) => {
+      const b = el("button", "btn small ghost", t); b.onclick = () => { rec.xp = Math.max(0, (rec.xp || 0) + n); persist(); }; xrow.appendChild(b);
+    });
+    const xinp = el("input"); xinp.type = "number"; xinp.placeholder = "#"; xinp.className = "adjust-input";
+    const xadd = el("button", "btn small", "Add XP"); xadd.onclick = () => { const v = parseInt(xinp.value, 10); if (v) { rec.xp = Math.max(0, (rec.xp || 0) + Math.abs(v)); persist(); } };
+    xrow.appendChild(xinp); xrow.appendChild(xadd);
+    xp.appendChild(xrow);
+    xp.appendChild(el("p", "hint", "Leveling is GM-driven: award XP as your table earns it, and tap <b>Level Up</b> when the bar is full (or whenever your GM calls it). Each level grants +1 Technique Point; odd levels also grant +1 attribute point; every 5th level grants +1 Combat Skill Point. <i>(Thresholds are a starting curve — your GM may retune them.)</i>"));
     wrap.appendChild(xp);
 
     // points summary + milestones

@@ -366,6 +366,16 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 .soul-lvlrow { margin: 4px 0 4px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .soul-lvlrow .lu-note { color: var(--gold); font-size: .84rem; }
 
+/* XP-to-next-level progress bar (Soul Pool editor + Level Up screen) */
+.xp-wrap { margin: 4px 0 10px; }
+.xp-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; font-size: .84rem; color: var(--text-dim); }
+.xp-head .xp-num { font-variant-numeric: tabular-nums; color: var(--text); font-weight: 650; }
+.xp-sub { margin-top: 5px; font-size: .8rem; color: var(--text-dim); }
+.xp-sub b { color: var(--cyan); }
+.xp-ready { color: var(--gold); }
+.xp-ready-btn { box-shadow: 0 0 0 1px var(--gold), 0 0 14px rgba(245,193,90,.35); animation: xp-pulse 1.6s ease-in-out infinite; }
+@keyframes xp-pulse { 0%,100% { box-shadow: 0 0 0 1px var(--gold), 0 0 8px rgba(245,193,90,.25); } 50% { box-shadow: 0 0 0 1px var(--gold), 0 0 18px rgba(245,193,90,.5); } }
+
 /* Bars still used by the Limbs and Carry-Weight panels */
 .poolbar-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
 .poolbar-head span:first-child { font-weight: 650; letter-spacing: .5px; }

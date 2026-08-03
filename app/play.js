@@ -40,6 +40,8 @@
   const refresh = () => App.render();
 
   const bg = () => PC.background(rec.background);
+  // A colored progress-bar fill for a .bar-track (width clamped 0–100%).
+  function elFill(color, pct) { const f = el("div", "bar-fill"); f.style.width = Math.max(0, Math.min(100, pct)) + "%"; f.style.background = color; return f; }
 
   /* ---------- init / persistence ---------- */
   function ensurePlay() {
@@ -1286,7 +1288,20 @@
   // thresholds TBD) with adjusters and the Level Up button. Opens the dedicated Level Up screen (app.js).
   function soulEditor() {
     const box = el("div");
-    box.appendChild(el("div", "soul-xp", `Soul Level <b>${rec.level}</b>${rec.level >= 30 ? " · MAX" : ""} · Experience: <b>${rec.xp || 0}</b> XP · leveling is GM-driven (thresholds being tuned)`));
+    const bar = PC.xpBar(rec.xp || 0, rec.level);
+    // Header line: level + total XP.
+    box.appendChild(el("div", "soul-xp", `Soul Level <b>${rec.level}</b>${rec.level >= 30 ? " · MAX" : ""} · Soul Pool: <b>${(rec.xp || 0).toLocaleString()}</b> XP`));
+    // XP-to-next-level progress bar.
+    const xpWrap = el("div", "xp-wrap");
+    if (bar.maxed) {
+      xpWrap.appendChild(el("div", "xp-head", `<span>Maximum Soul Level reached</span><span class="xp-num">${PC.xpForLevel(30).toLocaleString()} XP</span>`));
+      const track = el("div", "bar-track"); track.appendChild(elFill("var(--gold)", 100)); xpWrap.appendChild(track);
+    } else {
+      xpWrap.appendChild(el("div", "xp-head", `<span>${bar.ready ? '<b class="xp-ready">Ready to level up →</b>' : "Progress to Level " + (rec.level + 1)}</span><span class="xp-num">${bar.into.toLocaleString()} / ${bar.span.toLocaleString()}</span>`));
+      const track = el("div", "bar-track"); track.appendChild(elFill(bar.ready ? "var(--gold)" : "var(--cyan)", bar.pct)); xpWrap.appendChild(track);
+      xpWrap.appendChild(el("div", "xp-sub", bar.ready ? `You have enough XP for Level ${rec.level + 1} — tap Level Up when your GM confirms.` : `${bar.remaining.toLocaleString()} XP to Level ${rec.level + 1} (needs ${bar.nextAt.toLocaleString()} total).`));
+    }
+    box.appendChild(xpWrap);
     // XP adjusters (GM awards / corrects XP).
     const ctr = el("div", "adjust-row");
     [[-10, "−10"], [-1, "−1"], [1, "+1"], [10, "+10"]].forEach(([n, t]) => {
@@ -1297,9 +1312,9 @@
     const rem = el("button", "btn small ghost", "Remove"); rem.onclick = () => { const v = parseInt(inp.value, 10); if (v) adjustXP(-Math.abs(v)); };
     ctr.appendChild(inp); ctr.appendChild(add); ctr.appendChild(rem);
     box.appendChild(ctr);
-    // Level Up button, right under the Soul Pool.
+    // Level Up button, right under the Soul Pool. Pulses gold when XP has reached the next threshold.
     const luRow = el("div", "soul-lvlrow");
-    const lu = el("button", "btn primary small", rec.level >= 30 ? "Max Level (30)" : "⭐ Level Up");
+    const lu = el("button", "btn primary small" + (bar.ready ? " xp-ready-btn" : ""), rec.level >= 30 ? "Max Level (30)" : (bar.ready ? "⭐ Level Up — ready!" : "⭐ Level Up"));
     lu.disabled = rec.level >= 30;
     lu.onclick = () => App.openLevelUp(rec.id);
     luRow.appendChild(lu);

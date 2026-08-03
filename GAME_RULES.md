@@ -198,7 +198,27 @@ an "Awakened" node on the **Chakras** tab once unlocked.
 ---
 
 ## Leveling / Soul Level (CONFIRMED Luke)
-- **How you level:** XP **threshold** system (Soul Pool = XP). Exact XP-per-level numbers **TBD** ("threshold, numbers not set yet").
+- **How you level:** XP **threshold** system — the **Soul Pool IS your cumulative XP**. When your total reaches the
+  next level's threshold, you may level up. Leveling stays **GM-driven** in the app: the XP bar fills and the
+  **Level Up** button lights up "ready," but a player/GM still taps to confirm (so the GM controls pacing and can
+  level a character at their discretion). XP is **cumulative** — it never resets on level-up.
+- **XP curve (PLACEHOLDER — Luke can retune).** Advancing from level *L* to *L+1* costs **100 × L² XP**; totals are
+  the running sum. This is a starting curve, defined in `app/data.js` (`PC.XP_STEP` / `PC.XP_THRESHOLDS`) and
+  swappable in one line without touching the engine.
+
+  | Level | Total XP | Level | Total XP | Level | Total XP |
+  |---|---|---|---|---|---|
+  | 1 | 0 | 11 | 38,500 | 21 | 287,000 |
+  | 2 | 100 | 12 | 50,600 | 22 | 331,100 |
+  | 3 | 500 | 13 | 65,000 | 23 | 379,500 |
+  | 4 | 1,400 | 14 | 81,900 | 24 | 432,400 |
+  | 5 | 3,000 | **15** | **101,500** | 25 | 490,000 |
+  | 6 | 5,500 | 16 | 124,000 | 26 | 552,500 |
+  | 7 | 9,100 | 17 | 149,600 | 27 | 620,100 |
+  | 8 | 14,000 | 18 | 178,500 | 28 | 693,000 |
+  | 9 | 20,400 | 19 | 210,900 | 29 | 771,400 |
+  | 10 | 28,500 | 20 | 247,000 | **30** | **855,500** |
+
 - **Level cap: 30.**
 - **Every level:** gain **1 Technique Point (TP)** — spent to learn Kinetic Techniques. **Every technique costs exactly 1 TP** (no tiered costs).
 - **Every ODD level** (3, 5, 7 … up the ladder): gain **1 attribute point** — place in any attribute. Leveling **cannot** raise an attribute above **30** (skills, artifacts, etc. *can* push past 30).

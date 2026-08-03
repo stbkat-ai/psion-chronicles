@@ -886,12 +886,41 @@ table, `README.md`, this log). Cache-buster **v=63**.
 
 ---
 
+### 42. XP thresholds + a Soul-Pool progress bar (the deferred "XP-to-next-level" work)
+**Decision.** Gave the app a real XP→level link. The **Soul Pool IS cumulative XP**; a placeholder threshold
+curve now drives an **XP-to-next-level bar** and a "ready to level" signal. The user asked to lock in numbers now
+("if Luke wants to change them later he can").
+**The curve (placeholder).** Advancing from level *L* to *L+1* costs **100 × L² XP**; totals are the running sum
+— L2 = 100, L5 = 3,000, L10 = 28,500, L15 = 101,500, L20 = 247,000, L30 = **855,500**. Chosen for a clean,
+one-line rule (self-documenting, trivially rescalable) that makes early levels quick and high levels a grind, with
+milestone levels landing on round totals. Lives in `data.js` as `PC.XP_STEP(level)` + a derived
+`PC.XP_THRESHOLDS[]` — swap either for the official numbers later; everything downstream derives from it.
+**Behavior — GM-driven, not auto-level (option B).** Reaching a threshold does **not** auto-level; it fills the bar
+and makes the **Level Up** button pulse gold "ready." A player/GM still taps to confirm. This matches the existing
+"tap Level Up when your GM says so" framing, keeps the GM in control of pacing, and is safe against placeholder
+numbers (a wrong threshold only changes when the button lights up — it never jumps someone's level). Level Up stays
+tappable at any XP (GM discretion). XP is cumulative and never resets on level-up.
+**How (code).** `data.js` — `PC.XP_STEP` / `PC.XP_THRESHOLDS`. `rules.js` — `PC.xpForLevel(level)`,
+`PC.levelForXP(xp)`, and `PC.xpBar(xp, level)` → `{ maxed, curFloor, nextAt, into, span, remaining, pct, ready }`
+for the bar. `play.js` — the **Soul Pool editor** now shows the bar + "N XP to Level L+1" (or "ready"), and the
+Level Up button gets a gold pulse when ready; added an `elFill()` bar helper. `app.js` — the **Level Up screen**
+gains a Soul-Pool panel with the same bar and its own XP adjusters (−100/−10/+10/+100/Add), and its Level Up button
+pulses when ready. `styles.css` — `.xp-wrap/.xp-head/.xp-sub/.xp-ready` + an `xp-pulse` keyframe on `.xp-ready-btn`.
+**Verified** (Node + Playwright). Node: the 30-row table matches the formula exactly; `levelForXP` maps boundary
+values correctly (99→L1, 100→L2, 28,500→L10, 855,500→L30); `xpBar` returns the right pct/remaining/ready/maxed.
+Playwright (real UI): L7 with 12,000 XP shows "2,900 / 4,900 · 2,000 XP to Level 8" (not ready); at exactly
+14,000 XP it flips to "Ready to level up →" with the pulsing button in both the Soul editor and Level Up screen;
+L30 shows "Maximum Soul Level reached." No console errors. Docs: `GAME_RULES.md` (curve + full threshold table),
+`README.md` (player-facing bar description), this log. Cache-buster **v=64**.
+
+---
+
 ## Deferred / future ideas
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before
   full sync.
 - Heritage-opened starting weapons granting **actual proficiency** (currently start-only).
-- A real **XP-to-next-level** bar once Luke sets the thresholds.
+- A real **XP-to-next-level** bar once Luke sets the thresholds. — ✅ done (#42, placeholder curve; retune anytime).
 - Off-PC backup of the **source** — ✅ done (public GitHub repo `stbkat-ai/psion-chronicles`).
 
 ---
