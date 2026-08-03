@@ -280,7 +280,7 @@ app it is invisible before 15 and, once awakened, appears with a full pip track 
   Creature sheet — boost, the six "tails" (unlocked + upcoming), and the signature card with a rest-gated **use
   counter** and its tier ladder. Otherkin techniques are also playable from the **Combat** tab.
 
-**First-edition roster (4 of 9 built — the rest added one at a time):**
+**First-edition roster (5 of 9 built — the rest added one at a time):**
 - **Kitsune** · Kinetic **Fox Mischief** (AGI) · Boost **+3 AGI / +10 Body Pool** · Signature **Kitsune Disguise**
   (take another humanoid's form; **short-rest** refresh; 1 use at Tier I scaling to 6 at Tier VI). Its six tails:
   *Foxstep* (15, ignore difficult terrain) · *Foxfire Feint* (18, non-combat misdirection) · *Mistveil* (21,
@@ -305,6 +305,14 @@ app it is invisible before 15 and, once awakened, appears with a full pip track 
   *Lunar Leap* (15, jump twice your normal height/distance) · *Regeneration* (18, **self-heal** 2d8 + CON) ·
   *Thick Hide* (21, −3 incoming damage) · *Savage Pounce* (24, 3d8 + STR leap-strike + prone) · *Rampage* (27,
   10-ft radius, 3d8 + STR) · *Bloodrage* (30, sustained +4 STR / +4 CON).
+- **Troll** · Kinetic **Troll's Fury** (STR) · Boost **+3 STR / +10 Body Pool** · Signature **Giant Form** — a
+  **transformation** (grow to giant size; **long** rest; 1 → 6 uses) granting **+2 × tier to STR/CON** (1.5× size at
+  Tier I up to ~2.5× and +12 at Tier VI, breaking the cap); revert at will, 0-HP reverts you at half HP. Its six
+  techniques are heavy single-target melee plus one mobility: *Smash Through* (15, **break through terrain/cover**
+  in your path — destroyed → keep moving, else halt) · *Crushing Blow* (18, 3d10 + STR) · *Bonebreaker* (21,
+  3d12 + STR + Weakened) · *Pulverize* (24, 4d10 + STR, ignores cover/armor) · *Grapple Slam* (27, 4d12 + STR +
+  prone) · *Cataclysm* (30, 6d12 + STR + Stunned). *(The Kitsune/AGI, Lycan/CON and Troll/STR complete the
+  body-attribute Otherkin.)*
 
 ### Fusion Kinetics (HIDDEN — GM knowledge; players discover in play)
 > **Not in the Player's Guide.** This is a secret system. The GM knows it; players uncover it as they build.

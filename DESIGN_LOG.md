@@ -1038,8 +1038,32 @@ Docs updated to 4 of 9 (incl. a note that some signatures are transformations). 
 
 ---
 
+### 47. Otherkin #5 — the Troll (Troll's Fury), completing the body-attribute Otherkin
+**Decision (with Luke).** Fifth Otherkin, the second **transformation** — so it reused the `signature.transform`
+machinery from the Lycan with **no new engine code**. **Troll** · Kinetic **Troll's Fury** (STR) · Boost
+**+3 STR / +10 Body Pool** · Signature **Giant Form** — grow to giant size (long rest; 1 → 6 uses), granting
+**+2 × tier to STR/CON** (1.5× size + Tier I, up to ~2.5× and +12 at Tier VI, breaking the cap); revert at will,
+0-HP reverts you at half HP (inherited from the transform system). Six techniques — heavy single-target melee plus
+the one mobility Luke specified: *Smash Through* (15, barrels through terrain/cover in the path — auto-hits the
+obstacle; **destroyed → keep moving, else halt**), *Crushing Blow* (18), *Bonebreaker* (21, +Weakened), *Pulverize*
+(24, ignores cover/armor Defense), *Grapple Slam* (27, +prone), *Cataclysm* (30, +Stunned). Damage climbs on the
+heavy dice (d10 → d12, up to 6d12). This **completes the body-attribute Otherkin**: Kitsune (AGI), Lycan (CON),
+Troll (STR).
+**One generalization the second transform forced.** The "SHIFTED" banner (and its wording) had **hardcoded the
+Lycan's 🐺 emoji**; generalized it to the Otherkin's own `emoji` (now "🧌 TRANSFORMED — …" for the Troll) and
+reworded to "Transformed" so it isn't wolf-specific. Giant Form declares no `clawDie`/`dsBonus`, so the banner
+cleanly shows just the attribute line and unarmed strikes stay 👊 (no claws) — confirming the transform pieces are
+properly optional.
+**Verified** (Node + Playwright): 5 Otherkin / 30 techniques, 0 collisions; choosing Troll applies +3 STR;
+transforming at Tier VI gives **+12 STR/CON** with a "🧌 TRANSFORMED — +12 STR/CON" banner (no claws/fur), unarmed
+stays 👊, and Smash Through renders as an auto-hit Bonus action. No console errors. Docs updated to 5 of 9.
+Cache-buster **v=70**.
+
+---
+
 ## Deferred / future ideas
-- **The other 5 Otherkin** — build one at a time with Luke (Kitsune, Siren, Gryphon, Lycan are the shipped templates).
+- **The other 4 Otherkin** — build one at a time with Luke (Kitsune, Siren, Gryphon, Lycan, Troll are the templates;
+  the built transform system covers both plain and transformation signatures).
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before
   full sync.

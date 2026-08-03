@@ -974,6 +974,51 @@ PC.OTHERKIN = [
       ],
     },
   },
+  {
+    name: "Troll",
+    emoji: "🧌",
+    kinetic: "Troll's Fury",
+    attr: "STR",
+    pairing: "Body Builder",         // thematic affinity only — any character may choose any Otherkin
+    theme: "A mountain of muscle and spite — it grows monstrous and breaks whatever stands in its way.",
+    boosts: { STR: 3 },              // background-style attribute boost
+    pool: { body: 10, mind: 0 },     // background-style pool boost (+10 Body Pool = +10 HP)
+    techniques: [
+      { name: "Smash Through", otherkin: true, kinetic: "Troll's Fury", attr: "STR", tail: 1, level: 15, tier: "Rage I",
+        action: "Bonus Action", kp: 8, damage: { dice: "3d10", mod: "STR", type: "bludgeoning", area: "obstacle in your path" }, aoe: true,
+        effect: "Barrel through terrain or cover in your path — auto-hits the obstacle for 3d10 + STR bludgeoning; if it's destroyed you continue your movement, otherwise you halt." },
+      { name: "Crushing Blow", otherkin: true, kinetic: "Troll's Fury", attr: "STR", tail: 2, level: 18, tier: "Rage II",
+        action: "Action", kp: 12, damage: { dice: "3d10", mod: "STR", type: "bludgeoning" },
+        effect: "A heavy overhead smash (d20 + STR to hit): 3d10 + STR bludgeoning." },
+      { name: "Bonebreaker", otherkin: true, kinetic: "Troll's Fury", attr: "STR", tail: 3, level: 21, tier: "Rage III",
+        action: "Action", kp: 16, damage: { dice: "3d12", mod: "STR", type: "bludgeoning" },
+        effect: "A savage strike (d20 + STR to hit): 3d12 + STR bludgeoning, and the target is Weakened (disadvantage on its attacks)." },
+      { name: "Pulverize", otherkin: true, kinetic: "Troll's Fury", attr: "STR", tail: 4, level: 24, tier: "Rage IV",
+        action: "Action", kp: 18, damage: { dice: "4d10", mod: "STR", type: "bludgeoning" },
+        effect: "A crushing blow that shatters guard (d20 + STR to hit): 4d10 + STR bludgeoning, ignoring the target's cover and armor Defense bonus." },
+      { name: "Grapple Slam", otherkin: true, kinetic: "Troll's Fury", attr: "STR", tail: 5, level: 27, tier: "Rage V",
+        action: "Action", kp: 22, damage: { dice: "4d12", mod: "STR", type: "bludgeoning" },
+        effect: "Seize the target and slam it down (d20 + STR to hit): 4d12 + STR bludgeoning, and it is knocked prone." },
+      { name: "Cataclysm", otherkin: true, kinetic: "Troll's Fury", attr: "STR", tail: 6, level: 30, tier: "Rage VI",
+        action: "Action", kp: 28, damage: { dice: "6d12", mod: "STR", type: "bludgeoning" },
+        effect: "A world-shaking blow (d20 + STR to hit): 6d12 + STR bludgeoning, and the target is Stunned." },
+    ],
+    signature: {
+      name: "Giant Form",
+      rest: "long",
+      // A TRANSFORMATION signature (see the Lycan): grow to giant size and gain scaling STR/CON.
+      transform: { attrs: ["STR", "CON"], perTier: 2 },
+      blurb: "Swell to giant size. Refreshes on a long rest; both its power and its number of uses grow every third level. Revert at will, and at 0 HP you shrink back to normal at half HP.",
+      tiers: [
+        { tier: 1, level: 15, uses: 1, effect: "Grow to 1.5× your height and weight: +2 STR and +2 CON while enlarged." },
+        { tier: 2, level: 18, uses: 2, effect: "Larger still — +4 STR and +4 CON." },
+        { tier: 3, level: 21, uses: 3, effect: "Looming — +6 STR and +6 CON." },
+        { tier: 4, level: 24, uses: 4, effect: "Hulking — +8 STR and +8 CON." },
+        { tier: 5, level: 27, uses: 5, effect: "Monstrous — +10 STR and +10 CON." },
+        { tier: 6, level: 30, uses: 6, effect: "Titanic (roughly 2.5× size) — +12 STR and +12 CON, breaking the cap of 30." },
+      ],
+    },
+  },
 ];
 // Flattened lookup of every Otherkin technique (so PC.technique() can resolve them by name).
 PC.OTHERKIN_TECHNIQUES = PC.OTHERKIN.reduce(function (acc, o) { return acc.concat(o.techniques.map(function (t) { return Object.assign({ otherkinName: o.name }, t); })); }, []);

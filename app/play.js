@@ -2756,8 +2756,9 @@
       const bits = [`+${amt} ${tr.attrs.join("/")}`];
       if (tr.dsBonus) bits.push(`+${tr.dsBonus} Defense`);
       if (tr.clawDie) bits.push(`claws (${tr.clawDie})`);
+      const em = o.emoji || "⭐";
       panel.appendChild(el("div", "ok-shift-banner" + (heartLocked ? " suppressed" : ""),
-        heartLocked ? `🐺 Shifted, but the Heart chakra is locked — the change is suppressed until you rest.` : `🐺 SHIFTED — ${bits.join(" · ")}.`));
+        heartLocked ? `${em} Transformed, but the Heart chakra is locked — the change is suppressed until you rest.` : `${em} TRANSFORMED — ${bits.join(" · ")}.`));
     }
     const row = el("div", "ok-sig-uses");
     row.appendChild(el("span", "ok-sig-usenum", `${uses} / ${max} uses`));
