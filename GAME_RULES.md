@@ -306,8 +306,9 @@ app it is invisible before 15 and, once awakened, appears with a full pip track 
   *Thick Hide* (21, −3 incoming damage) · *Savage Pounce* (24, 3d8 + STR leap-strike + prone) · *Rampage* (27,
   10-ft radius, 3d8 + STR) · *Bloodrage* (30, sustained +4 STR / +4 CON).
 - **Troll** · Kinetic **Troll's Fury** (STR) · Boost **+3 STR / +10 Body Pool** · Signature **Giant Form** — a
-  **transformation** (grow to giant size; **long** rest; 1 → 6 uses) granting **+2 × tier to STR/CON** (1.5× size at
-  Tier I up to ~2.5× and +12 at Tier VI, breaking the cap); revert at will, 0-HP reverts you at half HP. Its six
+  **transformation** (grow to giant size; **long** rest; 1 → 6 uses) granting a gentle **STR/CON climb (+2 at Tier I,
+  +1 each tier → +7 at Tier VI, breaking the cap of 30)** while size (1.5× → ~2.5×) and uses scale faster; revert at
+  will, 0-HP reverts you at half HP. Its six
   techniques are heavy single-target melee plus one mobility: *Smash Through* (15, **break through terrain/cover**
   in your path — destroyed → keep moving, else halt) · *Crushing Blow* (18, 3d10 + STR) · *Bonebreaker* (21,
   3d12 + STR + Weakened) · *Pulverize* (24, 4d10 + STR, ignores cover/armor) · *Grapple Slam* (27, 4d12 + STR +

@@ -156,12 +156,18 @@
   function sigTransform() { const o = myOtherkin(); return (o && o.signature && o.signature.transform) ? o.signature.transform : null; }
   // True while the character is actually benefiting from the shift (not suppressed by a locked Heart chakra).
   function transformActive() { return !!(play.transformed && sigTransform() && chakraOf("HEART") < 4); }
-  // The flat attribute buff from an active transformation (e.g. +3×tier to each listed body attribute).
+  // The per-tier attribute bonus a transformation grants: base at Tier I, then +step each tier after
+  // (e.g. Lycan base 3/step 3 → +3/+6/…/+18; Troll base 2/step 1 → +2/+3/…/+7).
+  function transformAmount(tierNum) {
+    const tr = sigTransform(); if (!tr) return 0;
+    return (tr.base || 0) + Math.max(0, (tierNum || 1) - 1) * (tr.step || 0);
+  }
+  // The flat attribute buff from an active transformation, applied to each listed body attribute.
   function transformAttrBuff() {
     if (!transformActive()) return {};
-    const tr = sigTransform(), t = sigTier(); if (!t) return {};
-    const amt = t.tier * (tr.perTier || 0), buff = {};
-    (tr.attrs || []).forEach((a) => { buff[a] = (buff[a] || 0) + amt; });
+    const t = sigTier(); if (!t) return {};
+    const amt = transformAmount(t.tier), buff = {};
+    (sigTransform().attrs || []).forEach((a) => { buff[a] = (buff[a] || 0) + amt; });
     return buff;
   }
   function revertTransform() {
@@ -181,7 +187,7 @@
       if (sigUsesLeft() <= 0) { App.toast(`No ${o.signature.name} uses left — take a ${o.signature.rest} rest.`); return; }
       play.sigUses = sigUsesLeft() - 1;
       play.transformed = true;
-      const amt = t.tier * (sigTransform().perTier || 0);
+      const amt = transformAmount(t.tier);
       logLine(`${o.signature.name} — transformed (Tier ${t.tier}: +${amt} to ${sigTransform().attrs.join("/")}). ${sigUsesLeft()}/${sigMaxUses()} uses left.`);
       App.toast(`Transformed — ${o.name} unleashed!`);
       save(); refresh();
@@ -2752,7 +2758,7 @@
     panel.appendChild(cur);
     // Transform signatures show a live "shifted" banner with the active bonuses; a locked Heart suppresses them.
     if (tr && shifted) {
-      const amt = tier.tier * (tr.perTier || 0);
+      const amt = transformAmount(tier.tier);
       const bits = [`+${amt} ${tr.attrs.join("/")}`];
       if (tr.dsBonus) bits.push(`+${tr.dsBonus} Defense`);
       if (tr.clawDie) bits.push(`claws (${tr.clawDie})`);

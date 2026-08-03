@@ -1055,9 +1055,18 @@ reworded to "Transformed" so it isn't wolf-specific. Giant Form declares no `cla
 cleanly shows just the attribute line and unarmed strikes stay 👊 (no claws) — confirming the transform pieces are
 properly optional.
 **Verified** (Node + Playwright): 5 Otherkin / 30 techniques, 0 collisions; choosing Troll applies +3 STR;
-transforming at Tier VI gives **+12 STR/CON** with a "🧌 TRANSFORMED — +12 STR/CON" banner (no claws/fur), unarmed
-stays 👊, and Smash Through renders as an auto-hit Bonus action. No console errors. Docs updated to 5 of 9.
-Cache-buster **v=70**.
+Smash Through renders as an auto-hit Bonus action; the "🧌 TRANSFORMED" banner uses the Troll emoji and unarmed
+stays 👊. No console errors. Docs updated to 5 of 9. Cache-buster **v=70**.
+
+**Follow-up (v=71) — Giant Form re-scaled + a generalized transform formula.** Luke caught that my first pass read
+"scale up with tiers" as **+2 per tier** (climbing to +12 at Tier VI) when he wanted a **gentle** climb. Re-scaled to
+**+2 at Tier I, +1 each tier → +7 at Tier VI**; size and uses still scale faster than the stat bonus. The old
+`transform.perTier` (a flat `tier × perTier`) couldn't express a base-plus-increment curve, so the transform config
+now uses **`base` + `step`** (bonus = `base + (tier−1)·step`), via a new `transformAmount(tier)` helper used by the
+buff, the activation log, and the banner. This is strictly more general: the Lycan's curve is unchanged (`base 3,
+step 3` = the old `×3`: 3/6/9/12/15/18), and the Troll is `base 2, step 1`. Also confirmed (Luke's follow-up) the
+buff **breaks the soft cap of 30** — it flows through `liveScores` uncapped and the mod table extends past 30:
+verified a Troll going STR **30 → 37** shifted (mod +7), and the Lycan STR **27 → 45**. No console errors.
 
 ---
 

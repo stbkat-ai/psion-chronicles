@@ -962,7 +962,7 @@ PC.OTHERKIN = [
       // A TRANSFORMATION signature: toggling it grants a scaling body-attribute buff (past the 30 cap), natural
       // claws (better unarmed strikes) and thick fur (+Defense). Revert at will; 0 HP reverts you to human at
       // half HP. `transform` marks it for the toggle UI + the buff/DS/claw hooks in play.js.
-      transform: { attrs: ["STR", "AGI", "CON"], perTier: 3, dsBonus: 2, clawDie: "2d6" },
+      transform: { attrs: ["STR", "AGI", "CON"], base: 3, step: 3, dsBonus: 2, clawDie: "2d6" },
       blurb: "Transform into a man-wolf hybrid. Refreshes on a long rest; both its power and its number of uses grow every third level. While shifted you gain natural claws (unarmed becomes 2d6) and +2 Defense from thick fur; revert at will, and at 0 HP you revert to human form at half HP.",
       tiers: [
         { tier: 1, level: 15, uses: 1, effect: "+3 STR, AGI and CON (breaking the cap of 30), natural claws, and +2 Defense." },
@@ -1006,16 +1006,18 @@ PC.OTHERKIN = [
     signature: {
       name: "Giant Form",
       rest: "long",
-      // A TRANSFORMATION signature (see the Lycan): grow to giant size and gain scaling STR/CON.
-      transform: { attrs: ["STR", "CON"], perTier: 2 },
-      blurb: "Swell to giant size. Refreshes on a long rest; both its power and its number of uses grow every third level. Revert at will, and at 0 HP you shrink back to normal at half HP.",
+      // A TRANSFORMATION signature (see the Lycan): grow to giant size and gain a gentle STR/CON climb
+      // (+2 at Tier I, +1 each tier after → +7 at Tier VI). The buff breaks the soft cap of 30. Size and the
+      // number of uses scale faster than the attribute bonus.
+      transform: { attrs: ["STR", "CON"], base: 2, step: 1 },
+      blurb: "Swell to giant size. Refreshes on a long rest; its size, uses, and (gently) its STR/CON grow every third level — and the bonus ignores the soft cap of 30. Revert at will, and at 0 HP you shrink back to normal at half HP.",
       tiers: [
-        { tier: 1, level: 15, uses: 1, effect: "Grow to 1.5× your height and weight: +2 STR and +2 CON while enlarged." },
-        { tier: 2, level: 18, uses: 2, effect: "Larger still — +4 STR and +4 CON." },
-        { tier: 3, level: 21, uses: 3, effect: "Looming — +6 STR and +6 CON." },
-        { tier: 4, level: 24, uses: 4, effect: "Hulking — +8 STR and +8 CON." },
-        { tier: 5, level: 27, uses: 5, effect: "Monstrous — +10 STR and +10 CON." },
-        { tier: 6, level: 30, uses: 6, effect: "Titanic (roughly 2.5× size) — +12 STR and +12 CON, breaking the cap of 30." },
+        { tier: 1, level: 15, uses: 1, effect: "Grow to 1.5× your height and weight: +2 STR and +2 CON while enlarged (breaking the cap of 30)." },
+        { tier: 2, level: 18, uses: 2, effect: "Larger still — +3 STR and +3 CON." },
+        { tier: 3, level: 21, uses: 3, effect: "Looming — +4 STR and +4 CON." },
+        { tier: 4, level: 24, uses: 4, effect: "Hulking — +5 STR and +5 CON." },
+        { tier: 5, level: 27, uses: 5, effect: "Monstrous — +6 STR and +6 CON." },
+        { tier: 6, level: 30, uses: 6, effect: "Titanic (roughly 2.5× size) — +7 STR and +7 CON." },
       ],
     },
   },
