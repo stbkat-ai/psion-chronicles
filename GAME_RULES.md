@@ -277,13 +277,18 @@ app it is invisible before 15 and, once awakened, appears with a full pip track 
   Creature sheet — boost, the six "tails" (unlocked + upcoming), and the signature card with a rest-gated **use
   counter** and its tier ladder. Otherkin techniques are also playable from the **Combat** tab.
 
-**First-edition roster (worked example — the Kitsune):**
+**First-edition roster (2 of 9 built — the rest added one at a time):**
 - **Kitsune** · Kinetic **Fox Mischief** (AGI) · Boost **+3 AGI / +10 Body Pool** · Signature **Kitsune Disguise**
   (take another humanoid's form; **short-rest** refresh; 1 use at Tier I scaling to 6 at Tier VI). Its six tails:
   *Foxstep* (15, ignore difficult terrain) · *Foxfire Feint* (18, non-combat misdirection) · *Mistveil* (21,
   invisibility) · *Bewitching Flame* (24, ranged foxfire + dazzle) · *Shadow Clone* (27, ¼-HP decoy that draws
-  attacks) · *Foxfire Rush* (30, teleport + vanish, advantage on the next attack). The other 8 Otherkin are built
-  the same way (one at a time).
+  attacks) · *Foxfire Rush* (30, teleport + vanish, advantage on the next attack).
+- **Siren** · Kinetic **Seductive Voice** (CHA) · Boost **+3 CHA / +10 Mind Pool** · Signature **Siren's Song**
+  (enchant NPCs and command them; **short-rest** refresh; 1 → 6 uses, growing in reach — one thrall up to a mass
+  enthrall). Its six "verses": *Tidecaller's Grace* (15, swim speed + underwater breathing) · *Luring Melody* (18,
+  non-combat charm) · *Enthralling Note* (21, single-target charm) · *Undertow* (24, 15-ft line, 3d6 cold + prone)
+  · *Siren's Lament* (27, disadvantage aura that draws enemies in) · *Charybdis* (30, 20-ft whirlpool, 5d6 cold +
+  drag to center).
 
 ### Fusion Kinetics (HIDDEN — GM knowledge; players discover in play)
 > **Not in the Player's Guide.** This is a secret system. The GM knows it; players uncover it as they build.

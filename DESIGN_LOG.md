@@ -965,8 +965,30 @@ open-question), `README.md`. Cache-buster **v=66**.
 
 ---
 
+### 44. Otherkin #2 — the Siren (Seductive Voice)
+**Decision (with Luke).** Second Otherkin added; the framework held, so this was purely a new `PC.OTHERKIN` data
+entry. **Siren** · Kinetic **Seductive Voice** (CHA) · Boost **+3 CHA / +10 Mind Pool** (a caster-controller whose
+own boost feeds its songs) · Signature **Siren's Song** (enchant + command NPCs; short-rest refresh; 1→6 uses,
+scaling from one thrall to a mass enthrall). Six mermaid/siren "verses": Tidecaller's Grace (15, swim speed +
+underwater breathing — Luke's must-have) · Luring Melody (18, non-combat charm) · Enthralling Note (21,
+single-target charm) · Undertow (24, 15-ft line AoE, 3d6 cold + prone) · Siren's Lament (27, disadvantage aura) ·
+Charybdis (30, 20-ft whirlpool, 5d6 cold + drag). Luke gave the boost, signature, kinetic, and the swim theme;
+the rest was drafted to spec and approved as-is.
+**Two fixes surfaced by the second creature.** (1) The Otherkin card **hardcoded the fox emoji** — added an
+`emoji` field per Otherkin (🦊 / 🧜‍♀️) and the picker/sheet now read it. (2) The capstone's original name
+**"Maelstrom" collided** with an existing base technique (an AGI/wind one), so `PC.technique("Maelstrom")` resolved
+to the wrong power — renamed it **Charybdis** (the mythological whirlpool; more evocative anyway). Added a
+cross-pool name-collision check to the verification step so future Otherkin get caught early.
+**Verified** (Node + Playwright): 2 Otherkin / 12 techniques, all names unique across the base + fusion + Otherkin
+pools, Charybdis resolves to the Siren; picker shows both with correct boosts and emoji; choosing Siren applies
+**CHA +3 (16→22 with the Musician background) and +10 max KP**, renders all six verses at L30 with Signature Tier
+VI 6/6, and Charybdis is playable in Combat. No console errors. Docs (`GAME_RULES.md`, `README.md`) updated to 2 of
+9. Cache-buster **v=67**.
+
+---
+
 ## Deferred / future ideas
-- **The other 8 Otherkin** — build one at a time with Luke (Kitsune is the shipped template).
+- **The other 7 Otherkin** — build one at a time with Luke (Kitsune + Siren are the shipped templates).
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before
   full sync.

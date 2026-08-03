@@ -798,6 +798,7 @@ PC.XP_THRESHOLDS = (function () {
 PC.OTHERKIN = [
   {
     name: "Kitsune",
+    emoji: "🦊",
     kinetic: "Fox Mischief",
     attr: "AGI",
     pairing: "Assassin",            // thematic affinity only — any character may choose any Otherkin
@@ -837,6 +838,49 @@ PC.OTHERKIN = [
         { tier: 4, level: 24, uses: 4, effect: "You can also cloak one ally in a disguise alongside your own." },
         { tier: 5, level: 27, uses: 5, effect: "The disguise resists scrutiny — advantage against any attempt to see through it." },
         { tier: 6, level: 30, uses: 6, effect: "A flawless copy, mannerisms and all; you can disguise your whole party at once." },
+      ],
+    },
+  },
+  {
+    name: "Siren",
+    emoji: "🧜‍♀️",
+    kinetic: "Seductive Voice",
+    attr: "CHA",
+    pairing: "Musician",            // thematic affinity only — any character may choose any Otherkin
+    theme: "A mermaid enchantress — song, allure, and the crushing power of the deep. Her voice bends wills; the sea answers her call.",
+    boosts: { CHA: 3 },             // background-style attribute boost
+    pool: { body: 0, mind: 10 },    // background-style pool boost (+10 Mind Pool = +10 KP; feeds her own songs)
+    techniques: [
+      { name: "Tidecaller's Grace", otherkin: true, kinetic: "Seductive Voice", attr: "CHA", tail: 1, level: 15, tier: "Verse I",
+        action: "Bonus Action", kp: 6, sustained: true, upkeep: 0,
+        effect: "Gain a full swim speed and breathe underwater; ignore water as difficult terrain — the sea is your home." },
+      { name: "Luring Melody", otherkin: true, kinetic: "Seductive Voice", attr: "CHA", tail: 2, level: 18, tier: "Verse II",
+        action: "Action", kp: 8,
+        effect: "A calming song — non-combat: advantage to pacify, beguile, or draw a single NPC closer / de-escalate. No damage." },
+      { name: "Enthralling Note", otherkin: true, kinetic: "Seductive Voice", attr: "CHA", tail: 3, level: 21, tier: "Verse III",
+        action: "Action", kp: 15,
+        effect: "A creature that can hear you resists or is Charmed — it can't attack you and moves as you beckon for a turn (CHA)." },
+      { name: "Undertow", otherkin: true, kinetic: "Seductive Voice", attr: "CHA", tail: 4, level: 24, tier: "Verse IV",
+        action: "Action", kp: 18, damage: { dice: "3d6", mod: "CHA", type: "cold", area: "15-ft line" }, aoe: true,
+        effect: "A surge of seawater in a 15-ft line: auto-hits for 3d6 + CHA cold; caught targets are pulled 10 ft and knocked prone." },
+      { name: "Siren's Lament", otherkin: true, kinetic: "Seductive Voice", attr: "CHA", tail: 5, level: 27, tier: "Verse V",
+        action: "Bonus Action", kp: 22, sustained: true, upkeep: 0,
+        effect: "A haunting dirge (aura): enemies within 30 ft that can hear you have disadvantage on attacks and are drawn toward you." },
+      { name: "Charybdis", otherkin: true, kinetic: "Seductive Voice", attr: "CHA", tail: 6, level: 30, tier: "Verse VI",
+        action: "Action", kp: 25, damage: { dice: "5d6", mod: "CHA", type: "cold", area: "20-ft radius" }, aoe: true,
+        effect: "Summon a legendary whirlpool (20-ft radius): auto-hits for 5d6 + CHA cold, drags enemies to its center, and the water becomes difficult terrain for 3 turns." },
+    ],
+    signature: {
+      name: "Siren's Song",
+      rest: "short",
+      blurb: "Enchant NPCs and bend them to your will. Refreshes on a short rest; both its power and its number of uses grow every third level.",
+      tiers: [
+        { tier: 1, level: 15, uses: 1, effect: "Charm one humanoid or beast that can hear you — it won't harm you and obeys a simple command, briefly." },
+        { tier: 2, level: 18, uses: 2, effect: "The thrall lasts longer and follows more complex orders." },
+        { tier: 3, level: 21, uses: 3, effect: "Enchant up to two creatures at once." },
+        { tier: 4, level: 24, uses: 4, effect: "Commands can drive them into danger (turn on allies, flee) and are harder to shake off." },
+        { tier: 5, level: 27, uses: 5, effect: "Your song reaches any creature that can hear it, not just humanoids and beasts." },
+        { tier: 6, level: 30, uses: 6, effect: "Mass enthrall — all who hear your song fall under your command. A siren's dominion." },
       ],
     },
   },

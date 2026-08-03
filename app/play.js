@@ -2620,7 +2620,7 @@
   function otherkinChoiceCard(o) {
     const card = el("div", "panel otherkin-choice");
     card.innerHTML =
-      `<div class="ok-choice-head"><span class="ok-name">🦊 ${o.name}</span><span class="ok-kin">${o.kinetic}</span></div>` +
+      `<div class="ok-choice-head"><span class="ok-name">${o.emoji || "♥"} ${o.name}</span><span class="ok-kin">${o.kinetic}</span></div>` +
       `<div class="ok-theme-line">${o.theme}</div>` +
       `<div class="ok-grants"><span class="ok-pill boost">${otherkinBoostText(o)}</span><span class="ok-pill">Kinetic: <b>${o.kinetic}</b> · 6 techniques</span><span class="ok-pill">Signature: <b>${o.signature.name}</b></span></div>`;
     const btn = el("button", "btn primary small", `Choose ${o.name} (permanent)`);
@@ -2643,7 +2643,7 @@
     const idl = el("div", "ok-identity");
     idl.innerHTML =
       `<div class="ok-heart" style="--cc:${PC.HEART_CHAKRA.color}">♥</div>` +
-      `<div class="ok-id-txt"><div class="ok-name">🦊 ${o.name}</div><div class="ok-kin">${o.kinetic}</div><div class="ok-theme-line">${o.theme}</div></div>`;
+      `<div class="ok-id-txt"><div class="ok-name">${o.emoji || "♥"} ${o.name}</div><div class="ok-kin">${o.kinetic}</div><div class="ok-theme-line">${o.theme}</div></div>`;
     head.appendChild(idl);
     head.appendChild(el("div", "ok-grants", `<span class="ok-pill boost">${otherkinBoostText(o)} — applied</span>`));
     const hh = chakraOf("HEART"), heff = PC.chakraEffect(hh);
