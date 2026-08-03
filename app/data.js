@@ -1021,6 +1021,52 @@ PC.OTHERKIN = [
       ],
     },
   },
+  {
+    name: "Unicorn",
+    emoji: "🦄",
+    kinetic: "Mystic Grace",
+    attr: "WIS",
+    pairing: "Witch",                // thematic affinity only — any character may choose any Otherkin
+    theme: "An elusive, radiant spirit of the wild — beauty that beguiles, grace that heals, and a horn that mends what is broken.",
+    boosts: { WIS: 3 },              // background-style attribute boost
+    pool: { body: 0, mind: 10 },     // background-style pool boost (+10 Mind Pool = +10 KP)
+    techniques: [
+      { name: "Healing Horn", otherkin: true, kinetic: "Mystic Grace", attr: "WIS", tail: 1, level: 15, tier: "Grace I",
+        action: "Action", kp: 10, heal: { dice: "2d8", mod: "WIS", target: "self" },
+        effect: "Touch your horn to a wound — heal 2d8 + WIS HP (yourself or an ally you touch)." },
+      { name: "Elusive Grace", otherkin: true, kinetic: "Mystic Grace", attr: "WIS", tail: 2, level: 18, tier: "Grace II",
+        action: "Action", kp: 8,
+        effect: "Shimmer just out of reach — non-combat: advantage to evade, hide, or slip pursuit, and you leave no trail. No damage." },
+      { name: "Enchanting Gaze", otherkin: true, kinetic: "Mystic Grace", attr: "WIS", tail: 3, level: 21, tier: "Grace III",
+        action: "Action", kp: 15,
+        effect: "A creature that sees you resists or is Charmed — it can't attack you and follows your lead for a turn (WIS)." },
+      { name: "Radiant Beauty", otherkin: true, kinetic: "Mystic Grace", attr: "WIS", tail: 4, level: 24, tier: "Grace IV",
+        action: "Action", kp: 18, damage: { dice: "3d8", mod: "WIS", type: "radiant", area: "15-ft radius" }, aoe: true,
+        effect: "A burst of dazzling light in a 15-ft radius: auto-hits for 3d8 + WIS radiant, and struck foes are dazzled (disadvantage on their next attack)." },
+      { name: "Purifying Light", otherkin: true, kinetic: "Mystic Grace", attr: "WIS", tail: 5, level: 27, tier: "Grace V",
+        action: "Action", kp: 20, heal: { dice: "2d6", mod: "WIS", target: "self" },
+        effect: "Cleanse one condition (poison, disease, fear, or charm) from yourself or a touched ally and heal 2d6 + WIS HP." },
+      { name: "Aurora Blessing", otherkin: true, kinetic: "Mystic Grace", attr: "WIS", tail: 6, level: 30, tier: "Grace VI",
+        action: "Action", kp: 25, heal: { dice: "4d8", mod: "WIS", target: "self" },
+        effect: "A radiant dawn — heal 4d8 + WIS (yourself and nearby allies), and allies gain advantage on their next roll." },
+    ],
+    signature: {
+      name: "Mystic Steed",
+      rest: "long",
+      // A TRANSFORMATION signature (see the Lycan): become a mystic steed. Grants a gentle WIS/CHA climb
+      // (+2 at Tier I, +1 each tier, breaking the cap) AND doubles movement — the move multiplier does NOT scale.
+      transform: { attrs: ["WIS", "CHA"], base: 2, step: 1, moveMult: 2 },
+      blurb: "Take the form of a mystic steed. Refreshes on a long rest; its WIS/CHA and uses grow every third level (breaking the cap of 30), while your movement is always doubled. Revert at will, and at 0 HP you return to normal at half HP.",
+      tiers: [
+        { tier: 1, level: 15, uses: 1, effect: "Become a radiant steed: +2 WIS and +2 CHA and double movement speed (breaking the cap of 30)." },
+        { tier: 2, level: 18, uses: 2, effect: "+3 WIS and +3 CHA (movement still doubled)." },
+        { tier: 3, level: 21, uses: 3, effect: "+4 WIS and +4 CHA." },
+        { tier: 4, level: 24, uses: 4, effect: "+5 WIS and +5 CHA." },
+        { tier: 5, level: 27, uses: 5, effect: "+6 WIS and +6 CHA." },
+        { tier: 6, level: 30, uses: 6, effect: "+7 WIS and +7 CHA — the fullest grace of the steed." },
+      ],
+    },
+  },
 ];
 // Flattened lookup of every Otherkin technique (so PC.technique() can resolve them by name).
 PC.OTHERKIN_TECHNIQUES = PC.OTHERKIN.reduce(function (acc, o) { return acc.concat(o.techniques.map(function (t) { return Object.assign({ otherkinName: o.name }, t); })); }, []);

@@ -274,8 +274,11 @@
     // Heavy armor slows you by 5 ft (unless the armor's servos negate it).
     if (wornArmorClass() === "Heavy" && !armorNegatesMovePenalty()) m = Math.max(0, m - 5);
     const legs = crippledLegs();
-    if (legs >= 2) return 0;
-    if (legs === 1) return Math.floor(m / 2);
+    if (legs >= 2) m = 0;
+    else if (legs === 1) m = Math.floor(m / 2);
+    // A transformation may multiply movement (e.g. the Unicorn's Mystic Steed doubles it).
+    const tr = sigTransform();
+    if (transformActive() && tr && tr.moveMult) m = m * tr.moveMult;
     return m;
   }
   // A called shot: damage the limb AND main HP, capped at the limb's current HP (excess is lost).
@@ -2761,6 +2764,7 @@
       const amt = transformAmount(tier.tier);
       const bits = [`+${amt} ${tr.attrs.join("/")}`];
       if (tr.dsBonus) bits.push(`+${tr.dsBonus} Defense`);
+      if (tr.moveMult) bits.push(`×${tr.moveMult} movement`);
       if (tr.clawDie) bits.push(`claws (${tr.clawDie})`);
       const em = o.emoji || "⭐";
       panel.appendChild(el("div", "ok-shift-banner" + (heartLocked ? " suppressed" : ""),

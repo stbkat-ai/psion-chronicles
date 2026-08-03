@@ -1070,9 +1070,32 @@ verified a Troll going STR **30 → 37** shifted (mod +7), and the Lycan STR **2
 
 ---
 
+### 48. Otherkin #6 — the Unicorn (Mystic Grace); all six attributes now covered
+**Decision (with Luke).** Sixth Otherkin, a WIS/mind creature and the third **transformation**. **Unicorn** ·
+Kinetic **Mystic Grace** (WIS) · Boost **+3 WIS / +10 Mind Pool**. Signature **Mystic Steed** — become a radiant
+steed (long rest; 1 → 6 uses): a gentle **WIS/CHA climb (+2 at Tier I, +1/tier → +7, breaking the cap)** **plus
+double movement speed**. Per Luke, the movement multiplier is **flat** (always ×2) and does **not** scale with tier.
+Six "graces" leaning into the unicorn legend (elusive, beautiful, enchanting, healing): *Healing Horn* (15, heal) ·
+*Elusive Grace* (18, evade/hide) · *Enchanting Gaze* (21, charm) · *Radiant Beauty* (24, radiant AoE + dazzle) ·
+*Purifying Light* (27, cleanse + heal) · *Aurora Blessing* (30, mass heal + advantage). Two real self-heals plus a
+cleanse make it the healer of the roster.
+**New transform capability — `moveMult`.** The transform block now supports an optional `moveMult`, wired into
+`effectiveMovement()` (applied after armor/leg penalties, so a shifted Unicorn moves ×2) and surfaced on the shift
+banner ("×2 movement"). It is intentionally NOT run through `transformAmount`, so it stays flat while the attribute
+bonus scales — matching Luke's "don't scale the movement." Only walking movement is doubled; climb/jump/swim are
+separate speeds and untouched.
+**Milestone:** with the Unicorn (WIS) and the earlier Siren (CHA), **all six attributes now have an Otherkin** —
+STR (Troll), AGI (Kitsune), CON (Lycan), INT (Gryphon), WIS (Unicorn), CHA (Siren).
+**Verified** (Node + Playwright): 6 Otherkin / 36 techniques, 0 collisions; choosing Unicorn applies +3 WIS;
+transforming at Tier VI gives **+7 WIS/CHA** (WIS 39, CHA 31 — past the cap) and **doubles movement (35 → 70 ft)**
+with a "🦄 TRANSFORMED — +7 WIS/CHA · ×2 movement" banner; climb/jump/swim stay un-doubled. No console errors. Docs
+updated to 6 of 9. Cache-buster **v=73**.
+
+---
+
 ## Deferred / future ideas
-- **The other 4 Otherkin** — build one at a time with Luke (Kitsune, Siren, Gryphon, Lycan, Troll are the templates;
-  the built transform system covers both plain and transformation signatures).
+- **The other 3 Otherkin** — build one at a time with Luke. The transform system now covers stat buffs (Lycan/
+  Troll), natural weapons/armor (Lycan), and movement multipliers (Unicorn), plus plain activated signatures.
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before
   full sync.

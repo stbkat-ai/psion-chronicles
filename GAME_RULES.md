@@ -280,7 +280,7 @@ app it is invisible before 15 and, once awakened, appears with a full pip track 
   Creature sheet — boost, the six "tails" (unlocked + upcoming), and the signature card with a rest-gated **use
   counter** and its tier ladder. Otherkin techniques are also playable from the **Combat** tab.
 
-**First-edition roster (5 of 9 built — the rest added one at a time):**
+**First-edition roster (6 of 9 built — the rest added one at a time):**
 - **Kitsune** · Kinetic **Fox Mischief** (AGI) · Boost **+3 AGI / +10 Body Pool** · Signature **Kitsune Disguise**
   (take another humanoid's form; **short-rest** refresh; 1 use at Tier I scaling to 6 at Tier VI). Its six tails:
   *Foxstep* (15, ignore difficult terrain) · *Foxfire Feint* (18, non-combat misdirection) · *Mistveil* (21,
@@ -314,6 +314,14 @@ app it is invisible before 15 and, once awakened, appears with a full pip track 
   3d12 + STR + Weakened) · *Pulverize* (24, 4d10 + STR, ignores cover/armor) · *Grapple Slam* (27, 4d12 + STR +
   prone) · *Cataclysm* (30, 6d12 + STR + Stunned). *(The Kitsune/AGI, Lycan/CON and Troll/STR complete the
   body-attribute Otherkin.)*
+- **Unicorn** · Kinetic **Mystic Grace** (WIS) · Boost **+3 WIS / +10 Mind Pool** · Signature **Mystic Steed** — a
+  **transformation** into a radiant steed (**long** rest; 1 → 6 uses) granting a gentle **WIS/CHA climb (+2 → +7,
+  breaking the cap)** **and double movement speed** (the movement multiplier does **not** scale); revert at will,
+  0-HP reverts you at half HP. Its six graces lean elusive / enchanting / healing: *Healing Horn* (15, **heal**
+  2d8 + WIS) · *Elusive Grace* (18, evade/hide) · *Enchanting Gaze* (21, single-target charm) · *Radiant Beauty*
+  (24, 15-ft radius, 3d8 + WIS radiant + dazzle) · *Purifying Light* (27, cleanse a condition + heal 2d6 + WIS) ·
+  *Aurora Blessing* (30, mass heal 4d8 + WIS + advantage). *(With the Unicorn/WIS and Siren/CHA, all six attributes
+  now have an Otherkin.)*
 
 ### Fusion Kinetics (HIDDEN — GM knowledge; players discover in play)
 > **Not in the Player's Guide.** This is a secret system. The GM knows it; players uncover it as they build.
