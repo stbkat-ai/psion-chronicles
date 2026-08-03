@@ -1211,6 +1211,49 @@
     t.innerHTML = `<div class="tile-val">${val}</div><div class="tile-label">${label}</div>`;
     return t;
   }
+  // Boost summary for an Otherkin (attribute + pool), e.g. "+3 AGI · +10 Body (HP)".
+  function otherkinBoostText(o) {
+    const parts = [];
+    Object.keys(o.boosts || {}).forEach((k) => parts.push(`+${o.boosts[k]} ${k}`));
+    if (o.pool && o.pool.body) parts.push(`+${o.pool.body} Body (HP)`);
+    if (o.pool && o.pool.mind) parts.push(`+${o.pool.mind} Mind (KP)`);
+    return parts.join(" · ");
+  }
+  // A full Otherkin breakdown card for the Level Up reveal — stats, signature, and the six techniques.
+  function otherkinChooseCard(o, onChoose) {
+    const card = el("div", "panel otherkin-choice");
+    const sig = o.signature;
+    const sigKind = sig.transform ? (sig.transform.physical ? "transformation" : "invocation") : "activated";
+    const techs = o.techniques.map((t) => `<div class="ok-lu-tech"><b>L${t.level}</b> ${t.name}<span class="ok-lu-eff"> — ${t.effect}</span></div>`).join("");
+    card.innerHTML =
+      `<div class="ok-choice-head"><span class="ok-name">${o.emoji || "♥"} ${o.name}</span><span class="ok-kin">${o.kinetic}${o.attr ? " · " + o.attr : ""}</span></div>` +
+      `<div class="ok-theme-line">${o.theme}</div>` +
+      `<div class="ok-grants"><span class="ok-pill boost">${otherkinBoostText(o)}</span></div>` +
+      `<div class="ok-lu-sub">★ Signature — <b>${sig.name}</b> <span class="ok-lu-tag">${sigKind} · ${sig.rest} rest · 1→6 uses</span></div>` +
+      `<div class="ok-lu-line">${sig.tiers[0].effect} <i>— grows every 3rd level.</i></div>` +
+      `<div class="ok-lu-sub">${o.kinetic} — six techniques, auto-granted as you level:</div>` +
+      `<div class="ok-lu-techs">${techs}</div>`;
+    const btn = el("button", "btn primary small", `Choose ${o.name} (permanent)`);
+    btn.onclick = () => { if (confirm(`Choose ${o.name} as your Otherkin? This is a permanent, one-time decision.`)) onChoose(o.name); };
+    card.appendChild(btn);
+    return card;
+  }
+  // The Level Up screen's Otherkin section: the awakening reveal + selection, or a chosen-summary once picked.
+  function otherkinLevelUpSection(rec, persist) {
+    const ok = el("div", "panel otherkin-panel");
+    if (rec.otherkin) {
+      const o = PC.otherkin(rec.otherkin);
+      ok.appendChild(el("div", "section-label", "♥ Your Otherkin"));
+      ok.appendChild(el("div", "otherkin-note", `${o.emoji || "♥"} <b class="ok-hl">${o.name}</b> — ${o.kinetic}. Its boost is applied; shape and use it on the play sheet's <b>♥ Otherkin</b> tab.`));
+      return ok;
+    }
+    ok.appendChild(el("div", "section-label", "♥ The Heart Chakra Opens"));
+    ok.appendChild(el("div", "otherkin-note ok-awaken",
+      `<b class="ok-hl">Your Heart chakra has opened.</b> At Soul Level 15 the creature that has lived in your soul since creation <b>awakens</b> at the center of your chakras. <b>Choose your Otherkin</b> below — a <b>permanent</b>, one-time decision. Each grants a fixed attribute + pool boost, a unique Kinetic whose six techniques unlock as you level, and a signature ability that grows every third level. The boost is a real trade-off — no sense taking +3 to an attribute you've maxed.`));
+    PC.OTHERKIN.forEach((o) => ok.appendChild(otherkinChooseCard(o, (name) => { rec.otherkin = name; toast(`✦ ${name} awakened!`); persist(); })));
+    if (PC.OTHERKIN.length < 9) ok.appendChild(el("div", "muted", `More Otherkin are on the way — ${PC.OTHERKIN.length} of 9 in this build.`));
+    return ok;
+  }
   function techLearnCard(t, onLearn, disabled) {
     const c = el("div", "tech-card");
     const cost = [t.kp + " KP"]; if (t.upkeep) cost.push("+" + t.upkeep + "/turn");
@@ -1277,7 +1320,7 @@
     const lvlReady = level < 30 && PC.xpBar(rec.xp || 0, level).ready;
     const lvlBtn = el("button", "btn primary small" + (lvlReady ? " xp-ready-btn" : ""), level >= 30 ? "Max Level (30)" : `⭐ Level Up → ${level + 1}`);
     lvlBtn.disabled = level >= 30;
-    lvlBtn.onclick = () => { if (rec.level < 30) { rec.level++; rec.xp = Math.max(rec.xp || 0, PC.xpForLevel(rec.level)); toast(`Leveled up to Soul Level ${rec.level}!`); persist(); } };
+    lvlBtn.onclick = () => { if (rec.level < 30) { rec.level++; rec.xp = Math.max(rec.xp || 0, PC.xpForLevel(rec.level)); toast(rec.level === 15 ? "♥ Your Heart chakra opens — your Otherkin awakens! Choose it below." : `Leveled up to Soul Level ${rec.level}!`); persist(); } };
     head.appendChild(back); head.appendChild(title); head.appendChild(lvlBtn);
     wrap.appendChild(head);
 
@@ -1311,7 +1354,10 @@
     xp.appendChild(el("p", "hint", "Leveling is GM-driven: award XP as your table earns it, and tap <b>Level Up</b> when the bar is full (or whenever your GM calls it). Each level grants +1 Technique Point; odd levels also grant +1 attribute point; every 5th level grants +1 Combat Skill Point. <i>(Thresholds are a starting curve — your GM may retune them.)</i>"));
     wrap.appendChild(xp);
 
-    // points summary + milestones
+    // ♥ Otherkin — the Heart chakra opens at Soul Level 15: reveal + one-time selection (or a chosen summary).
+    if (level >= 15) wrap.appendChild(otherkinLevelUpSection(rec, persist));
+
+    // points summary
     const pts = el("div", "panel");
     pts.appendChild(el("div", "section-label", "Points to Spend"));
     const tr = el("div", "tile-row");
@@ -1319,7 +1365,6 @@
     tr.appendChild(tileEl("Attribute Points", availAttr + " / " + earnedAttr));
     tr.appendChild(tileEl("Combat Skill Points", availCSP + " / " + earnedCSP));
     pts.appendChild(tr);
-    if (level >= 15) pts.appendChild(el("p", "hint", "★ <b>Otherkin unlocked</b> — your Soul Creature awakens at the <b>Heart chakra</b> (see the Chakras tab; mechanics coming soon)."));
     wrap.appendChild(pts);
 
     // attribute allocation

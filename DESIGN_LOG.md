@@ -1103,6 +1103,27 @@ updated to 6 of 9. Cache-buster **v=73**.
 
 ---
 
+### 49. Otherkin reveal moved to the Level Up screen
+**Decision (with Luke).** The Otherkin is no longer chosen from the play sheet — the reveal and one-time selection
+now happen on the **Level Up screen**, which is the natural home for a level-15 milestone. When a character reaches
+Soul Level 15, leveling toasts "♥ Your Heart chakra opens — your Otherkin awakens," and the Level Up screen shows an
+awakening banner followed by **each Otherkin as a full breakdown card** — boost, signature (kind + rest + tier-I
+effect + "grows every 3rd level"), and **all six techniques with their unlock levels and effects** — each with a
+permanent Choose button. Once chosen, the Level Up screen shows a compact summary and the play sheet's **♥ Otherkin**
+tab becomes the Soul-Creature sheet as before.
+**How (code).** `app.js` — new `otherkinLevelUpSection()` / `otherkinChooseCard()` (renders the breakdown from
+`PC.OTHERKIN`; choosing sets `rec.otherkin` + persists — signature uses default to full via play.js's lazy
+`sigUsesLeft`), inserted into `renderLevelUp` when `level ≥ 15`; the level-up button toasts the awakening on
+crossing to 15; removed the old "mechanics coming soon" hint. `play.js` — the play-sheet Otherkin tab's not-chosen
+state (`buildOtherkinPicker`) no longer shows a picker; it announces the awakening and links to Level Up via
+`App.openLevelUp`. `styles.css` — Level Up breakdown card styles.
+**Verified** (Playwright): a level-15 character with no Otherkin sees the awakening banner + 6 breakdown cards (each
+listing all six techniques + the signature) on Level Up; choosing Unicorn sets it and the play sheet then shows the
+Soul-Creature sheet (no picker); the not-chosen play tab shows "♥ The Otherkin Awaits" with an "Open Level Up"
+button. No console errors. Docs (`GAME_RULES.md`, `README.md`) updated. Cache-buster **v=75**.
+
+---
+
 ## Deferred / future ideas
 - **The other 3 Otherkin** — build one at a time with Luke. The transform system now covers stat buffs (Lycan/
   Troll), natural weapons/armor (Lycan), and movement multipliers (Unicorn), plus plain activated signatures.

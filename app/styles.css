@@ -520,6 +520,15 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 .ok-grants { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
 .ok-pill { font-size: .76rem; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg); color: var(--text-dim); }
 .ok-pill.boost { color: #8fe8ab; border-color: rgba(70, 196, 110, .5); background: rgba(70, 196, 110, .1); font-weight: 650; }
+/* Level Up reveal — Otherkin breakdown cards */
+.ok-awaken { border-color: rgba(70, 196, 110, .5); background: rgba(70, 196, 110, .1); }
+.ok-lu-sub { margin-top: 11px; font-size: .82rem; font-weight: 700; color: #8fe8ab; }
+.ok-lu-tag { font-weight: 400; color: var(--text-dim); font-size: .74rem; }
+.ok-lu-line { margin-top: 3px; font-size: .84rem; color: var(--text-dim); line-height: 1.45; }
+.ok-lu-techs { margin-top: 5px; display: flex; flex-direction: column; gap: 3px; }
+.ok-lu-tech { font-size: .8rem; color: var(--text); line-height: 1.4; }
+.ok-lu-tech b { color: var(--gold); }
+.ok-lu-eff { color: var(--text-dim); }
 .ok-pill b { color: var(--text); }
 .ok-identity { display: flex; align-items: center; gap: 14px; margin: 6px 0 12px; }
 .ok-identity .ok-heart { font-size: 2.4rem; flex: 0 0 auto; }

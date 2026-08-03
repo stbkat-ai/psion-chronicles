@@ -278,9 +278,12 @@ app it is invisible before 15 and, once awakened, appears with a full pip track 
      Mystic Steed; no 0-HP revert).
   4. All of the above answer to the **Heart chakra** — hits weaken every Otherkin power; a locked Heart (4) shuts
      the Soul Creature off until you rest.
-- **In the app:** the **♥ Otherkin** tab (appears at 15) is a **picker** until you choose, then becomes the Soul
-  Creature sheet — boost, the six "tails" (unlocked + upcoming), and the signature card with a rest-gated **use
-  counter** and its tier ladder. Otherkin techniques are also playable from the **Combat** tab.
+- **In the app:** the reveal and one-time choice happen on the **Level Up screen** — when a character reaches
+  Soul Level 15 the Heart chakra opens, an awakening message appears, and each Otherkin is shown with a full
+  breakdown (boost, signature, all six techniques) to choose from (permanent). The **♥ Otherkin** tab (which
+  appears at 15) then becomes the Soul-Creature sheet — boost, the six techniques (unlocked + upcoming), and the
+  signature card with a rest-gated **use counter** and its tier ladder; before a choice is made it simply points
+  the player to the Level Up screen. Otherkin techniques are also playable from the **Combat** tab.
 
 **First-edition roster (6 of 9 built — the rest added one at a time):**
 - **Kitsune** · Kinetic **Fox Mischief** (AGI) · Boost **+3 AGI / +10 Body Pool** · Signature **Kitsune Disguise**

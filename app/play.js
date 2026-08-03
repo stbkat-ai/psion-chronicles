@@ -2690,34 +2690,18 @@
   }
 
   // The one-time chooser, shown once the Heart awakens (level 15) until an Otherkin is selected.
+  // Not-yet-chosen state. Selection now lives on the LEVEL UP screen (the Heart-chakra reveal), so this tab
+  // just announces the awakening and sends the player there to choose.
   function buildOtherkinPicker(root) {
     const intro = el("div", "panel otherkin-panel");
-    intro.appendChild(el("div", "section-label", "♥ Choose your Otherkin"));
-    intro.appendChild(el("p", "hint",
-      `Your <b class="ok-hl">Soul Creature</b> has awakened at the Heart chakra. <b>Choose one</b> — a <b>permanent</b> decision. Each grants a fixed attribute + pool boost, a unique Kinetic whose six techniques unlock as you level, and a signature ability that grows every third level. The boost is a real trade-off — no sense taking +3 to an attribute you've already maxed.`));
+    intro.appendChild(el("div", "section-label", "♥ The Otherkin Awaits"));
+    intro.appendChild(el("div", "otherkin-note ok-awaken",
+      `<b class="ok-hl">Your Heart chakra has opened.</b> The creature that has lived in your soul since creation is ready to awaken — but you haven't <b>chosen your Otherkin</b> yet. Open the <b>Level Up</b> screen to see each Soul Creature's full breakdown and make your <b>permanent</b> choice.`));
+    const btn = el("button", "btn primary small", "⭐ Open Level Up to choose");
+    btn.onclick = () => App.openLevelUp(rec.id);
+    intro.appendChild(btn);
     root.appendChild(intro);
-    PC.OTHERKIN.forEach((o) => root.appendChild(otherkinChoiceCard(o)));
-    if (PC.OTHERKIN.length < 9) root.appendChild(el("div", "muted", `More Otherkin are on the way — ${PC.OTHERKIN.length} of 9 in this build.`));
     return root;
-  }
-
-  function otherkinChoiceCard(o) {
-    const card = el("div", "panel otherkin-choice");
-    card.innerHTML =
-      `<div class="ok-choice-head"><span class="ok-name">${o.emoji || "♥"} ${o.name}</span><span class="ok-kin">${o.kinetic}${o.attr ? " · " + o.attr : ""}</span></div>` +
-      `<div class="ok-theme-line">${o.theme}</div>` +
-      `<div class="ok-grants"><span class="ok-pill boost">${otherkinBoostText(o)}</span><span class="ok-pill">Kinetic: <b>${o.kinetic}</b> · 6 techniques</span><span class="ok-pill">Signature: <b>${o.signature.name}</b></span></div>`;
-    const btn = el("button", "btn primary small", `Choose ${o.name} (permanent)`);
-    btn.onclick = () => {
-      if (!confirm(`Choose ${o.name} as your Otherkin? This is a permanent, one-time decision.`)) return;
-      rec.otherkin = o.name;
-      refreshSignature("long"); // awaken fully charged
-      logLine(`Otherkin awakened: ${o.name}.`);
-      App.toast(`${o.name} awakened!`);
-      save(); refresh();
-    };
-    card.appendChild(btn);
-    return card;
   }
 
   // The chosen-Otherkin sheet: identity + boost, Heart status, signature, and the six tails.
