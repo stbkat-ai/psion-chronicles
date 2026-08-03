@@ -173,6 +173,38 @@
     const tr = sigTransform(); if (!tr) return 0;
     return (tr.base || 0) + Math.max(0, (tierNum || 1) - 1) * (tr.step || 0);
   }
+  // A transformation's movement multiplier at a tier. `moveMult` is either a flat number (Unicorn's ×2 walking)
+  // or {base, step, fly} that scales (Wyvern's flight 1.5× → 4×). Returns { mult, fly } or null.
+  function transformMoveMult(tierNum) {
+    const tr = sigTransform(); if (!tr || tr.moveMult == null) return null;
+    const mm = tr.moveMult;
+    const mult = (typeof mm === "number") ? mm : ((mm.base || 0) + Math.max(0, (tierNum || 1) - 1) * (mm.step || 0));
+    return { mult: mult, fly: !!(typeof mm === "object" && mm.fly) };
+  }
+  // Tier-gated natural-armor bonus (Wyvern's scaled hide appears at Tier III; Lycan's fur has no gate → always).
+  function transformDsBonus(tierNum) {
+    const tr = sigTransform(); if (!tr || !tr.dsBonus) return 0;
+    return (tierNum || 1) >= (tr.dsFromTier || 1) ? tr.dsBonus : 0;
+  }
+  // Tier-gated claw/fang die for unarmed strikes (Wyvern's at Tier IV; Lycan's from Tier I).
+  function transformClawDie(tierNum) {
+    const tr = sigTransform(); if (!tr || !tr.clawDie) return null;
+    return (tierNum || 1) >= (tr.clawFromTier || 1) ? tr.clawDie : null;
+  }
+  // The tail-whip config once its tier gate is met (Wyvern grows a tail at Tier II), else null.
+  function transformTailWhip(tierNum) {
+    const tr = sigTransform(); if (!tr || !tr.tailWhip) return null;
+    return (tierNum || 1) >= (tr.tailWhip.fromTier || 1) ? tr.tailWhip : null;
+  }
+  // The active flight speed (a transformation whose moveMult is a flight multiplier), or null. Flight does NOT
+  // replace walking — it's shown as its own Fly speed = mult × your ground movement.
+  function flySpeed() {
+    if (!transformActive()) return null;
+    const t = sigTier(); if (!t) return null;
+    const mm = transformMoveMult(t.tier);
+    if (!mm || !mm.fly) return null;
+    return Math.round(effectiveMovement() * mm.mult);
+  }
   // The flat attribute buff from an active transformation, applied to each listed body attribute.
   function transformAttrBuff() {
     if (!transformActive()) return {};
@@ -199,8 +231,9 @@
       if (sigUsesLeft() <= 0) { App.toast(`No ${o.signature.name} uses left — take a ${o.signature.rest} rest.`); return; }
       play.sigUses = sigUsesLeft() - 1;
       play.transformed = true;
-      const amt = transformAmount(t.tier), lab = transformLabels();
-      logLine(`${o.signature.name} — ${lab.onMsg} (Tier ${t.tier}: +${amt} to ${sigTransform().attrs.join("/")}). ${sigUsesLeft()}/${sigMaxUses()} uses left.`);
+      const lab = transformLabels(), attrs = sigTransform().attrs;
+      const gain = (attrs && attrs.length) ? `+${transformAmount(t.tier)} to ${attrs.join("/")}` : `Tier ${t.tier}`;
+      logLine(`${o.signature.name} — ${lab.onMsg} (${gain}). ${sigUsesLeft()}/${sigMaxUses()} uses left.`);
       App.toast(transformPhysical() ? `Transformed — ${o.name} unleashed!` : `${o.signature.name} invoked!`);
       save(); refresh();
       return;
@@ -288,9 +321,13 @@
     const legs = crippledLegs();
     if (legs >= 2) m = 0;
     else if (legs === 1) m = Math.floor(m / 2);
-    // A transformation may multiply movement (e.g. the Unicorn's Mystic Steed doubles it).
-    const tr = sigTransform();
-    if (transformActive() && tr && tr.moveMult) m = m * tr.moveMult;
+    // A transformation may multiply GROUND movement (e.g. the Unicorn's Mystic Steed doubles it). A flight
+    // multiplier (the Wyvern's wings) does not touch walking — it surfaces as a separate Fly speed instead.
+    if (transformActive()) {
+      const t = sigTier();
+      const mm = t ? transformMoveMult(t.tier) : null;
+      if (mm && !mm.fly) m = Math.round(m * mm.mult);
+    }
     return m;
   }
   // A called shot: damage the limb AND main HP, capped at the limb's current HP (excess is lost).
@@ -361,8 +398,8 @@
     equippedArmor().forEach((it) => {
       if (it.dsBonus && proficientWithArmorClass(it.armorClass)) ds += Number(it.dsBonus) || 0;
     });
-    // A transformation's natural armor (e.g. the Lycan's thick fur) adds to Defense while shifted.
-    if (transformActive() && sigTransform().dsBonus) ds += sigTransform().dsBonus;
+    // A transformation's natural armor (Lycan's fur, Wyvern's scaled hide) adds to Defense while shifted.
+    if (transformActive()) { const t = sigTier(); if (t) ds += transformDsBonus(t.tier); }
     return ds;
   }
   function activeUpkeep() {
@@ -956,8 +993,7 @@
   // While a transformation grants natural claws (e.g. the Lycan's Shift), unarmed strikes use the bigger claw
   // die instead of 1d4. Everything else about the unarmed strike is unchanged.
   function unarmedProfile() {
-    const tr = sigTransform();
-    if (transformActive() && tr && tr.clawDie) return { name: "Claws", damage: tr.clawDie, claws: true };
+    if (transformActive()) { const t = sigTier(); const claw = t ? transformClawDie(t.tier) : null; if (claw) return { name: "Claws", damage: claw, claws: true }; }
     return UNARMED;
   }
   function unarmedAttack(econType) {
@@ -975,7 +1011,7 @@
     save(); refresh();
   }
   function damageWith(it, augmentName) {
-    const attr = weaponAttr(it) || "STR";
+    const attr = it.attr || weaponAttr(it) || "STR";
     if (!it.damage) { App.toast('Set a damage die (e.g. "1d10").'); return; }
     const dr = PC.rollDiceExpr(it.damage);
     if (!dr) { App.toast('Damage die format: like "1d10" or "2d6".'); return; }
@@ -1291,6 +1327,8 @@
     const d = PC.derive(liveScores(), rec.level);
     const row = el("div", "tile-row");
     row.appendChild(tile("Movement", effectiveMovement() + " ft" + (crippledLegs() ? " ⚠" : "")));
+    const fly = flySpeed();
+    if (fly != null) row.appendChild(tile("Fly", fly + " ft"));
     row.appendChild(tile("Climb", d.climb + " ft"));
     row.appendChild(tile("Jump", d.jump + " ft"));
     row.appendChild(tile("Swim", d.swim + " ft"));
@@ -2758,11 +2796,15 @@
     // Transform signatures show a live "active" banner with the current bonuses; a locked Heart suppresses them.
     const lab = tr ? transformLabels() : null;
     if (tr && shifted) {
-      const amt = transformAmount(tier.tier);
-      const bits = [`+${amt} ${tr.attrs.join("/")}`];
-      if (tr.dsBonus) bits.push(`+${tr.dsBonus} Defense`);
-      if (tr.moveMult) bits.push(`×${tr.moveMult} movement`);
-      if (tr.clawDie) bits.push(`claws (${tr.clawDie})`);
+      const bits = [];
+      if (tr.attrs && tr.attrs.length) bits.push(`+${transformAmount(tier.tier)} ${tr.attrs.join("/")}`);
+      const mm = transformMoveMult(tier.tier);
+      if (mm) bits.push(`×${mm.mult} ${mm.fly ? "flight" : "movement"}`);
+      const ds = transformDsBonus(tier.tier);
+      if (ds) bits.push(`+${ds} Defense`);
+      const claw = transformClawDie(tier.tier);
+      if (claw) bits.push(`claws (${claw})`);
+      if (transformTailWhip(tier.tier)) bits.push("tail");
       const em = o.emoji || "⭐";
       panel.appendChild(el("div", "ok-shift-banner" + (heartLocked ? " suppressed" : ""),
         heartLocked ? `${em} ${lab.suppressed}` : `${em} ${lab.state} — ${bits.join(" · ")}.`));
@@ -3001,9 +3043,12 @@
     csByAction("Action").forEach((c) => actionCards.push(makeCombatSkillCard(c)));
     root.appendChild(actionGroup("actions", "⚡ Actions", actionCards));
 
-    // ✦ Bonus Actions — Bonus techniques + Bonus combat skills
-    root.appendChild(actionGroup("bonus", "✦ Bonus Actions",
-      byAction("Bonus Action").map(makeTechCard).concat(csByAction("Bonus Action").map(makeCombatSkillCard))));
+    // ✦ Bonus Actions — a transformation's Tail Whip (if grown) + Bonus techniques + Bonus combat skills
+    const bonusCards = [];
+    if (tailWhipAvailable()) bonusCards.push(tailWhipCard());
+    byAction("Bonus Action").forEach((t) => bonusCards.push(makeTechCard(t)));
+    csByAction("Bonus Action").forEach((c) => bonusCards.push(makeCombatSkillCard(c)));
+    root.appendChild(actionGroup("bonus", "✦ Bonus Actions", bonusCards));
 
     // ↩ Reactions — universal Opportunity Attack + Reaction techniques + Reaction combat skills
     root.appendChild(actionGroup("reaction", "↩ Reactions",
@@ -3066,6 +3111,40 @@
     return card;
   }
 
+  // 🐉 Tail Whip — a Bonus-Action strike a transformation's tail grants (Wyvern, Tier II+). Uses AGI, and the
+  // claw die if the transform has grown fangs & claws (else the base 1d4).
+  function tailWhipAvailable() { if (!transformActive()) return false; const t = sigTier(); return !!(t && transformTailWhip(t.tier)); }
+  function tailWhipProfile() { const t = sigTier(); const claw = t ? transformClawDie(t.tier) : null; return { name: "Tail Whip", damage: claw || "1d4", attr: "AGI", tail: true }; }
+  function tailWhipAttack() {
+    if (isLocked("AGI")) { App.toast(`${chakraName("AGI")} chakra locked — can't strike.`); return; }
+    if (econBlocked("Bonus Action")) { App.toast("You've already used your Bonus Action this turn."); return; }
+    consumeEcon("Bonus Action");
+    const mod = adjMod("AGI") + PC.profBonus(rec.level);
+    const mode = isDisadv("AGI") ? "dis" : "normal";
+    const r = PC.rollCheck(mod, mode);
+    const dis = mode === "dis" ? ` (disadv [${r.d20s.join(",")}]→${r.picked})` : "";
+    announce(r.total, `Tail Whip attack: d20${dis}${PC.fmtMod(mod)} = ${r.total} ✓prof (vs Defense Score)`);
+    save(); refresh();
+  }
+  function tailWhipCard() {
+    const card = el("div", "tech-card");
+    const prof = tailWhipProfile(), m = adjMod("AGI");
+    card.innerHTML =
+      `<div class="thead"><span class="tname">🐉 Tail Whip</span><span class="tmeta">Bonus · AGI · ${prof.damage}</span></div>` +
+      `<div class="teff">▸ Lash out with your wyvern tail — melee attack for ${prof.damage}${PC.fmtMod(m)} using AGI.</div>`;
+    const row = el("div", "combat-actions");
+    const lk = lockReason("AGI"), blocked = econBlocked("Bonus Action");
+    const atk = el("button", "btn small primary", "⚔ Attack");
+    atk.disabled = !!lk || blocked;
+    atk.title = lk || (blocked ? "Bonus Action already used this turn" : "");
+    atk.onclick = () => tailWhipAttack();
+    const dmg = el("button", "btn small", "🎲 Damage");
+    dmg.disabled = !!lk; if (lk) dmg.title = lk;
+    dmg.onclick = () => damageWith(tailWhipProfile());
+    row.appendChild(atk); row.appendChild(dmg);
+    card.appendChild(row);
+    return card;
+  }
   // 👊 Unarmed Strike — a basic Action anyone can take (a punch or kick).
   function unarmedStrikeCard() {
     const card = el("div", "tech-card");

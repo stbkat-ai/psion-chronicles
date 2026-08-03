@@ -1142,10 +1142,33 @@ Sphynx, WIS Unicorn, CHA Siren), plus the Gryphon (INT/STR hybrid). **Two hybrid
 
 ---
 
+### 51. Otherkin #8 — the Wyvern (Draconic Fire), first hybrid; scaling flight + tier-gated traits
+**Decision (with Luke).** Eighth Otherkin, the first of the two hybrids. **Wyvern** (WIS/AGI) · Kinetic **Draconic
+Fire** · Boost **+2 WIS / +1 AGI / +5 Body / +5 Mind**. Signature **Wyvern's Wings** — a physical transformation
+(short rest) with the most elaborate signature yet, per Luke's spec and approved trait ladder: a **scaling flight
+speed** (1.5× movement at Tier I, +0.5×/tier → 4×) shown as a **separate Fly speed**, plus **tier-gated traits** —
+a **tail** (Tail Whip, a Bonus-Action unarmed strike using AGI) at Tier II, **+2 Defense scaled hide** at III,
+**d8 fangs & claws** (upgrading unarmed *and* Tail Whip) at IV, fire resistance (flavor) at V, and +1 damage die
+(flavor) at VI. Six fire techniques (Ember Bolt, Draconic Roar, Fire Breath cone, Scorching Talons, Molten Scales
+sustained, Inferno). No attribute buff — the signature is all mobility + traits.
+**New engine capabilities.** The transform block grew several optional, backward-compatible fields: `moveMult` now
+accepts **`{base, step, fly}`** (a scaling multiplier; `fly` renders it as a distinct **Fly speed** via new
+`flySpeed()` instead of multiplying walking) alongside the old flat number (Unicorn); **`dsFromTier`** and
+**`clawFromTier`** gate the existing `dsBonus`/`clawDie` to a tier; and a **`tailWhip: {fromTier, attr}`** grants a
+new Bonus-Action combat card (`tailWhipCard`, using AGI + the claw die when grown). Added `it.attr` override to
+`damageWith` so the tail strikes with AGI. The shift banner now guards the (absent) attr bit and lists whatever the
+current tier grants (flight/Defense/claws/tail). Speeds row shows **Fly** while winged.
+**Verified** (Node + Playwright): 8 Otherkin / 48 techniques, 0 collisions; across tiers the flight scaled
+1.5×→4× (Fly 53→140 ft, walking unchanged at 35), the **tail** appeared at II (AGI · 1d4), **+2 Defense** at III,
+and **claws upgraded the tail to d8** at IV+ — banner and Combat card all correct. No console errors. Docs updated
+to 8 of 9. Cache-buster **v=77**.
+
+---
+
 ## Deferred / future ideas
-- **The last 2 Otherkin** — both hybrids, built one at a time with Luke. The signature toolkit now covers plain
-  activated abilities, physical transformations, invocations, stat buffs past the cap, natural weapons/armor, and
-  movement multipliers.
+- **The last Otherkin** — one more hybrid, built with Luke. The signature toolkit now covers plain activated
+  abilities, physical transformations, invocations, stat buffs past the cap, natural weapons/armor, scaling
+  movement/flight, and tier-gated traits (armor, claws, a tail attack).
 - **Cross-device character sync** (backend + simple login) — the big one.
 - **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before
   full sync.

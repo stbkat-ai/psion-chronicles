@@ -1111,6 +1111,59 @@ PC.OTHERKIN = [
       ],
     },
   },
+  {
+    name: "Wyvern",
+    emoji: "🐉",
+    kinetic: "Draconic Fire",
+    attr: "WIS/AGI",                 // hybrid (display only) — its techniques carry their own WIS or AGI
+    pairing: "Witch",               // thematic affinity only — any character may choose any Otherkin
+    theme: "A lesser dragon of wing and flame — it takes to the sky on scaled wings and answers with fire.",
+    boosts: { WIS: 2, AGI: 1 },     // background-style attribute boost (split, matching its hybrid nature)
+    pool: { body: 5, mind: 5 },     // background-style pool boost (+5 HP / +5 KP)
+    techniques: [
+      { name: "Ember Bolt", otherkin: true, kinetic: "Draconic Fire", attr: "WIS", tail: 1, level: 15, tier: "Ember I",
+        action: "Action", kp: 10, damage: { dice: "2d8", mod: "WIS", type: "fire" },
+        effect: "Spit a bolt of dragonfire (d20 + WIS to hit): 2d8 + WIS fire." },
+      { name: "Draconic Roar", otherkin: true, kinetic: "Draconic Fire", attr: "WIS", tail: 2, level: 18, tier: "Ember II",
+        action: "Action", kp: 12,
+        effect: "A terrifying roar — enemies within 20 ft resist (WIS) or are Frightened (disadvantage) for a turn." },
+      { name: "Fire Breath", otherkin: true, kinetic: "Draconic Fire", attr: "WIS", tail: 3, level: 21, tier: "Ember III",
+        action: "Action", kp: 18, damage: { dice: "3d8", mod: "WIS", type: "fire", area: "15-ft cone" }, aoe: true,
+        effect: "Exhale a 15-ft cone of dragonfire: auto-hits for 3d8 + WIS fire; targets gain Burning." },
+      { name: "Scorching Talons", otherkin: true, kinetic: "Draconic Fire", attr: "AGI", tail: 4, level: 24, tier: "Ember IV",
+        action: "Action", kp: 18, damage: { dice: "3d8", mod: "AGI", type: "fire" },
+        effect: "A diving, red-hot strike (d20 + AGI to hit): 3d8 + AGI fire." },
+      { name: "Molten Scales", otherkin: true, kinetic: "Draconic Fire", attr: "WIS", tail: 5, level: 27, tier: "Ember V",
+        action: "Bonus Action", kp: 20, sustained: true, upkeep: 0, buff: { dsFromMod: "WIS" },
+        effect: "White-hot scales (sustained): add your WIS modifier to Defense, and melee attackers that hit you take 1d6 fire." },
+      { name: "Inferno", otherkin: true, kinetic: "Draconic Fire", attr: "WIS", tail: 6, level: 30, tier: "Ember VI",
+        action: "Action", kp: 25, damage: { dice: "5d8", mod: "WIS", type: "fire", area: "20-ft radius" }, aoe: true,
+        effect: "A 20-ft firestorm: auto-hits for 5d8 + WIS fire and leaves burning ground (1d6/turn for 3 turns)." },
+    ],
+    signature: {
+      name: "Wyvern's Wings",
+      rest: "short",
+      // A PHYSICAL transformation with a SCALING flight speed (moveMult {base,step,fly}) and tier-gated traits:
+      // a tail (Tail Whip action) at Tier II, scaled hide (+Defense) at III, fangs & claws (d8 unarmed/tail) at IV.
+      // No attribute buff. Tiers V/VI (fire resistance, +1 damage die) are GM-adjudicated flavor.
+      transform: {
+        physical: true,
+        moveMult: { base: 1.5, step: 0.5, fly: true },
+        dsBonus: 2, dsFromTier: 3,
+        clawDie: "1d8", clawFromTier: 4,
+        tailWhip: { fromTier: 2, attr: "AGI" },
+      },
+      blurb: "Grow scaly dragon wings (and more as you mature). Refreshes on a short rest; the flight speed and uses grow every third level. While winged you gain a flight speed of 1.5× your movement (+0.5× per tier), and further wyvern traits appear at higher tiers. Revert at will, and at 0 HP you revert to normal at half HP.",
+      tiers: [
+        { tier: 1, level: 15, uses: 1, effect: "Scaled wings — gain a flight speed equal to 1.5× your movement." },
+        { tier: 2, level: 18, uses: 2, effect: "Flight ×2 your movement; a tail grows — Tail Whip (an unarmed strike that uses your AGI modifier)." },
+        { tier: 3, level: 21, uses: 3, effect: "Flight ×2.5; scaled hide grants +2 Defense." },
+        { tier: 4, level: 24, uses: 4, effect: "Flight ×3; fangs and claws — your unarmed strikes and Tail Whip use a d8." },
+        { tier: 5, level: 27, uses: 5, effect: "Flight ×3.5; fire-blooded — resistance to fire and advantage on saves vs heat and fear." },
+        { tier: 6, level: 30, uses: 6, effect: "Flight ×4; apex wyvern — your Draconic Fire techniques deal +1 damage die." },
+      ],
+    },
+  },
 ];
 // Flattened lookup of every Otherkin technique (so PC.technique() can resolve them by name).
 PC.OTHERKIN_TECHNIQUES = PC.OTHERKIN.reduce(function (acc, o) { return acc.concat(o.techniques.map(function (t) { return Object.assign({ otherkinName: o.name }, t); })); }, []);

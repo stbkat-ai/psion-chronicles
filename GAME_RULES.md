@@ -285,7 +285,7 @@ app it is invisible before 15 and, once awakened, appears with a full pip track 
   signature card with a rest-gated **use counter** and its tier ladder; before a choice is made it simply points
   the player to the Level Up screen. Otherkin techniques are also playable from the **Combat** tab.
 
-**First-edition roster (7 of 9 built — two hybrids remain):**
+**First-edition roster (8 of 9 built — one hybrid remains):**
 - **Kitsune** · Kinetic **Fox Mischief** (AGI) · Boost **+3 AGI / +10 Body Pool** · Signature **Kitsune Disguise**
   (take another humanoid's form; **short-rest** refresh; 1 use at Tier I scaling to 6 at Tier VI). Its six tails:
   *Foxstep* (15, ignore difficult terrain) · *Foxfire Feint* (18, non-combat misdirection) · *Mistveil* (21,
@@ -333,7 +333,15 @@ app it is invisible before 15 and, once awakened, appears with a full pip track 
   / time / otherworldly knowledge: *Vexing Riddle* (15, Confuse) · *Ancient Lore* (18, knowledge/utility) ·
   *Temporal Slip* (21, Slow) · *Psychic Lance* (24, 3d8 + INT psychic) · *Foresight* (27, sustained: +INT to Defense
   + advantage on saves) · *Temporal Collapse* (30, 20-ft radius, 5d8 + INT psychic + lose next turn). *(With the
-  Sphynx/INT, all six attributes now have a standalone Otherkin; two hybrids remain.)*
+  Sphynx/INT, all six attributes now have a standalone Otherkin.)*
+- **Wyvern** (hybrid **WIS/AGI**) · Kinetic **Draconic Fire** · Boost **+2 WIS / +1 AGI / +5 Body / +5 Mind** ·
+  Signature **Wyvern's Wings** — a **physical transformation** (**short** rest; 1 → 6 uses) that grows scaly wings:
+  a **flight speed = 1.5× movement at Tier I, +0.5×/tier → 4×** (shown as a separate Fly speed), plus tier-gated
+  traits — a **tail** (Tail Whip: a Bonus-Action unarmed strike using **AGI**) at Tier II, **+2 Defense** scaled
+  hide at III, **d8 fangs & claws** (unarmed + Tail Whip) at IV, fire resistance at V, and +1 Draconic-Fire damage
+  die at VI. Six fire techniques: *Ember Bolt* (15) · *Draconic Roar* (18, Frighten) · *Fire Breath* (21, 15-ft
+  cone) · *Scorching Talons* (24, AGI fire) · *Molten Scales* (27, sustained +WIS Defense + retaliation) ·
+  *Inferno* (30, 20-ft firestorm). *(One hybrid remains.)*
 
 ### Fusion Kinetics (HIDDEN — GM knowledge; players discover in play)
 > **Not in the Player's Guide.** This is a secret system. The GM knows it; players uncover it as they build.
