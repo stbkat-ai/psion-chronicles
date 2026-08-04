@@ -675,11 +675,11 @@ PC.COMBAT_SKILLS = PC.FIGHTING_STYLES.reduce(function (all, st) {
 /* Grants ONE Fighting Style, 2 active combat skills from it, that style's Passive,
    and 2 roleplay traits. No attribute changes. Chosen before Attributes. */
 PC.HERITAGES = [
-  { name: "North America", blurb: "The Indigenous nations of this land — hunters, trackers, and warriors who read the country like a book and never fight on ground they didn't choose.",
+  { name: "North America", blurb: "A present-day descendant of the Indigenous nations of this land, raised in the old ways — the hunter's patience, the tracker's eye, and a warrior's craft handed down the generations.",
     fightingStyle: "Way of the Hunt", combatSkills: ["Hunter's Aim", "Fade Away"], weaponSubtype: "Shortbows", armorProf: [],  // Light only (the universal tier)
     traits: [ { name: "One with the Land", desc: "In any natural wilderness you can reliably find food, water, and shelter for yourself and a small group, and you have advantage on checks to resist natural environmental hardship (cold, heat, hunger, thirst)." },
               { name: "Keen Senses", desc: "Advantage on Awareness checks to notice danger, an ambush, or something out of place." } ],
-    flaw: { name: "Unversed in Old-World Customs", desc: "The formal court manners of the old world were never your people's world. Disadvantage on Etiquette.", disadvSkill: "Etiquette" } },
+    flaw: { name: "Unversed in Old-World Customs", desc: "Formal old-world court manners were never part of how you were raised. Disadvantage on Etiquette.", disadvSkill: "Etiquette" } },
 ];
 
 /* --- Constants ----------------------------------------------------------- */

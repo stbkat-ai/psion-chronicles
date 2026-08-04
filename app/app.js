@@ -622,7 +622,7 @@
   function stepHeritage() {
     const p = el("div", "panel");
     p.appendChild(el("h2", null, 'Regional Heritage <span class="sub">— where your family hails from</span>'));
-    p.appendChild(el("p", "hint", "Your old-world ancestry (the Post-Veil equivalent of a race). It grants a <b>Fighting Style</b> — <b>2 combat skills</b> from that style plus the style's signature <b>passive</b> — and <b>2 traits</b>. No attribute changes. You'll learn more combat skills (from any style) as you level."));
+    p.appendChild(el("p", "hint", "Your <b>ancestral lineage</b> — the historical people your family descends from (the Post-Veil equivalent of a race). You're a <b>present-day character</b>; your heritage is the tradition you were raised in and carry, not a claim to be those ancestors. It grants a <b>Fighting Style</b> — <b>2 combat skills</b> from that style plus the style's signature <b>passive</b> — and <b>2 traits</b>. No attribute changes. You'll learn more combat skills (from any style) as you level."));
     const grid = el("div", "bg-grid");
     PC.HERITAGES.forEach((h) => {
       const card = el("div", "bg-card" + (state.heritage === h.name ? " selected" : ""));

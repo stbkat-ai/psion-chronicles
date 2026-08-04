@@ -450,9 +450,11 @@ character's core competence. Flaws do **not** touch weapon attacks or initiative
 ## Section 3b — Regional Heritage (CONFIRMED Luke)
 
 Where the **Psionic Background** replaces a *class* system, **Regional Heritage** replaces a *race*
-system. It is chosen at creation **before Attributes** (creator step 2) and represents the **historical /
-ancestral peoples** of a real-world region — *not* the modern nation-state. (North America is the **Native
-nations of the continental US**, not modern American culture.)
+system. It is chosen at creation **before Attributes** (creator step 2) and represents your character's
+**ancestral lineage** — the **historical people your family descends from** (*not* the modern nation-state).
+Player characters are **present-day people** of the Post-Veil world; a heritage is the tradition you were
+**raised in and carry**, not a claim to *be* those ancestors. (North America means you **descend from the
+Native nations of the continental US** — not modern American culture.)
 
 > **Overhaul in progress (Luke & Brittany).** The heritage roster is being rebuilt from scratch toward the
 > final design: a fresh set of **9 peoples, built one at a time**. Each region is defined as we go — North

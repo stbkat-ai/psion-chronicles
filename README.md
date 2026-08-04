@@ -53,9 +53,11 @@ Account menu brings it back). Tap the **Psion Chronicles wordmark** in the heade
   1. Identity + Psionic Background (all 9). Each background also carries **one flaw** — a whole-attribute
      disadvantage on a stat the archetype doesn't lean on (e.g. Body Builder → *All Brawn*: disadvantage on
      Intelligence-based skills & Kinetic techniques). Flaws are flavor with a light bite, never build-breaking.
-  2. **Regional Heritage** — your character's **ancestral people** (replaces a race system). A heritage is the
-     **historical people** of a region, *not* the modern nation — e.g. **North America** is the **Native nations
-     of the continental US**, and its style leans on the **bow** and the ambush, not frontier six-shooters.
+  2. **Regional Heritage** — your character's **ancestral lineage** (replaces a race system). A heritage is the
+     **historical people your family descends from**, *not* the modern nation. Your character is a **present-day
+     person** who was raised in and carries that people's traditions — e.g. **North America** means you descend
+     from the **Native nations of the continental US**, and your style leans on the **bow** and the ambush, not
+     frontier six-shooters.
      *(The roster is being rebuilt toward the final design — a fresh set of **9 peoples, one at a time**, with
      Brittany writing the final version. **North America is done**; the rest are in development.)* Each grants a
      **Fighting Style** — and from it **2 Combat Skills + the style's signature Passive** — plus **2 Traits** and

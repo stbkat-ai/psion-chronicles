@@ -1413,6 +1413,11 @@ GAME_RULES 3b + Fighting-Styles table + scattered examples de-referenced from th
 step. Verified end-to-end (card details, granted skills, passive, detail panel, 0 console errors). Roster is
 **1 of 9**; the app shows a single heritage until we build the rest. Cache-buster **v=89**.
 
+**Framing follow-up (Luke, v=90).** Clarified that PCs are **descendants** — present-day people of the Post-Veil
+world who were *raised in and carry* their ancestral people's traditions, **not** the historical figures
+themselves. Reworded North America's blurb + flaw, the creator's Heritage-step intro, and the GAME_RULES 3b /
+README framing to say this explicitly. Applies to every heritage going forward.
+
 ---
 
 ## Deferred / future ideas
