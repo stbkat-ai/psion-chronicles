@@ -177,6 +177,9 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 .bg-card .badge.psi { color: var(--psi-bright); border-color: var(--border-glow); }
 .bg-card .badge.gold { color: var(--gold); border-color: var(--gold); }
 .bg-equip { font-size: .72rem; color: var(--text-faint); margin-top: 8px; line-height: 1.45; }
+.bg-prof { font-size: .74rem; color: var(--text-dim); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 3px; }
+.bg-prof .tag { font-size: .66rem; color: var(--text-faint); }
+.bg-prof .bg-flaw { color: var(--danger); }
 .bg-equip b { color: var(--text-dim); font-weight: 600; }
 .eq-choice-label { font-size: .78rem; color: var(--text-dim); margin: 12px 0 6px; letter-spacing: .5px; }
 

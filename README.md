@@ -53,20 +53,23 @@ Account menu brings it back). Tap the **Psion Chronicles wordmark** in the heade
   1. Identity + Psionic Background (all 9). Each background also carries **one flaw** — a whole-attribute
      disadvantage on a stat the archetype doesn't lean on (e.g. Body Builder → *All Brawn*: disadvantage on
      Intelligence-based skills & Kinetic techniques). Flaws are flavor with a light bite, never build-breaking.
-  2. **Regional Heritage** — pick 1 of **8 old-world regions** (replaces a race system). Each grants a
-     region-tied **Fighting Style** — and from it **2 Combat Skills + the style's signature Passive** — plus
-     **2 Traits** and **one flaw** (a narrow, situational disadvantage on a single skill — e.g. North America →
-     *Rough Around the Edges*: disadvantage on Etiquette). *No* attribute changes. Combat Skills are organized
-     into Fighting Styles the way techniques are organized into Kinetics (48 skills across 8 styles); they cost
-     no KP and only use action economy (Action / Bonus Action / Reaction / Passive). Each Heritage also grants a
-     **signature weapon-subtype proficiency** — one specific weapon that fits its style (e.g. Europe →
-     **Great Swords**, Oceania → **Daggers**, North America → **Revolvers**). You add your proficiency bonus to
-     attacks with that subtype even without the whole weapon-type proficiency. Your Heritage also sets your
-     **armor proficiency** — everyone can wear **Light**, and martial regions add **Medium/Heavy** (see the
-     armor system on the Inventory tab).
+  2. **Regional Heritage** — your character's **ancestral people** (replaces a race system). A heritage is the
+     **historical people** of a region, *not* the modern nation — e.g. **North America** is the **Native nations
+     of the continental US**, and its style leans on the **bow** and the ambush, not frontier six-shooters.
+     *(The roster is being rebuilt toward the final design — a fresh set of **9 peoples, one at a time**, with
+     Brittany writing the final version. **North America is done**; the rest are in development.)* Each grants a
+     **Fighting Style** — and from it **2 Combat Skills + the style's signature Passive** — plus **2 Traits** and
+     **one flaw** (a narrow, situational disadvantage on a single skill — North America → disadvantage on
+     Etiquette). *No* attribute changes. Combat Skills are organized into Fighting Styles the way techniques are
+     organized into Kinetics; they cost no KP and only use action economy (Action / Bonus / Reaction / Passive).
+     Each Heritage also grants a **signature weapon-subtype proficiency** — one specific weapon of that people
+     (North America → **Shortbows**) — you add your proficiency bonus to attacks with that subtype even without
+     the whole weapon-type proficiency. Your Heritage also sets your **armor proficiency** — everyone wears
+     **Light**, and some add **Medium/Heavy**. **The creator shows every one of these details on each heritage
+     card** so you can compare the full package before choosing.
   3. Attributes — roll 8d12 (drop 2 lowest, +10) or enter manually, then assign
-  4. Skills — background gives 3, choose 2 more (**+1 per skill-proficiency grant** from your Heritage —
-     e.g. Oceania's *Adaptable* makes it 3)
+  4. Skills — background gives 3, choose 2 more (**+1 per skill-proficiency grant** from your Heritage, if it
+     has one)
   5. Techniques — background's free one + choose 2 from any school. The 18 Kinetics are shown as **tabs**
      (tap one to browse just its Beginner techniques — no more scrolling a 90-card wall). Tabs are ordered
      **your focus first** (★, from your background), then any Kinetic you've already picked into (✦), then
@@ -76,12 +79,12 @@ Account menu brings it back). Tap the **Psion Chronicles wordmark** in the heade
      shortlist (up to **two per weapon subtype** — the simplest of each — so the picker stays short instead of
      listing every Common weapon). The dropdown groups weapons by **subtype**, each labelled *Type · Subtype*
      (e.g. *Heavy Weapons · Great Swords*), so it's easy to scan. Which *types* are on offer comes from **three** sources: (a) your background's
-     weapon proficiency; (b) any **bonus proficiency** a Heritage grants — e.g. Europe's *Martial Heritage* adds a
-     **bonus weapon-type** selector here, and both count as proficient; and (c) your Heritage's **Fighting Style
-     weapon focus**, which lets you **start with** weapons of its flavor even though you're **not proficient** with
-     them (tagged *"not proficient"* in the picker) — so a melee-background gunslinger (North America) can still
-     begin with a rifle. Two-weapon-fighting Heritages (Oceania's *Twin Fang*) instead offer a choice: **one
-     two-handed weapon _or_ two one-handed weapons**. (The full weapon catalog stays available in play — only
+     weapon proficiency; (b) any **bonus proficiency** a Heritage trait grants (adds a **bonus weapon-type**
+     selector here, and both count as proficient); and (c) your Heritage's **Fighting Style weapon focus**, which
+     lets you **start with** weapons of its flavor even though you're **not proficient** with them (tagged
+     *"not proficient"* in the picker) — so a melee-background character with North America's bow-focused style
+     can still begin with a shortbow. A two-weapon-fighting Heritage (if the roster has one) instead offers a
+     choice: **one two-handed weapon _or_ two one-handed weapons**. (The full weapon catalog stays available in play — only
      creation is limited to beginner weapons.) Your picks auto-populate the new character's inventory,
      pre-equipped and ready to roll
   7. **Description** — optional flavor: your character's **Basics** (age, gender, pronouns), **Physical

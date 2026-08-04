@@ -637,6 +637,16 @@
       const tr = el("div", "bg-equip");
       tr.innerHTML = h.traits.map((t) => `<div><b>${t.name}:</b> ${t.desc}</div>`).join("");
       card.appendChild(tr);
+      // Full mechanical package on the card itself — weapon proficiency, armor tier, and flaw — so a player
+      // sees every detail while comparing heritages, not only after selecting one.
+      const prof = el("div", "bg-prof");
+      const apShort = ["Light"].concat((h.armorProf || []).filter((c) => c !== "Light")).join(" / ");
+      const wt = PC.weaponTypeOfSubtype(h.weaponSubtype);
+      prof.innerHTML =
+        (h.weaponSubtype ? `<div>⚔ <b>${h.weaponSubtype}</b> weapon proficiency${wt ? ` <span class="tag">${wt}</span>` : ""}</div>` : "") +
+        `<div>🛡 <b>${apShort}</b> armor</div>` +
+        (h.flaw ? `<div class="bg-flaw">⚠ <b>${h.flaw.name}</b> — ${h.flaw.desc}</div>` : "");
+      card.appendChild(prof);
       card.onclick = () => {
         state.heritage = h.name;
         // Reset bonus weapon-prof slots to match this heritage's weapon grants (fresh, unchosen).

@@ -116,8 +116,8 @@ Armor comes in **three classes**, a clear tradeoff between mobility and protecti
 | **Heavy** | +5 to +6 | **none** | **−5 ft** | **disadvantage** |
 
 - **Armor proficiency.** Everyone is proficient with **Light**. **Medium** and **Heavy** proficiency come from
-  your **Regional Heritage** only (e.g. Europe & Africa grant Medium + Heavy; agile/monastic heritages like
-  Oceania, East Asia, South America grant Light only). Wearing a class you're **not** proficient with: you gain
+  your **Regional Heritage** only (heavy-armor cultures grant Medium/Heavy; agile/mobile peoples grant Light
+  only — e.g. North America's Native nations are Light-only). Wearing a class you're **not** proficient with: you gain
   **no Defense bonus** from it, and roll **AGI-based checks and attacks at disadvantage** while it's worn (the
   class's movement/Stealth effects still apply).
 - **Rarity** (as with weapons): **Common · Uncommon · Rare · Very Rare · Legendary.** Higher-rarity armor is
@@ -450,52 +450,56 @@ character's core competence. Flaws do **not** touch weapon attacks or initiative
 ## Section 3b — Regional Heritage (CONFIRMED Luke)
 
 Where the **Psionic Background** replaces a *class* system, **Regional Heritage** replaces a *race*
-system. It is chosen at creation **before Attributes** (creator step 2) and represents your character's
-old-world ancestry, grouped into **8 broad regions**.
+system. It is chosen at creation **before Attributes** (creator step 2) and represents the **historical /
+ancestral peoples** of a real-world region — *not* the modern nation-state. (North America is the **Native
+nations of the continental US**, not modern American culture.)
+
+> **Overhaul in progress (Luke & Brittany).** The heritage roster is being rebuilt from scratch toward the
+> final design: a fresh set of **9 peoples, built one at a time**. Each region is defined as we go — North
+> America excludes Canada and Mexico, which each become their own heritage later. Because a heritage is a
+> *people*, its Fighting Style, signature weapon, and traits reflect that people's real historical martial
+> tradition. All of it is placeholder for Brittany to finalize.
 
 **Heritage grants — and only grants:**
 - **1 Fighting Style** (below), and from it **2 Combat Skills** + the style's **signature Passive**.
 - **1 weapon-subtype proficiency** — a **fixed, signature weapon** matching the heritage's flavor (see table
   below). Unlike a background's whole-**type** proficiency, this trains you in **one specific subtype**: you
   add your proficiency bonus to attacks with any weapon of that subtype, even without the parent type's
-  proficiency (e.g. Europe grants **Great Swords** — you're proficient with Great Swords but not the rest of
-  Heavy Weapons). It also may add nothing new if you're already proficient with the whole parent type.
+  proficiency (e.g. North America grants **Shortbows** — you're proficient with Shortbows but not the rest of
+  Archery). It also may add nothing new if you're already proficient with the whole parent type.
 - **2 Traits** — always-on roleplay/utility perks (advantage on certain checks, an extra language, etc.).
 - **1 flaw** — a **narrow, situational** disadvantage on **one specific skill** (never a whole attribute).
   Kept deliberately small so that, whatever Background a player pairs with a Heritage, the flaw can't land on
   the character's primary stat. Backgrounds carry the broad (attribute-wide) flaw; Heritages carry the pinpoint one.
 
-**Choosable proficiency grants (CONFIRMED Luke).** Some traits grant an *extra proficiency the player picks*:
-- **Weapon-proficiency grant** (e.g. Europe's *Martial Heritage*) → choose **one extra weapon type**. This is
-  picked on the **Equipment** step, and your starting-weapon options then span **every** type you're proficient
-  with (background + bonus).
-- **Skill-proficiency grant** (e.g. Oceania's *Adaptable*) → choose **one extra skill** — the Skills step's
-  "choose N" simply increases by 1.
+**Choosable proficiency grants.** A trait *may* grant an **extra proficiency the player picks** (the mechanic
+is retained for the rebuild even though no current heritage uses one yet):
+- **Weapon-proficiency grant** → choose **one extra weapon type**. This is picked on the **Equipment** step,
+  and your starting-weapon options then span **every** type you're proficient with (background + bonus).
+- **Skill-proficiency grant** → choose **one extra skill** — the Skills step's "choose N" simply increases by 1.
 > Because a weapon-proficiency grant changes what gear you can wield, **starting-equipment selection is the
 > last step of creation** (after Heritage), so the grant is already chosen when you pick your loadout.
 
 Heritage never touches attribute scores or pools. Two characters of the same Background differ by the
 Fighting Style, Combat Skills, and Traits their Heritage opened up.
 
-**Signature weapon-subtype proficiency (fixed per heritage):**
+**The fresh roster (1 of 9 built so far):**
 
-| Heritage | Fighting Style | Signature weapon subtype | Parent type (attr) |
-|---|---|---|---|
-| North America | Frontier Gunslinging | **Revolvers** | Firearms (CON) |
-| South America | Flowing Movement | **Blowguns** | Quick Weapons (AGI) |
-| Europe | Chivalric Swordplay | **Great Swords** | Heavy Weapons (STR) |
-| United Kingdom | Fencing | **Fencing Swords** | Finesse Weapons (CHA) |
-| Africa | Warden's Bulwark | **Maces** | Heavy Weapons (STR) |
-| Middle East | Desert Whirlwind | **Short Swords** | Light Weapons (AGI) |
-| East Asia | Way of the Open Hand | **Full Fists** | Fist Weapons (STR) |
-| Oceania | Twin Fang | **Daggers** | Light Weapons (AGI) |
+| Heritage | People / region | Fighting Style | Signature weapon | Armor | Flaw |
+|---|---|---|---|---|---|
+| **North America** | Native nations of the continental US | Way of the Hunt | **Shortbows** (Archery/STR) | Light only | Etiquette |
+
+*The other 8 are in development, built one at a time with Luke. Way of the Hunt is a pan-Native skirmisher/hunter
+style — Hunter's Aim (called-shot bow), Fade Away (hit-and-hide), Volley, Ambush, Harrier's Shot, and the
+**Pathfinder** passive (ignore natural terrain, track/forage advantage, leave no trail). Traits: **One with the
+Land** (find food/water/shelter, resist the elements) and **Keen Senses** (Awareness). Armor is Light only.*
 
 ### Fighting Styles & Combat Skills (the mechanic)
 Combat Skills work like Kinetic Techniques: there are **many**, organized into categories called
 **Fighting Styles** (the combat-skill equivalent of the Kinetics). Each Fighting Style is **tied to a
-region** and contains a handful of Action / Bonus Action / Reaction skills **plus one signature Passive
-buff** unique to that style (e.g. Twin Fang's *Two-Weapon Fighting* — attack again with an off-hand weapon
-while dual-wielding).
+people/region** and contains a handful of Action / Bonus Action / Reaction skills **plus one signature Passive
+buff** unique to that style (e.g. Way of the Hunt's *Pathfinder* — ignore natural difficult terrain, track and
+forage with advantage, and leave no trail).
 
 - **Combat Skills cost no resource** (no KP) — they only consume **action economy**.
 - Each skill is one of **Action**, **Bonus Action**, **Reaction**, or **Passive**.
@@ -503,34 +507,27 @@ while dual-wielding).
   Attack, Feint, Quick Draw, Rapid Slash, Precise Thrust, Crescent Strike, Lunge, Stunning Blow, Flourish)
   is a **Bonus Action**, so it layers onto a weapon attack the same turn. Skills that *are* the attack
   (Cleave, Twin Strike, Spinning Cut, Palm Strike…) are **Actions**.
-- **Passive buffs** (each style's signature) are always-on; a few are econ-boosters (Second Strike, Flurry,
-  Two-Weapon Fighting) whose extra-attack mechanics are described in text and wired into the tracker later.
+- **Passive buffs** (each style's signature) are always-on; a few are econ-boosters (extra-attack or
+  two-weapon passives) whose mechanics are described in text and wired into the tracker later.
 - A style's Passive **can be learned by any character** with CSP, regardless of Heritage — as can any other
   style's skills.
 
-### The 8 Heritages → Fighting Styles
+### Heritages → Fighting Styles (fresh roster — 1 of 9)
 | Heritage | Fighting Style | Starting Combat Skills | Signature Passive | Traits | Flaw (disadvantage) |
 |---|---|---|---|---|---|
-| **North America** | Frontier Gunslinging | Marksmanship, Suppressing Fire | Deadeye | Frontier Grit, Scavenger | *Rough Around the Edges* — Etiquette |
-| **South America** | Flowing Movement | Combat Roll, Dodge Roll | Momentum | Jungle-Born, Herbal Lore | *Untamed* — Technology |
-| **Europe** | Chivalric Swordplay | Riposte, Power Attack | Second Strike | Martial Heritage, Old-World Scholar | *Rigid Form* — Acrobatics |
-| **United Kingdom** | Fencing | Parry, Feint | En Garde | Stiff Upper Lip, Composed | *Too Polite* — Intimidation |
-| **Africa** | Warden's Bulwark | Guardian, Bracing Stance | Ironhide | Enduring, Kinship | *Immovable* — Stealth |
-| **Middle East** | Desert Whirlwind | Spinning Cut, Deflecting Slash | Whirlwind | Shrewd Trader, Desert-Hardened | *Eye for the Deal* — Paranormal |
-| **East Asia** | Way of the Open Hand | Palm Strike, Deflect | Flurry | Inner Focus, Disciplined | *Reserved* — Performance |
-| **Oceania** | Twin Fang | Twin Strike, Rapid Slash | Two-Weapon Fighting | Seafarer, Adaptable | *Far From the Archives* — History |
+| **North America** | Way of the Hunt | Hunter's Aim, Fade Away | Pathfinder | One with the Land, Keen Senses | *Unversed in Old-World Customs* — Etiquette |
 
-Each style holds **5 active skills + 1 Passive** (48 combat skills total). Full skill text lives in
-`app/data.js` (`PC.FIGHTING_STYLES`); the app is the source of truth for exact effects.
+*The other 8 heritages are being rebuilt one at a time (see 3b). Each style holds **5 active skills + 1
+Passive**. Full skill text lives in `app/data.js` (`PC.FIGHTING_STYLES`); the app is the source of truth.*
 
 **Heritage & starting gear (CONFIRMED Luke).** A Fighting Style also flavors your **starting-weapon
 options**. Each style lists `startWeaponTypes` — weapon types you may **begin play with even if you're not
 proficient** (they don't grant proficiency; a background/grant does). So a melee-proficient character with a
-ranged Heritage (Frontier Gunslinging → Archery/Firearms/Explosives/Volatile) can start with a ranged weapon,
-picking one that suits their attributes — or stick to their proficient type. This stacks with (a) the
-background's weapon proficiency and (b) any Heritage **bonus proficiency** (Europe's *Martial Heritage* — a
-chosen extra type, which **is** proficient). Two-weapon-fighting Heritages (Oceania's *Twin Fang*, flagged
-`twoWeapon`) instead pick **one two-handed weapon _or_ two one-handed weapons** at creation.
+ranged Heritage (Way of the Hunt → Archery/Light/Thrown) can start with a bow, picking one that suits their
+attributes — or stick to their proficient type. This stacks with (a) the background's weapon proficiency and
+(b) any Heritage **bonus proficiency** (a trait that grants a chosen extra type, which **is** proficient).
+A two-weapon-fighting Heritage (flagged `twoWeapon`), if one exists in the roster, instead picks **one
+two-handed weapon _or_ two one-handed weapons** at creation.
 
 ### Combat Skill Points (CSP) — learning more (CONFIRMED Luke)
 Combat Skills use their **own** currency, separate from Technique Points and attribute points:
@@ -623,8 +620,8 @@ CON = Firearms/Explosives/Volatile, INT = Laser/Plasma/Tech, WIS = Channel/Livin
 
 ### Weapon properties — hands & rarity (CONFIRMED Luke)
 Every catalog weapon records two extra properties:
-- **Hands — one-handed or two-handed.** Matters for dual-wielding: the *Two-Weapon Fighting* passive and the
-  *Twin Fang* combat skills require a **one-handed weapon in each hand**. The app tags each weapon 1H/2H on
+- **Hands — one-handed or two-handed.** Matters for dual-wielding: a two-weapon-fighting passive and its
+  combat skills require a **one-handed weapon in each hand**. The app tags each weapon 1H/2H on
   the catalog and on the equipped-weapon combat card.
 - **Rarity — D&D-style tiers:** **Common · Uncommon · Rare · Very Rare · Legendary.** Only **Common** weapons
   are ever eligible as **starting gear**; higher-rarity weapons are found/earned in play (loot,

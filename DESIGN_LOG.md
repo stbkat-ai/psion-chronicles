@@ -1382,6 +1382,39 @@ count-free, badges live, ladder engine-derived, 0 console errors. Cache-buster *
 
 ---
 
+### 62. Heritage overhaul begins — fresh roster of 9, one at a time; #1 = North America
+**Direction (Luke).** The heritage system is getting a "slight overhaul" toward what he & Brittany want for the
+final book. Two calls: **(a)** a **fresh roster of 9** (the magic number for first edition), **built one at a
+time** like the Otherkin — cleared the old 8; **(b)** keep the same **anatomy** (Fighting Style + 2 Combat
+Skills + weapon subtype + armor + 2 Traits + 1 Flaw). Crucial reframe: **a heritage is the historical /
+ancestral people of a region, not the modern nation** — North America = the **Native nations of the continental
+US**, *not* modern American culture (the old "Frontier Gunslinging / Revolvers" was exactly the colonial-modern
+read this fixes). Regions are defined as we go; North America **excludes Canada and Mexico** (each their own
+heritage later, since those peoples are genuinely distinct). Handled with care since this is a published product
+built on real cultures — grounded in authentic tradition, steering clear of stereotype (e.g. no "noble-savage"
+flaw); all placeholder for Brittany to finalize.
+
+**Heritage #1 — North America** (pan-Native blend, Luke's pick — honors the breadth, no Plains-warrior monolith):
+- **Fighting Style "Way of the Hunt"** — skirmisher/hunter. Skills: ★Hunter's Aim (called-shot bow), ★Fade Away
+  (hit-and-hide → Hidden), Volley (area disadvantage), Ambush (bonus die from Hidden/first-strike), Harrier's
+  Shot (reaction shot on movement), and the **Pathfinder** passive (ignore natural terrain, track/forage
+  advantage, leave no trail). startWeaponTypes: Archery/Light/Thrown.
+- **Signature weapon:** **Shortbows** (Archery/STR) — the bow is near-universal across the nations; short
+  self-bows over the English longbow. **Armor:** Light only. **Traits:** One with the Land (provision + resist
+  the elements), Keen Senses (Awareness). **Flaw:** Etiquette (unversed in old-world court customs).
+
+**Also (Luke's ask):** the creator's heritage **cards** now show the **full package** — the signature weapon
+proficiency (+ parent type), armor tier, and the flaw — right on each card, so a player sees every detail while
+comparing, not only after selecting. (The detail panel already listed them; the gap was the grid.)
+
+**Data note.** Cleared `PC.HERITAGES`/`PC.FIGHTING_STYLES` down to North America / Way of the Hunt (COMBAT_SKILLS
+auto-derives → 6). No hardcoded old-heritage refs in code. The **Codex auto-updated** (reads live). Docs rewritten:
+GAME_RULES 3b + Fighting-Styles table + scattered examples de-referenced from the retired roster; README creator
+step. Verified end-to-end (card details, granted skills, passive, detail panel, 0 console errors). Roster is
+**1 of 9**; the app shows a single heritage until we build the rest. Cache-buster **v=89**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

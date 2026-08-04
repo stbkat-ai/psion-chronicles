@@ -649,94 +649,16 @@ PC.CONDITIONS = [
    A character's Regional Heritage grants ONE style, 2 active skills from it, and the
    style's Passive. Any skill or passive from ANY style can be learned later with CSP. */
 PC.FIGHTING_STYLES = [
-  { name: "Frontier Gunslinging", heritage: "North America",
-    blurb: "Frontier shooting — patience, cover, and a called shot when it counts.",
-    startWeaponTypes: ["Archery", "Firearms", "Explosives", "Volatile Weapons"], // ranged-focused
+  { name: "Way of the Hunt", heritage: "North America",
+    blurb: "The skilled hunter-warrior — mobility, the bow, and the ambush. Strike from where you can't be seen, and fade before the answer comes.",
+    startWeaponTypes: ["Archery", "Light Weapons", "Thrown Weapons"], // bow + knife/club + thrown
     skills: [
-      { name: "Marksmanship", action: "Bonus Action", calledShot: true, effect: "After you make a ranged attack (weapon or technique), but before rolling its damage, spend your Bonus Action to aim a called shot at one of the target's limbs. Roll a skill check using that attack's attribute (+ proficiency); the GM sets the DC by the target's size and difficulty. On a success the shot strikes the chosen limb — apply the attack's damage there." },
-      { name: "Suppressing Fire", action: "Action", effect: "Rake a 15-ft area with fire; enemies there have disadvantage on attacks until your next turn." },
-      { name: "Quick Draw", action: "Bonus Action", effect: "Draw or holster a weapon for free, then make a ranged attack with it." },
-      { name: "Counter-Fire", action: "Reaction", effect: "When a creature you can see makes a ranged attack, make a ranged attack against it." },
-      { name: "Trick Shot", action: "Action", effect: "A ranged attack that, on a hit, also disarms the target or knocks it prone." },
-      { name: "Deadeye", action: "Passive", effect: "Once per turn you may reroll one ranged damage die showing 1 or 2, and your ranged attacks ignore half cover." },
-    ] },
-  { name: "Flowing Movement", heritage: "South America",
-    blurb: "Jungle-forged agility — never where the blow lands, always moving.",
-    startWeaponTypes: ["Light Weapons", "Quick Weapons", "Thrown Weapons"], // agile
-    skills: [
-      { name: "Combat Roll", action: "Bonus Action", effect: "Move up to half your speed without provoking opportunity attacks." },
-      { name: "Dodge Roll", action: "Reaction", effect: "Impose disadvantage on one attack against you and shift 5 ft." },
-      { name: "Vault Strike", action: "Action", effect: "Leap off terrain or a foe into a melee attack made with advantage." },
-      { name: "Tumble", action: "Bonus Action", effect: "Move through an enemy's space; your next attack this turn ignores its shield/cover bonus." },
-      { name: "Leg Sweep", action: "Action", effect: "Melee attack that knocks the target prone on a hit." },
-      { name: "Momentum", action: "Passive", effect: "If you move at least 15 ft before attacking, that attack deals +2 damage." },
-    ] },
-  { name: "Chivalric Swordplay", heritage: "Europe",
-    blurb: "A long, disciplined melee tradition — pressure, reach, and the counter.",
-    startWeaponTypes: ["Heavy Weapons", "Light Weapons"], // knightly melee
-    skills: [
-      { name: "Riposte", action: "Reaction", effect: "When a melee attack misses you, make a melee attack against the attacker." },
-      { name: "Power Attack", action: "Bonus Action", effect: "Enhance a weapon attack this turn: +1 damage die at −2 to hit." },
-      { name: "Cleave", action: "Action", effect: "Make a melee weapon attack against every enemy within your reach." },
-      { name: "Lunge", action: "Bonus Action", effect: "Extend your melee reach by 5 ft for one attack this turn." },
-      { name: "Shield Bash", action: "Action", effect: "Melee attack that, on a hit, staggers the target — it loses its next reaction." },
-      { name: "Second Strike", action: "Passive", effect: "When you take the Attack action with a melee weapon, make one additional melee attack." },
-    ] },
-  { name: "Fencing", heritage: "United Kingdom",
-    blurb: "Precise, composed bladework — parry, feint, and the perfect thrust.",
-    startWeaponTypes: ["Finesse Weapons", "Light Weapons"], // finesse blades
-    skills: [
-      { name: "Parry", action: "Reaction", effect: "When hit by a melee attack, reduce its damage by your weapon die + relevant mod." },
-      { name: "Feint", action: "Bonus Action", effect: "Your next weapon attack this turn is made with advantage." },
-      { name: "Disarm", action: "Action", effect: "Contested attack to knock a weapon from a target's hand; it drops its weapon." },
-      { name: "Bind Blade", action: "Reaction", effect: "When a melee attack misses you, the attacker can't attack with that weapon on its next turn." },
-      { name: "Precise Thrust", action: "Bonus Action", effect: "Your next melee attack this turn ignores the target's armor Defense bonus." },
-      { name: "En Garde", action: "Passive", effect: "While wielding a one-handed melee weapon and no shield, gain +1 to your Defense Score." },
-    ] },
-  { name: "Warden's Bulwark", heritage: "Africa",
-    blurb: "Community-strong defense — hold the line and shield your kin.",
-    startWeaponTypes: ["Heavy Weapons", "Fist Weapons"], // bulwark
-    skills: [
-      { name: "Guardian", action: "Reaction", effect: "When an ally within reach is hit, take the attack's damage in their place (or halve it)." },
-      { name: "Bracing Stance", action: "Bonus Action", effect: "Until your next turn, reduce forced movement against you to 0 and gain advantage to resist being knocked prone." },
-      { name: "Grapple", action: "Action", effect: "Contested check to restrain a foe within reach — it is Rooted while grappled." },
-      { name: "Intercept", action: "Reaction", effect: "When an enemy moves within your reach, move up to 5 ft to block it and make a melee attack." },
-      { name: "Rallying Strike", action: "Action", effect: "Melee attack; on a hit, an ally within 15 ft gains temp HP equal to your Soul Level." },
-      { name: "Ironhide", action: "Passive", effect: "At the start of each combat gain temp HP equal to your CON mod, and +1 to your Defense Score." },
-    ] },
-  { name: "Desert Whirlwind", heritage: "Middle East",
-    blurb: "Sweeping curved-blade work — one motion, many foes.",
-    startWeaponTypes: ["Light Weapons", "Finesse Weapons"], // curved blades
-    skills: [
-      { name: "Spinning Cut", action: "Action", effect: "One melee attack roll resolved against two enemies within your reach." },
-      { name: "Deflecting Slash", action: "Reaction", effect: "When hit by a melee attack, reduce its damage by your weapon die; if reduced to 0, make a free melee attack against the attacker." },
-      { name: "Crescent Strike", action: "Bonus Action", effect: "A melee attack that, on a hit, pushes the target 5 ft and lets you move with it." },
-      { name: "Sand Veil", action: "Bonus Action", effect: "Kick up dust; the next attack against you this round has disadvantage." },
-      { name: "Sweeping Charge", action: "Action", effect: "Move up to your speed in a line and make a melee attack against each enemy you pass." },
-      { name: "Whirlwind", action: "Passive", effect: "Once per turn, when you hit with a melee attack, deal your weapon mod as damage to another enemy within reach." },
-    ] },
-  { name: "Way of the Open Hand", heritage: "East Asia",
-    blurb: "Unarmed martial discipline — the body itself is the weapon.",
-    startWeaponTypes: ["Fist Weapons"], // unarmed
-    skills: [
-      { name: "Palm Strike", action: "Action", effect: "Unarmed melee attack that pushes the target 10 ft on a hit." },
-      { name: "Deflect", action: "Reaction", effect: "When hit by a ranged weapon attack, reduce the damage by 1d10 + AGI mod; if reduced to 0, catch the projectile." },
-      { name: "Stunning Blow", action: "Bonus Action", effect: "After an unarmed hit this turn, the target can't take reactions until your next turn." },
-      { name: "Pressure Point", action: "Action", effect: "Unarmed attack; on a hit, the target has disadvantage on its next attack roll." },
-      { name: "Step of the Wind", action: "Bonus Action", effect: "Take the Dash or Disengage action; your jump distance is doubled this turn." },
-      { name: "Flurry", action: "Passive", effect: "When you take the Attack action with an unarmed strike, make one additional unarmed strike." },
-    ] },
-  { name: "Twin Fang", heritage: "Oceania",
-    blurb: "Island dual-wielding — a weapon in each hand, twice the openings.",
-    startWeaponTypes: ["Light Weapons", "Quick Weapons", "Finesse Weapons"], // one-handed friendly
-    twoWeapon: true, // starting gear: one two-handed weapon OR two one-handed weapons
-    skills: [
-      { name: "Twin Strike", action: "Action", effect: "Attack a single target with both of your equipped one-handed weapons." },
-      { name: "Rapid Slash", action: "Bonus Action", effect: "Make one attack with your off-hand one-handed weapon." },
-      { name: "Cross Parry", action: "Reaction", effect: "While dual-wielding, when hit by a melee attack reduce its damage by both weapon dice." },
-      { name: "Whirl of Steel", action: "Action", effect: "Attack every enemy within your reach with your off-hand weapon." },
-      { name: "Flourish", action: "Bonus Action", effect: "Feint with one weapon; your next attack with the other has advantage." },
-      { name: "Two-Weapon Fighting", action: "Passive", effect: "While holding a one-handed weapon in each hand, when you take the Attack action you may make one additional attack with your off-hand weapon." },
+      { name: "Hunter's Aim", action: "Bonus Action", calledShot: true, effect: "After you make a ranged attack (weapon or technique), but before rolling its damage, spend your Bonus Action to aim a called shot at one of the target's limbs. Roll a skill check using that attack's attribute (+ proficiency); the GM sets the DC by the target's size and difficulty. On a success the shot strikes the chosen limb — apply the attack's damage there." },
+      { name: "Fade Away", action: "Bonus Action", effect: "Move up to half your speed without provoking opportunity attacks; if you end your move in cover or concealment, you become Hidden." },
+      { name: "Volley", action: "Action", effect: "Loose a hail of arrows over a 15-ft area; enemies there have disadvantage on attacks until your next turn." },
+      { name: "Ambush", action: "Action", effect: "A ranged attack made while Hidden — or against a foe that hasn't yet acted this combat — deals an extra damage die on a hit." },
+      { name: "Harrier's Shot", action: "Reaction", effect: "When a creature you can see moves, make a ranged attack against it." },
+      { name: "Pathfinder", action: "Passive", effect: "Natural difficult terrain (forest, marsh, rock, snow) costs you no extra movement, and you have advantage on Survival checks to track or forage. You also leave no discernible trail — nonmagical attempts to track you fail." },
     ] },
 ];
 
@@ -753,46 +675,11 @@ PC.COMBAT_SKILLS = PC.FIGHTING_STYLES.reduce(function (all, st) {
 /* Grants ONE Fighting Style, 2 active combat skills from it, that style's Passive,
    and 2 roleplay traits. No attribute changes. Chosen before Attributes. */
 PC.HERITAGES = [
-  { name: "North America", blurb: "Rugged frontier stock — self-reliant survivors of the wild expanse.",
-    fightingStyle: "Frontier Gunslinging", combatSkills: ["Marksmanship", "Suppressing Fire"], weaponSubtype: "Revolvers", armorProf: ["Medium"],  // classes beyond the universal Light
-    traits: [ { name: "Frontier Grit", desc: "Advantage on Survival checks in the wilderness." },
-              { name: "Scavenger", desc: "Advantage on checks to jury-rig or repair with salvaged parts." } ],
-    flaw: { name: "Rough Around the Edges", desc: "Frontier manners grate on polished company. Disadvantage on Etiquette.", disadvSkill: "Etiquette" } },
-  { name: "South America", blurb: "Jungle-forged and resourceful, at home in dense, untamed country.",
-    fightingStyle: "Flowing Movement", combatSkills: ["Combat Roll", "Dodge Roll"], weaponSubtype: "Blowguns", armorProf: [],  // classes beyond the universal Light
-    traits: [ { name: "Jungle-Born", desc: "Advantage on Acrobatics and moving through natural difficult terrain." },
-              { name: "Herbal Lore", desc: "Advantage on Herbalism; identify plants and toxins at a glance." } ],
-    flaw: { name: "Untamed", desc: "Old-world machinery is alien to you. Disadvantage on Technology.", disadvSkill: "Technology" } },
-  { name: "Europe", blurb: "Heirs to a long, disciplined martial tradition.",
-    fightingStyle: "Chivalric Swordplay", combatSkills: ["Riposte", "Power Attack"], weaponSubtype: "Great Swords", armorProf: ["Medium", "Heavy"],  // classes beyond the universal Light
-    traits: [ { name: "Martial Heritage", desc: "You gain one additional weapon-type proficiency.", grant: { kind: "weapon" } },
-              { name: "Old-World Scholar", desc: "You speak an extra old-world language; advantage on Etiquette." } ],
-    flaw: { name: "Rigid Form", desc: "Disciplined stances resist improvisation. Disadvantage on Acrobatics.", disadvSkill: "Acrobatics" } },
-  { name: "United Kingdom", blurb: "Stoic and tactical, unshaken under pressure.",
-    fightingStyle: "Fencing", combatSkills: ["Parry", "Feint"], weaponSubtype: "Fencing Swords", armorProf: ["Medium"],  // classes beyond the universal Light
-    traits: [ { name: "Stiff Upper Lip", desc: "Advantage on checks and saves to resist Fear." },
-              { name: "Composed", desc: "Advantage on Insight to read a tense situation." } ],
-    flaw: { name: "Too Polite", desc: "You'd sooner reason than menace. Disadvantage on Intimidation.", disadvSkill: "Intimidation" } },
-  { name: "Africa", blurb: "Enduring and community-strong, forged by hardship and kinship.",
-    fightingStyle: "Warden's Bulwark", combatSkills: ["Guardian", "Bracing Stance"], weaponSubtype: "Maces", armorProf: ["Medium", "Heavy"],  // classes beyond the universal Light
-    traits: [ { name: "Enduring", desc: "Advantage on Hardiness and checks to resist exhaustion." },
-              { name: "Kinship", desc: "Advantage on Persuasion within a community; rally to stabilize a downed ally." } ],
-    flaw: { name: "Immovable", desc: "Built to hold ground, not to slink past it. Disadvantage on Stealth.", disadvSkill: "Stealth" } },
-  { name: "Middle East", blurb: "Resilient warrior-traders, sharp of eye and tongue.",
-    fightingStyle: "Desert Whirlwind", combatSkills: ["Spinning Cut", "Deflecting Slash"], weaponSubtype: "Short Swords", armorProf: ["Medium"],  // classes beyond the universal Light
-    traits: [ { name: "Shrewd Trader", desc: "Advantage on Barter." },
-              { name: "Desert-Hardened", desc: "Resist extreme heat and thirst; advantage on Tolerance vs. environment." } ],
-    flaw: { name: "Eye for the Deal", desc: "You weigh profit before portents. Disadvantage on Paranormal.", disadvSkill: "Paranormal" } },
-  { name: "East Asia", blurb: "Honed by generations of martial discipline and focus.",
-    fightingStyle: "Way of the Open Hand", combatSkills: ["Palm Strike", "Deflect"], weaponSubtype: "Full Fists", armorProf: [],  // classes beyond the universal Light
-    traits: [ { name: "Inner Focus", desc: "Advantage on Concentration checks." },
-              { name: "Disciplined", desc: "You speak an extra language; advantage on precise, patient tasks." } ],
-    flaw: { name: "Reserved", desc: "Discipline over showmanship. Disadvantage on Performance.", disadvSkill: "Performance" } },
-  { name: "Oceania", blurb: "Seafaring and adaptable, thriving between island and open water.",
-    fightingStyle: "Twin Fang", combatSkills: ["Twin Strike", "Rapid Slash"], weaponSubtype: "Daggers", armorProf: [],  // classes beyond the universal Light
-    traits: [ { name: "Seafarer", desc: "Advantage to swim, sail, or navigate water; hold your breath long." },
-              { name: "Adaptable", desc: "You gain one extra skill proficiency of your choice.", grant: { kind: "skill" } } ],
-    flaw: { name: "Far From the Archives", desc: "Island life kept the old-world academies at arm's length. Disadvantage on History.", disadvSkill: "History" } },
+  { name: "North America", blurb: "The Indigenous nations of this land — hunters, trackers, and warriors who read the country like a book and never fight on ground they didn't choose.",
+    fightingStyle: "Way of the Hunt", combatSkills: ["Hunter's Aim", "Fade Away"], weaponSubtype: "Shortbows", armorProf: [],  // Light only (the universal tier)
+    traits: [ { name: "One with the Land", desc: "In any natural wilderness you can reliably find food, water, and shelter for yourself and a small group, and you have advantage on checks to resist natural environmental hardship (cold, heat, hunger, thirst)." },
+              { name: "Keen Senses", desc: "Advantage on Awareness checks to notice danger, an ambush, or something out of place." } ],
+    flaw: { name: "Unversed in Old-World Customs", desc: "The formal court manners of the old world were never your people's world. Disadvantage on Etiquette.", disadvSkill: "Etiquette" } },
 ];
 
 /* --- Constants ----------------------------------------------------------- */
