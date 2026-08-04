@@ -59,7 +59,8 @@ Account menu brings it back). Tap the **Psion Chronicles wordmark** in the heade
      from the **Native nations of the continental US**, and your style leans on the **bow** and the ambush, not
      frontier six-shooters.
      *(The roster is being rebuilt toward the final design — a fresh set of **9 peoples, one at a time**, with
-     Brittany writing the final version. **North America is done**; the rest are in development.)* Each grants a
+     Brittany writing the final version. **North America** and **The Great North** are done; the rest are in
+     development.)* Each grants a
      **Fighting Style** — and from it **2 Combat Skills + the style's signature Passive** — plus **2 Traits** and
      **one flaw** (a narrow, situational disadvantage on a single skill — North America → disadvantage on
      Etiquette). *No* attribute changes. Combat Skills are organized into Fighting Styles the way techniques are

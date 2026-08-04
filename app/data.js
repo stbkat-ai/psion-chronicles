@@ -660,6 +660,17 @@ PC.FIGHTING_STYLES = [
       { name: "Harrier's Shot", action: "Reaction", effect: "When a creature you can see moves, make a ranged attack against it." },
       { name: "Pathfinder", action: "Passive", effect: "Natural difficult terrain (forest, marsh, rock, snow) costs you no extra movement, and you have advantage on Survival checks to track or forage. You also leave no discernible trail — nonmagical attempts to track you fail." },
     ] },
+  { name: "Way of the Long Winter", heritage: "The Great North",
+    blurb: "The enduring big-game hunter — close with the harpoon and spear, tether what flees, and outlast anything that breathes.",
+    startWeaponTypes: ["Thrown Weapons", "Light Weapons", "Heavy Weapons"], // harpoon (thrown), ulu/knife, club/axe
+    skills: [
+      { name: "Harpoon Throw", action: "Action", effect: "Hurl a harpoon or spear at a target in range; on a hit it takes the attack's damage and is Slowed (movement halved) until your next turn — or you may instead pull it 5 ft toward you. The line that stops fleeing game." },
+      { name: "Brace", action: "Reaction", effect: "When you're hit by an attack, plant yourself and reduce that attack's damage by your CON modifier (minimum 2); you cannot be knocked prone or pushed by that hit." },
+      { name: "Take Down", action: "Action", effect: "A melee attack that, on a hit, also lets you attempt to knock the target prone or grapple it (your choice) — bring the big beast down." },
+      { name: "Second Wind", action: "Bonus Action", effect: "Draw on deep endurance: end one condition affecting you (Slowed, Frightened, or Bleeding), or regain a small amount of HP." },
+      { name: "Killing Blow", action: "Action", effect: "A melee attack that deals an extra damage die on a hit against a target that is Slowed, prone, grappled, or below half its HP — the finish for wounded prey." },
+      { name: "Winterhardened", action: "Passive", effect: "Extreme cold and icy or snowy terrain never affect you (no cold damage, no extra movement cost), and you have advantage on checks to resist exhaustion. Once per combat, you may ignore being knocked prone or forcibly moved." },
+    ] },
 ];
 
 /* Flattened master list — every combat skill across all styles, tagged with its style.
@@ -680,6 +691,11 @@ PC.HERITAGES = [
     traits: [ { name: "One with the Land", desc: "In any natural wilderness you can reliably find food, water, and shelter for yourself and a small group, and you have advantage on checks to resist natural environmental hardship (cold, heat, hunger, thirst)." },
               { name: "Keen Senses", desc: "Advantage on Awareness checks to notice danger, an ambush, or something out of place." } ],
     flaw: { name: "Unversed in Old-World Customs", desc: "Formal old-world court manners were never part of how you were raised. Disadvantage on Etiquette.", disadvSkill: "Etiquette" } },
+  { name: "The Great North", blurb: "A present-day descendant of the peoples of ice, boreal forest, and open tundra — First Nations and Inuit alike. Raised to endure what breaks others: the blizzard, the long dark, and the big beast that turns to fight.",
+    fightingStyle: "Way of the Long Winter", combatSkills: ["Harpoon Throw", "Brace"], weaponSubtype: "Knives", armorProf: ["Medium"],  // layered hide/fur/bone-plate armor
+    traits: [ { name: "People of the Ice", desc: "In frozen or wild country you can reliably find food, water, and shelter for yourself and a small group, and you never lose your way on ice, snow, or open tundra." },
+              { name: "Iron Constitution", desc: "Advantage on checks and saves to resist exhaustion, hunger, thirst, poison, and disease — your body is forged to outlast the long dark." } ],
+    flaw: { name: "Plain-Spoken", desc: "The elaborate courtesies of the southern courts weren't part of how you were raised. Disadvantage on Etiquette.", disadvSkill: "Etiquette" } },
 ];
 
 /* --- Constants ----------------------------------------------------------- */

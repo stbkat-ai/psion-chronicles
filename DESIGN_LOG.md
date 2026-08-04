@@ -1420,6 +1420,27 @@ README framing to say this explicitly. Applies to every heritage going forward.
 
 ---
 
+### 63. Heritage #2 — The Great North (Way of the Long Winter)
+**Built (Luke approved).** Second of the fresh 9. **The Great North** = descendants of the First Nations & Inuit
+peoples north of the US border (Canada + the Arctic). Designed as the **opposite pole** from North America: NA is
+the mobile ranged skirmisher; the Great North is the **enduring big-game hunter** — reach, control, resilience.
+Pan-North blend.
+- **Way of the Long Winter:** ★Harpoon Throw (Slow/pull), ★Brace (reduce damage by CON mod, can't be moved),
+  Take Down (prone/grapple), Second Wind (shed a condition / heal), Killing Blow (extra die vs. Slowed/prone/
+  grappled/bloodied), and the **Winterhardened** passive (cold & ice immunity, resist exhaustion, ignore
+  prone/forced-move once per combat). startWeaponTypes: Thrown/Light/Heavy.
+- **Signature weapon Knives** (Light/AGI — the ulu/hunting knife). *No Spear/Harpoon subtype exists, so the
+  harpoon lives in the skill; flagged a real subtype as a possible WEAPONS.md addition.* **Armor Light + Medium**
+  (bone-plate & layered hide — the roster's first heavier-armor people). **Traits:** People of the Ice,
+  Iron Constitution. **Flaw:** Etiquette (same skill as NA — Luke okayed; both are peoples apart from old-world
+  courts).
+
+Verified: 12 combat skills, **no name collisions** (combat-skill or technique), wiring resolves, both heritage
+cards show the full package, Codex auto-updated (Heritages 2 / Combat Skills 12), 0 console errors. Roster now
+**2 of 9**. Cache-buster **v=91**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is
