@@ -1197,23 +1197,19 @@ tier-gated traits. All chosen at the level-15 Heart-chakra reveal, governed by t
 
 ---
 
-### 53. Export / Import characters to JSON (the manual backup + transfer bridge)
-**Decision.** Shipped the lighter precursor to cross-device sync: characters can be **exported** to a JSON file and
-**imported** back — a backup, and a way to move a character between devices without a backend. On the Characters
-screen: **⬆ Export All** (whole roster), a per-card **⬆ Export** (one character), and **⬇ Import** (file picker).
-**Design choices.** Exports use a small **envelope** (`{app:"psion-chronicles", type, version, exportedAt, count,
-characters:[…]}`) so imports can recognize the format; imports also accept a bare array or a single bare character
-for resilience. **Import ADDS, never overwrites** — any character whose id collides with an existing one gets a
-fresh id, so an import can never destroy characters already on the device. All client-side (`Blob` download +
-`FileReader`), no backend. Kept the per-device localStorage model; this is the manual bridge until real sync.
-**Verified** (Playwright): Export All downloads `psion-chronicles-characters-2.json` (envelope, count 2); importing
-that file back (whose ids collide) grows the roster 2 → 4 with **fresh unique ids** and no clobbering; invalid/empty
-files toast an error. No console errors. Docs (`README.md`) updated. Cache-buster **v=79**.
+### 53. Export / Import characters to JSON — built, then removed
+**Decision.** Briefly shipped a client-side Export/Import (JSON backup + transfer) as a stopgap, then **removed it**
+the same session: the end vision for the app is **fully networked play** (players and GMs sharing characters,
+running campaigns, and communicating — text/voice, private + group — all in-app), so a manual file bridge isn't
+wanted. Recorded here so it isn't rebuilt on a vague prompt. Reverted cleanly (roster header/cards back to their
+prior buttons; helpers removed). Cache-buster **v=80**.
 
 ---
 
 ## Deferred / future ideas
-- **Cross-device character sync** (backend + simple login) — the big one. (Export/Import — #53 — is the manual bridge until then.)
+- **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
+  private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is
+  the **system and mechanics**. When we get here, plan the architecture first (it changes how characters are stored).
 - Heritage-opened starting weapons granting **actual proficiency** (currently start-only).
 - A real **XP-to-next-level** bar once Luke sets the thresholds. — ✅ done (#42, placeholder curve; retune anytime).
 - Off-PC backup of the **source** — ✅ done (public GitHub repo `stbkat-ai/psion-chronicles`).
