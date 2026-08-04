@@ -1558,18 +1558,21 @@
     const ap = el("div", "panel");
     ap.appendChild(el("div", "section-label", `Attributes — ${availAttr} point${availAttr === 1 ? "" : "s"} to allocate (cap 30 via leveling)`));
     const ag = el("div", "attr-grid");
+    const lvlBoosts = PC.charAttrBoosts(rec); // background + (once awakened) Otherkin attribute grants
     PC.ATTRS.forEach((a) => {
       const isBody = PC.BODY_ATTRS.includes(a);
-      const score = rec.baseScores[a];
+      const base = rec.baseScores[a];              // the editable, leveling-capped value
+      const boost = lvlBoosts[a] || 0;             // background/Otherkin bonus stacked on top
+      const shown = base + boost;                  // effective score — what the sheet actually uses
       const card = el("div", "attr-card " + (isBody ? "body" : "mind"));
       card.innerHTML = `<div class="code">${a}</div><div class="name">${PC.ATTR_NAMES[a]}</div>
-        <div class="score">${score}</div><div class="modpill">mod ${PC.fmtMod(PC.abilityMod(score))}</div>`;
+        <div class="score">${shown}${boost ? '<span class="buffup">+' + boost + "</span>" : ""}</div><div class="modpill">mod ${PC.fmtMod(PC.abilityMod(shown))}</div>`;
       const ctl = el("div", "inv-qty-ctl"); ctl.style.justifyContent = "center"; ctl.style.marginTop = "8px";
       const minus = el("button", "btn small ghost", "−");
       minus.disabled = (rec.levelAttr[a] || 0) <= 0;
       minus.onclick = () => { rec.baseScores[a]--; rec.levelAttr[a]--; persist(); };
       const plus = el("button", "btn small ghost", "+");
-      plus.disabled = availAttr <= 0 || score >= 30;
+      plus.disabled = availAttr <= 0 || base >= 30; // leveling caps the BASE at 30; boosts stack above it
       plus.onclick = () => { rec.baseScores[a]++; rec.levelAttr[a] = (rec.levelAttr[a] || 0) + 1; persist(); };
       ctl.appendChild(minus); ctl.appendChild(plus);
       card.appendChild(ctl);

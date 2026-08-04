@@ -1267,6 +1267,18 @@ steer: the networked-play plumbing isn't built, but the shell that will host it 
 
 ---
 
+### 56. Fix — Level Up attribute boxes now show background/Otherkin boosts
+**Bug.** The Level Up screen's attribute cards showed only the raw `baseScores[a]`, so a character's
+**background** and (at 15+) **Otherkin** attribute grants were invisible there — the big number and its modifier
+were wrong versus the play sheet and the creator's Review, which both already display the effective score.
+
+**Fix.** The card now shows the **effective** score (`base + PC.charAttrBoosts(rec)[a]`) as the big number with
+a green **+N** badge for the boost (the same `.buffup` convention the play Sheet uses), and the modifier is
+computed off the effective score. The **±** controls still edit the **base**, and the leveling cap stays on the
+base (30) — boosts stack above it, consistent with how boosts break the soft cap elsewhere. Cache-buster **v=83**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is
