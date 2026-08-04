@@ -238,9 +238,9 @@ Account menu brings it back). Tap the **Psion Chronicles wordmark** in the heade
     - **AoE** (Ki Volley) → auto-hits everything in the area; one button rolls damage per target
     - **Sustained** (Ki Shield → +DS, Ki Flame → attribute buff) → Activate/End; **End Turn** pays upkeep.
       A buff that raises attributes also raises the matching **pool** while active — a body-attribute buff
-      (STR/AGI/CON) adds to **max HP**, a mind-attribute buff (INT/WIS/CHA) to **max KP** (e.g. Ki Flame = +6 max HP);
-      a **full** bar stays full (current rises to the new max), a **partial** bar keeps its value as headroom to
-      heal into, and the max drops back (clamping current) when the buff ends
+      (STR/AGI/CON) adds to **max HP**, a mind-attribute buff (INT/WIS/CHA) to **max KP** (e.g. Ki Flame = +6 max HP).
+      Current **scales with the max**: a **full** bar stays full and a bar at **half** stays half; ending the buff
+      scales it back down by the same ratio, so it round-trips cleanly
     - **Heal / grant** (Focus Ki, Share Ki) → Use
   - **Skills** — tap any skill to roll a d20 check (adds mod + proficiency, rolls disadvantage if the
     chakra is hit, disabled if locked out)

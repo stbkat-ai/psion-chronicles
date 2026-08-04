@@ -1279,6 +1279,25 @@ base (30) — boosts stack above it, consistent with how boosts break the soft c
 
 ---
 
+### 57. Pool buffs now scale current HP/KP proportionally (full stays full, half stays half)
+**Change (Luke's call).** When a technique or ability raises a character's **body pool** (max HP), the current
+HP should move with it — a character at full stays full, one at half stays half. This **reverses the earlier
+"gain headroom, not HP" design** (#—, the old clamp), where a buff raised only the ceiling and left current HP
+where it was.
+
+**How.** `ensurePlay()` now remembers the last max it saw per pool (`play.lastMaxHP` / `play.lastMaxKP`); when
+the live max changes — a sustained buff toggling on/off, an attribute edit, a transform — current is rescaled by
+the same ratio (`current × newMax ÷ oldMax`, rounded, clamped to the new max). Damage/heal/rest never change the
+max, so they never trigger a rescale. On first sight (no stored max yet) it only records the max, so **loading a
+character never jumps their HP**. The 0-HP transform-revert still sets HP to half explicitly and syncs the stored
+max so the scaler leaves that deliberate value alone. Applied to **both pools** for symmetry — a mind-attribute
+buff scales KP the same way a body-attribute buff scales HP.
+
+**Verified** end-to-end (Ki Flame, +2 STR/AGI/CON): full 55/55 → activate → **61/61** (full stays full) →
+end → 55/55 (round-trips); at half, 28/55 → activate → **31/61** (ratio preserved). Cache-buster **v=84**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

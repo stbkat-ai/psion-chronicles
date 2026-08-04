@@ -75,14 +75,19 @@
     if (play.transformed && play.hp <= 0 && (sigTransform() || {}).physical) {
       play.transformed = false;
       play.hp = Math.max(1, Math.floor(maxHP() / 2));
+      play.lastMaxHP = maxHP(); // explicit set (not a proportional rescale) — sync so scalePoolToMax leaves HP alone
       logLine("Struck down while transformed — you revert to your normal form at half HP.");
       save(); // persist the revert so it survives a reload, not just the current render
     }
-    // Clamp current HP/KP to the CURRENT (buff-aware) max. An active attribute buff raises the max, so
-    // current is left as-is (you gain headroom, not free HP); when the buff ends — or an attribute is
-    // edited down — the lower max clamps current back down on the next render.
-    play.hp = Math.min(play.hp, maxHP());
-    play.kp = Math.min(play.kp, maxKP());
+    // Proportional pool scaling: when a technique/ability raises (or lowers) the max pool, current scales
+    // with it — a character who's full stays full, one at half stays half. We remember the last max we saw;
+    // if it changed, rescale current by the same ratio. Damage/heal/rest never touch the max, so they never
+    // trigger a rescale. (Replaces the older "gain headroom, not HP" clamp.) Applies to both pools so a
+    // mind-attribute buff scales KP the same way a body-attribute buff scales HP.
+    let poolRescaled = false;
+    poolRescaled = scalePoolToMax("hp", "lastMaxHP", maxHP()) || poolRescaled;
+    poolRescaled = scalePoolToMax("kp", "lastMaxKP", maxKP()) || poolRescaled;
+    if (poolRescaled) save(); // persist the rescale so it survives a reload, not just this render
     // Limb HP (called-shot / crippling system). Current per limb; max is a fraction of current max HP.
     if (!play.limbs) {
       play.limbs = {};
@@ -110,6 +115,21 @@
     const i = list.findIndex((c) => c.id === rec.id);
     if (i > -1) { list[i] = rec; return App.saveRoster(list); }
     return false;
+  }
+  // Keep a current pool (hp/kp) at the same fraction of its max when the max changes (buff on/off, attribute
+  // edit, transform). `lastKey` stores the max we last saw; a change rescales current by the same ratio.
+  // On the very first sight (last unset) we only record the max — no rescale — so loading a character never
+  // jumps their HP. Returns true if it actually rescaled (so the caller can persist).
+  function scalePoolToMax(cur, lastKey, max) {
+    const last = play[lastKey];
+    let changed = false;
+    if (typeof last === "number" && last > 0 && max !== last && play[cur] != null) {
+      play[cur] = Math.round(play[cur] * max / last);
+      changed = true;
+    }
+    if (typeof play[cur] === "number") play[cur] = Math.max(0, Math.min(play[cur], max)); // guard rounding overshoot
+    play[lastKey] = max;
+    return changed;
   }
 
   /* ---------- computations ---------- */
