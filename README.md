@@ -30,7 +30,10 @@ No install, no internet needed. Works on computer and phone.
 > If you ever want to test it on your phone on the same Wi-Fi, run a local server from the `app`
 > folder: `python -m http.server 8777` then visit `http://<your-computer-ip>:8777` on your phone.
 
-Your characters are saved **in the browser** (localStorage). They stay on that device.
+Your characters are saved **in the browser** (localStorage). They stay on that device — but you can **Export**
+them to a JSON file (a backup, or to move them to another device) and **Import** that file anywhere. On the
+Characters screen: **⬆ Export All** downloads every character; each card has its own **⬆ Export**; **⬇ Import**
+loads a file back in and *adds* the characters (it never overwrites what you already have).
 
 ## What works today
 - **Character Creator** — full step-by-step flow:

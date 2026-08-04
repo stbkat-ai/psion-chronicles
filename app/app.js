@@ -58,6 +58,77 @@
     }
   }
 
+  /* ---------- Export / Import (JSON backup + transfer; per-device localStorage has no cross-device sync) ---- */
+  // Trigger a browser download of an object as a pretty-printed .json file.
+  function downloadJSON(filename, obj) {
+    const blob = new Blob([JSON.stringify(obj, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+  // A filesystem-safe slug from a character/roster name.
+  function slug(s) { return String(s || "character").replace(/[^a-z0-9]+/gi, "-").replace(/^-+|-+$/g, "").toLowerCase() || "character"; }
+  // Our export envelope, so imports can validate what they're reading.
+  function exportEnvelope(characters) {
+    return { app: "psion-chronicles", type: "characters", version: 1, exportedAt: new Date().toISOString(), count: characters.length, characters: characters };
+  }
+  function exportRoster() {
+    const list = loadRoster();
+    if (!list.length) { toast("No characters to export yet."); return; }
+    downloadJSON(`psion-chronicles-characters-${list.length}.json`, exportEnvelope(list));
+    toast(`Exported ${list.length} character${list.length === 1 ? "" : "s"}.`);
+  }
+  function exportCharacter(c) {
+    downloadJSON(`psion-${slug(c.name)}.json`, exportEnvelope([c]));
+    toast(`Exported ${c.name || "character"}.`);
+  }
+  // A fresh id guaranteed not to collide with anything currently in `existing`.
+  function freshId(existing) {
+    const used = new Set(existing.map((c) => c.id));
+    let id; do { id = "pc_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 6); } while (used.has(id));
+    return id;
+  }
+  // Pull the character array out of whatever shape the imported JSON took (our envelope, a bare array, or one char).
+  function extractCharacters(parsed) {
+    if (parsed && Array.isArray(parsed.characters)) return parsed.characters;
+    if (Array.isArray(parsed)) return parsed;
+    if (parsed && parsed.baseScores) return [parsed]; // a single bare character
+    return null;
+  }
+  // Import from a chosen File: parse, validate, and ADD the characters (never overwrite — colliding ids get
+  // fresh ones), so an import can't destroy existing characters.
+  function importFromFile(file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      let parsed;
+      try { parsed = JSON.parse(String(reader.result)); }
+      catch (e) { toast("⚠ That file isn't valid JSON."); return; }
+      const incoming = extractCharacters(parsed);
+      if (!incoming || !incoming.length) { toast("⚠ No characters found in that file."); return; }
+      const valid = incoming.filter((c) => c && c.baseScores && typeof c === "object");
+      if (!valid.length) { toast("⚠ That file has no valid Psion Chronicles characters."); return; }
+      const roster = loadRoster();
+      let added = 0;
+      valid.forEach((c) => {
+        const copy = JSON.parse(JSON.stringify(c));
+        if (!copy.id || roster.some((x) => x.id === copy.id)) copy.id = freshId(roster);
+        roster.push(copy); added++;
+      });
+      if (saveRoster(roster)) { toast(`Imported ${added} character${added === 1 ? "" : "s"}.`); render(); }
+    };
+    reader.onerror = () => toast("⚠ Couldn't read that file.");
+    reader.readAsText(file);
+  }
+  // Open a file picker and import the chosen .json.
+  function pickImportFile() {
+    const inp = document.createElement("input");
+    inp.type = "file"; inp.accept = ".json,application/json";
+    inp.onchange = () => { if (inp.files && inp.files[0]) importFromFile(inp.files[0]); };
+    inp.click();
+  }
+
   function toast(msg) {
     let t = $(".toast");
     if (!t) { t = el("div", "toast"); document.body.appendChild(t); }
@@ -215,10 +286,18 @@
     const wrap = el("div");
     const head = el("div", "panel");
     head.appendChild(el("h2", null, "Your Characters"));
-    head.appendChild(el("p", "hint", "Create and manage Psion Chronicles characters. Everything is saved right here in this browser."));
+    head.appendChild(el("p", "hint", "Create and manage Psion Chronicles characters. Everything is saved right here in this browser (per-device). <b>Export</b> to back up or move characters between devices; <b>Import</b> to load them back in."));
+    const actions = el("div", "roster-actions");
     const btn = el("button", "btn primary", "+ Create New Character");
     btn.onclick = startCreator;
-    head.appendChild(btn);
+    const exp = el("button", "btn small", "⬆ Export All");
+    exp.title = "Download all your characters as a JSON backup file";
+    exp.onclick = exportRoster;
+    const imp = el("button", "btn small", "⬇ Import");
+    imp.title = "Load characters from a JSON file (adds them — never overwrites)";
+    imp.onclick = pickImportFile;
+    actions.appendChild(btn); actions.appendChild(exp); actions.appendChild(imp);
+    head.appendChild(actions);
     wrap.appendChild(head);
 
     const list = loadRoster();
@@ -262,12 +341,16 @@
     };
     const edit = el("button", "btn ghost small", "✎ Edit");
     edit.onclick = () => editCharacter(c.id);
+    const exp = el("button", "btn ghost small", "⬆ Export");
+    exp.title = "Download this character as a JSON file";
+    exp.onclick = () => exportCharacter(c);
     const lvl = el("button", "btn ghost small", "⭐ Level Up");
     lvl.onclick = () => { levelUpId = c.id; state = null; playId = null; levelUpKinTab = null; render(); };
     const play = el("button", "btn primary small", "▶ Play");
     play.onclick = () => { playId = c.id; state = null; render(); };
     row.appendChild(del);
     row.appendChild(edit);
+    row.appendChild(exp);
     row.appendChild(lvl);
     row.appendChild(play);
     card.appendChild(row);

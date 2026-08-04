@@ -1197,10 +1197,23 @@ tier-gated traits. All chosen at the level-15 Heart-chakra reveal, governed by t
 
 ---
 
+### 53. Export / Import characters to JSON (the manual backup + transfer bridge)
+**Decision.** Shipped the lighter precursor to cross-device sync: characters can be **exported** to a JSON file and
+**imported** back — a backup, and a way to move a character between devices without a backend. On the Characters
+screen: **⬆ Export All** (whole roster), a per-card **⬆ Export** (one character), and **⬇ Import** (file picker).
+**Design choices.** Exports use a small **envelope** (`{app:"psion-chronicles", type, version, exportedAt, count,
+characters:[…]}`) so imports can recognize the format; imports also accept a bare array or a single bare character
+for resilience. **Import ADDS, never overwrites** — any character whose id collides with an existing one gets a
+fresh id, so an import can never destroy characters already on the device. All client-side (`Blob` download +
+`FileReader`), no backend. Kept the per-device localStorage model; this is the manual bridge until real sync.
+**Verified** (Playwright): Export All downloads `psion-chronicles-characters-2.json` (envelope, count 2); importing
+that file back (whose ids collide) grows the roster 2 → 4 with **fresh unique ids** and no clobbering; invalid/empty
+files toast an error. No console errors. Docs (`README.md`) updated. Cache-buster **v=79**.
+
+---
+
 ## Deferred / future ideas
-- **Cross-device character sync** (backend + simple login) — the big one.
-- **Export / Import** characters to a JSON file (a simpler manual bridge / backup) if we want it before
-  full sync.
+- **Cross-device character sync** (backend + simple login) — the big one. (Export/Import — #53 — is the manual bridge until then.)
 - Heritage-opened starting weapons granting **actual proficiency** (currently start-only).
 - A real **XP-to-next-level** bar once Luke sets the thresholds. — ✅ done (#42, placeholder curve; retune anytime).
 - Off-PC backup of the **source** — ✅ done (public GitHub repo `stbkat-ai/psion-chronicles`).
