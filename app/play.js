@@ -34,6 +34,8 @@
   // most-used group is visible; Bonus/Reactions/Other start collapsed to cut scrolling. Persisted across the
   // Combat tab's frequent re-renders (each roll refreshes the sheet).
   let combatGroupOpen = { actions: true, bonus: false, reaction: false, other: false };
+  // Conditions tracker (Combat tab): whether the "add a condition" catalog picker is expanded.
+  let conditionsPickerOpen = false;
   // Live state of the custom-item builder form (survives re-renders so type changes don't lose input).
   // slotGrade maps a component part → the grade (1–4) chosen for that slot on a weapon/armor build.
   let craftForm = { name: "", type: "Weapon", rarity: "Common", weight: "", desc: "", weaponType: "", subtype: "", hands: "1", armorClass: "Light", hp: "", kp: "", skill: "", slotGrade: {} };
@@ -58,6 +60,9 @@
     // The Heart chakra (Otherkin) tracks hits just like the other six once it awakens at Soul Level 15.
     if (play.chakraHits.HEART == null) play.chakraHits.HEART = 0;
     if (!Array.isArray(play.active)) play.active = [];
+    // Active status conditions: [{ key, turns }] where turns = null (until removed) or a countdown
+    // that ticks down at End Turn and auto-clears at 0. Backfilled for pre-tracker characters.
+    if (!Array.isArray(play.conditions)) play.conditions = [];
     if (!Array.isArray(play.log)) play.log = [];
     if (typeof play.turn !== "number") play.turn = 1;
     // Action economy for the current turn (true = already used this turn).
@@ -548,10 +553,46 @@
         App.toast("Ran out of KP — sustained techniques ended.");
       }
     }
+    tickConditions(); // count down any timed status effects and clear the expired ones
     play.turn += 1;
     play.econ = { action: false, bonus: false, reaction: false, move: false }; // refresh for the new turn
     combatGroupOpen = { actions: true, bonus: false, reaction: false, other: false }; // reopen Actions for the new turn
     save(); refresh();
+  }
+
+  /* ---------- conditions / status effects ---------- */
+  function hasCondition(key) { return (play.conditions || []).some((c) => c.key === key); }
+  function addCondition(key) {
+    if (hasCondition(key)) return; // already tracked — leave its duration alone
+    const cat = PC.condition(key); if (!cat) return;
+    play.conditions.push({ key: key, turns: null }); // starts open-ended (∞) until a duration is set
+    logLine(`${cat.emoji} ${cat.name} — condition applied.`);
+    save(); refresh();
+  }
+  function removeCondition(key) {
+    const cat = PC.condition(key);
+    play.conditions = (play.conditions || []).filter((c) => c.key !== key);
+    if (cat) logLine(`${cat.emoji} ${cat.name} — condition cleared.`);
+    save(); refresh();
+  }
+  // Nudge a condition's duration: null (∞) → 1 → 2 …, and back down to null. Never below ∞.
+  function adjustConditionTurns(key, delta) {
+    const c = (play.conditions || []).find((x) => x.key === key); if (!c) return;
+    const cur = typeof c.turns === "number" ? c.turns : 0;
+    const next = cur + delta;
+    c.turns = next <= 0 ? null : next; // 0 or less loops back to the open-ended ∞ state
+    save(); refresh();
+  }
+  // At End Turn: decrement every timed condition; anything that hits 0 expires and is removed.
+  function tickConditions() {
+    let expired = [];
+    (play.conditions || []).forEach((c) => {
+      if (typeof c.turns === "number") { c.turns -= 1; if (c.turns <= 0) expired.push(c.key); }
+    });
+    if (expired.length) {
+      play.conditions = play.conditions.filter((c) => expired.indexOf(c.key) < 0);
+      expired.forEach((k) => { const cat = PC.condition(k); if (cat) logLine(`${cat.emoji} ${cat.name} — wore off.`); });
+    }
   }
 
   // Kinetic proficiency. The background focus Kinetic is proficient from the start; a Kinetic also
@@ -1382,6 +1423,23 @@
     rests.appendChild(el("span", "rest-note", "Short: +1 hit on each hurt chakra · Long: +2 & full HP/KP"));
     pools.appendChild(rests);
     root.appendChild(pools);
+
+    /* active conditions — read-only at-a-glance strip (manage them on the Combat tab) */
+    if (play.conditions && play.conditions.length) {
+      const cp = el("div", "panel");
+      cp.appendChild(el("div", "section-label", "Conditions"));
+      const chips = el("div", "cond-chips");
+      play.conditions.forEach((c) => {
+        const cat = PC.condition(c.key); if (!cat) return;
+        const chip = el("div", "cond-chip readonly sev-" + (cat.sev || "neutral"));
+        chip.title = cat.desc;
+        chip.innerHTML = `<span class="cond-label">${cat.emoji} ${cat.name}</span>` +
+          `<span class="cond-turns"><span class="cond-count">${typeof c.turns === "number" ? c.turns + "t" : "∞"}</span></span>`;
+        chips.appendChild(chip);
+      });
+      cp.appendChild(chips);
+      root.appendChild(cp);
+    }
 
     /* movement speeds (combat actions live on the Combat tab) */
     const speeds = el("div", "panel");
@@ -3047,6 +3105,9 @@
     }
     root.appendChild(vit);
 
+    // Conditions / status-effects tracker
+    root.appendChild(conditionsPanel());
+
     // gather techniques by action economy (augments excluded — they rider onto weapons).
     // Fusion techniques the character has earned are folded in alongside base techniques.
     const known = knownTechniques().map((n) => PC.technique(n)).filter(Boolean).concat(knownFusionTechs()).concat(knownOtherkinTechs());
@@ -3273,6 +3334,62 @@
     const d = el("div", "mini-stat " + cls);
     d.innerHTML = `<div class="mini-val">${val}</div><div class="mini-label">${label}</div>`;
     return d;
+  }
+
+  /* ---------- conditions tracker UI ---------- */
+  // One active-condition chip: emoji + name (hover = effect), a ∞/turn stepper, and ✕ to clear.
+  function conditionChip(c) {
+    const cat = PC.condition(c.key); if (!cat) return el("span");
+    const chip = el("div", "cond-chip sev-" + (cat.sev || "neutral"));
+    chip.title = cat.desc;
+    const label = el("span", "cond-label", `${cat.emoji} ${cat.name}`);
+    chip.appendChild(label);
+    const stepper = el("span", "cond-turns");
+    const minus = el("button", "cond-step", "−"); minus.title = "Fewer turns";
+    minus.onclick = (e) => { e.stopPropagation(); adjustConditionTurns(c.key, -1); };
+    const count = el("span", "cond-count", typeof c.turns === "number" ? c.turns + "t" : "∞");
+    count.title = typeof c.turns === "number" ? c.turns + " turn(s) left — ticks down at End Turn" : "Lasts until cleared";
+    const plus = el("button", "cond-step", "+"); plus.title = "More turns";
+    plus.onclick = (e) => { e.stopPropagation(); adjustConditionTurns(c.key, 1); };
+    stepper.appendChild(minus); stepper.appendChild(count); stepper.appendChild(plus);
+    chip.appendChild(stepper);
+    const x = el("button", "cond-x", "✕"); x.title = "Clear this condition";
+    x.onclick = (e) => { e.stopPropagation(); removeCondition(c.key); };
+    chip.appendChild(x);
+    return chip;
+  }
+
+  // The Conditions panel on the Combat tab: active chips + an expandable catalog picker.
+  function conditionsPanel() {
+    const panel = el("div", "panel");
+    const head = el("div", "cond-head");
+    head.appendChild(el("div", "section-label", "Conditions"));
+    const addBtn = el("button", "btn small" + (conditionsPickerOpen ? " primary" : ""), conditionsPickerOpen ? "✕ Close" : "＋ Condition");
+    addBtn.onclick = () => { conditionsPickerOpen = !conditionsPickerOpen; refresh(); };
+    head.appendChild(addBtn);
+    panel.appendChild(head);
+
+    if (play.conditions && play.conditions.length) {
+      const chips = el("div", "cond-chips");
+      play.conditions.forEach((c) => chips.appendChild(conditionChip(c)));
+      panel.appendChild(chips);
+    } else if (!conditionsPickerOpen) {
+      panel.appendChild(el("div", "muted", "No active conditions. Tap ＋ Condition to add one."));
+    }
+
+    if (conditionsPickerOpen) {
+      const grid = el("div", "cond-picker");
+      PC.CONDITIONS.forEach((cat) => {
+        const on = hasCondition(cat.key);
+        const opt = el("button", "cond-opt sev-" + (cat.sev || "neutral") + (on ? " active" : ""),
+          `${cat.emoji} ${cat.name}`);
+        opt.title = cat.desc + (on ? " (active — tap to clear)" : "");
+        opt.onclick = () => { on ? removeCondition(cat.key) : addCondition(cat.key); };
+        grid.appendChild(opt);
+      });
+      panel.appendChild(grid);
+    }
+    return panel;
   }
 
   // Shared rolling log element (used by Sheet's dice panel and the Combat tab).

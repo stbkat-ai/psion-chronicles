@@ -204,6 +204,9 @@ PC.kineticProfBonus = function (level, profLevel) {
 };
 PC.heritage = function (name) { return (PC.HERITAGES || []).find((h) => h.name === name) || null; };
 
+/* Condition (status-effect) lookup — resolve a stored key back to its catalog entry. */
+PC.condition = function (key) { return (PC.CONDITIONS || []).find((c) => c.key === key) || null; };
+
 /* ---- Otherkin (the Soul Creature, chosen at Soul Level 15) --------------------------------------- */
 PC.otherkin = function (name) { return (PC.OTHERKIN || []).find((o) => o.name === name) || null; };
 /* The Otherkin's Soul-Level unlock (mirrors the Heart chakra reveal). */

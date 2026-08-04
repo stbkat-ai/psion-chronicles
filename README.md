@@ -137,6 +137,11 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
     **HP / KP / Defense / Prof / Turn** strip, **Roll Initiative**, **End Turn**, a **Speeds** row
     (Movement · Climb · Jump · Swim), the This-Turn tracker, active effects, and the log — all your combat
     stats and controls live here on the Combat tab.
+  - **Conditions tracker** — techniques and hazards inflict named status effects (Burning, Rooted, Stunned,
+    Weakened, Frozen, Blinded…). The Combat tab has a **Conditions** panel: tap **＋ Condition** to apply one
+    from a color-coded list (red = crippling, gold = hindering, green = beneficial), set a **duration** with the
+    chip's ∞/turn stepper (timed ones count down automatically at **End Turn**), and **✕** to clear it. Active
+    conditions also appear as a quick read-only strip on the **Sheet** tab, and each hovers to show its effect.
   - **Action economy enforced** — one Move / Action / Bonus Action per turn (Reaction once between turns). Spending
     a slot disables all other options of that type until **End Turn**; a "This Turn" tracker shows what's used
     (tap to toggle manually for feats/abilities that grant extras).

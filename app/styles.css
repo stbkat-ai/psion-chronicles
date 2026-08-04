@@ -326,6 +326,45 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 }
 .econ-chip.used:hover { box-shadow: none; }
 .combat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+
+/* 🩸 Conditions / status-effects tracker */
+.cond-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.cond-head .section-label { margin: 0; }
+.cond-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.cond-chip {
+  display: inline-flex; align-items: center; gap: 6px; padding: 5px 6px 5px 10px;
+  border-radius: 9px; font-size: .82rem; font-weight: 600; user-select: none;
+  border: 1px solid var(--border); background: var(--panel-2);
+}
+.cond-chip .cond-label { white-space: nowrap; }
+.cond-chip .cond-turns { display: inline-flex; align-items: center; gap: 2px; }
+.cond-chip .cond-count { min-width: 22px; text-align: center; font-size: .74rem; opacity: .85; }
+.cond-step, .cond-x {
+  border: 1px solid var(--border); background: var(--panel); color: var(--text-dim);
+  border-radius: 6px; width: 20px; height: 20px; line-height: 1; font-size: .82rem;
+  cursor: pointer; padding: 0; display: inline-flex; align-items: center; justify-content: center;
+}
+.cond-step:hover, .cond-x:hover { color: var(--text); border-color: var(--psi); }
+.cond-x:hover { color: var(--danger); border-color: var(--danger); }
+.cond-chip.readonly { padding-right: 10px; }
+/* severity coloring — a left accent + tinted border so the chip reads at a glance */
+.cond-chip.sev-bad     { border-color: var(--danger); box-shadow: inset 3px 0 0 var(--danger); }
+.cond-chip.sev-warn    { border-color: var(--gold);   box-shadow: inset 3px 0 0 var(--gold); }
+.cond-chip.sev-good    { border-color: var(--good);   box-shadow: inset 3px 0 0 var(--good); }
+.cond-chip.sev-neutral { border-color: var(--cyan);   box-shadow: inset 3px 0 0 var(--cyan); }
+/* catalog picker (＋ Condition) */
+.cond-picker { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin-top: 10px; }
+.cond-opt {
+  text-align: left; cursor: pointer; padding: 8px 10px; border-radius: 9px; font-size: .82rem;
+  font-weight: 600; border: 1px solid var(--border); background: var(--panel-2); color: var(--text);
+  transition: .14s;
+}
+.cond-opt:hover { border-color: var(--psi); box-shadow: 0 0 10px rgba(124,92,255,.2); }
+.cond-opt.sev-bad     { border-left: 3px solid var(--danger); }
+.cond-opt.sev-warn    { border-left: 3px solid var(--gold); }
+.cond-opt.sev-good    { border-left: 3px solid var(--good); }
+.cond-opt.sev-neutral { border-left: 3px solid var(--cyan); }
+.cond-opt.active { background: rgba(124,92,255,.18); border-color: var(--psi); color: var(--psi-bright); }
 /* ✨ Fusion Kinetics — a distinct "discovered secret" look (violet→gold) */
 .fusion-tech { border-color: rgba(232, 121, 250, .5); background: linear-gradient(180deg, rgba(232, 121, 250, .08), var(--panel-2)); }
 .fusion-flag { font-size: .62rem; font-weight: 800; letter-spacing: .04em; color: #f0abfc; background: rgba(232, 121, 250, .16);

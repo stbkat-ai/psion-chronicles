@@ -608,6 +608,39 @@ PC.LIMBS = [
   { key: "rleg",  name: "Right Leg", frac: 0.25, crippled: "Movement halved." },
 ];
 
+/* --- Conditions (status effects) ---------------------------------------- */
+/* Techniques, weapons and hazards inflict named conditions (Burning, Rooted, Stunned…) that
+   until now only lived in prose on a technique's effect text. This is the trackable catalog so
+   the play sheet can flag what's currently affecting a character. Each entry:
+     key   — stable id, emoji — glyph, name — display,
+     sev   — severity band for coloring the chip: "bad" (crippling), "warn" (hindering),
+             "good" (beneficial), "neutral",
+     desc  — the plain-English effect (placeholder wording pending Luke & Brittany's official
+             rulebook; kept consistent with how the techniques already use each word).
+   The set covers every condition the technique/weapon libraries actually inflict, plus a few
+   universal tabletop staples (Prone, Grappled, Invisible) a GM reaches for constantly. */
+PC.CONDITIONS = [
+  { key: "burning",    emoji: "🔥", name: "Burning",    sev: "bad",  desc: "Takes fire damage at the start of each turn until the flames are put out." },
+  { key: "bleeding",   emoji: "🩸", name: "Bleeding",   sev: "bad",  desc: "Loses HP at the start of each turn until the wound is bound or healed." },
+  { key: "poisoned",   emoji: "🧪", name: "Poisoned",   sev: "bad",  desc: "Disadvantage on attack rolls and ability checks; may take poison damage over time." },
+  { key: "frozen",     emoji: "❄️", name: "Frozen",     sev: "bad",  desc: "Encased in ice — can't act until it shatters; incoming hits often crack it free." },
+  { key: "shocked",    emoji: "⚡", name: "Shocked",    sev: "bad",  desc: "Jolted — disadvantage on attacks and can't take reactions." },
+  { key: "blinded",    emoji: "🙈", name: "Blinded",    sev: "bad",  desc: "Can't see — disadvantage on attacks; attacks against you have advantage." },
+  { key: "stunned",    emoji: "💫", name: "Stunned",    sev: "bad",  desc: "Can't take actions or reactions; attacks against you have advantage." },
+  { key: "rooted",     emoji: "🌿", name: "Rooted",     sev: "warn", desc: "Anchored in place — movement is 0, but you can still act." },
+  { key: "slowed",     emoji: "🐌", name: "Slowed",     sev: "warn", desc: "Movement halved and you can't take reactions." },
+  { key: "weakened",   emoji: "💔", name: "Weakened",   sev: "warn", desc: "Deals reduced damage; disadvantage on Strength-based rolls." },
+  { key: "frightened", emoji: "😱", name: "Frightened", sev: "warn", desc: "Disadvantage while the source is in sight; can't willingly move closer to it." },
+  { key: "charmed",    emoji: "💗", name: "Charmed",    sev: "warn", desc: "Can't target the charmer; they have advantage on social checks against you." },
+  { key: "confused",   emoji: "❓", name: "Confused",   sev: "warn", desc: "Acts erratically — may lose its turn or strike a random target." },
+  { key: "silenced",   emoji: "🤐", name: "Silenced",   sev: "warn", desc: "Can't use techniques or abilities with a vocal component." },
+  { key: "dazzled",    emoji: "✨", name: "Dazzled",    sev: "warn", desc: "Disadvantage on attack rolls and sight-based checks." },
+  { key: "prone",      emoji: "⬇️", name: "Prone",      sev: "warn", desc: "Knocked down — disadvantage on attacks; melee attackers have advantage. Half movement to stand." },
+  { key: "grappled",   emoji: "🤼", name: "Grappled",   sev: "warn", desc: "Movement 0; ends if the grappler is incapacitated or you break free." },
+  { key: "marked",     emoji: "🎯", name: "Marked",     sev: "neutral", desc: "Singled out — attackers gain a bonus against you per the marking effect." },
+  { key: "invisible",  emoji: "👻", name: "Invisible",  sev: "good", desc: "Unseen — advantage on attacks; attacks against you have disadvantage." },
+];
+
 /* --- Fighting Styles (combat-skill "schools", tied to a region) --------- */
 /* Combat Skills are organized into Fighting Styles the way Techniques are organized
    into Kinetics. Each style is a category of skills PLUS one signature Passive buff.

@@ -145,6 +145,45 @@ A third tracking system (Fallout-style). Every character/monster has **6 limbs**
 - *App:* the **Limbs tab** tracks all six; leg/arm/head crippled effects auto-apply to movement and to
   attack/skill/technique rolls (disadvantage/blocked); torso bleed/Weakened is shown as a GM note.
 
+### Conditions (status effects)
+Many techniques, weapons and hazards inflict a **named condition** — a temporary state that changes what a
+character can do. These used to live only as prose inside a technique's effect text; the app now tracks them
+so a player can see at a glance what's affecting them. Conditions are grouped by severity for readability:
+- **Crippling (red):** Burning · Bleeding · Poisoned · Frozen · Shocked · Blinded · Stunned
+- **Hindering (gold):** Rooted · Slowed · Weakened · Frightened · Charmed · Confused · Silenced · Dazzled · Prone · Grappled
+- **Other (cyan):** Marked
+- **Beneficial (green):** Invisible
+
+Each condition lasts **until it's cleared** (∞) or for a **set number of turns**; a timed condition counts
+down at End Turn and clears itself when it runs out. Effects (placeholder wording pending Luke & Brittany's
+official rulebook, matched to how the technique library already uses each word):
+
+| Condition | Effect |
+|---|---|
+| Burning | Takes fire damage at the start of each turn until put out. |
+| Bleeding | Loses HP at the start of each turn until bound or healed. |
+| Poisoned | Disadvantage on attack rolls and ability checks; may take poison damage over time. |
+| Frozen | Encased in ice — can't act until it shatters; incoming hits often crack it free. |
+| Shocked | Disadvantage on attacks and can't take reactions. |
+| Blinded | Can't see — disadvantage on attacks; attacks against you have advantage. |
+| Stunned | Can't take actions or reactions; attacks against you have advantage. |
+| Rooted | Movement 0, but can still act. |
+| Slowed | Movement halved and can't take reactions. |
+| Weakened | Deals reduced damage; disadvantage on Strength-based rolls. |
+| Frightened | Disadvantage while the source is in sight; can't willingly move closer to it. |
+| Charmed | Can't target the charmer; they have advantage on social checks against you. |
+| Confused | Acts erratically — may lose its turn or strike a random target. |
+| Silenced | Can't use techniques/abilities with a vocal component. |
+| Dazzled | Disadvantage on attack rolls and sight-based checks. |
+| Prone | Disadvantage on attacks; melee attackers have advantage; half movement to stand. |
+| Grappled | Movement 0; ends if the grappler is incapacitated or you break free. |
+| Marked | Attackers gain a bonus against you per the marking effect. |
+| Invisible | Advantage on attacks; attacks against you have disadvantage. |
+
+- *App:* the **Combat tab** has a **Conditions** tracker — tap **＋ Condition** to apply one, use the chip's
+  ∞/turn stepper to set a duration, and **✕** to clear it. Timed conditions tick down automatically at End
+  Turn. Active conditions also show as a read-only strip on the **Sheet** tab.
+
 ### Chakra Chart (CONFIRMED Luke) — a separate health system
 A **second health track**, independent of HP. There are **6 chakra points**, one tied to each attribute.
 **Each chakra can take up to 4 hits**, with escalating penalties to *everything that uses that attribute*

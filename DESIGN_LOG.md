@@ -1206,6 +1206,34 @@ prior buttons; helpers removed). Cache-buster **v=80**.
 
 ---
 
+### 54. Conditions / status-effects tracker
+**Decision.** Techniques, weapons and hazards throughout the game inflict named conditions — Burning, Rooted,
+Stunned, Weakened, Frozen, Blinded, and so on — but until now these lived **only as prose** inside a technique's
+effect text, with nothing to track them at the table. Built a proper tracker so a player can flag what's
+currently affecting their character.
+
+**How it works.**
+- **Catalog** (`PC.CONDITIONS`, 19 entries) — every condition the technique/weapon libraries actually inflict
+  (surveyed straight from `data.js`: Rooted, Slowed, Frozen, Prone, Poisoned, Blinded, Burning, Frightened,
+  Weakened, Shocked, Stunned, Silenced, Charmed, Confused, Dazzled, Grappled, Bleeding, Marked) **plus** three
+  universal tabletop staples a GM reaches for constantly (Prone, Grappled, Invisible). Each entry carries an
+  emoji, a **severity band** (`bad`/`warn`/`good`/`neutral`) that colors the chip, and a plain-English effect.
+  The effect wording is **placeholder** pending Luke & Brittany's official rulebook, but kept consistent with
+  how each word is already used across the techniques.
+- **Per-session state** — `play.conditions = [{ key, turns }]`, where `turns` is `null` (lasts until cleared,
+  shown as ∞) or a countdown. It **ticks down at End Turn** and auto-clears at 0 (logged to the roll log).
+- **UI** — a **Conditions** panel on the Combat tab: **＋ Condition** opens a severity-colored catalog picker
+  (tap to apply/clear); each active chip has a **−/∞/+ turn stepper** and an **✕**. The Sheet tab shows a
+  **read-only** at-a-glance strip when anything is active. Applying/clearing/expiring all write to the log.
+
+**Why this shape.** Mirrors the existing Limb and Chakra tracking systems (their own panels, auto-applied at
+the table) and reuses the app's chip/section-label idiom, so it feels native. Kept purely as a manual tracker —
+it does **not** auto-apply mechanical penalties to rolls yet (unlike crippled limbs/chakra hits), because the
+official numbers aren't finalized; the descriptions are the reference and the GM adjudicates. Wiring conditions
+into the roll math can come once the rulebook locks the values. Cache-buster **v=81**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is
