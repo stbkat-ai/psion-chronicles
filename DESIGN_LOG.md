@@ -1338,6 +1338,26 @@ view remain as follow-ups.
 
 ---
 
+### 60. Fusion Kinetics added to the Codex — reverses the "hidden system" stance
+**Decision (Luke).** "I want everything we've built to be available in the Codex." That directly answers the
+decision I flagged in #59: **Fusion Kinetics are now IN the Codex**, reversing the earlier design where fusions
+were GM-only and kept out of player-facing surfaces (a "hidden system players discover in play"). The rest of
+the built content was already in the Codex — an audit confirmed fusions were the only real gap.
+
+**Build.** New **Fusion Kinetics** section (15th category, 153 entries) listing every pairing of the 18 Kinetics,
+grouped by first parent. Each detail shows the two **parent Kinetics** (cross-linked), the fused attrs/role/domain,
+and the fusion's **9 fusion techniques** (grouped by tier, with the parent-technique pair each one fuses and the
+free-when-both-parents-known note). The 1377 fusion techniques are keyed to their fusion once at module load
+(`FUSION_TECHS`/`FUSION_KW`) so search stays fast; a fusion-technique name searches straight to its fusion
+(verified: "Nuclegrip" → Nuclekinesis).
+
+**Doc impact.** The README Codex bullet now lists Fusion Kinetics (previously it noted them as deliberately
+excluded). **Note:** `CLAUDE.md` still describes fusions as "GM-only … keep it out of the README" — that standing
+rule is now superseded for the Codex by Luke's call; left CLAUDE.md for Luke to amend rather than editing his
+instruction file unprompted. Cache-buster **v=87**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

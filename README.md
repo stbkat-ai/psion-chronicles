@@ -36,11 +36,10 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
 The app opens on a **full-screen Home** — the launcher for the whole app. From here you choose where to go:
 - **🎲 GM** — build and run campaigns (everything a Game Master needs). *Placeholder for now — under construction.*
 - **📖 Codex** — a **searchable reference** for the whole game, **now built**. Browse or search across
-  **Kinetics, Techniques, Otherkin, Backgrounds, Heritages, Skills, Combat Skills, Conditions, Weapons, Armor,
-  Gear, Crafting**, and core **Reference** tables (chakras, limbs). Entries cross-link (a background's free
-  technique jumps to that technique; a heritage's Fighting Style to its skills). Only the **Bestiary** is still
-  a placeholder — monster data comes later. *(Fusion Kinetics are deliberately left out — they're a hidden
-  system players discover in play.)*
+  **Kinetics, Techniques, Fusion Kinetics, Otherkin, Backgrounds, Heritages, Skills, Combat Skills, Conditions,
+  Weapons, Armor, Gear, Crafting**, and core **Reference** tables (chakras, limbs). Entries cross-link
+  (a background's free technique jumps to that technique; a heritage's Fighting Style to its skills; a fusion to
+  its parent Kinetics). Only the **Bestiary** is still a placeholder — monster data comes later.
 - **🧙 Player** — your characters: the creator, roster, level-up and live play sheet. **This is fully built** —
   everything described below lives here.
 

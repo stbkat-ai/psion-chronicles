@@ -65,6 +65,13 @@
     return box;
   }
 
+  /* Precompute fusion-technique lookups once (1377 techniques → keyed by their fusion name), so the Fusions
+     section's list()/detail() don't re-scan the whole array on every search keystroke. */
+  const FUSION_TECHS = {};
+  (PC.FUSION_TECHNIQUES || []).forEach((t) => { (FUSION_TECHS[t.kinetic] = FUSION_TECHS[t.kinetic] || []).push(t); });
+  const FUSION_KW = {};
+  Object.keys(FUSION_TECHS).forEach((k) => { FUSION_KW[k] = FUSION_TECHS[k].map((t) => `${t.name} ${t.effect || ""}`).join(" "); });
+
   /* ---------------- section definitions ----------------
      Each: { key, icon, title, blurb, list() -> [{id,name,sub,group,keywords}], detail(id) -> node }.
      `group` (optional) buckets the list under headers; `keywords` feed global search. */
@@ -98,6 +105,41 @@
     key: "techniques", icon: "✦", title: "Techniques", blurb: "All 216 base techniques across every Kinetic.",
     list: () => (PC.TECHNIQUES || []).map((t) => ({ id: t.name, name: t.name, sub: `${t.kinetic} · ${t.tier} · ${t.action}`, group: t.kinetic, keywords: `${t.kinetic} ${t.tier} ${t.attr} ${t.action} ${t.effect || ""}` })),
     detail: (id) => { const t = PC.technique ? PC.technique(id) : (PC.TECHNIQUES || []).find((x) => x.name === id); return t ? techBody(t) : el("div", "muted", "Not found."); },
+  });
+
+  /* Fusion Kinetics */
+  addSection({
+    key: "fusions", icon: "✨", title: "Fusion Kinetics", blurb: "153 Fusion Kinetics — every pairing of the 18 Kinetics.",
+    list: () => (PC.FUSIONS || []).map((f) => ({
+      id: f.name, name: f.name,
+      sub: `${(f.parents || []).join(" + ")}`,
+      group: (f.parents && f.parents[0]) || "Fusions",
+      keywords: `${(f.parents || []).join(" ")} ${f.role || ""} ${f.domain || ""} ${FUSION_KW[f.name] || ""}`,
+    })),
+    detail: (id) => {
+      const f = (PC.FUSIONS || []).find((x) => x.name === id); if (!f) return el("div", "muted", "Not found.");
+      const box = el("div");
+      box.appendChild(el("div", "codex-sub", `${(f.attrs || []).map(an).join(" / ")}${f.role ? " · " + f.role : ""}`));
+      if (f.domain) box.appendChild(el("p", "codex-desc", esc(f.domain)));
+      box.appendChild(label("Parent Kinetics"));
+      const w = el("div", "pill-list");
+      (f.parents || []).forEach((pn) => w.appendChild(linkChip("kinetics", pn, pn)));
+      box.appendChild(w);
+      const techs = FUSION_TECHS[f.name] || [];
+      box.appendChild(label(`Fusion Techniques (${techs.length})`));
+      box.appendChild(el("p", "hint", "Each fusion technique is granted <b>free</b> once you know both of its parent techniques."));
+      const tiers = []; techs.forEach((t) => { if (tiers.indexOf(t.tier) < 0) tiers.push(t.tier); });
+      tiers.forEach((tier) => {
+        box.appendChild(el("div", "codex-group-label", tier));
+        techs.filter((t) => t.tier === tier).forEach((t) => {
+          const r = el("div", "codex-mini");
+          r.innerHTML = `<span class="cm-name">${esc(t.name)}</span><span class="cm-sub">${t.kp != null ? t.kp + " KP · " : ""}${esc(t.action || "")}${t.pair ? " · fuses " + esc((t.pair || []).join(" + ")) : ""}</span>`;
+          if (t.effect) r.appendChild(el("div", "codex-effect", "▸ " + esc(t.effect)));
+          box.appendChild(r);
+        });
+      });
+      return box;
+    },
   });
 
   /* Otherkin */
