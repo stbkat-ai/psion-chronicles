@@ -32,7 +32,20 @@ No install, no internet needed. Works on computer and phone.
 
 Your characters are saved **in the browser** (localStorage). They stay on that device.
 
-## What works today
+## The app has three sections
+The app opens on a **full-screen Home** — the launcher for the whole app. From here you choose where to go:
+- **🎲 GM** — build and run campaigns (everything a Game Master needs). *Placeholder for now — under construction.*
+- **📖 Codex** — a searchable reference for everything in the game (items, monsters, Kinetics, and more).
+  *Placeholder for now — under construction.*
+- **🧙 Player** — your characters: the creator, roster, level-up and live play sheet. **This is fully built** —
+  everything described below lives here.
+
+Home also has a **👥 Social** icon (top-left) and a **⚙ Account** icon (top-right), plus a centered **Sign-in**
+card. These are UI scaffolding today — real accounts, friends, messaging and cloud sync arrive with the online
+service. You can **Continue as Guest** to dismiss sign-in (it's remembered so it won't nag you; "Log out" in the
+Account menu brings it back). Tap the **Psion Chronicles wordmark** in the header any time to return to Home.
+
+## What works today (Player section)
 - **Character Creator** — full step-by-step flow:
   1. Identity + Psionic Background (all 9). Each background also carries **one flaw** — a whole-attribute
      disadvantage on a stat the archetype doesn't lean on (e.g. Body Builder → *All Brawn*: disadvantage on

@@ -75,6 +75,23 @@
   let creatorKinTab = null; // active Kinetic tab on the creator's Techniques step (persists across re-renders)
   let levelUpKinTab = null; // active Kinetic tab on the level-up screen's learn-techniques area
 
+  /* ---------- app shell (three-section architecture) ----------
+     The app opens on a full-screen Home. From there users pick one of three sections:
+       "player" — the character roster / creator / play sheet (everything built so far),
+       "gm"     — build & run campaigns (placeholder until built),
+       "codex"  — look up everything in the game (placeholder until built).
+     `screen` is the top-level router; playId/levelUpId/state only matter inside "player". */
+  let screen = "home";      // "home" | "player" | "gm" | "codex"
+  let homeMenu = null;      // null | "social" | "account" — which corner overlay is open on Home
+
+  /* Session / login is UI scaffolding only for now — there's no backend yet. The centered login card
+     on Home fades away once "logged in" (or entering as a guest); the choice is remembered locally so
+     it doesn't nag on every open, and "Log out" in the account menu brings it back. Real accounts
+     arrive with the online service. */
+  const SESSION_KEY = "psion_chronicles_session";
+  function loadSession() { try { return JSON.parse(localStorage.getItem(SESSION_KEY)) || {}; } catch (e) { return {}; } }
+  function saveSession(s) { try { localStorage.setItem(SESSION_KEY, JSON.stringify(s)); } catch (e) {} }
+
   function newState() {
     return {
       id: "pc_" + Date.now().toString(36),
@@ -199,15 +216,185 @@
     return out;
   }
 
+  /* ---------- top-level navigation ---------- */
+  function goToHome() { screen = "home"; playId = null; levelUpId = null; state = null; render(); }
+  function goToSection(s) { screen = s; homeMenu = null; playId = null; levelUpId = null; state = null; render(); }
+
+  // Show/hide the static header + its player-only actions depending on which section we're in.
+  // Home is full-bleed with its own corner chrome, so the header is hidden there entirely.
+  function applyChrome() {
+    document.body.classList.toggle("screen-home", screen === "home");
+    const header = $(".app-header");
+    if (header) header.style.display = screen === "home" ? "none" : "";
+    const actions = $(".header-actions");
+    if (actions) actions.style.display = screen === "player" ? "" : "none";
+  }
+
   /* ---------- root render ---------- */
   function render() {
+    applyChrome();
     const app = $("#view");
     app.innerHTML = "";
+    if (screen === "home") { app.appendChild(renderHome()); return; }
+    if (screen === "gm") { app.appendChild(renderComingSoon("gm")); return; }
+    if (screen === "codex") { app.appendChild(renderComingSoon("codex")); return; }
+    // screen === "player" — the character section (roster / creator / level-up / play sheet)
     if (playId && window.PsionPlay) { window.PsionPlay.render(app, playId); return; }
     if (levelUpId) { app.appendChild(renderLevelUp(levelUpId)); return; }
     if (state) app.appendChild(renderStepper());
     if (!state) app.appendChild(renderRoster());
     else app.appendChild(renderStep());
+  }
+
+  /* ---------- Home screen ---------- */
+  function renderHome() {
+    const home = el("div", "home-screen");
+
+    // Full-screen portrait backdrop. Placeholder gradient for now — Luke & Brittany will drop in
+    // the real artwork later by setting `background-image` on .home-portrait (see styles.css).
+    home.appendChild(el("div", "home-portrait"));
+    home.appendChild(el("div", "home-scrim")); // darkening overlay so foreground UI stays legible
+
+    // Top-left: social hub. Top-right: account settings.
+    const social = el("button", "home-corner tl", "👥");
+    social.title = "Social — friends & messages";
+    social.setAttribute("aria-label", "Social");
+    social.onclick = () => { homeMenu = homeMenu === "social" ? null : "social"; render(); };
+    home.appendChild(social);
+
+    const account = el("button", "home-corner tr", "⚙");
+    account.title = "Account settings";
+    account.setAttribute("aria-label", "Account settings");
+    account.onclick = () => { homeMenu = homeMenu === "account" ? null : "account"; render(); };
+    home.appendChild(account);
+
+    // Wordmark, centered above the login card.
+    const mark = el("div", "home-mark");
+    mark.innerHTML = `<div class="home-sigil"></div><div class="home-title">Psion Chronicles</div><div class="home-sub">Post-Veil Companion</div>`;
+    home.appendChild(mark);
+
+    // Centered login card — fades away once "logged in". Only shown when there's no local session.
+    const session = loadSession();
+    if (!session.loggedIn) home.appendChild(renderLoginCard());
+
+    // Bottom: the three section buttons, in the order Luke specified — GM · Codex · Player.
+    const nav = el("div", "home-nav");
+    nav.appendChild(homeNavBtn("gm", "🎲", "GM", "Build & run campaigns"));
+    nav.appendChild(homeNavBtn("codex", "📖", "Codex", "Look up everything"));
+    nav.appendChild(homeNavBtn("player", "🧙", "Player", "Your characters"));
+    home.appendChild(nav);
+
+    // Corner overlays
+    if (homeMenu === "social") home.appendChild(renderSocialMenu());
+    if (homeMenu === "account") home.appendChild(renderAccountMenu());
+
+    return home;
+  }
+
+  function homeNavBtn(section, icon, label, sub) {
+    const b = el("button", "home-nav-btn", `<span class="hn-ico">${icon}</span><span class="hn-label">${label}</span><span class="hn-sub">${sub}</span>`);
+    b.onclick = () => goToSection(section);
+    return b;
+  }
+
+  function renderLoginCard() {
+    const card = el("div", "home-login");
+    card.appendChild(el("div", "hl-title", "Sign in"));
+    card.appendChild(el("p", "hl-note", "Online accounts arrive with the network service — sign-in isn't required yet. Enter as a guest to explore."));
+    const form = el("div", "hl-form");
+    const email = el("input", "hl-input"); email.type = "email"; email.placeholder = "Email"; email.autocomplete = "off";
+    const pass = el("input", "hl-input"); pass.type = "password"; pass.placeholder = "Password"; pass.autocomplete = "off";
+    form.appendChild(email); form.appendChild(pass);
+    card.appendChild(form);
+
+    const finish = (asGuest) => {
+      saveSession({ loggedIn: true, guest: asGuest, name: (email.value || "").trim() });
+      card.classList.add("fade-out"); // CSS opacity transition
+      setTimeout(render, 450);        // re-render (login gone) after the fade completes
+    };
+    const row = el("div", "hl-actions");
+    const login = el("button", "btn primary", "Log In");
+    login.onclick = () => finish(false);
+    const guest = el("button", "btn ghost", "Continue as Guest");
+    guest.onclick = () => finish(true);
+    row.appendChild(login); row.appendChild(guest);
+    card.appendChild(row);
+    return card;
+  }
+
+  // A shared dismiss-backdrop + sliding panel for the two Home corner menus.
+  function homeOverlay(side, title, body) {
+    const wrap = el("div", "home-menu " + side);
+    const back = el("div", "home-menu-back");
+    back.onclick = () => { homeMenu = null; render(); };
+    wrap.appendChild(back);
+    const panel = el("div", "home-menu-panel");
+    const head = el("div", "hm-head");
+    head.appendChild(el("div", "hm-title", title));
+    const x = el("button", "hm-close", "✕");
+    x.onclick = () => { homeMenu = null; render(); };
+    head.appendChild(x);
+    panel.appendChild(head);
+    panel.appendChild(body);
+    wrap.appendChild(panel);
+    return wrap;
+  }
+
+  function renderSocialMenu() {
+    const body = el("div", "hm-body");
+    body.appendChild(el("p", "hm-lead", "See who's online, send private messages, and group up for a session."));
+    const search = el("input", "hl-input"); search.placeholder = "Add a friend by handle…"; search.disabled = true;
+    body.appendChild(search);
+    body.appendChild(el("div", "hm-section-label", "Friends"));
+    body.appendChild(el("div", "hm-empty", "No friends yet — the social hub goes live with online play."));
+    body.appendChild(el("div", "hm-section-label", "Messages"));
+    body.appendChild(el("div", "hm-empty", "Private & group chat (text and voice) will live here."));
+    body.appendChild(el("div", "hm-soon", "🔒 Coming with the online service"));
+    return homeOverlay("tl", "👥 Social", body);
+  }
+
+  function renderAccountMenu() {
+    const session = loadSession();
+    const body = el("div", "hm-body");
+    body.appendChild(el("div", "hm-section-label", "Display name"));
+    const name = el("input", "hl-input"); name.placeholder = "Your name"; name.value = session.name || "";
+    name.onchange = () => { const s = loadSession(); s.name = name.value.trim(); saveSession(s); };
+    body.appendChild(name);
+    body.appendChild(el("div", "hm-section-label", "Status"));
+    body.appendChild(el("div", "hm-note", session.loggedIn ? (session.guest ? "Signed in as a guest (local only)." : "Signed in locally.") : "Not signed in."));
+    body.appendChild(el("div", "hm-section-label", "Account & sync"));
+    body.appendChild(el("div", "hm-empty", "Profile, cloud save and cross-device sync arrive with the online service."));
+    body.appendChild(el("div", "hm-soon", "🔒 Coming with the online service"));
+    if (session.loggedIn) {
+      const out = el("button", "btn ghost", "Log out");
+      out.onclick = () => { saveSession({}); homeMenu = null; render(); };
+      body.appendChild(out);
+    }
+    return homeOverlay("tr", "⚙ Account", body);
+  }
+
+  /* ---------- GM / Codex placeholders ---------- */
+  function renderComingSoon(section) {
+    const meta = section === "gm"
+      ? { icon: "🎲", title: "Game Master", tag: "Build & run campaigns",
+          lead: "The GM section will hold everything you need to run Psion Chronicles.",
+          points: ["Create campaigns and invite your players", "Build encounters, maps, NPCs and monsters", "Track initiative, HP and conditions for the whole table", "Award XP and loot; manage the story between sessions", "Run the game live — shared sheets, in-app text & voice"] }
+      : { icon: "📖", title: "Codex", tag: "Look up everything in the game",
+          lead: "The Codex will be a searchable reference for every rule and entry in the game.",
+          points: ["Items, weapons, armor and crafting components", "Monsters and NPCs (the bestiary)", "All 18 Kinetics and their techniques", "Backgrounds, heritages, Otherkin and fusions", "Conditions, combat rules and the full rulebook"] };
+    const wrap = el("div", "coming-soon");
+    wrap.appendChild(el("div", "cs-icon", meta.icon));
+    wrap.appendChild(el("div", "cs-tag", meta.tag));
+    wrap.appendChild(el("h2", "cs-title", meta.title));
+    wrap.appendChild(el("p", "cs-lead", meta.lead));
+    const ul = el("ul", "cs-list");
+    meta.points.forEach((p) => ul.appendChild(el("li", null, p)));
+    wrap.appendChild(ul);
+    wrap.appendChild(el("div", "cs-badge", "🚧 Under construction"));
+    const back = el("button", "btn ghost", "← Back to Home");
+    back.onclick = goToHome;
+    wrap.appendChild(back);
+    return wrap;
   }
 
   /* ---------- roster (home) ---------- */
@@ -1538,6 +1725,7 @@
     saveRoster: saveRoster,
     toast: toast,
     goHome: function () { playId = null; levelUpId = null; state = null; render(); },
+    goToHome: goToHome, // the app's Home screen (three-section launcher)
     openLevelUp: function (id) { playId = null; state = null; levelUpId = id; levelUpKinTab = null; render(); },
     render: render,
     el: el,
@@ -1549,8 +1737,11 @@
 
   /* ---------- boot ---------- */
   function boot() {
-    $("#new-btn").onclick = () => { playId = null; levelUpId = null; startCreator(); };
-    $("#home-btn").onclick = () => { playId = null; levelUpId = null; state = null; render(); };
+    $("#new-btn").onclick = () => { screen = "player"; playId = null; levelUpId = null; startCreator(); };
+    $("#home-btn").onclick = () => { screen = "player"; playId = null; levelUpId = null; state = null; render(); };
+    // The header wordmark is a "back to Home" affordance everywhere outside Home itself.
+    const brand = $(".brand");
+    if (brand) { brand.style.cursor = "pointer"; brand.title = "Home"; brand.onclick = goToHome; }
     render();
   }
   // Boot as soon as the DOM is ready. Guard on readyState so bundling contexts that run scripts

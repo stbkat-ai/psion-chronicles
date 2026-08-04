@@ -1234,10 +1234,49 @@ into the roll math can come once the rulebook locks the values. Cache-buster **v
 
 ---
 
+### 55. App shell — Home screen + the three-section architecture
+**Decision.** A deliberate departure from the player-only focus. Luke's vision for the app has **three main
+sections**: the **Player** side (built), a **GM** side (build & run whole campaigns), and a **Codex** (look up
+everything — items, monsters, Kinetics, etc.). This change introduces the **shell** those sections live in,
+starting with the **Home screen** the app now opens on.
+
+**Home screen (per Luke's spec).**
+- A **full-screen portrait backdrop** — placeholder gradient for now; Brittany & Luke will drop real artwork in
+  later by setting `background-image` on `.home-portrait` (no code change needed).
+- **Three section buttons across the bottom, in this exact order: `[GM] [Codex] [Player]`.**
+- A **centered sign-in card** that **fades away after "logging in"** (CSS opacity transition). It's UI
+  scaffolding only — there's no backend yet — so "Log In" and "Continue as Guest" both just dismiss it. The
+  choice is saved locally (`psion_chronicles_session`) so it doesn't reappear every open; "Log out" in the
+  Account menu brings it back.
+- **Top-right ⚙ Account** menu (display name, status, log out; sync noted as coming) and **top-left 👥 Social**
+  menu (friends online, private/group messages — all placeholder). Both slide in over a dismiss-backdrop.
+
+**Architecture.** Added a top-level `screen` router (`"home" | "player" | "gm" | "codex"`) above the existing
+player-only state (`playId`/`levelUpId`/`state`), which now only matters inside `"player"`. `applyChrome()`
+hides the static header on Home (it's full-bleed with its own corner icons) and hides the player-only
+Characters/＋New actions outside the player section. The header **wordmark is now a "back to Home" button**
+everywhere. **GM** and **Codex** render styled **"under construction"** placeholders that spell out what each
+will hold (seeded from Luke's vision), so the three-section structure is real and navigable even though only
+Player is built. Nothing about the player section changed — it's the same roster/creator/play sheet, now reached
+via **Home → Player**.
+
+**Why now / why this shape.** Locks in the app's information architecture before the GM and Codex sections get
+built, so they have a home to slot into. Kept the login/social/account pieces as clearly-labeled scaffolding
+(each notes "coming with the online service") — matching Luke's "focus on the journey, not the destination"
+steer: the networked-play plumbing isn't built, but the shell that will host it is. Cache-buster **v=82**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is
   the **system and mechanics**. When we get here, plan the architecture first (it changes how characters are stored).
+  The **app shell now exists** (#55): Home screen with the Sign-in card and the Social / Account menus are in place
+  as scaffolding, ready to wire to a real service.
+- **GM section** — build & run campaigns (encounters, NPCs/monsters, initiative & table tracking, XP/loot, live
+  play). Placeholder in place (#55).
+- **Codex section** — searchable reference for every game entry (items, monsters, Kinetics, backgrounds,
+  heritages, Otherkin, fusions, conditions, rules). Placeholder in place (#55); the data already lives on `window.PC`.
 - Heritage-opened starting weapons granting **actual proficiency** (currently start-only).
 - A real **XP-to-next-level** bar once Luke sets the thresholds. — ✅ done (#42, placeholder curve; retune anytime).
 - Off-PC backup of the **source** — ✅ done (public GitHub repo `stbkat-ai/psion-chronicles`).
