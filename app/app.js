@@ -1572,7 +1572,10 @@
       minus.disabled = (rec.levelAttr[a] || 0) <= 0;
       minus.onclick = () => { rec.baseScores[a]--; rec.levelAttr[a]--; persist(); };
       const plus = el("button", "btn small ghost", "+");
-      plus.disabled = availAttr <= 0 || base >= 30; // leveling caps the BASE at 30; boosts stack above it
+      // The 30 cap is on the EFFECTIVE score: background/Otherkin boosts are PERMANENT (part of your real
+      // score), so they count toward the cap — leveling can never push base + boost past 30. (Only temporary
+      // technique/transform buffs break the soft cap and go above 30.)
+      plus.disabled = availAttr <= 0 || shown >= 30;
       plus.onclick = () => { rec.baseScores[a]++; rec.levelAttr[a] = (rec.levelAttr[a] || 0) + 1; persist(); };
       ctl.appendChild(minus); ctl.appendChild(plus);
       card.appendChild(ctl);

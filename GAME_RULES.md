@@ -74,7 +74,10 @@ Both **HP (Body Pool)** and **KP (Mind Pool)** recover the same ways:
 - *Example: rolls 12,8,10,11,5,2,7,1 → drop 2 & 1 → 12,11,10,8,7,5 → +10 → 22,21,20,18,17,15.*
 
 ### Attribute modifiers
-- Attributes **soft-capped at 30** (items/techniques can exceed it; modifiers keep scaling).
+- Attributes **soft-capped at 30**; modifiers keep scaling past it. **Permanent** additions count toward the
+  cap and can't exceed it — a background/Otherkin **boost is part of your real score**, so base + boost is
+  capped at 30 (see leveling). Only **temporary** effects (technique/transform buffs) **break** the soft cap
+  and rise above 30.
 - 3-to-1 scale: 30 = +5, 15 = 0, 1 = −5.
 
 | Score | Mod |
@@ -264,7 +267,7 @@ app it is invisible before 15 and, once awakened, appears with a full pip track 
 
 - **Level cap: 30.**
 - **Every level:** gain **1 Technique Point (TP)** — spent to learn Kinetic Techniques. **Every technique costs exactly 1 TP** (no tiered costs).
-- **Every ODD level** (3, 5, 7 … up the ladder): gain **1 attribute point** — place in any attribute. Leveling **cannot** raise an attribute above **30** (skills, artifacts, etc. *can* push past 30).
+- **Every ODD level** (3, 5, 7 … up the ladder): gain **1 attribute point** — place in any attribute. Leveling **cannot** raise an attribute above **30**, and because a background/Otherkin **boost is permanent** it counts toward that cap — i.e. **base + boost can't exceed 30** (only temporary technique/transform buffs push past 30).
 - **Milestone levels** grant special new systems. Known: **Level 15 unlocks the Otherkin system** (see below).
 
 ### At character creation (level 1)

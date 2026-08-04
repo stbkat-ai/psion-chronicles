@@ -1298,6 +1298,20 @@ end → 55/55 (round-trips); at half, 28/55 → activate → **31/61** (ratio pr
 
 ---
 
+### 58. Level-up 30 cap counts the permanent background/Otherkin boost
+**Clarification (Luke).** A background/Otherkin attribute **boost is a permanent** part of your real score, not a
+temporary bonus — so it **counts toward the soft cap** and can't break it. When leveling, **base + boost can't
+exceed 30**. (Only temporary technique/transform buffs rise above 30.)
+
+**Fix.** #56 made the Level-Up boxes show the effective score (base + boost) but still gated the **＋** button on
+`base >= 30`, which let a boosted attribute be leveled to an effective 33 (e.g. base 30 + a +3 background boost).
+The gate now checks the **effective** score: **＋** disables at `base + boost >= 30`. So a Body Builder (STR +3)
+can level STR only up to base 27 → effective 30, then it stops. The engine sums scores without clamping
+(`effectiveScores`), so enforcing it at the leveling gate is what keeps permanent totals ≤ 30 while temporary
+buffs still add on top. Docs: GAME_RULES soft-cap + leveling lines. Cache-buster **v=85**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is
