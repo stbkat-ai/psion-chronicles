@@ -1441,6 +1441,25 @@ cards show the full package, Codex auto-updated (Heritages 2 / Combat Skills 12)
 
 ---
 
+### 64. Heritage #3 — Mexico (Way of the Obsidian Blade)
+**Built (Luke approved — "I love it").** Descendants of the Mesoamerican civilizations (Mexica/Aztec, Maya, and
+kin). Designed as the **third distinct combat pole**: the **aggressive melee striker** (obsidian blade + warrior
+orders), vs. NA's ranged skirmisher and the Great North's defensive hunter. Pan-Mesoamerican blend.
+- **Way of the Obsidian Blade:** ★Obsidian Strike (Bleed), ★Warrior's Fury (bonus attack on a kill/bloody),
+  Atlatl Dart (ranged), Take Captive (prone/grapple — the flower-war tradition), Sever (armor-ignoring), and the
+  **Obsidian Edge** passive (crit 19–20 + Bleed on crit). startWeaponTypes: Heavy/Thrown/Light.
+- **Signature weapon Great Swords** (Heavy/STR) standing in for the **macuahuitl** (no exact subtype — flagged as
+  a possible WEAPONS.md addition, like the harpoon). **Armor Light + Medium** (ichcahuipilli quilted cotton).
+  **Traits:** Keepers of the Count (astronomy/calendar), Warrior's Discipline (resist Fear). **Flaw:** Survival
+  (City-Raised — first non-Etiquette flaw, and it differentiates the two wilderness heritages before it).
+- **Handled with care:** deliberately excluded the human-sacrifice stereotype; leaned on real achievements
+  (astronomy, mathematics, obsidian craft, the atlatl, the warrior orders).
+
+Verified: 18 combat skills, no name collisions, wiring resolves, card shows full package, Codex auto-updated
+(Heritages 3 / Combat Skills 18), 0 console errors. Roster **3 of 9**. Cache-buster **v=92**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

@@ -485,23 +485,32 @@ is retained for the rebuild even though no current heritage uses one yet):
 Heritage never touches attribute scores or pools. Two characters of the same Background differ by the
 Fighting Style, Combat Skills, and Traits their Heritage opened up.
 
-**The fresh roster (2 of 9 built so far):**
+**The fresh roster (3 of 9 built so far):**
 
 | Heritage | People / region | Fighting Style | Signature weapon | Armor | Flaw |
 |---|---|---|---|---|---|
 | **North America** | Descendants of the Native nations of the continental US | Way of the Hunt | **Shortbows** (Archery/STR) | Light only | Etiquette |
 | **The Great North** | Descendants of the First Nations & Inuit peoples north of the US border | Way of the Long Winter | **Knives** (Light/AGI) | Light + Medium | Etiquette |
+| **Mexico** | Descendants of the Mesoamerican civilizations (Mexica/Aztec, Maya, and kin) | Way of the Obsidian Blade | **Great Swords** (Heavy/STR) — the macuahuitl | Light + Medium | Survival |
 
-*The other 7 are in development, built one at a time with Luke.*
+*The other 6 are in development, built one at a time with Luke.* Design intent: three distinct combat poles so
+far — NA is the **mobile ranged skirmisher**, the Great North is the **enduring defensive hunter**, and Mexico
+is the **aggressive melee striker**.
 - **Way of the Hunt** (North America) — a pan-Native skirmisher/hunter: Hunter's Aim (called-shot bow), Fade Away
   (hit-and-hide), Volley, Ambush, Harrier's Shot, and the **Pathfinder** passive (ignore natural terrain,
   track/forage advantage, leave no trail). Traits: **One with the Land** and **Keen Senses**. Light armor only.
 - **Way of the Long Winter** (The Great North) — the enduring big-game hunter: Harpoon Throw (Slow/pull), Brace
   (reduce damage, can't be moved), Take Down (prone/grapple), Second Wind (shake a condition / heal), Killing
   Blow (extra die vs. impaired prey), and the **Winterhardened** passive (cold/ice immunity, resist exhaustion,
-  ignore prone/forced-move once per combat). Traits: **People of the Ice** and **Iron Constitution**. The
-  roster's first heavier-armor people (bone-plate & layered hide → Medium). *No Spear/Harpoon weapon subtype
-  exists yet — the harpoon lives in the skill; a real subtype could be added to WEAPONS.md later.*
+  ignore prone/forced-move once per combat). Traits: **People of the Ice** and **Iron Constitution**. Medium
+  armor (bone-plate & layered hide). *No Spear/Harpoon subtype exists — the harpoon lives in the skill.*
+- **Way of the Obsidian Blade** (Mexico) — a pan-Mesoamerican aggressive warrior: Obsidian Strike (Bleed),
+  Warrior's Fury (bonus attack on a kill/bloody), Atlatl Dart (ranged), Take Captive (prone/grapple), Sever
+  (armor-ignoring), and the **Obsidian Edge** passive (crit on 19–20 + Bleed on crit). Traits: **Keepers of the
+  Count** (astronomy/calendar) and **Warrior's Discipline** (resist Fear). Medium armor (ichcahuipilli quilted
+  cotton). Signature weapon **Great Swords** stands in for the **macuahuitl** — a dedicated Macuahuitl/Obsidian
+  subtype could be added to WEAPONS.md later. *(Deliberately avoids the human-sacrifice stereotype; leans on the
+  real achievements — astronomy, obsidian craft, the atlatl, the warrior orders.)*
 
 ### Fighting Styles & Combat Skills (the mechanic)
 Combat Skills work like Kinetic Techniques: there are **many**, organized into categories called
@@ -521,13 +530,14 @@ forage with advantage, and leave no trail).
 - A style's Passive **can be learned by any character** with CSP, regardless of Heritage — as can any other
   style's skills.
 
-### Heritages → Fighting Styles (fresh roster — 2 of 9)
+### Heritages → Fighting Styles (fresh roster — 3 of 9)
 | Heritage | Fighting Style | Starting Combat Skills | Signature Passive | Traits | Flaw (disadvantage) |
 |---|---|---|---|---|---|
 | **North America** | Way of the Hunt | Hunter's Aim, Fade Away | Pathfinder | One with the Land, Keen Senses | *Unversed in Old-World Customs* — Etiquette |
 | **The Great North** | Way of the Long Winter | Harpoon Throw, Brace | Winterhardened | People of the Ice, Iron Constitution | *Plain-Spoken* — Etiquette |
+| **Mexico** | Way of the Obsidian Blade | Obsidian Strike, Warrior's Fury | Obsidian Edge | Keepers of the Count, Warrior's Discipline | *City-Raised* — Survival |
 
-*The other 7 heritages are being rebuilt one at a time (see 3b). Each style holds **5 active skills + 1
+*The other 6 heritages are being rebuilt one at a time (see 3b). Each style holds **5 active skills + 1
 Passive**. Full skill text lives in `app/data.js` (`PC.FIGHTING_STYLES`); the app is the source of truth.*
 
 **Heritage & starting gear (CONFIRMED Luke).** A Fighting Style also flavors your **starting-weapon

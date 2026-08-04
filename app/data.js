@@ -671,6 +671,17 @@ PC.FIGHTING_STYLES = [
       { name: "Killing Blow", action: "Action", effect: "A melee attack that deals an extra damage die on a hit against a target that is Slowed, prone, grappled, or below half its HP — the finish for wounded prey." },
       { name: "Winterhardened", action: "Passive", effect: "Extreme cold and icy or snowy terrain never affect you (no cold damage, no extra movement cost), and you have advantage on checks to resist exhaustion. Once per combat, you may ignore being knocked prone or forcibly moved." },
     ] },
+  { name: "Way of the Obsidian Blade", heritage: "Mexico",
+    blurb: "The disciplined warrior of the macuahuitl and the atlatl — press the attack, cut deep, and take your foe alive if you can.",
+    startWeaponTypes: ["Heavy Weapons", "Thrown Weapons", "Light Weapons"], // macuahuitl (greatsword-club), atlatl darts, obsidian knife
+    skills: [
+      { name: "Obsidian Strike", action: "Action", effect: "A savage melee attack; on a hit the target also begins Bleeding (loses HP at the start of each turn until tended) — the razor obsidian edge." },
+      { name: "Warrior's Fury", action: "Bonus Action", effect: "When you drop a foe to 0 HP or bloody one (reduce it below half HP), immediately make one melee attack against a target in reach — the eagle or jaguar knight presses on." },
+      { name: "Atlatl Dart", action: "Action", effect: "Loose a spear-thrower dart — a hard-hitting ranged attack out to good range, further and heavier than a hand-thrown weapon." },
+      { name: "Take Captive", action: "Action", effect: "Subdue rather than slay: a melee attack that, on a hit, lets you attempt to knock the target prone and restrain or grapple it — the captive-taking tradition of the flower wars." },
+      { name: "Sever", action: "Action", effect: "A two-handed obsidian blow that ignores part of the target's armor Defense bonus and deals extra damage on a hit." },
+      { name: "Obsidian Edge", action: "Passive", effect: "Your melee attacks with a bladed weapon score a critical hit on a roll of 19–20, and a creature you critically hit begins Bleeding." },
+    ] },
 ];
 
 /* Flattened master list — every combat skill across all styles, tagged with its style.
@@ -696,6 +707,11 @@ PC.HERITAGES = [
     traits: [ { name: "People of the Ice", desc: "In frozen or wild country you can reliably find food, water, and shelter for yourself and a small group, and you never lose your way on ice, snow, or open tundra." },
               { name: "Iron Constitution", desc: "Advantage on checks and saves to resist exhaustion, hunger, thirst, poison, and disease — your body is forged to outlast the long dark." } ],
     flaw: { name: "Plain-Spoken", desc: "The elaborate courtesies of the southern courts weren't part of how you were raised. Disadvantage on Etiquette.", disadvSkill: "Etiquette" } },
+  { name: "Mexico", blurb: "A present-day descendant of the Mesoamerican civilizations — Mexica, Maya, and their kin. Heir to the obsidian blade and the eagle-and-jaguar warrior orders, and to a people who charted the stars and raised cities of stone.",
+    fightingStyle: "Way of the Obsidian Blade", combatSkills: ["Obsidian Strike", "Warrior's Fury"], weaponSubtype: "Great Swords", armorProf: ["Medium"],  // ichcahuipilli quilted-cotton armor
+    traits: [ { name: "Keepers of the Count", desc: "Advantage on checks involving astronomy, mathematics, calendars, and omens; you can always reckon the date, time, season, and direction." },
+              { name: "Warrior's Discipline", desc: "Advantage on checks and saves to resist Fear and intimidation — the eagle and jaguar knights do not flinch." } ],
+    flaw: { name: "City-Raised", desc: "Heir to the great cities and cultivated valleys, not the raw wild. Disadvantage on Survival.", disadvSkill: "Survival" } },
 ];
 
 /* --- Constants ----------------------------------------------------------- */
