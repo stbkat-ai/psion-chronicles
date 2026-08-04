@@ -1312,6 +1312,32 @@ buffs still add on top. Docs: GAME_RULES soft-cap + leveling lines. Cache-buster
 
 ---
 
+### 59. Codex — the searchable in-game reference (second of the three sections)
+**Built.** The **Codex** section (placeholder since #55) is now real: a searchable, browsable reference over the
+game data already on `window.PC`. New self-contained module **`app/codex.js`** (`window.PsionCodex`), wired into
+the app shell — `screen === "codex"` renders it, and entering from Home resets it to its landing.
+
+**What it covers (14 categories).** Kinetics (18), Techniques (216), Otherkin (9), Backgrounds (9), Heritages
+(8), Skills (36), Combat Skills (48), Conditions (19), Weapons (194), Armor (27), Gear (48), Crafting (14
+salvage + 16 component parts), a **Reference** tile (chakra chart + limb table), and a **Bestiary** placeholder
+(no monster data yet). Every count is read live from the data, so it stays correct as the game grows.
+
+**UX.** A landing grid of category tiles (each with its live count) + a global search box. Search matches
+name/subtitle/keywords across every category and groups results by section. Category views list entries
+(grouped where it helps — techniques by Kinetic, weapons by type, skills by attribute) and open a detail panel.
+Details **cross-link**: a background's free technique → that technique; a heritage's Fighting Style → its skills;
+a Kinetic → each of its techniques. Data-driven `SECTIONS` array so adding a category later is a few lines.
+
+**Deliberate exclusion.** **Fusion Kinetics are left out** of the Codex — the standing rule is that fusions are a
+hidden system players discover in play (kept out of the README too). They can surface later in the **GM** section
+if we want a GM-only reference. Flagging this as a decision point in case Luke wants them in the public Codex.
+
+**Verified** end-to-end (Playwright): 14 tiles, all sections list/detail/cross-link/search correctly, 0 console
+errors. Cache-buster **v=86** (added the 7th asset tag — `codex.js`). Bestiary + a narrative "full rulebook"
+view remain as follow-ups.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is
@@ -1320,8 +1346,10 @@ buffs still add on top. Docs: GAME_RULES soft-cap + leveling lines. Cache-buster
   as scaffolding, ready to wire to a real service.
 - **GM section** — build & run campaigns (encounters, NPCs/monsters, initiative & table tracking, XP/loot, live
   play). Placeholder in place (#55).
-- **Codex section** — searchable reference for every game entry (items, monsters, Kinetics, backgrounds,
-  heritages, Otherkin, fusions, conditions, rules). Placeholder in place (#55); the data already lives on `window.PC`.
+- **Codex section** — ✅ **built** (#59): searchable reference across 14 categories (Kinetics, Techniques,
+  Otherkin, Backgrounds, Heritages, Skills, Combat Skills, Conditions, Weapons, Armor, Gear, Crafting, Reference).
+  Remaining: the **Bestiary** (needs monster data) and a narrative "full rulebook" view. Fusions deliberately
+  excluded (hidden system) — could live in the GM section instead.
 - Heritage-opened starting weapons granting **actual proficiency** (currently start-only).
 - A real **XP-to-next-level** bar once Luke sets the thresholds. — ✅ done (#42, placeholder curve; retune anytime).
 - Off-PC backup of the **source** — ✅ done (public GitHub repo `stbkat-ai/psion-chronicles`).

@@ -218,7 +218,11 @@
 
   /* ---------- top-level navigation ---------- */
   function goToHome() { screen = "home"; playId = null; levelUpId = null; state = null; render(); }
-  function goToSection(s) { screen = s; homeMenu = null; playId = null; levelUpId = null; state = null; render(); }
+  function goToSection(s) {
+    screen = s; homeMenu = null; playId = null; levelUpId = null; state = null;
+    if (s === "codex" && window.PsionCodex) window.PsionCodex.reset(); // open the Codex at its landing, not a stale entry
+    render();
+  }
 
   // Show/hide the static header + its player-only actions depending on which section we're in.
   // Home is full-bleed with its own corner chrome, so the header is hidden there entirely.
@@ -237,7 +241,10 @@
     app.innerHTML = "";
     if (screen === "home") { app.appendChild(renderHome()); return; }
     if (screen === "gm") { app.appendChild(renderComingSoon("gm")); return; }
-    if (screen === "codex") { app.appendChild(renderComingSoon("codex")); return; }
+    if (screen === "codex") {
+      if (window.PsionCodex) { window.PsionCodex.render(app); return; }
+      app.appendChild(renderComingSoon("codex")); return; // fallback if the module didn't load
+    }
     // screen === "player" — the character section (roster / creator / level-up / play sheet)
     if (playId && window.PsionPlay) { window.PsionPlay.render(app, playId); return; }
     if (levelUpId) { app.appendChild(renderLevelUp(levelUpId)); return; }
