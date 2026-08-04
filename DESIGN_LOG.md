@@ -1358,6 +1358,30 @@ instruction file unprompted. Cache-buster **v=87**.
 
 ---
 
+### 61. Codex-sync standing rule + made the Codex more self-maintaining
+**Concern (Luke).** "Every time we edit items or rules elsewhere, the Codex needs to be updated." Made this a
+first-class rule and cut the manual surface so it mostly takes care of itself.
+
+**Reality.** The Codex holds **no content of its own** — it reads live from `window.PC` at render time, the same
+data the player app and rules engine use. So editing an existing item, technique, background, condition, rule
+value, etc. in `data.js`/`items.js` **already flows through automatically**, counts included. Manual Codex work
+is only needed for: (a) a **new kind of content** (new `PC.*` collection / uncovered category) → add a
+`SECTIONS` entry; (b) a **renamed/restructured field** a `detail()` reads → update that renderer; (c) a value a
+Reference card hardcodes.
+
+**Tightened the drift risks I'd introduced.** (1) Nine category blurbs hardcoded counts ("All 216 base
+techniques", "153 Fusion Kinetics", …) — stripped the numbers; the tile's live count **badge** already shows
+them, so nothing to keep in sync. (2) The Reference **chakra penalty ladder** was hand-typed — now generated
+from `PC.chakraEffect()` and `PC.RULES.CHAKRA_MAX_HITS`, so it can't drift from the engine. Limb effects were
+already pulled from `PC.LIMBS`.
+
+**Codified.** Added a **Codex-sync** clause to the `CLAUDE.md` STANDING RULE (spelling out the auto-flow + the
+three cases that need a `codex.js` touch), updated the stale "6 tags → 7 tags" references, listed `codex.js` in
+the Files section, and revised the FUSIONS.md note to reflect fusions now living in the Codex. Verified: blurbs
+count-free, badges live, ladder engine-derived, 0 console errors. Cache-buster **v=88**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

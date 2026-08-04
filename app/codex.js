@@ -1,12 +1,14 @@
 /* ============================================================
    Psion Chronicles — Codex (searchable in-game reference)
-   The "look up everything" section: Kinetics, Techniques, Otherkin,
-   Backgrounds, Heritages, Skills, Combat Skills, Conditions, Weapons,
+   The "look up everything" section: Kinetics, Techniques, Fusion Kinetics,
+   Otherkin, Backgrounds, Heritages, Skills, Combat Skills, Conditions, Weapons,
    Armor, Gear, Crafting, and core Reference tables.
-   Pure UI over the game data already on window.PC (data.js + items.js).
+   Pure UI over the game data already on window.PC (data.js + items.js) — it
+   holds NO content of its own, so editing an item/technique/rule in data.js or
+   items.js flows through here automatically (counts included). Adding a whole
+   NEW kind of content, or renaming a field a detail() reads, still needs a
+   matching touch here — see the Codex-sync standing rule in CLAUDE.md.
    Depends on data.js, items.js, rules.js. Exposes window.PsionCodex.
-   Fusion Kinetics are intentionally NOT surfaced here — they're a hidden
-   system players discover in play (see DESIGN_LOG). GM tools can add them later.
    ============================================================ */
 (function () {
   "use strict";
@@ -80,7 +82,7 @@
 
   /* Kinetics */
   addSection({
-    key: "kinetics", icon: "🌀", title: "Kinetics", blurb: "The 18 elemental technique schools.",
+    key: "kinetics", icon: "🌀", title: "Kinetics", blurb: "The elemental technique schools.",
     list: () => (PC.KINETICS || []).map((k) => ({ id: k.name, name: k.name, sub: `${k.attr} · ${k.role}`, group: an(k.attr), keywords: `${k.attr} ${k.role} ${k.domain}` })),
     detail: (id) => {
       const k = (PC.KINETICS || []).find((x) => x.name === id); if (!k) return el("div", "muted", "Not found.");
@@ -102,14 +104,14 @@
 
   /* Techniques */
   addSection({
-    key: "techniques", icon: "✦", title: "Techniques", blurb: "All 216 base techniques across every Kinetic.",
+    key: "techniques", icon: "✦", title: "Techniques", blurb: "Every base technique, across every Kinetic.",
     list: () => (PC.TECHNIQUES || []).map((t) => ({ id: t.name, name: t.name, sub: `${t.kinetic} · ${t.tier} · ${t.action}`, group: t.kinetic, keywords: `${t.kinetic} ${t.tier} ${t.attr} ${t.action} ${t.effect || ""}` })),
     detail: (id) => { const t = PC.technique ? PC.technique(id) : (PC.TECHNIQUES || []).find((x) => x.name === id); return t ? techBody(t) : el("div", "muted", "Not found."); },
   });
 
   /* Fusion Kinetics */
   addSection({
-    key: "fusions", icon: "✨", title: "Fusion Kinetics", blurb: "153 Fusion Kinetics — every pairing of the 18 Kinetics.",
+    key: "fusions", icon: "✨", title: "Fusion Kinetics", blurb: "Every pairing of the Kinetics into a fused school.",
     list: () => (PC.FUSIONS || []).map((f) => ({
       id: f.name, name: f.name,
       sub: `${(f.parents || []).join(" + ")}`,
@@ -144,7 +146,7 @@
 
   /* Otherkin */
   addSection({
-    key: "otherkin", icon: "♥", title: "Otherkin", blurb: "The 9 Soul Creatures chosen at Soul Level 15.",
+    key: "otherkin", icon: "♥", title: "Otherkin", blurb: "The Soul Creatures chosen at Soul Level 15.",
     list: () => (PC.OTHERKIN || []).map((o) => ({ id: o.name, name: `${o.emoji} ${o.name}`, sub: `${o.attr} · ${o.kinetic}`, keywords: `${o.attr} ${o.kinetic} ${o.theme} ${o.pairing || ""}` })),
     detail: (id) => {
       const o = (PC.OTHERKIN || []).find((x) => x.name === id); if (!o) return el("div", "muted", "Not found.");
@@ -176,7 +178,7 @@
 
   /* Backgrounds */
   addSection({
-    key: "backgrounds", icon: "🎭", title: "Backgrounds", blurb: "The 9 Psionic Backgrounds — your character's origin.",
+    key: "backgrounds", icon: "🎭", title: "Backgrounds", blurb: "The Psionic Backgrounds — your character's origin.",
     list: () => (PC.BACKGROUNDS || []).map((b) => ({ id: b.name, name: b.name, sub: b.blurb, keywords: `${b.blurb} ${(b.skills || []).join(" ")} ${(b.combat || []).join(" ")} ${b.freeTech || ""}` })),
     detail: (id) => {
       const b = (PC.BACKGROUNDS || []).find((x) => x.name === id); if (!b) return el("div", "muted", "Not found.");
@@ -196,7 +198,7 @@
 
   /* Heritages */
   addSection({
-    key: "heritages", icon: "🗺️", title: "Heritages", blurb: "The 8 Regional Heritages — Fighting Styles, traits & gear.",
+    key: "heritages", icon: "🗺️", title: "Heritages", blurb: "The Regional Heritages — Fighting Styles, traits & gear.",
     list: () => (PC.HERITAGES || []).map((h) => ({ id: h.name, name: h.name, sub: h.blurb, keywords: `${h.blurb} ${h.fightingStyle || ""} ${h.weaponSubtype || ""} ${(h.combatSkills || []).join(" ")}` })),
     detail: (id) => {
       const h = (PC.HERITAGES || []).find((x) => x.name === id); if (!h) return el("div", "muted", "Not found.");
@@ -216,14 +218,14 @@
 
   /* Skills */
   addSection({
-    key: "skills", icon: "🎯", title: "Skills", blurb: "All 36 skills, grouped by attribute.",
+    key: "skills", icon: "🎯", title: "Skills", blurb: "Every skill, grouped by attribute.",
     list: () => (PC.SKILLS || []).map((s) => ({ id: s.name, name: s.name, sub: an(s.attr), group: an(s.attr), keywords: `${s.attr} ${s.desc || ""}` })),
     detail: (id) => { const s = (PC.SKILLS || []).find((x) => x.name === id); if (!s) return el("div", "muted", "Not found."); const box = el("div"); box.appendChild(el("div", "codex-sub", an(s.attr))); box.appendChild(el("p", "codex-desc", esc(s.desc || ""))); return box; },
   });
 
   /* Combat Skills & Fighting Styles */
   addSection({
-    key: "combatskills", icon: "🥋", title: "Combat Skills", blurb: "48 Combat Skills across the 8 Fighting Styles.",
+    key: "combatskills", icon: "🥋", title: "Combat Skills", blurb: "Combat Skills across the Fighting Styles.",
     list: () => (PC.COMBAT_SKILLS || []).map((c) => ({ id: c.name, name: c.name, sub: `${c.style} · ${c.action}`, group: c.style, keywords: `${c.style} ${c.action} ${c.effect || ""}` })),
     detail: (id) => {
       // Support "style:<name>" to show a Fighting Style overview.
@@ -248,7 +250,7 @@
 
   /* Conditions */
   addSection({
-    key: "conditions", icon: "🩸", title: "Conditions", blurb: "The 19 status effects techniques & hazards inflict.",
+    key: "conditions", icon: "🩸", title: "Conditions", blurb: "The status effects techniques & hazards inflict.",
     list: () => (PC.CONDITIONS || []).map((c) => ({ id: c.key, name: `${c.emoji} ${c.name}`, sub: sevLabel(c.sev), group: sevLabel(c.sev), keywords: `${c.name} ${c.sev} ${c.desc}` })),
     detail: (id) => { const c = (PC.CONDITIONS || []).find((x) => x.key === id); if (!c) return el("div", "muted", "Not found."); const box = el("div"); box.appendChild(el("div", "codex-sub", `${c.emoji} ${sevLabel(c.sev)}`)); box.appendChild(el("p", "codex-desc", esc(c.desc))); return box; },
   });
@@ -345,12 +347,18 @@
     detail: (id) => {
       const box = el("div");
       if (id === "chakras") {
-        box.appendChild(el("p", "codex-desc", "A second health track, separate from HP. Each of the six attribute chakras can take up to 4 hits, with escalating penalties to everything that uses that attribute; a hidden Heart chakra awakens with the Otherkin at Soul Level 15."));
+        const maxHits = (PC.RULES && PC.RULES.CHAKRA_MAX_HITS) || 4;
+        box.appendChild(el("p", "codex-desc", `A second health track, separate from HP. Each of the six attribute chakras can take up to ${maxHits} hits, with escalating penalties to everything that uses that attribute; a hidden Heart chakra awakens with the Otherkin at Soul Level 15.`));
         box.appendChild(label("The six chakras"));
         PC.ATTRS.forEach((a) => { const c = (PC.CHAKRAS || {})[a]; if (!c) return; const r = el("div", "codex-mini"); r.innerHTML = `<span class="cm-name">${esc(c.name)} <span class="muted">· ${a} (${esc(PC.ATTR_NAMES[a] || a)})</span></span><span class="cm-sub">${esc(c.theme)}</span>`; box.appendChild(r); });
         if (PC.HEART_CHAKRA) { const r = el("div", "codex-mini"); r.innerHTML = `<span class="cm-name">${esc(PC.HEART_CHAKRA.name)} <span class="muted">· Heart (Otherkin)</span></span><span class="cm-sub">${esc(PC.HEART_CHAKRA.theme || "")}</span>`; box.appendChild(r); }
+        // Derive the penalty ladder from the rules engine (PC.chakraEffect) so it can't drift from play.
         box.appendChild(label("Hit penalties"));
-        [["1 hit", "Disadvantage on that attribute's rolls"], ["2 hits", "Modifier halved"], ["3 hits", "Modifier reduced to 0"], ["4 hits", "Chakra locked out — can't use that attribute's Kinetics"]].forEach((p) => box.appendChild(kv(p[0], esc(p[1]))));
+        for (let h = 1; h <= maxHits; h++) {
+          const e = PC.chakraEffect ? PC.chakraEffect(h) : null;
+          const txt = e ? (e.label + (e.lockedOut ? " — can't use that attribute's Kinetics" : "")) : "";
+          box.appendChild(kv(h + (h === 1 ? " hit" : " hits"), esc(txt)));
+        }
         return box;
       }
       // limbs
