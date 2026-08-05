@@ -1460,6 +1460,27 @@ Verified: 18 combat skills, no name collisions, wiring resolves, card shows full
 
 ---
 
+### 65. Heritage #4 — The Caribbean (Way of the Tides); the "9" cap is dropped
+**Built (Luke: "just keep building").** Descendants of the island & coastal seafaring peoples of the Caribbean and
+the Central American coast (Taíno, Kalinago, Arawak, isthmus coastal nations). The **fourth distinct combat pole:
+the amphibious hit-and-run raider/controller.** Two roster decisions from Luke: **(1) drop the hard cap of 9** —
+keep building region by region; **(2) Hawaii/Polynesia is NOT here** — reserved for a **Pacific / Oceania**
+heritage that's being **built next**.
+- **Way of the Tides:** ★Net Cast (Root), ★Javelin (ranged), Slip the Current (water mobility → Hidden), Rip Tide
+  (prone/push), Sling Stone (Dazzle), and the **Sea-Born** passive (swim full speed, hold breath, ignore
+  water/sand/reef terrain, no disadvantage in/under water). startWeaponTypes: Thrown/Light/Archery.
+- **Signature Slings** (Archery/STR) — but the ideal weapon is a **javelin/spear**; this is the **3rd** heritage
+  (harpoon → atlatl → javelin) to want one, so a **Spears/Javelins** subtype is now a standing recommendation for
+  WEAPONS.md. **Armor Light only** (heat/water/mobility). **Traits:** Wayfinder (navigate/pilot, never lost at
+  sea), Storm-Wise (predict/endure storms, sea-legs). **Flaw:** History ("Songs, Not Scrolls" — framed around
+  oral tradition; 4th distinct flaw skill).
+
+Verified: 24 combat skills, no name collisions, wiring resolves, card + Codex updated (Heritages 4 / Combat
+Skills 24), 0 console errors. Cache-buster **v=93**. Four combat identities now: ranged skirmisher (NA),
+defensive hunter (Great North), aggressive striker (Mexico), amphibious raider (Caribbean).
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

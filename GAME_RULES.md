@@ -457,7 +457,8 @@ Player characters are **present-day people** of the Post-Veil world; a heritage 
 Native nations of the continental US** — not modern American culture.)
 
 > **Overhaul in progress (Luke & Brittany).** The heritage roster is being rebuilt from scratch toward the
-> final design: a fresh set of **9 peoples, built one at a time**. Each region is defined as we go — North
+> final design, **built one at a time** (the earlier "9" target is dropped — the roster grows region by region).
+> Each region is defined as we go — North
 > America excludes Canada and Mexico, which each become their own heritage later. Because a heritage is a
 > *people*, its Fighting Style, signature weapon, and traits reflect that people's real historical martial
 > tradition. All of it is placeholder for Brittany to finalize.
@@ -485,13 +486,14 @@ is retained for the rebuild even though no current heritage uses one yet):
 Heritage never touches attribute scores or pools. Two characters of the same Background differ by the
 Fighting Style, Combat Skills, and Traits their Heritage opened up.
 
-**The fresh roster (3 of 9 built so far):**
+**The fresh roster (4 built so far; the "9" cap is dropped — the roster grows region by region, with a Pacific / Oceania heritage next):**
 
 | Heritage | People / region | Fighting Style | Signature weapon | Armor | Flaw |
 |---|---|---|---|---|---|
 | **North America** | Descendants of the Native nations of the continental US | Way of the Hunt | **Shortbows** (Archery/STR) | Light only | Etiquette |
 | **The Great North** | Descendants of the First Nations & Inuit peoples north of the US border | Way of the Long Winter | **Knives** (Light/AGI) | Light + Medium | Etiquette |
 | **Mexico** | Descendants of the Mesoamerican civilizations (Mexica/Aztec, Maya, and kin) | Way of the Obsidian Blade | **Great Swords** (Heavy/STR) — the macuahuitl | Light + Medium | Survival |
+| **The Caribbean** | Descendants of the island & coastal seafaring peoples of the Caribbean and Central American coast (Taíno, Kalinago, Arawak, isthmus coastal nations) | Way of the Tides | **Slings** (Archery/STR) | Light only | History |
 
 *The other 6 are in development, built one at a time with Luke.* Design intent: three distinct combat poles so
 far — NA is the **mobile ranged skirmisher**, the Great North is the **enduring defensive hunter**, and Mexico
@@ -511,6 +513,13 @@ is the **aggressive melee striker**.
   cotton). Signature weapon **Great Swords** stands in for the **macuahuitl** — a dedicated Macuahuitl/Obsidian
   subtype could be added to WEAPONS.md later. *(Deliberately avoids the human-sacrifice stereotype; leans on the
   real achievements — astronomy, obsidian craft, the atlatl, the warrior orders.)*
+- **Way of the Tides** (The Caribbean) — an amphibious hit-and-run raider/controller: Net Cast (Root), Javelin
+  (ranged), Slip the Current (water mobility → Hidden), Rip Tide (prone/push), Sling Stone (Dazzle), and the
+  **Sea-Born** passive (swim at full speed, hold breath, ignore water/sand/reef terrain, no disadvantage in/under
+  water). Traits: **Wayfinder** (navigate/pilot, never lost at sea) and **Storm-Wise** (predict & endure storms,
+  sea-legs). Light armor only. Signature **Slings** — but the ideal weapon is a **javelin/spear**, the third
+  heritage (after the harpoon and atlatl) to want one: a **Spears/Javelins** subtype is recommended for WEAPONS.md.
+  *Hawaii/Polynesia is intentionally NOT here — it's reserved for the Pacific / Oceania heritage (built next).*
 
 ### Fighting Styles & Combat Skills (the mechanic)
 Combat Skills work like Kinetic Techniques: there are **many**, organized into categories called
@@ -530,15 +539,16 @@ forage with advantage, and leave no trail).
 - A style's Passive **can be learned by any character** with CSP, regardless of Heritage — as can any other
   style's skills.
 
-### Heritages → Fighting Styles (fresh roster — 3 of 9)
+### Heritages → Fighting Styles (fresh roster — 4 built; growing region by region)
 | Heritage | Fighting Style | Starting Combat Skills | Signature Passive | Traits | Flaw (disadvantage) |
 |---|---|---|---|---|---|
 | **North America** | Way of the Hunt | Hunter's Aim, Fade Away | Pathfinder | One with the Land, Keen Senses | *Unversed in Old-World Customs* — Etiquette |
 | **The Great North** | Way of the Long Winter | Harpoon Throw, Brace | Winterhardened | People of the Ice, Iron Constitution | *Plain-Spoken* — Etiquette |
 | **Mexico** | Way of the Obsidian Blade | Obsidian Strike, Warrior's Fury | Obsidian Edge | Keepers of the Count, Warrior's Discipline | *City-Raised* — Survival |
+| **The Caribbean** | Way of the Tides | Net Cast, Javelin | Sea-Born | Wayfinder, Storm-Wise | *Songs, Not Scrolls* — History |
 
-*The other 6 heritages are being rebuilt one at a time (see 3b). Each style holds **5 active skills + 1
-Passive**. Full skill text lives in `app/data.js` (`PC.FIGHTING_STYLES`); the app is the source of truth.*
+*More heritages are being built one at a time (see 3b). Each style holds **5 active skills + 1 Passive**. Full
+skill text lives in `app/data.js` (`PC.FIGHTING_STYLES`); the app is the source of truth.*
 
 **Heritage & starting gear (CONFIRMED Luke).** A Fighting Style also flavors your **starting-weapon
 options**. Each style lists `startWeaponTypes` — weapon types you may **begin play with even if you're not

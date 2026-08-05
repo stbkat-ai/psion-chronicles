@@ -682,6 +682,17 @@ PC.FIGHTING_STYLES = [
       { name: "Sever", action: "Action", effect: "A two-handed obsidian blow that ignores part of the target's armor Defense bonus and deals extra damage on a hit." },
       { name: "Obsidian Edge", action: "Passive", effect: "Your melee attacks with a bladed weapon score a critical hit on a roll of 19–20, and a creature you critically hit begins Bleeding." },
     ] },
+  { name: "Way of the Tides", heritage: "The Caribbean",
+    blurb: "Strike from the water and vanish back into it — tangle your foe in the net, harry from range, and let the sea fight for you.",
+    startWeaponTypes: ["Thrown Weapons", "Light Weapons", "Archery"], // javelin/dart, macana club/knife, sling
+    skills: [
+      { name: "Net Cast", action: "Action", effect: "Hurl a weighted net at a target in range; on a hit it is Rooted (movement 0) until it spends an action to break free." },
+      { name: "Javelin", action: "Action", effect: "Throw a spear or javelin — a strong ranged attack out to good range, further and heavier than a hand-thrown knife." },
+      { name: "Slip the Current", action: "Bonus Action", effect: "Move up to your speed through or along water or difficult terrain without provoking opportunity attacks; if you end in water or concealment, you become Hidden." },
+      { name: "Rip Tide", action: "Action", effect: "A strike or shove that, on a hit, knocks the target prone or pushes it up to 10 ft (into water, off a ledge, or into a hazard)." },
+      { name: "Sling Stone", action: "Action", effect: "Whirl and loose a sling stone — a ranged attack that, on a hit, also Dazzles the target (disadvantage on attack rolls and sight-based checks) until your next turn." },
+      { name: "Sea-Born", action: "Passive", effect: "You swim at your full movement speed, can hold your breath far longer than others, and ignore difficult terrain from water, sand, and reef. You are never at disadvantage for fighting in or under water." },
+    ] },
 ];
 
 /* Flattened master list — every combat skill across all styles, tagged with its style.
@@ -712,6 +723,11 @@ PC.HERITAGES = [
     traits: [ { name: "Keepers of the Count", desc: "Advantage on checks involving astronomy, mathematics, calendars, and omens; you can always reckon the date, time, season, and direction." },
               { name: "Warrior's Discipline", desc: "Advantage on checks and saves to resist Fear and intimidation — the eagle and jaguar knights do not flinch." } ],
     flaw: { name: "City-Raised", desc: "Heir to the great cities and cultivated valleys, not the raw wild. Disadvantage on Survival.", disadvSkill: "Survival" } },
+  { name: "The Caribbean", blurb: "A present-day descendant of the island and coastal seafaring peoples of the Caribbean and the Central American coast — Taíno, Kalinago, Arawak, and the coastal nations of the isthmus. Born to the canoe and the reef, at home on the water and in the surf.",
+    fightingStyle: "Way of the Tides", combatSkills: ["Net Cast", "Javelin"], weaponSubtype: "Slings", armorProf: [],  // Light only — heat, water, mobility
+    traits: [ { name: "Wayfinder", desc: "Navigate by the stars, currents, and swells; pilot any small craft; you are never lost at sea and can find your way across open water." },
+              { name: "Storm-Wise", desc: "You read and endure storms and rough weather — advantage to predict, weather, and keep your footing through wind, surf, and a pitching deck." } ],
+    flaw: { name: "Songs, Not Scrolls", desc: "Your people's past lives in song and story, not the old world's written archives. Disadvantage on History.", disadvSkill: "History" } },
 ];
 
 /* --- Constants ----------------------------------------------------------- */
