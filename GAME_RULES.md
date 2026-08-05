@@ -486,7 +486,7 @@ is retained for the rebuild even though no current heritage uses one yet):
 Heritage never touches attribute scores or pools. Two characters of the same Background differ by the
 Fighting Style, Combat Skills, and Traits their Heritage opened up.
 
-**The fresh roster (5 built so far; the "9" cap is dropped — the roster grows region by region):**
+**The fresh roster (7 built so far; the "9" cap is dropped — the roster grows region by region):**
 
 | Heritage | People / region | Fighting Style | Signature weapon | Armor | Flaw |
 |---|---|---|---|---|---|
@@ -495,13 +495,16 @@ Fighting Style, Combat Skills, and Traits their Heritage opened up.
 | **Mexico** | Descendants of the Mesoamerican civilizations (Mexica/Aztec, Maya, and kin) | Way of the Obsidian Blade | **Great Swords** (Heavy/STR) — the macuahuitl | Light + Medium | Survival |
 | **The Caribbean** | Descendants of the island & coastal seafaring peoples of the Caribbean and Central American coast (Taíno, Kalinago, Arawak, isthmus coastal nations) | Way of the Tides | **Slings** (Archery/STR) | Light only | History |
 | **Pacific Islander** | Descendants of the Pacific Islander peoples — Polynesian, Melanesian, Micronesian (Hawaiʻi to Aotearoa) | Way of the War Club | **Maces** (Heavy/STR) — the war club | Light only | Persuasion |
+| **The Andes** | Descendants of the Andean peoples (Quechua, Aymara, heirs of the mountain empires) | Way of the Vanguard | **Great Hammers** (Heavy/STR) — the star-mace | Light + Medium | Stealth |
+| **The Amazon** | Descendants of the rainforest nations of the Amazon | Way of the Silent Dart | **Blowguns** (Quick/AGI) | Light only | Laborer's Tools |
 
 *More heritages are in development, built one at a time with Luke.* **Weapon convention (Luke):** every heritage
 uses **only existing weapon subtypes** — we do **not** add new ones. Where an iconic weapon has no subtype (the
 harpoon, javelin, spear, taiaha), the signature is mapped to the nearest real subtype and the skill flavor is
 weapon-agnostic (a "thrown weapon" / "reach strike"). Design intent: five distinct combat poles — mobile ranged
 skirmisher (NA), enduring defensive hunter (Great North), aggressive melee striker (Mexico), amphibious raider
-(The Caribbean), ferocious brawler (Pacific Islander).
+(The Caribbean), ferocious brawler (Pacific Islander), disciplined protector/commander (The Andes), lone venom
+hunter (The Amazon).
 - **Way of the Hunt** (North America) — a pan-Native skirmisher/hunter: Hunter's Aim (called-shot bow), Fade Away
   (hit-and-hide), Volley, Ambush, Harrier's Shot, and the **Pathfinder** passive (ignore natural terrain,
   track/forage advantage, leave no trail). Traits: **One with the Land** and **Keen Senses**. Light armor only.
@@ -529,6 +532,19 @@ skirmisher (NA), enduring defensive hunter (Great North), aggressive melee strik
   **Maces** = the pan-Pacific **war club** (Fijian/Samoan/Tongan clubs, Māori mere, Hawaiian leiomano). *Aboriginal
   Australia is culturally distinct and reserved as its own future heritage — "Pacific Islander" is the island
   peoples (Polynesia/Melanesia/Micronesia).*
+- **Way of the Vanguard** (The Andes) — the disciplined protector/commander (the roster's first support fighter):
+  Star-Mace (push + no reactions), Bulwark (interpose for an ally), Rally (buff/cleanse an ally), Hold the Line
+  (formation — you & adjacent allies can't be moved/proned), Sling Barrage (huaraca, Slow), and the **Highland-Bred**
+  passive (altitude/mountain terrain immunity, resist exhaustion). Traits: **Master Builders** (engineering) and
+  **Keeper of the Quipu** (flawless records/logistics). Signature **Great Hammers** (the star-mace/champi);
+  Light + Medium armor. Flaw **Stealth** (disciplined ranks, not skulkers).
+- **Way of the Silent Dart** (The Amazon) — the lone venom hunter: Poison Dart (Poisoned), Silent Shot (attack
+  from Hidden), Curare (Poisoned + Slowed → Stunned if already Poisoned), Weakening Toxin (Weakened), Vanish
+  (Hidden + move), and the **Venom-Wise** passive (poison/disease immune; your toxins resisted at disadvantage).
+  Traits: **Green Apothecary** (Herbalism/Medicine, brew poison & antidote) and **Unconquered** (resist
+  charm/coerce/command). Signature **Blowguns**; Light armor. Flaw **Laborer's Tools** (lived with the forest,
+  not by hauling stone). *The Andes and the Amazon are split into two heritages, not one "South America" — two
+  civilizations, two poles.*
 
 ### Fighting Styles & Combat Skills (the mechanic)
 Combat Skills work like Kinetic Techniques: there are **many**, organized into categories called
@@ -548,7 +564,7 @@ forage with advantage, and leave no trail).
 - A style's Passive **can be learned by any character** with CSP, regardless of Heritage — as can any other
   style's skills.
 
-### Heritages → Fighting Styles (fresh roster — 5 built; growing region by region)
+### Heritages → Fighting Styles (fresh roster — 7 built; growing region by region)
 | Heritage | Fighting Style | Starting Combat Skills | Signature Passive | Traits | Flaw (disadvantage) |
 |---|---|---|---|---|---|
 | **North America** | Way of the Hunt | Hunter's Aim, Fade Away | Pathfinder | One with the Land, Keen Senses | *Unversed in Old-World Customs* — Etiquette |
@@ -556,6 +572,8 @@ forage with advantage, and leave no trail).
 | **Mexico** | Way of the Obsidian Blade | Obsidian Strike, Warrior's Fury | Obsidian Edge | Keepers of the Count, Warrior's Discipline | *City-Raised* — Survival |
 | **The Caribbean** | Way of the Tides | Net Cast, Hurl | Sea-Born | Wayfinder, Storm-Wise | *Songs, Not Scrolls* — History |
 | **Pacific Islander** | Way of the War Club | War Club, Haka | Unflinching | Feared Warrior, Deep-Water Voyager | *Sooner Cow Than Coax* — Persuasion |
+| **The Andes** | Way of the Vanguard | Star-Mace, Bulwark | Highland-Bred | Master Builders, Keeper of the Quipu | *Ranks, Not Shadows* — Stealth |
+| **The Amazon** | Way of the Silent Dart | Poison Dart, Silent Shot | Venom-Wise | Green Apothecary, Unconquered | *Light on the Land* — Laborer's Tools |
 
 *More heritages are being built one at a time (see 3b). Each style holds **5 active skills + 1 Passive**. Full
 skill text lives in `app/data.js` (`PC.FIGHTING_STYLES`); the app is the source of truth.*
@@ -698,6 +716,15 @@ Every catalog weapon records two extra properties:
   creator filters against it. All the *other* starting-gear rules stack on top unchanged — you may still only
   start with a weapon whose **type you're proficient with** (or that your Heritage's Fighting Style opens as
   *start-only*), and two-weapon Heritages still choose **one two-handed or two one-handed** weapons.
+
+### Economy — barter & trade, no universal currency (CONFIRMED Luke)
+There is **no universal currency** in Psion Chronicles. The economy is **barter and trade** — goods, salvage,
+components, and services exchanged directly by relative value. Some **settlements run their own local currency
+and economy** (e.g. a military settlement using **ration tickets** as scrip). Those local currencies are just
+**in-game items** that occupy inventory space like anything else — there is no global money stat. *(Not built
+yet — recorded so no content, especially heritage traits/flaws, ever assumes a universal currency. The **Barter**
+skill covers direct-trade negotiation; it is deliberately **not** used as a heritage flaw, since barter is the
+universal exchange.)*
 
 ### Crafting & Salvage
 **Every item outside Legendary rarity can be crafted** by a character who has the **components** (and, in the

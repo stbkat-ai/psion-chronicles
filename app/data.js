@@ -704,6 +704,28 @@ PC.FIGHTING_STYLES = [
       { name: "Lunge", action: "Action", effect: "A lunging reach strike that closes the distance; on a hit you may push the target 5 ft or knock it prone." },
       { name: "Unflinching", action: "Passive", effect: "You cannot be Frightened, and while you are below half your HP your melee attacks deal an extra damage die — you fight hardest when cornered." },
     ] },
+  { name: "Way of the Vanguard", heritage: "The Andes",
+    blurb: "Hold the line, shield your kin, and bring the star-mace down on anything that breaks it.",
+    startWeaponTypes: ["Heavy Weapons", "Archery", "Light Weapons"], // star-mace, sling (huaraca), macana/knife
+    skills: [
+      { name: "Star-Mace", action: "Action", effect: "A heavy star-headed mace strike; on a hit the target is pushed 5 ft and cannot take reactions until your next turn, rattled by the blow." },
+      { name: "Bulwark", action: "Reaction", effect: "When an ally you can see is attacked, impose disadvantage on that attack — you interpose your shield and presence." },
+      { name: "Rally", action: "Bonus Action", effect: "A commander's call: an ally you can see gains advantage on their next attack roll or check, or ends one condition affecting them (such as Frightened)." },
+      { name: "Hold the Line", action: "Action", effect: "Until your next turn, you and each ally adjacent to you cannot be knocked prone or forcibly moved, and roll with advantage to resist being Slowed or Rooted." },
+      { name: "Sling Barrage", action: "Action", effect: "A ranged sling (huaraca) attack; on a hit the target is Slowed (movement halved) until your next turn." },
+      { name: "Highland-Bred", action: "Passive", effect: "Thin air and high altitude never affect you; you ignore difficult terrain from rock, scree, and steep slopes, and you have advantage on checks to resist exhaustion." },
+    ] },
+  { name: "Way of the Silent Dart", heritage: "The Amazon",
+    blurb: "Strike from cover, unseen and unheard — let the toxin do the work while you fade back into the green.",
+    startWeaponTypes: ["Quick Weapons", "Archery", "Thrown Weapons"], // blowgun, bow/sling, darts
+    skills: [
+      { name: "Poison Dart", action: "Action", effect: "A blowgun dart tipped with natural toxin; on a hit the target becomes Poisoned (poison damage at the start of each turn until it shakes it off)." },
+      { name: "Silent Shot", action: "Bonus Action", effect: "Attack from Hidden without revealing your position (you remain Hidden), or make a ranged attack with advantage against a foe unaware of you." },
+      { name: "Curare", action: "Action", effect: "A paralytic dart: on a hit the target is Poisoned and Slowed; if it was already Poisoned, it is instead Stunned until your next turn." },
+      { name: "Weakening Toxin", action: "Action", effect: "On a hit the target is Weakened (deals reduced damage) as the venom saps its strength." },
+      { name: "Vanish", action: "Bonus Action", effect: "In natural surroundings, become Hidden and move up to half your speed without being seen." },
+      { name: "Venom-Wise", action: "Passive", effect: "You are immune to poison and disease, and targets roll to resist your Poisoned or toxin effects at disadvantage." },
+    ] },
 ];
 
 /* Flattened master list — every combat skill across all styles, tagged with its style.
@@ -744,6 +766,16 @@ PC.HERITAGES = [
     traits: [ { name: "Feared Warrior", desc: "Advantage on Intimidation, and your presence alone can cow lesser foes — you may use Intimidation to command respect or instill fear where others would plead." },
               { name: "Deep-Water Voyager", desc: "Advantage to navigate the open ocean by stars and swells and to endure long sea voyages; you are at home crossing waters that would strand others." } ],
     flaw: { name: "Sooner Cow Than Coax", desc: "Your people command through strength and mana, not soft words. Disadvantage on Persuasion.", disadvSkill: "Persuasion" } },
+  { name: "The Andes", blurb: "A present-day descendant of the Andean peoples — Quechua, Aymara, and the heirs of the mountain empires. Raised to the thin air and the terraced heights, to disciplined ranks and roads that once spanned a world.",
+    fightingStyle: "Way of the Vanguard", combatSkills: ["Star-Mace", "Bulwark"], weaponSubtype: "Great Hammers", armorProf: ["Medium"],  // quilted cotton, shields, bronze
+    traits: [ { name: "Master Builders", desc: "Advantage on checks to build, repair, or engineer — masonry, bridges, terraces, roads; you can construct or jury-rig where others cannot." },
+              { name: "Keeper of the Quipu", desc: "A flawless memory for numbers, records, quantities, and logistics (the knotted-cord accounts); you never lose track of a count, a route, or an inventory." } ],
+    flaw: { name: "Ranks, Not Shadows", desc: "Your people move in disciplined ranks and build in the open; the skulk and the ambush were never your way. Disadvantage on Stealth.", disadvSkill: "Stealth" } },
+  { name: "The Amazon", blurb: "A present-day descendant of the rainforest nations of the Amazon. Heir to the silent dart and the herb-lore of a hundred peoples, and to a forest world the old empires never truly conquered.",
+    fightingStyle: "Way of the Silent Dart", combatSkills: ["Poison Dart", "Silent Shot"], weaponSubtype: "Blowguns", armorProf: [],  // Light only — the mobile, stealthy hunter
+    traits: [ { name: "Green Apothecary", desc: "Advantage on Herbalism and Medicine; from the wild you can identify, harvest, and prepare plants into poison, medicine, or antidote." },
+              { name: "Unconquered", desc: "Advantage on checks and saves to resist being charmed, coerced, intimidated, or commanded — the fierce independence of peoples the great empires never subdued." } ],
+    flaw: { name: "Light on the Land", desc: "Your people lived with the forest, not by hauling stone and heavy timber. Disadvantage on Laborer's Tools.", disadvSkill: "Laborer's Tools" } },
 ];
 
 /* --- Constants ----------------------------------------------------------- */

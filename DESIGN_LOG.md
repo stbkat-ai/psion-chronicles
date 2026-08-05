@@ -1520,6 +1520,32 @@ in skill effects, 0 console errors. Cache-buster **v=95**.
 
 ---
 
+### 68. Heritages #6 & #7 — The Andes & The Amazon (South America split in two); + no-currency economy noted
+**Built (Luke approved).** Luke split "South America" into **two heritages** — the Andes and the Amazon are two
+civilizations, not one.
+- **The Andes** (#6, *Way of the Vanguard*) — descendants of the Andean peoples (Quechua, Aymara). The roster's
+  **first support/protector pole**: Star-Mace (push + no reactions), Bulwark (interpose for an ally), Rally
+  (buff/cleanse ally), Hold the Line (formation anti-move), Sling Barrage (Slow) + **Highland-Bred** passive
+  (altitude/mountain immunity, resist exhaustion). Signature **Great Hammers** (star-mace/champi); Light+Medium.
+  Traits **Master Builders** (engineering) + **Keeper of the Quipu** (records/logistics). Flaw **Stealth**.
+- **The Amazon** (#7, *Way of the Silent Dart*) — descendants of the rainforest nations. A **genuinely new
+  mechanical pole: poison** (nobody else used the Poisoned condition). Poison Dart, Silent Shot, Curare
+  (Poison+Slow→Stun), Weakening Toxin, Vanish + **Venom-Wise** passive (poison-immune; toxins resisted at
+  disadvantage). Signature **Blowguns** (real subtype); Light. Traits **Green Apothecary** + **Unconquered**.
+  Flaw **Laborer's Tools**.
+
+**No-currency economy (Luke, system-wide note).** There is **no universal currency** — the economy is **barter &
+trade**; some settlements use local scrip (e.g. ration tickets) which are just **inventory items**. Not building
+it yet, but recorded in GAME_RULES (new *Economy* note) so no content assumes currency. This **changed the Andes
+flaw**: I'd proposed *Barter* ("not coin"), but barter is the *universal* exchange (too central to flaw, and
+"coin" doesn't exist) → switched to **Stealth**. Confirmed the 5 already-built heritages reference no currency.
+
+Verified: 42 combat skills, no name collisions (combat-skill or technique), both wired, cards + Codex updated
+(Heritages 7 / Combat Skills 42), 0 console errors. Roster **7**. Seven distinct combat poles. Flaw spread:
+Etiquette×2, Survival, History, Persuasion, Stealth, Laborer's Tools. Cache-buster **v=96**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is
