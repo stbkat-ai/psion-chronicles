@@ -726,6 +726,17 @@ PC.FIGHTING_STYLES = [
       { name: "Vanish", action: "Bonus Action", effect: "In natural surroundings, become Hidden and move up to half your speed without being seen." },
       { name: "Venom-Wise", action: "Passive", effect: "You are immune to poison and disease, and targets roll to resist your Poisoned or toxin effects at disadvantage." },
     ] },
+  { name: "Way of the Oath", heritage: "The Franks",
+    blurb: "Name your foe, meet them blade to blade, and let steel and honor decide who holds the field.",
+    startWeaponTypes: ["Heavy Weapons", "Finesse Weapons", "Archery"], // longsword, dueling blade, crossbow/bow
+    skills: [
+      { name: "Challenge", action: "Bonus Action", effect: "Mark a foe until the start of your next turn: it has disadvantage on attacks against anyone but you, and you have advantage on attacks against it — the duel is joined." },
+      { name: "Cleaving Blow", action: "Action", effect: "A heavy sword strike; if it reduces the target to 0 HP, immediately make one attack against another foe within your reach." },
+      { name: "Riposte", action: "Reaction", effect: "When a melee attack misses you, make a melee attack against the attacker." },
+      { name: "Lance Charge", action: "Action", effect: "Move in a straight line up to your speed and make a melee attack; on a hit it deals extra damage and you may knock the target prone." },
+      { name: "Shield the Fallen", action: "Reaction", effect: "When an ally within your reach is hit by an attack, take that attack's damage in their place — you interpose your body and shield." },
+      { name: "Plate-Steel", action: "Passive", effect: "Reduce all incoming damage by 2 (the weight of steel), and you cannot be knocked prone while conscious." },
+    ] },
 ];
 
 /* Flattened master list — every combat skill across all styles, tagged with its style.
@@ -776,6 +787,11 @@ PC.HERITAGES = [
     traits: [ { name: "Green Apothecary", desc: "Advantage on Herbalism and Medicine; from the wild you can identify, harvest, and prepare plants into poison, medicine, or antidote." },
               { name: "Unconquered", desc: "Advantage on checks and saves to resist being charmed, coerced, intimidated, or commanded — the fierce independence of peoples the great empires never subdued." } ],
     flaw: { name: "Light on the Land", desc: "Your people lived with the forest, not by hauling stone and heavy timber. Disadvantage on Laborer's Tools.", disadvSkill: "Laborer's Tools" } },
+  { name: "The Franks", blurb: "A present-day descendant of the Franks — the realms of Charlemagne's heirs, cradle of chivalry. Raised to the code: the longsword, the full plate, and the duel that decides who holds the field.",
+    fightingStyle: "Way of the Oath", combatSkills: ["Challenge", "Cleaving Blow"], weaponSubtype: "Great Swords", armorProf: ["Medium", "Heavy"],  // full plate — the roster's first Heavy-armor heritage
+    traits: [ { name: "Steel Resolve", desc: "Advantage on saves to resist Fear and on Concentration checks — the disciplined, sworn mind of a knight." },
+              { name: "Noble Bearing", desc: "Advantage on Etiquette and on Insight in courtly or formal settings; you are literate in heraldry and protocol and given deference where rank and honor are respected." } ],
+    flaw: { name: "Clad in Steel", desc: "Full plate and rigid drill leave no room for the tumbler's art. Disadvantage on Acrobatics.", disadvSkill: "Acrobatics" } },
 ];
 
 /* --- Constants ----------------------------------------------------------- */

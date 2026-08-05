@@ -1546,6 +1546,33 @@ Etiquette×2, Survival, History, Persuasion, Stealth, Laborer's Tools. Cache-bus
 
 ---
 
+### 69. Europe begins — Heritage #8: The Franks (Way of the Oath), first Heavy-armor heritage
+**Direction (Luke).** Moving to Europe, and it's **not one heritage** — Europe is vast, so it yields many
+(no limit). Two framing calls: **(a)** European heritages may use a **wider weapon palette** — beyond the melee/
+archery of the Indigenous heritages, Luke opened up **Firearms, Explosives, Channel, and Ritual** subtypes (but
+**not** Tech/Laser/Plasma/Living). So Europe reads as the Old World's "advanced" continent — steel plate,
+gunpowder, and the occult. **(b)** Heritage names must reflect a **specific region** (historical people, not a
+modern nation or an archetype) — so the medieval-knight heritage is named **The Franks** (Francia — cradle of
+chivalry), not "Feudal Europe" or "The Knight." Planned European set (build order TBD): Franks (done), Norse,
+Celts (Channel/druids), Hellenes & Romans, a Gunpowder tradition (Firearms+Explosives), an Occult tradition
+(Ritual), Slavs, + Iberia/Baltic/steppe optional.
+
+**Heritage #8 — The Franks** (*Way of the Oath*) — the **armored champion/duelist**, and the roster's **first
+Heavy-armor** heritage. ★Challenge (mark → duel: it's disadv. vs others, you're adv. vs it), ★Cleaving Blow
+(carry a kill to the next foe), Riposte (punish a miss), Lance Charge (charge + prone), Shield the Fallen (take
+an ally's hit), and the **Plate-Steel** passive (−2 all damage, can't be proned). Signature **Great Swords**
+(the longsword — shares the subtype with Mexico's macuahuitl, different weapon in flavor); **Armor Light +
+Medium + Heavy** (first full plate). Traits **Steel Resolve** (resist Fear/Concentration) and **Noble Bearing**
+(Etiquette/heraldry — the Knight *owns* the courtesy other heritages stumble on). Flaw **Acrobatics** (no
+tumbling in plate). Distinct from the Andes (protect/formation) — the Franks compel single combat and outlast in
+plate.
+
+Verified: 48 combat skills, no name collisions, wired, Heavy armor recognized, card shows Light+Medium+Heavy,
+Codex updated (Heritages 8 / Combat Skills 48), 0 console errors. Roster **8**. Flaw spread now adds Acrobatics.
+Cache-buster **v=97**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

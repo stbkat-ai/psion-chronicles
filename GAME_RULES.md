@@ -486,7 +486,7 @@ is retained for the rebuild even though no current heritage uses one yet):
 Heritage never touches attribute scores or pools. Two characters of the same Background differ by the
 Fighting Style, Combat Skills, and Traits their Heritage opened up.
 
-**The fresh roster (7 built so far; the "9" cap is dropped — the roster grows region by region):**
+**The fresh roster (8 built so far; the "9" cap is dropped — the roster grows region by region):**
 
 | Heritage | People / region | Fighting Style | Signature weapon | Armor | Flaw |
 |---|---|---|---|---|---|
@@ -497,6 +497,7 @@ Fighting Style, Combat Skills, and Traits their Heritage opened up.
 | **Pacific Islander** | Descendants of the Pacific Islander peoples — Polynesian, Melanesian, Micronesian (Hawaiʻi to Aotearoa) | Way of the War Club | **Maces** (Heavy/STR) — the war club | Light only | Persuasion |
 | **The Andes** | Descendants of the Andean peoples (Quechua, Aymara, heirs of the mountain empires) | Way of the Vanguard | **Great Hammers** (Heavy/STR) — the star-mace | Light + Medium | Stealth |
 | **The Amazon** | Descendants of the rainforest nations of the Amazon | Way of the Silent Dart | **Blowguns** (Quick/AGI) | Light only | Laborer's Tools |
+| **The Franks** | Descendants of the Franks (Francia — cradle of chivalry & the medieval knight) | Way of the Oath | **Great Swords** (Heavy/STR) — the longsword | Light + Medium + **Heavy** | Acrobatics |
 
 *More heritages are in development, built one at a time with Luke.* **Weapon convention (Luke):** every heritage
 uses **only existing weapon subtypes** — we do **not** add new ones. Where an iconic weapon has no subtype (the
@@ -545,6 +546,16 @@ hunter (The Amazon).
   charm/coerce/command). Signature **Blowguns**; Light armor. Flaw **Laborer's Tools** (lived with the forest,
   not by hauling stone). *The Andes and the Amazon are split into two heritages, not one "South America" — two
   civilizations, two poles.*
+- **Way of the Oath** (The Franks) — the armored champion/duelist, the roster's **first Heavy-armor** heritage:
+  Challenge (mark/duel), Cleaving Blow (carry a kill to the next foe), Riposte (strike a miss), Lance Charge
+  (charge + prone), Shield the Fallen (take an ally's hit), and the **Plate-Steel** passive (−2 all damage, can't
+  be proned). Traits **Steel Resolve** (resist Fear, Concentration) and **Noble Bearing** (Etiquette/heraldry —
+  the Knight *owns* the courtesy others stumble on). Signature **Great Swords** (the longsword); Light+Medium+
+  **Heavy** armor. Flaw **Acrobatics** (full plate, no tumbling). *Distinct from the Andes: the Andes protect &
+  hold formation; the Franks compel single combat and outlast in plate.* **Europe = the Old World's "advanced"
+  continent** — steel plate, and (per Luke) firearms, explosives, channel & ritual weapons are on the table for
+  its heritages (never tech/laser/plasma/living). This is the first European heritage; more regions to come
+  (Norse, Celts, Hellenes/Romans, a gunpowder tradition, an occult tradition, Slavs, Iberia…).
 
 ### Fighting Styles & Combat Skills (the mechanic)
 Combat Skills work like Kinetic Techniques: there are **many**, organized into categories called
@@ -564,7 +575,7 @@ forage with advantage, and leave no trail).
 - A style's Passive **can be learned by any character** with CSP, regardless of Heritage — as can any other
   style's skills.
 
-### Heritages → Fighting Styles (fresh roster — 7 built; growing region by region)
+### Heritages → Fighting Styles (fresh roster — 8 built; growing region by region)
 | Heritage | Fighting Style | Starting Combat Skills | Signature Passive | Traits | Flaw (disadvantage) |
 |---|---|---|---|---|---|
 | **North America** | Way of the Hunt | Hunter's Aim, Fade Away | Pathfinder | One with the Land, Keen Senses | *Unversed in Old-World Customs* — Etiquette |
@@ -574,6 +585,7 @@ forage with advantage, and leave no trail).
 | **Pacific Islander** | Way of the War Club | War Club, Haka | Unflinching | Feared Warrior, Deep-Water Voyager | *Sooner Cow Than Coax* — Persuasion |
 | **The Andes** | Way of the Vanguard | Star-Mace, Bulwark | Highland-Bred | Master Builders, Keeper of the Quipu | *Ranks, Not Shadows* — Stealth |
 | **The Amazon** | Way of the Silent Dart | Poison Dart, Silent Shot | Venom-Wise | Green Apothecary, Unconquered | *Light on the Land* — Laborer's Tools |
+| **The Franks** | Way of the Oath | Challenge, Cleaving Blow | Plate-Steel | Steel Resolve, Noble Bearing | *Clad in Steel* — Acrobatics |
 
 *More heritages are being built one at a time (see 3b). Each style holds **5 active skills + 1 Passive**. Full
 skill text lives in `app/data.js` (`PC.FIGHTING_STYLES`); the app is the source of truth.*
