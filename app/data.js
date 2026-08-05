@@ -693,6 +693,17 @@ PC.FIGHTING_STYLES = [
       { name: "Sling Stone", action: "Action", effect: "Whirl and loose a sling stone — a ranged attack that, on a hit, also Dazzles the target (disadvantage on attack rolls and sight-based checks) until your next turn." },
       { name: "Sea-Born", action: "Passive", effect: "You swim at your full movement speed, can hold your breath far longer than others, and ignore difficult terrain from water, sand, and reef. You are never at disadvantage for fighting in or under water." },
     ] },
+  { name: "Way of the War Club", heritage: "Pacific Islander",
+    blurb: "Break the enemy's nerve, then break the enemy — the chant, the club, and the grappler's grip.",
+    startWeaponTypes: ["Heavy Weapons", "Light Weapons", "Thrown Weapons"], // war club, mere/patu, thrown spear
+    skills: [
+      { name: "War Club", action: "Action", effect: "A heavy war-club strike; on a hit the target also has disadvantage on its next attack roll, rattled by the blow." },
+      { name: "Haka", action: "Action", effect: "A thunderous war chant: each enemy that can see and hear you must resist or become Frightened of you until the end of its next turn. You have advantage on Intimidation." },
+      { name: "Grapple & Wrench", action: "Action", effect: "The grappling art: a melee attack that lets you grapple the target; while you hold it, you may wrench a limb to deal damage and impose disadvantage on its attacks." },
+      { name: "Felling Blow", action: "Action", effect: "A two-handed blow that, on a hit, knocks the target prone and deals extra damage." },
+      { name: "Spear Thrust", action: "Action", effect: "A reach attack with a spear or taiaha (staff); on a hit you may push the target 5 ft or knock it prone." },
+      { name: "Unflinching", action: "Passive", effect: "You cannot be Frightened, and while you are below half your HP your melee attacks deal an extra damage die — you fight hardest when cornered." },
+    ] },
 ];
 
 /* Flattened master list — every combat skill across all styles, tagged with its style.
@@ -728,6 +739,11 @@ PC.HERITAGES = [
     traits: [ { name: "Wayfinder", desc: "Navigate by the stars, currents, and swells; pilot any small craft; you are never lost at sea and can find your way across open water." },
               { name: "Storm-Wise", desc: "You read and endure storms and rough weather — advantage to predict, weather, and keep your footing through wind, surf, and a pitching deck." } ],
     flaw: { name: "Songs, Not Scrolls", desc: "Your people's past lives in song and story, not the old world's written archives. Disadvantage on History.", disadvSkill: "History" } },
+  { name: "Pacific Islander", blurb: "A present-day descendant of the Pacific Islander peoples — Polynesian, Melanesian, and Micronesian, from Hawaiʻi to Aotearoa. Heir to the war club and the war chant, and to navigators who crossed the largest ocean on earth by the stars alone.",
+    fightingStyle: "Way of the War Club", combatSkills: ["War Club", "Haka"], weaponSubtype: "Maces", armorProf: [],  // Light only — ferocity and skill over armor
+    traits: [ { name: "Feared Warrior", desc: "Advantage on Intimidation, and your presence alone can cow lesser foes — you may use Intimidation to command respect or instill fear where others would plead." },
+              { name: "Deep-Water Voyager", desc: "Advantage to navigate the open ocean by stars and swells and to endure long sea voyages; you are at home crossing waters that would strand others." } ],
+    flaw: { name: "Sooner Cow Than Coax", desc: "Your people command through strength and mana, not soft words. Disadvantage on Persuasion.", disadvSkill: "Persuasion" } },
 ];
 
 /* --- Constants ----------------------------------------------------------- */

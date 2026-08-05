@@ -1481,6 +1481,27 @@ defensive hunter (Great North), aggressive striker (Mexico), amphibious raider (
 
 ---
 
+### 66. Heritage #5 — Pacific Islander (Way of the War Club)
+**Built (Luke picked the name: "Pacific islander works here").** Descendants of the Polynesian, Melanesian, and
+Micronesian peoples (Hawaiʻi to Aotearoa). The name choice also settled scope — **"Pacific Islander" = the island
+peoples**, so **Aboriginal Australia is reserved** as its own future heritage (culturally distinct). The **fifth
+distinct pole: the ferocious close-combat warrior** — made deliberately unlike the Caribbean (also an ocean
+people) by leaning on club/grapple/fear/berserk instead of amphibious skirmishing.
+- **Way of the War Club:** ★War Club (rattle → disadv. on next attack), ★Haka (Frighten + Intimidation),
+  Grapple & Wrench (grapple + limb), **Felling Blow** (prone), Spear Thrust (reach push/prone), and the
+  **Unflinching** passive (immune to Frightened; extra die while bloodied). startWeaponTypes: Heavy/Light/Thrown.
+- **Signature Maces** (Heavy/STR) = the pan-Pacific **war club** (Fijian/Samoan/Tongan clubs, Māori mere, Hawaiian
+  leiomano). **Armor Light only.** **Traits:** Feared Warrior (Intimidation-as-command), Deep-Water Voyager
+  (open-ocean navigation). **Flaw:** Persuasion ("Sooner Cow Than Coax" — pairs with Feared Warrior; 5th distinct
+  flaw skill).
+- **Collision caught:** the initial "Crushing Blow" clashed with an existing technique name → renamed **Felling
+  Blow** (combat-skill/technique lookups are separate, but renamed to keep the Codex unambiguous).
+
+Verified: 30 combat skills, no name collisions, wiring resolves, card + Codex updated (Heritages 5 / Combat
+Skills 30), 0 console errors. Cache-buster **v=94**. Flaw spread now Etiquette×2, Survival, History, Persuasion.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

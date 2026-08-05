@@ -486,7 +486,7 @@ is retained for the rebuild even though no current heritage uses one yet):
 Heritage never touches attribute scores or pools. Two characters of the same Background differ by the
 Fighting Style, Combat Skills, and Traits their Heritage opened up.
 
-**The fresh roster (4 built so far; the "9" cap is dropped — the roster grows region by region, with a Pacific / Oceania heritage next):**
+**The fresh roster (5 built so far; the "9" cap is dropped — the roster grows region by region):**
 
 | Heritage | People / region | Fighting Style | Signature weapon | Armor | Flaw |
 |---|---|---|---|---|---|
@@ -494,6 +494,7 @@ Fighting Style, Combat Skills, and Traits their Heritage opened up.
 | **The Great North** | Descendants of the First Nations & Inuit peoples north of the US border | Way of the Long Winter | **Knives** (Light/AGI) | Light + Medium | Etiquette |
 | **Mexico** | Descendants of the Mesoamerican civilizations (Mexica/Aztec, Maya, and kin) | Way of the Obsidian Blade | **Great Swords** (Heavy/STR) — the macuahuitl | Light + Medium | Survival |
 | **The Caribbean** | Descendants of the island & coastal seafaring peoples of the Caribbean and Central American coast (Taíno, Kalinago, Arawak, isthmus coastal nations) | Way of the Tides | **Slings** (Archery/STR) | Light only | History |
+| **Pacific Islander** | Descendants of the Pacific Islander peoples — Polynesian, Melanesian, Micronesian (Hawaiʻi to Aotearoa) | Way of the War Club | **Maces** (Heavy/STR) — the war club | Light only | Persuasion |
 
 *The other 6 are in development, built one at a time with Luke.* Design intent: three distinct combat poles so
 far — NA is the **mobile ranged skirmisher**, the Great North is the **enduring defensive hunter**, and Mexico
@@ -519,7 +520,14 @@ is the **aggressive melee striker**.
   water). Traits: **Wayfinder** (navigate/pilot, never lost at sea) and **Storm-Wise** (predict & endure storms,
   sea-legs). Light armor only. Signature **Slings** — but the ideal weapon is a **javelin/spear**, the third
   heritage (after the harpoon and atlatl) to want one: a **Spears/Javelins** subtype is recommended for WEAPONS.md.
-  *Hawaii/Polynesia is intentionally NOT here — it's reserved for the Pacific / Oceania heritage (built next).*
+  *Hawaii/Polynesia is intentionally NOT here — it's the Pacific Islander heritage below.*
+- **Way of the War Club** (Pacific Islander) — the ferocious close-combat warrior: War Club (rattle), Haka
+  (Frighten + Intimidation), Grapple & Wrench (grapple + limb), Felling Blow (prone), Spear Thrust (reach
+  push/prone), and the **Unflinching** passive (immune to Frightened; extra die while bloodied). Traits: **Feared
+  Warrior** (Intimidation as command) and **Deep-Water Voyager** (open-ocean navigation). Light armor. Signature
+  **Maces** = the pan-Pacific **war club** (Fijian/Samoan/Tongan clubs, Māori mere, Hawaiian leiomano). *Aboriginal
+  Australia is culturally distinct and reserved as its own future heritage — "Pacific Islander" is the island
+  peoples (Polynesia/Melanesia/Micronesia).*
 
 ### Fighting Styles & Combat Skills (the mechanic)
 Combat Skills work like Kinetic Techniques: there are **many**, organized into categories called
@@ -539,13 +547,14 @@ forage with advantage, and leave no trail).
 - A style's Passive **can be learned by any character** with CSP, regardless of Heritage — as can any other
   style's skills.
 
-### Heritages → Fighting Styles (fresh roster — 4 built; growing region by region)
+### Heritages → Fighting Styles (fresh roster — 5 built; growing region by region)
 | Heritage | Fighting Style | Starting Combat Skills | Signature Passive | Traits | Flaw (disadvantage) |
 |---|---|---|---|---|---|
 | **North America** | Way of the Hunt | Hunter's Aim, Fade Away | Pathfinder | One with the Land, Keen Senses | *Unversed in Old-World Customs* — Etiquette |
 | **The Great North** | Way of the Long Winter | Harpoon Throw, Brace | Winterhardened | People of the Ice, Iron Constitution | *Plain-Spoken* — Etiquette |
 | **Mexico** | Way of the Obsidian Blade | Obsidian Strike, Warrior's Fury | Obsidian Edge | Keepers of the Count, Warrior's Discipline | *City-Raised* — Survival |
 | **The Caribbean** | Way of the Tides | Net Cast, Javelin | Sea-Born | Wayfinder, Storm-Wise | *Songs, Not Scrolls* — History |
+| **Pacific Islander** | Way of the War Club | War Club, Haka | Unflinching | Feared Warrior, Deep-Water Voyager | *Sooner Cow Than Coax* — Persuasion |
 
 *More heritages are being built one at a time (see 3b). Each style holds **5 active skills + 1 Passive**. Full
 skill text lives in `app/data.js` (`PC.FIGHTING_STYLES`); the app is the source of truth.*
