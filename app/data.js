@@ -661,10 +661,10 @@ PC.FIGHTING_STYLES = [
       { name: "Pathfinder", action: "Passive", effect: "Natural difficult terrain (forest, marsh, rock, snow) costs you no extra movement, and you have advantage on Survival checks to track or forage. You also leave no discernible trail — nonmagical attempts to track you fail." },
     ] },
   { name: "Way of the Long Winter", heritage: "The Great North",
-    blurb: "The enduring big-game hunter — close with the harpoon and spear, tether what flees, and outlast anything that breathes.",
-    startWeaponTypes: ["Thrown Weapons", "Light Weapons", "Heavy Weapons"], // harpoon (thrown), ulu/knife, club/axe
+    blurb: "The enduring big-game hunter — tether what flees with a thrown line, and outlast anything that breathes.",
+    startWeaponTypes: ["Thrown Weapons", "Light Weapons", "Heavy Weapons"], // thrown weapon, ulu/knife, club/axe
     skills: [
-      { name: "Harpoon Throw", action: "Action", effect: "Hurl a harpoon or spear at a target in range; on a hit it takes the attack's damage and is Slowed (movement halved) until your next turn — or you may instead pull it 5 ft toward you. The line that stops fleeing game." },
+      { name: "Tethered Throw", action: "Action", effect: "Hurl a thrown weapon on a line at a target in range; on a hit it takes the attack's damage and is Slowed (movement halved) until your next turn — or you may instead pull it 5 ft toward you. The tethered cast that stops fleeing game." },
       { name: "Brace", action: "Reaction", effect: "When you're hit by an attack, plant yourself and reduce that attack's damage by your CON modifier (minimum 2); you cannot be knocked prone or pushed by that hit." },
       { name: "Take Down", action: "Action", effect: "A melee attack that, on a hit, also lets you attempt to knock the target prone or grapple it (your choice) — bring the big beast down." },
       { name: "Second Wind", action: "Bonus Action", effect: "Draw on deep endurance: end one condition affecting you (Slowed, Frightened, or Bleeding), or regain a small amount of HP." },
@@ -677,17 +677,17 @@ PC.FIGHTING_STYLES = [
     skills: [
       { name: "Obsidian Strike", action: "Action", effect: "A savage melee attack; on a hit the target also begins Bleeding (loses HP at the start of each turn until tended) — the razor obsidian edge." },
       { name: "Warrior's Fury", action: "Bonus Action", effect: "When you drop a foe to 0 HP or bloody one (reduce it below half HP), immediately make one melee attack against a target in reach — the eagle or jaguar knight presses on." },
-      { name: "Atlatl Dart", action: "Action", effect: "Loose a spear-thrower dart — a hard-hitting ranged attack out to good range, further and heavier than a hand-thrown weapon." },
+      { name: "Atlatl Dart", action: "Action", effect: "Loose an atlatl dart — a hard-hitting ranged attack out to good range, further and heavier than a hand-thrown weapon." },
       { name: "Take Captive", action: "Action", effect: "Subdue rather than slay: a melee attack that, on a hit, lets you attempt to knock the target prone and restrain or grapple it — the captive-taking tradition of the flower wars." },
       { name: "Sever", action: "Action", effect: "A two-handed obsidian blow that ignores part of the target's armor Defense bonus and deals extra damage on a hit." },
       { name: "Obsidian Edge", action: "Passive", effect: "Your melee attacks with a bladed weapon score a critical hit on a roll of 19–20, and a creature you critically hit begins Bleeding." },
     ] },
   { name: "Way of the Tides", heritage: "The Caribbean",
     blurb: "Strike from the water and vanish back into it — tangle your foe in the net, harry from range, and let the sea fight for you.",
-    startWeaponTypes: ["Thrown Weapons", "Light Weapons", "Archery"], // javelin/dart, macana club/knife, sling
+    startWeaponTypes: ["Thrown Weapons", "Light Weapons", "Archery"], // dart/thrown, macana club/knife, sling
     skills: [
       { name: "Net Cast", action: "Action", effect: "Hurl a weighted net at a target in range; on a hit it is Rooted (movement 0) until it spends an action to break free." },
-      { name: "Javelin", action: "Action", effect: "Throw a spear or javelin — a strong ranged attack out to good range, further and heavier than a hand-thrown knife." },
+      { name: "Hurl", action: "Action", effect: "Throw a thrown weapon with your whole body behind it — a strong ranged attack out to good range, further and heavier than a light toss." },
       { name: "Slip the Current", action: "Bonus Action", effect: "Move up to your speed through or along water or difficult terrain without provoking opportunity attacks; if you end in water or concealment, you become Hidden." },
       { name: "Rip Tide", action: "Action", effect: "A strike or shove that, on a hit, knocks the target prone or pushes it up to 10 ft (into water, off a ledge, or into a hazard)." },
       { name: "Sling Stone", action: "Action", effect: "Whirl and loose a sling stone — a ranged attack that, on a hit, also Dazzles the target (disadvantage on attack rolls and sight-based checks) until your next turn." },
@@ -695,13 +695,13 @@ PC.FIGHTING_STYLES = [
     ] },
   { name: "Way of the War Club", heritage: "Pacific Islander",
     blurb: "Break the enemy's nerve, then break the enemy — the chant, the club, and the grappler's grip.",
-    startWeaponTypes: ["Heavy Weapons", "Light Weapons", "Thrown Weapons"], // war club, mere/patu, thrown spear
+    startWeaponTypes: ["Heavy Weapons", "Light Weapons", "Thrown Weapons"], // war club, mere/patu, thrown weapon
     skills: [
       { name: "War Club", action: "Action", effect: "A heavy war-club strike; on a hit the target also has disadvantage on its next attack roll, rattled by the blow." },
       { name: "Haka", action: "Action", effect: "A thunderous war chant: each enemy that can see and hear you must resist or become Frightened of you until the end of its next turn. You have advantage on Intimidation." },
       { name: "Grapple & Wrench", action: "Action", effect: "The grappling art: a melee attack that lets you grapple the target; while you hold it, you may wrench a limb to deal damage and impose disadvantage on its attacks." },
       { name: "Felling Blow", action: "Action", effect: "A two-handed blow that, on a hit, knocks the target prone and deals extra damage." },
-      { name: "Spear Thrust", action: "Action", effect: "A reach attack with a spear or taiaha (staff); on a hit you may push the target 5 ft or knock it prone." },
+      { name: "Lunge", action: "Action", effect: "A lunging reach strike that closes the distance; on a hit you may push the target 5 ft or knock it prone." },
       { name: "Unflinching", action: "Passive", effect: "You cannot be Frightened, and while you are below half your HP your melee attacks deal an extra damage die — you fight hardest when cornered." },
     ] },
 ];
@@ -725,7 +725,7 @@ PC.HERITAGES = [
               { name: "Keen Senses", desc: "Advantage on Awareness checks to notice danger, an ambush, or something out of place." } ],
     flaw: { name: "Unversed in Old-World Customs", desc: "Formal old-world court manners were never part of how you were raised. Disadvantage on Etiquette.", disadvSkill: "Etiquette" } },
   { name: "The Great North", blurb: "A present-day descendant of the peoples of ice, boreal forest, and open tundra — First Nations and Inuit alike. Raised to endure what breaks others: the blizzard, the long dark, and the big beast that turns to fight.",
-    fightingStyle: "Way of the Long Winter", combatSkills: ["Harpoon Throw", "Brace"], weaponSubtype: "Knives", armorProf: ["Medium"],  // layered hide/fur/bone-plate armor
+    fightingStyle: "Way of the Long Winter", combatSkills: ["Tethered Throw", "Brace"], weaponSubtype: "Knives", armorProf: ["Medium"],  // layered hide/fur/bone-plate armor
     traits: [ { name: "People of the Ice", desc: "In frozen or wild country you can reliably find food, water, and shelter for yourself and a small group, and you never lose your way on ice, snow, or open tundra." },
               { name: "Iron Constitution", desc: "Advantage on checks and saves to resist exhaustion, hunger, thirst, poison, and disease — your body is forged to outlast the long dark." } ],
     flaw: { name: "Plain-Spoken", desc: "The elaborate courtesies of the southern courts weren't part of how you were raised. Disadvantage on Etiquette.", disadvSkill: "Etiquette" } },
@@ -735,7 +735,7 @@ PC.HERITAGES = [
               { name: "Warrior's Discipline", desc: "Advantage on checks and saves to resist Fear and intimidation — the eagle and jaguar knights do not flinch." } ],
     flaw: { name: "City-Raised", desc: "Heir to the great cities and cultivated valleys, not the raw wild. Disadvantage on Survival.", disadvSkill: "Survival" } },
   { name: "The Caribbean", blurb: "A present-day descendant of the island and coastal seafaring peoples of the Caribbean and the Central American coast — Taíno, Kalinago, Arawak, and the coastal nations of the isthmus. Born to the canoe and the reef, at home on the water and in the surf.",
-    fightingStyle: "Way of the Tides", combatSkills: ["Net Cast", "Javelin"], weaponSubtype: "Slings", armorProf: [],  // Light only — heat, water, mobility
+    fightingStyle: "Way of the Tides", combatSkills: ["Net Cast", "Hurl"], weaponSubtype: "Slings", armorProf: [],  // Light only — heat, water, mobility
     traits: [ { name: "Wayfinder", desc: "Navigate by the stars, currents, and swells; pilot any small craft; you are never lost at sea and can find your way across open water." },
               { name: "Storm-Wise", desc: "You read and endure storms and rough weather — advantage to predict, weather, and keep your footing through wind, surf, and a pitching deck." } ],
     flaw: { name: "Songs, Not Scrolls", desc: "Your people's past lives in song and story, not the old world's written archives. Disadvantage on History.", disadvSkill: "History" } },

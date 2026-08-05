@@ -1502,6 +1502,24 @@ Skills 30), 0 console errors. Cache-buster **v=94**. Flaw spread now Etiquette×
 
 ---
 
+### 67. Weapon convention — existing subtypes only (no new spear/javelin subtype)
+**Decision (Luke).** Rather than add a **Spears/Javelins** subtype to WEAPONS.md (which I'd flagged 4×), **use
+only existing weapon subtypes** — now and going forward. Signatures were already real subtypes (Knives, Great
+Swords, Slings, Maces); the fix was skill flavor that named weapons with no subtype. Renamed/reworded so nothing
+implies an unavailable weapon:
+- Great North **Harpoon Throw → Tethered Throw** (a thrown weapon on a line; kept the Slow/pull).
+- The Caribbean **Javelin → Hurl** (a strong thrown-weapon attack).
+- Pacific Islander **Spear Thrust → Lunge** (a lunging reach strike).
+- Mexico **Atlatl Dart** kept (Darts is a real Thrown subtype) — reworded "spear-thrower" → "atlatl."
+- Great North style blurb de-speared. Removed all "add a subtype to WEAPONS.md" flags from GAME_RULES.
+
+Recorded the rule in GAME_RULES 3b ("every heritage uses only existing weapon subtypes; where an iconic weapon
+has none, map to the nearest real subtype and keep the skill flavor weapon-agnostic"). Verified: 30 combat skills,
+granted-skill references updated (Great North, Caribbean), no name collisions, no remaining spear/javelin/harpoon
+in skill effects, 0 console errors. Cache-buster **v=95**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is
