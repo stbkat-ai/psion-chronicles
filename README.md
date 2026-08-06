@@ -120,7 +120,7 @@ Account menu brings it back). Tap the **Psion Chronicles wordmark** in the heade
     and, for Kinetics you're pursuing, spells out what's still needed to unlock its next tier.
 
 - **Live Play Sheet** (▶ Play on a character) — the at-the-table screen, organized into tabs so there's
-  little scrolling: **Sheet · ⚔ Combat · Limbs · Chakras · Kinetics · Skills · Traits · Description · Inventory · 🔨 Crafting · 🐾 Pets**.
+  little scrolling: **Sheet · ⚔ Combat · Limbs · Chakras · Kinetics · Skills · Traits · Description · 🧍 Equipment · Inventory · 🔨 Crafting · 🐾 Pets**.
   - **♥ Otherkin** — at **Soul Level 15** the Heart chakra opens and your **Soul Creature** awakens. You choose it
     (a permanent, free pick) on the **Level Up screen**, where each Otherkin is shown with a full breakdown. It
     grants a fixed **attribute + pool boost**, a **unique Kinetic** whose **6 techniques auto-unlock** as you level
@@ -182,6 +182,13 @@ Account menu brings it back). Tap the **Psion Chronicles wordmark** in the heade
       face and crop it** into a round **thumbnail**. The thumbnail then shows **next to your name at the top of
       the sheet** and **on the character-select screen**. Images are automatically downscaled/compressed and
       saved **on this device only** (per-device, like everything else). Replace or remove the art anytime.
+  - **🧍 Equipment tab** — a **paper-doll** of your character with **8 slots**: Main Hand, Off Hand, and one per
+    limb (Head, Torso, each Arm, each Leg). Tap a slot to equip/change what's there. **Hands and armor rules are
+    enforced** — a two-handed weapon fills both hands, a **shield** takes one hand, a body suit covers every limb,
+    and equipping something displaces whatever shared its slot. **Shields** are a real item now: held one-handed,
+    they add Defense and unlock a **Block** reaction on the Combat tab (spend your reaction to add the shield's
+    Defense again against one hit). The whole current armor catalog counts as full-body **suits**; per-limb pieces
+    can be added later.
   - **Inventory tab** — carry weight, carried items (equip, actions, config), a custom-item form, and a
     **🔍 Browse Item Catalog** button that opens a dedicated **catalog screen**: search/filter the item
     catalog (weapons + armor, consumables, tools, gear) and Add any of them (weapons arrive attack-ready

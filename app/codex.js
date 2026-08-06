@@ -293,6 +293,25 @@
     },
   });
 
+  /* Shields */
+  addSection({
+    key: "shields", icon: "🛡", title: "Shields", blurb: "Held one-handed; grant Defense and enable the Block reaction.",
+    list: () => (PC.ITEMS || []).filter((i) => i.category === "Shield").map((s) => ({ id: s.name, name: s.name, sub: `+${s.dsBonus} DS · one hand${rarityNote(s.rarity)}`, group: s.subtype || "Shield", keywords: `shield ${s.subtype || ""} ${s.rarity} ${s.note || s.desc || ""}` })),
+    detail: (id) => {
+      const s = (PC.ITEMS || []).find((i) => i.category === "Shield" && i.name === id); if (!s) return el("div", "muted", "Not found.");
+      const box = el("div"); const rows = el("div", "codex-kvs");
+      if (s.subtype) rows.appendChild(kv("Type", esc(s.subtype)));
+      rows.appendChild(kv("Defense bonus", `+${s.dsBonus} DS`));
+      rows.appendChild(kv("Hands", "One hand"));
+      rows.appendChild(kv("Weight", `${s.weight}`));
+      rows.appendChild(kv("Rarity", esc(s.rarity || "Common")));
+      box.appendChild(rows);
+      if (s.note || s.desc) box.appendChild(el("p", "codex-desc", esc(s.note || s.desc)));
+      box.appendChild(el("div", "codex-effect", "▸ Held in one hand (blocks a second weapon or a two-handed weapon). Adds its Defense while equipped, and enables the Block reaction — spend your reaction to add its Defense again against one hit."));
+      return box;
+    },
+  });
+
   /* Gear (consumables, tools, misc) */
   addSection({
     key: "gear", icon: "🎒", title: "Gear", blurb: "Consumables, tool kits, and miscellaneous equipment.",

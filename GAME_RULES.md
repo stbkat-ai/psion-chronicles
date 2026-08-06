@@ -104,7 +104,25 @@ Both **HP (Body Pool)** and **KP (Mind Pool)** recover the same ways:
 ### Defense Score (DS)
 - Unarmored **DS = 10 + AGI mod + CON mod**.
 - **With armor**, the AGI contribution is gated by the armor's **class** and the armor adds its Defense bonus
-  (see **Armor** below): **DS = 10 + (AGI mod, gated by class) + CON mod + armor bonus.** CON always applies.
+  (see **Armor** below): **DS = 10 + (AGI mod, gated by class) + CON mod + armor bonus + shield bonus.** CON always applies.
+
+### Equipment & slots (CONFIRMED Luke)
+Gear you carry lives in your **Inventory** (the bag); gear you're actually wearing/wielding goes in **equipment
+slots**, shown on the **Equipment tab** as a paper-doll of the body. There are **eight slots**:
+- **Two hands** — Main Hand and Off Hand. A **one-handed** weapon or a **shield** takes one hand; a **two-handed**
+  weapon takes **both**; dual-wielding = two one-handers.
+- **Six armor slots**, one per limb (**Head, Torso, each Arm, each Leg**). Armor declares its **coverage**: a
+  **full suit** (the whole current catalog) fills all six limb slots at once; individual **limb pieces** (a
+  standalone helmet, greaves, etc. — content to be authored later) fill a single limb, and their Defense sums.
+- **Rules are hard-enforced.** You can't hold a shield and a two-handed weapon, wear two body suits, etc. —
+  equipping something **displaces** whatever shared its slot (logged). Equip/unequip from the Equipment tab
+  (tap a slot) or from the Inventory tab's Equip button (routes to a sensible default slot).
+
+### Shields (CONFIRMED Luke)
+A **shield** is its own item category, **held in one hand**. It adds its **Defense bonus** while equipped (no
+proficiency gate — anyone can raise a shield), and enables the **Block** reaction: spend your **Reaction** to add
+the shield's Defense **again** against one incoming hit, until your next turn. Ladder by Defense/weight:
+**Buckler (+1) · Round/Heater (+2) · Kite (+3) · Tower / Riot (+4)** (plus rarer wards).
 
 ### Armor — classes, proficiency & rarity (CONFIRMED Luke)
 Armor comes in **three classes**, a clear tradeoff between mobility and protection:

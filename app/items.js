@@ -35,6 +35,9 @@ window.PC = window.PC || {};
   // skill = the Skill this kit supports (optional). Skill kits carry it; general gear leaves it null.
   function T(name, weight, note, skill) { const t = { name: name, category: "Tool", weight: weight, note: note }; if (skill) t.skill = skill; return t; }
   function M(name, weight, note) { return { name: name, category: "Misc", weight: weight, note: note }; }
+  // Shield — held in one hand; grants dsBonus while equipped, and enables the Block reaction (spend your
+  // reaction to add its dsBonus again against one incoming hit until your next turn). category "Shield".
+  function S(name, subtype, dsBonus, weight, rarity, note) { const s = { name: name, category: "Shield", subtype: subtype, dsBonus: dsBonus, weight: weight, hands: 1, rarity: rarity || "Common" }; if (note) s.note = note; return s; }
 
   PC.ITEMS = [
   /* ===== MELEE WEAPONS =====
@@ -168,7 +171,6 @@ window.PC = window.PC || {};
   // Medium (Defense +3..+4)
   A("Reinforced Coat", "Medium", 3, 6), A("Reinforced Vest", "Medium", 3, 15), A("Kevlar Vest", "Medium", 3, 12),
   A("Lab Exosuit", "Medium", 3, 18, "Uncommon", "Sealed against gas, acid, and lab hazards (GM)."),
-  A("Riot Shield", "Medium", 4, 10),
   A("Mirrormail", "Medium", 4, 16, "Rare", "Once per fight, turn a ranged attack back on its attacker (GM)."),
   A("Sentinel's Regalia", "Medium", 4, 14, "Legendary", "You can't be surprised while you wear it.", { advSkill: "Awareness" }),
   // Heavy (Defense +5..+6)
@@ -177,6 +179,17 @@ window.PC = window.PC || {};
   A("Combat Exosuit", "Heavy", 6, 20, "Rare", "Powered frame sealed against fire and gas (GM)."),
   A("Powered Armor", "Heavy", 6, 40, "Very Rare", "Servos negate Heavy armor's movement penalty; resists ballistic damage (GM).", { noMovePenalty: true }),
   A("Warden's Aegis", "Heavy", 6, 30, "Legendary", "Resistance to physical damage; advantage to resist being moved or knocked prone (GM).", { advSkill: "Hardiness" }),
+
+  /* ===== SHIELDS =====
+     Held in one hand (blocks a second weapon or a two-handed weapon). Grants its dsBonus while equipped, and
+     enables the Block reaction. Escalating ladder: Buckler → Round → Kite → Tower (more Defense, more weight). */
+  S("Buckler", "Buckler", 1, 2, "Common", "A small fist-shield, quick and light."),
+  S("Round Shield", "Round Shield", 2, 6, "Common", "A sturdy wooden round shield banded in iron."),
+  S("Heater Shield", "Heater Shield", 2, 7, "Common", "A knight's heater — broad enough to guard the torso."),
+  S("Kite Shield", "Kite Shield", 3, 10, "Common", "A tall kite shield covering body and leg."),
+  S("Tower Shield", "Tower Shield", 4, 16, "Common", "A great slab of a shield — a wall you carry."),
+  S("Riot Shield", "Riot Shield", 4, 10, "Common", "A transparent shield built to weather a beating."),
+  S("Aegis Bulwark", "Tower Shield", 5, 14, "Rare", "A warded tower shield; once per fight, negate a hit entirely (GM)."),
 
   /* ===== CONSUMABLES =====
      4th arg = structured effect applied on Use (see C() above). Items without one are

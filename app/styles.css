@@ -1026,3 +1026,44 @@ body.screen-home .wrap { max-width: none; margin: 0; padding: 0; }
   .codex-kv { flex-direction: column; gap: 0; }
   .codex-kv .ck-k { min-width: 0; }
 }
+
+/* ============================================================
+   Equipment tab — paper-doll of the 8 slots
+   ============================================================ */
+.equip-summary { display: flex; flex-wrap: wrap; gap: 16px; font-size: .9rem; color: var(--text-dim); }
+.equip-summary b { color: var(--text); }
+.equip-summary .tag { color: var(--gold); font-size: .72rem; }
+.equip-doll { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 6px 0; }
+.equip-row { display: flex; gap: 10px; justify-content: center; align-items: stretch; flex-wrap: wrap; }
+.equip-divider { text-transform: uppercase; letter-spacing: 2px; font-size: .66rem; color: var(--text-faint); margin: 4px 0 2px; }
+.equip-slot {
+  cursor: pointer; user-select: none; width: 150px; min-height: 60px;
+  display: flex; flex-direction: column; gap: 2px; justify-content: center;
+  padding: 8px 10px; border-radius: 10px; background: var(--panel-2); border: 1px solid var(--border); transition: .14s;
+}
+.equip-slot:hover { border-color: var(--psi); }
+.equip-slot.filled { border-color: var(--border-glow); background: rgba(124,92,255,.08); }
+.equip-slot.picking { border-color: var(--psi); box-shadow: 0 0 0 1px var(--psi), 0 0 14px rgba(124,92,255,.25); }
+.equip-slot .es-label { font-size: .64rem; text-transform: uppercase; letter-spacing: 1px; color: var(--psi-bright); }
+.equip-slot .es-item { font-weight: 600; font-size: .9rem; }
+.equip-slot.filled .es-item { color: var(--text); }
+.equip-slot:not(.filled) .es-item { color: var(--text-faint); font-weight: 400; font-style: italic; }
+.equip-slot .es-meta { font-size: .7rem; color: var(--text-dim); }
+.equip-slot.slot-torso { width: 168px; }
+.er-mid .equip-slot { align-self: center; }
+/* hand slots read a bit warmer */
+.equip-slot.slot-mainHand, .equip-slot.slot-offHand { min-width: 160px; }
+
+.equip-picklist { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; }
+.equip-pick { cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 9px; background: var(--panel-2); border: 1px solid var(--border); transition: .14s; }
+.equip-pick:hover { border-color: var(--psi); background: rgba(124,92,255,.08); }
+.equip-pick.current { border-color: var(--good); }
+.equip-pick .ep-name { font-weight: 600; }
+.equip-pick .ep-name .tag { color: var(--good); font-size: .66rem; margin-left: 6px; }
+.equip-pick .ep-meta { font-size: .74rem; color: var(--text-dim); }
+
+@media (max-width: 560px) {
+  .equip-slot { width: 44vw; }
+  .equip-slot.slot-torso { width: 44vw; }
+}

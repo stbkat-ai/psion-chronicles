@@ -14,6 +14,7 @@
   let rec;   // current character record
   let play;  // shorthand for rec.play
   let expandedItem = null; // inventory item id whose detail/actions are open
+  let equipPickSlot = null; // Equipment tab: which slot's item-picker is open (null = none)
   let expandedPet = null;  // pet id whose detail/stat block is open on the Pets tab
   let activeTab = "sheet"; // "sheet" | "combat"
   let curId = null;        // track which character is open (reset tab on switch)
@@ -67,6 +68,10 @@
     if (typeof play.turn !== "number") play.turn = 1;
     // Action economy for the current turn (true = already used this turn).
     if (!play.econ) play.econ = { action: false, bonus: false, reaction: false, move: false };
+    // Shield Block: transient Defense bonus from a raised shield, cleared at the start of your next turn (End Turn).
+    if (typeof play.blockDS !== "number") play.blockDS = 0;
+    // Equipment slots: migrate any old flag-only equipped items onto the 2-hands + 6-limb slot model.
+    migrateEquipment();
     // A transformation (the Lycan's Shift) that drops to 0 HP reverts you to human form at half HP instead of
     // going down. Enforced here so it catches every damage path. Reverting first drops the CON buff, so the
     // "half" is of your human max HP.
@@ -435,6 +440,11 @@
     equippedArmor().forEach((it) => {
       if (it.dsBonus && proficientWithArmorClass(it.armorClass)) ds += Number(it.dsBonus) || 0;
     });
+    // A held shield adds its Defense while equipped (no proficiency gate — anyone can raise a shield).
+    const sh = equippedShield();
+    if (sh) ds += Number(sh.dsBonus) || 0;
+    // Block reaction: a raised shield adds its Defense again against one hit, until your next turn.
+    if (play.blockDS) ds += play.blockDS;
     // A transformation's natural armor (Lycan's fur, Wyvern's scaled hide) adds to Defense while shifted; a
     // Defense MULTIPLIER (the Strigoi's pale skin) then scales the whole score.
     if (transformActive()) { const t = sigTier(); if (t) { ds += transformDsBonus(t.tier); ds = Math.round(ds * transformDsMult(t.tier)); } }
@@ -574,6 +584,7 @@
       }
     }
     tickConditions(); // count down any timed status effects and clear the expired ones
+    if (play.blockDS) { play.blockDS = 0; } // a raised shield's Block lasts only until your next turn
     play.turn += 1;
     play.econ = { action: false, bonus: false, reaction: false, move: false }; // refresh for the new turn
     combatGroupOpen = { actions: true, bonus: false, reaction: false, other: false }; // reopen Actions for the new turn
@@ -971,10 +982,74 @@
     it.qty = Math.max(1, (Number(it.qty) || 1) + delta);
     save(); refresh();
   }
-  function toggleEquip(it) {
-    it.equipped = !it.equipped;
-    logLine(`${it.equipped ? "Equipped" : "Unequipped"} ${it.name}.`);
+  /* ---------- equipment slots (2 hands + 6 limb-armor) ---------- */
+  const HAND_SLOTS = ["mainHand", "offHand"];
+  const ARMOR_SLOTS = ["head", "torso", "larm", "rarm", "lleg", "rleg"]; // match PC.LIMBS keys
+  const ALL_SLOTS = HAND_SLOTS.concat(ARMOR_SLOTS);
+  const SLOT_LABEL = { mainHand: "Main Hand", offHand: "Off Hand", head: "Head", torso: "Torso", larm: "Left Arm", rarm: "Right Arm", lleg: "Left Leg", rleg: "Right Leg" };
+  function slotLabel(s) { return SLOT_LABEL[s] || s; }
+  function isEquippable(it) { return !!it && (it.category === "Weapon" || it.category === "Shield" || it.category === "Armor"); }
+  // Which slots an item OCCUPIES, given the primary slot recorded on it.slot.
+  function equipSlotsFor(it) {
+    if (!it) return [];
+    if (it.category === "Weapon") return Number(it.hands) === 2 ? ["mainHand", "offHand"] : [it.slot === "offHand" ? "offHand" : "mainHand"];
+    if (it.category === "Shield") return [it.slot === "mainHand" ? "mainHand" : "offHand"];
+    if (it.category === "Armor") { const cov = it.coverage || "full"; return cov === "full" ? ARMOR_SLOTS.slice() : [cov]; }
+    return [];
+  }
+  // Can this item be equipped INTO this slot? (drives the per-slot picker; a 2H weapon is only offered in Main Hand)
+  function itemFitsSlot(it, slot) {
+    if (it.category === "Weapon") return HAND_SLOTS.indexOf(slot) > -1 && !(Number(it.hands) === 2 && slot === "offHand");
+    if (it.category === "Shield") return HAND_SLOTS.indexOf(slot) > -1;
+    if (it.category === "Armor") { const cov = it.coverage || "full"; return cov === "full" ? ARMOR_SLOTS.indexOf(slot) > -1 : cov === slot; }
+    return false;
+  }
+  function currentlyEquipped() { return (rec.inventory || []).filter((it) => it.equipped && isEquippable(it)); }
+  function equippedShield() { return currentlyEquipped().find((it) => it.category === "Shield") || null; }
+  // slot -> item map (first item wins a shared slot; used by the paper-doll).
+  function equipMap() { const m = {}; currentlyEquipped().forEach((it) => { equipSlotsFor(it).forEach((s) => { if (!m[s]) m[s] = it; }); }); return m; }
+  function defaultSlotFor(it) { return it.category === "Armor" ? (it.coverage && it.coverage !== "full" ? it.coverage : "torso") : it.category === "Shield" ? "offHand" : "mainHand"; }
+
+  // Hard-enforced equip: place the item in `slot`, auto-unequipping anything that occupied a slot it now needs.
+  function equipToSlot(it, slot) {
+    it.slot = slot;
+    const need = equipSlotsFor(it);
+    currentlyEquipped().forEach((other) => {
+      if (other === it) return;
+      if (equipSlotsFor(other).some((s) => need.indexOf(s) > -1)) { other.equipped = false; other.slot = null; logLine(`Unequipped ${other.name} — its slot was needed.`); }
+    });
+    it.equipped = true; it.slot = slot;
+    logLine(`Equipped ${it.name} — ${need.map(slotLabel).join(" + ")}.`);
     save(); refresh();
+  }
+  function unequipItem(it) { it.equipped = false; it.slot = null; logLine(`Unequipped ${it.name}.`); save(); refresh(); }
+  // Inventory-tab Equip/Unequip button routes through the slot system with a sensible default slot.
+  function toggleEquip(it) {
+    if (it.equipped) unequipItem(it);
+    else equipToSlot(it, defaultSlotFor(it));
+  }
+  // One-time migration: assign slots to already-equipped items from the old flag-only model, and enforce
+  // the new limits (2 hands; one body suit). Idempotent — skips once anything carries a slot.
+  function migrateEquipment() {
+    const inv = rec.inventory || [];
+    inv.forEach((it) => { if (it.category === "Armor" && !it.coverage) it.coverage = "full"; });
+    const eq = inv.filter((it) => it.equipped && isEquippable(it));
+    if (!eq.length || eq.some((it) => it.slot)) return; // fresh char or already migrated
+    const used = {};
+    eq.filter((it) => it.category === "Weapon" || it.category === "Shield").forEach((it) => {
+      if (it.category === "Weapon" && Number(it.hands) === 2) {
+        if (!used.mainHand && !used.offHand) { used.mainHand = used.offHand = true; it.slot = "mainHand"; }
+        else { it.equipped = false; it.slot = null; }
+      } else if (!used.mainHand) { used.mainHand = true; it.slot = "mainHand"; }
+      else if (!used.offHand) { used.offHand = true; it.slot = "offHand"; }
+      else { it.equipped = false; it.slot = null; }
+    });
+    let bodyTaken = false;
+    eq.filter((it) => it.category === "Armor").forEach((it) => {
+      if (!bodyTaken && (it.coverage || "full") === "full") { it.slot = "torso"; bodyTaken = true; }
+      else if ((it.coverage || "full") !== "full") { it.slot = it.coverage; }
+      else { it.equipped = false; it.slot = null; }
+    });
   }
   function setItemField(it, field, value) {
     it[field] = value;
@@ -1136,7 +1211,7 @@
 
   /* ---------- render ---------- */
   function render(container, id) {
-    if (id !== curId) { activeTab = "sheet"; expandedItem = null; expandedPet = null; catalogOpen = false; poolEdit = null; limbSel = null; chakraSel = null; curId = id; }
+    if (id !== curId) { activeTab = "sheet"; expandedItem = null; expandedPet = null; catalogOpen = false; poolEdit = null; limbSel = null; chakraSel = null; equipPickSlot = null; curId = id; }
     rec = App.loadRoster().find((c) => c.id === id);
     if (!rec) { App.goHome(); return; }
     ensurePlay();
@@ -1161,6 +1236,7 @@
       case "skills": body = buildSkillsTab(); break;
       case "traits": body = buildTraitsTab(); break;
       case "description": body = buildDescriptionTab(); break;
+      case "equipment": body = buildEquipmentTab(); break;
       case "inventory": body = catalogOpen ? buildCatalogScreen() : buildInventoryTab(); break;
       case "crafting": body = buildCraftingTab(); break;
       case "pets": body = buildPetsTab(); break;
@@ -1197,10 +1273,10 @@
     // The Otherkin tab stays hidden until the Soul Creature awakens (Soul Level 15+), mirroring the
     // Heart chakra reveal — it sits right after Chakras, since the Otherkin lives at their center.
     if (heartUnlocked()) tabs.push(["otherkin", "♥ Otherkin"]);
-    tabs.push(["kinetics", "Kinetics"], ["skills", "Skills"], ["traits", "Traits"], ["description", "Description"], ["inventory", "Inventory"], ["crafting", "🔨 Crafting"], ["pets", "🐾 Pets"]);
+    tabs.push(["kinetics", "Kinetics"], ["skills", "Skills"], ["traits", "Traits"], ["description", "Description"], ["equipment", "🧍 Equipment"], ["inventory", "Inventory"], ["crafting", "🔨 Crafting"], ["pets", "🐾 Pets"]);
     tabs.forEach((pair) => {
       const b = el("button", "play-tab" + (pair[0] === "otherkin" ? " otherkin" : "") + (activeTab === pair[0] ? " active" : ""), pair[1]);
-      b.onclick = () => { activeTab = pair[0]; catalogOpen = false; refresh(); };
+      b.onclick = () => { activeTab = pair[0]; catalogOpen = false; equipPickSlot = null; refresh(); };
       bar.appendChild(b);
     });
     return bar;
@@ -1592,7 +1668,7 @@
 
   function inventoryItem(it, idx) {
     if (!it.id) it.id = "it_" + idx;
-    const equippable = it.category === "Weapon" || it.category === "Armor";
+    const equippable = it.category === "Weapon" || it.category === "Armor" || it.category === "Shield";
     const open = expandedItem === it.id;
     const wrap = el("div", "inv-item" + (it.equipped ? " equipped" : ""));
 
@@ -2206,6 +2282,7 @@
           if (it.note) meta += ` · ${it.note}`;
         }
         else if (it.category === "Armor") { meta += ` · ${it.armorClass || "Light"} · +${it.dsBonus} DS`; if (it.note) meta += ` · ${it.note}`; }
+        else if (it.category === "Shield") { meta += ` · +${it.dsBonus} DS · one hand`; if (it.note) meta += ` · ${it.note}`; }
         else { if (it.skill) meta += ` · 🛠 ${it.skill}`; if (it.note) meta += ` · ${it.note}`; }
         // Rarity tag for weapons & armor (Common shown muted; higher rarities colored).
         const rarityTag = (it.category === "Weapon" || it.category === "Armor") && it.rarity
@@ -2236,6 +2313,87 @@
 
     root.appendChild(panel);
     return root;
+  }
+
+  /* ---------- Equipment tab — a paper-doll of the 8 slots ---------- */
+  function buildEquipmentTab() {
+    const root = el("div");
+    const map = equipMap();
+
+    // Summary strip: hands used, armor DS, shield.
+    const vit = el("div", "panel");
+    vit.appendChild(el("div", "section-label", "Equipped"));
+    const handsUsed = HAND_SLOTS.filter((s) => map[s]).length;
+    const sh = equippedShield();
+    const summary = el("div", "equip-summary");
+    summary.innerHTML =
+      `<span>✋ Hands: <b>${handsUsed}/2</b></span>` +
+      `<span>🛡 Shield: <b>${sh ? sh.name + " (+" + (sh.dsBonus || 0) + " DS)" : "—"}</b></span>` +
+      `<span>🎯 Defense: <b>${defenseScore()}</b>${play.blockDS ? ' <span class="tag">blocking</span>' : ""}</span>`;
+    vit.appendChild(summary);
+    root.appendChild(vit);
+
+    // The paper-doll.
+    const panel = el("div", "panel");
+    const doll = el("div", "equip-doll");
+    const slotBox = (slot) => {
+      const it = map[slot];
+      const box = el("div", "equip-slot" + (it ? " filled" : "") + " slot-" + slot);
+      const twoH = it && it.category === "Weapon" && Number(it.hands) === 2;
+      box.innerHTML =
+        `<span class="es-label">${slotLabel(slot)}</span>` +
+        `<span class="es-item">${it ? it.name : "— empty —"}</span>` +
+        (it ? `<span class="es-meta">${equipItemMeta(it)}${twoH ? " · 2H" : ""}</span>` : "");
+      box.onclick = () => { equipPickSlot = equipPickSlot === slot ? null : slot; refresh(); };
+      if (equipPickSlot === slot) box.classList.add("picking");
+      return box;
+    };
+    // Layout rows: head; arms+torso; legs; hands.
+    const row = (cls, slots) => { const r = el("div", "equip-row " + cls); slots.forEach((s) => r.appendChild(slotBox(s))); return r; };
+    doll.appendChild(row("er-head", ["head"]));
+    doll.appendChild(row("er-mid", ["larm", "torso", "rarm"]));
+    doll.appendChild(row("er-legs", ["lleg", "rleg"]));
+    doll.appendChild(el("div", "equip-divider", "— hands —"));
+    doll.appendChild(row("er-hands", ["mainHand", "offHand"]));
+    panel.appendChild(doll);
+    root.appendChild(panel);
+
+    // Picker for the selected slot.
+    if (equipPickSlot) {
+      const pk = el("div", "panel");
+      const cur = map[equipPickSlot];
+      pk.appendChild(el("div", "section-label", `${slotLabel(equipPickSlot)} — choose an item`));
+      if (cur) {
+        const unbtn = el("button", "btn small", `Unequip ${cur.name}`);
+        unbtn.onclick = () => { unequipItem(cur); equipPickSlot = null; };
+        pk.appendChild(unbtn);
+      }
+      const eligible = (rec.inventory || []).filter((it) => isEquippable(it) && itemFitsSlot(it, equipPickSlot));
+      if (!eligible.length) pk.appendChild(el("div", "muted", "Nothing in your inventory fits this slot. Add gear on the Inventory tab."));
+      const list = el("div", "equip-picklist");
+      eligible.forEach((it) => {
+        const here = it.equipped && equipSlotsFor(it).indexOf(equipPickSlot) > -1;
+        const b = el("div", "equip-pick" + (here ? " current" : ""));
+        b.innerHTML = `<span class="ep-name">${it.name}${here ? ' <span class="tag">equipped</span>' : ""}</span><span class="ep-meta">${equipItemMeta(it)}</span>`;
+        b.onclick = () => { if (here) { unequipItem(it); } else { equipToSlot(it, equipPickSlot); } equipPickSlot = null; };
+        list.appendChild(b);
+      });
+      pk.appendChild(list);
+      const cancel = el("button", "btn small ghost", "Close");
+      cancel.onclick = () => { equipPickSlot = null; refresh(); };
+      pk.appendChild(cancel);
+      root.appendChild(pk);
+    } else {
+      root.appendChild(el("p", "hint", "Tap a slot to equip or change what's there. A two-handed weapon fills both hands; a shield takes one hand; body armor fills the torso (a full suit covers every limb). Rules are enforced — equipping something displaces whatever shared its slot."));
+    }
+    return root;
+  }
+  // Compact one-line meta for an equippable item (used on the paper-doll + picker).
+  function equipItemMeta(it) {
+    if (it.category === "Weapon") return `${it.weaponType || "weapon"}${it.damage ? " · " + it.damage : ""}`;
+    if (it.category === "Shield") return `shield · +${it.dsBonus || 0} DS`;
+    if (it.category === "Armor") return `${it.armorClass || "Light"} · +${it.dsBonus || 0} DS`;
+    return it.category || "";
   }
 
   function buildInventoryTab() {
@@ -3160,8 +3318,10 @@
     root.appendChild(actionGroup("bonus", "✦ Bonus Actions", bonusCards));
 
     // ↩ Reactions — universal Opportunity Attack + Reaction techniques + Reaction combat skills
+    const reactionCards = [opportunityAttackCard()];
+    if (equippedShield()) reactionCards.push(shieldBlockCard());
     root.appendChild(actionGroup("reaction", "↩ Reactions",
-      [opportunityAttackCard()].concat(byAction("Reaction").map(makeTechCard)).concat(csByAction("Reaction").map(makeCombatSkillCard))));
+      reactionCards.concat(byAction("Reaction").map(makeTechCard)).concat(csByAction("Reaction").map(makeCombatSkillCard))));
 
     // ⏳ Full-Turn & Other (any non-standard action type)
     const std = ["Action", "Bonus Action", "Reaction"];
@@ -3293,6 +3453,30 @@
 
   // ↩ Opportunity Attack — a basic Reaction: one melee attack (any melee weapon or unarmed)
   // when an enemy enters or leaves your reach. Once before your next turn (spends your Reaction).
+  // 🛡 Shield Block — a reaction: raise your shield to add its Defense again against one incoming hit,
+  // until your next turn. Spends your Reaction; the bonus shows on your Defense and clears at End Turn.
+  function shieldBlockCard() {
+    const sh = equippedShield();
+    const card = el("div", "tech-card");
+    const active = !!play.blockDS;
+    card.innerHTML =
+      `<div class="thead"><span class="tname">🛡 Block${active ? ' <span class="freeflag" style="color:var(--good)">raised</span>' : ""}</span><span class="tmeta">Reaction · ${sh.name}</span></div>` +
+      `<div class="teff">▸ Raise the ${sh.name}: +${sh.dsBonus || 0} Defense against one hit, until your next turn.</div>`;
+    const btn = el("button", "btn small " + (active ? "" : "primary"), active ? "Lower" : "Block");
+    const blocked = econBlocked("Reaction");
+    btn.disabled = !active && blocked;
+    btn.title = (!active && blocked) ? "Reaction already used this turn" : "";
+    btn.style.marginTop = "8px";
+    btn.onclick = () => {
+      if (active) { play.blockDS = 0; logLine("Lowered your shield."); save(); refresh(); return; }
+      consumeEcon("Reaction");
+      play.blockDS = Number(sh.dsBonus) || 0;
+      announce(defenseScore(), `🛡 Block with ${sh.name} — +${play.blockDS} Defense vs one hit (now ${defenseScore()}).`);
+      save(); refresh();
+    };
+    card.appendChild(btn);
+    return card;
+  }
   function opportunityAttackCard() {
     const card = el("div", "tech-card");
     card.innerHTML =

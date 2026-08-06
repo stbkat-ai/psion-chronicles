@@ -1573,6 +1573,38 @@ Cache-buster **v=97**.
 
 ---
 
+### 70. Equipment & armor overhaul — real slots, shields, and an Equipment paper-doll
+**Direction (Luke, mid-heritage sidestep).** The old equip system was **just an on/off flag** — no hands, no
+slots, no limits (you could equip unlimited weapons/armor; armor DS stacked; a 2H weapon didn't block anything),
+and **shields didn't exist** (the lone "Riot Shield" was mis-filed as Medium body armor). Luke's three calls:
+**limb-mapped armor slots**, **shields with a Block reaction**, **hard-enforce** the rules — plus a new
+**Equipment tab** (a body paper-doll showing what's in which hand).
+
+**Built.**
+- **8 equipment slots:** Main Hand, Off Hand, + one per limb (Head/Torso/each Arm/each Leg, matching `PC.LIMBS`).
+  Occupancy is derived from item properties (2H weapon = both hands; shield = one hand; a **full-suit** armor =
+  all six limb slots; a future per-limb piece = its one limb). **Hard-enforced via auto-displace** — equipping
+  something unequips whatever shared a needed slot (logged). Items now carry `it.slot`; a one-time
+  `migrateEquipment()` slots existing characters' equipped gear and drops illegal extras.
+- **Armor coverage model:** each armor has `coverage` — `full` (the whole existing 27-item catalog; fills the
+  body) or a single limb (later content). Honors "limb-mapped" structurally without inventing a fake per-limb
+  catalog (that's Brittany's to write).
+- **Shields:** new `Shield` category (`items.js`), one hand, +DS while held (no proficiency gate) and a **Block**
+  reaction (Combat tab): spend your Reaction to add the shield's DS again vs one hit until your next turn
+  (`play.blockDS`, cleared at End Turn). Ladder: Buckler(+1) · Round/Heater(+2) · Kite(+3) · Tower/Riot(+4) +
+  Aegis Bulwark(+5, Rare). Re-filed the Riot Shield from Armor → Shield.
+- **Equipment tab:** a CSS paper-doll (Head / Arms+Torso / Legs / — hands —) + a summary strip (hands used,
+  shield, live Defense). Tap a slot → per-slot picker of eligible inventory items → equip (auto-displace) or
+  unequip. Inventory Equip button routes through the same slot system.
+- **Codex:** new **Shields** section (data-driven); `defenseScore` now adds shield + block DS.
+
+**Verified** (Playwright): 8 slots; 2H weapon displaces both an off-hand shield and a main-hand weapon; a suit
+fills all 6 limbs; Block 10→12 Defense and clears to 10 on End Turn; Codex Shields tile = 7; **0 console errors**.
+Docs: GAME_RULES (Equipment & slots + Shields + Defense formula), README (Equipment tab), DESIGN_LOG #70.
+Cache-buster **v=98**. *(Heritage builds paused mid-Norse — the Norse proposal is on the table awaiting a build.)*
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is
