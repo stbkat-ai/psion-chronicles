@@ -1605,6 +1605,36 @@ Cache-buster **v=98**. *(Heritage builds paused mid-Norse — the Norse proposal
 
 ---
 
+### 71. Equipment refine — Limbs-style paper-doll + a real apparel-slot taxonomy
+**Deploy footnote first:** #70 (v=98) merged to `main` but its GitHub Pages build **failed to publish** (one run
+cancelled, one stuck queued), so the live site sat on v=97 for days with no Equipment tab — looked like the feature
+was missing. Re-triggered with a cache-buster bump (**v=99**) and confirmed the Pages build went green. Lesson:
+**verify the Pages deployment actually succeeded**, don't assume a push == live.
+
+**What Luke asked for.** Two refinements to the shipped Equipment tab: (a) draw it as a **paper-doll like the Limbs
+tab** — i.e. the same SVG body-figure with tappable regions, not the flat labelled boxes; and (b) replace the
+limb-mapped armor slots with a proper **apparel taxonomy**. New **8 slots**: **Head** (hats/helmets), **Torso**
+(shirts/body armor), **Back** (capes/coats), **Arms** (gloves/gauntlets), **Legs** (pants/skirts/greaves), **Feet**
+(shoes/boots), and **Left Hand / Right Hand** (weapons & held gear). A **two-handed weapon auto-fills both hands**.
+
+**How it maps.** Hands went from Main/Off-Hand → **Left/Right Hand** (no dominant-hand distinction; a 1-hander
+defaults to the right, a shield to the left, either can be reassigned). Armor's `coverage` now names an apparel
+slot; the whole existing catalog (all whole-body suits) resolves to **Torso** body armor — so a suit no longer
+"covers every limb," it sits in the torso and leaves Head/Back/Arms/Legs/Feet free for future per-slot apparel
+(helmets, cloaks, gauntlets, greaves, boots — the `A()` factory now takes a coverage arg to author them). Legacy
+limb keys (larm/rarm→Arms, lleg/rleg→Legs) fold in defensively. `migrateEquipment()` now also **remaps old saved
+slot names** (mainHand→rhand, offHand→lhand, limb→apparel) so live characters carry over cleanly.
+
+**The figure.** New `equipFigureSVG()` mirrors `limbFigureSVG()`: an SVG humanoid where each of the eight slots is a
+tappable region (Arms/Legs/Feet each draw a left+right shape as one slot; Back is a cape drawn behind the torso;
+hands are circles at the ends of the arms). Filled slots glow in the psi accent and show the item name; tapping a
+slot opens the item-picker below the figure — the same "tap → editor below" pattern as Limbs. Rules stay
+hard-enforced (equipping displaces whatever shared the slot). Verified (Playwright): all 8 regions individually
+tappable incl. Back behind the torso, 2H fills both hands and is displaced by a shield, armor lands in Torso, DS
+correct, 0 console errors. Docs: GAME_RULES + README updated. Cache-buster **v=100**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

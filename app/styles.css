@@ -1063,7 +1063,25 @@ body.screen-home .wrap { max-width: none; margin: 0; padding: 0; }
 .equip-pick .ep-name .tag { color: var(--good); font-size: .66rem; margin-left: 6px; }
 .equip-pick .ep-meta { font-size: .74rem; color: var(--text-dim); }
 
+/* Equipment paper-doll — SVG body figure, same visual language as the Limbs figure. */
+.equip-figure-wrap { display: flex; justify-content: center; margin: 6px 0 4px; }
+.equip-figure { width: 100%; max-width: 300px; height: auto; }
+.equip-figure .eqslot { cursor: pointer; color: var(--text-faint); }
+.equip-figure .eqslot ellipse, .equip-figure .eqslot rect, .equip-figure .eqslot circle {
+  fill: currentColor; fill-opacity: .10; stroke: currentColor; stroke-opacity: .55; stroke-width: 2; transition: .14s; }
+.equip-figure .eqslot.filled { color: var(--psi-bright); }
+.equip-figure .eqslot.filled ellipse, .equip-figure .eqslot.filled rect, .equip-figure .eqslot.filled circle { fill-opacity: .20; stroke-opacity: .9; }
+.equip-figure .eqslot:hover ellipse, .equip-figure .eqslot:hover rect, .equip-figure .eqslot:hover circle { fill-opacity: .26; }
+.equip-figure .eqslot.sel ellipse, .equip-figure .eqslot.sel rect, .equip-figure .eqslot.sel circle {
+  stroke: var(--psi); stroke-opacity: 1; stroke-width: 3; fill-opacity: .26; }
+.equip-figure .eqslot.sel { color: var(--psi); }
+.equip-figure .eqslot-tx { fill: currentColor; font-weight: 700; pointer-events: none; }
+.equip-figure .eqslot.empty .eqslot-tx { fill: var(--text-faint); font-weight: 600; }
+
+.equip-picker { margin-top: 12px; }
+.equip-pick-head { font-size: 1rem; margin-bottom: 8px; }
+.equip-pick-head .ep-cur { color: var(--psi-bright); font-weight: 700; }
+
 @media (max-width: 560px) {
-  .equip-slot { width: 44vw; }
-  .equip-slot.slot-torso { width: 44vw; }
+  .equip-figure { max-width: 100%; }
 }

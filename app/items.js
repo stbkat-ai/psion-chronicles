@@ -18,8 +18,11 @@ window.PC = window.PC || {};
   // Armor. cls = "Light"|"Medium"|"Heavy"; rarity default Common. note = descriptive special effect
   // (GM-applied). grants = structured perks the engine auto-applies while equipped & proficient, e.g.
   // { advSkill: "Stealth" } (advantage on that skill) or { noMovePenalty: true }.
-  function A(name, cls, dsBonus, weight, rarity, note, grants) {
-    const a = { name: name, category: "Armor", armorClass: cls, dsBonus: dsBonus, weight: weight, rarity: rarity || "Common" };
+  // coverage = which paper-doll slot the piece fills: "full" (whole-body armor → Torso; the entire current
+  // catalog) or a single apparel slot ("head"|"torso"|"back"|"arms"|"legs"|"feet") for future per-slot pieces
+  // (helmets, capes, gauntlets, greaves, boots…). Omitting it keeps a piece full-body, so the catalog is unchanged.
+  function A(name, cls, dsBonus, weight, rarity, note, grants, coverage) {
+    const a = { name: name, category: "Armor", armorClass: cls, dsBonus: dsBonus, weight: weight, rarity: rarity || "Common", coverage: coverage || "full" };
     if (note) a.note = note;
     if (grants) a.grants = grants;
     return a;

@@ -982,33 +982,37 @@
     it.qty = Math.max(1, (Number(it.qty) || 1) + delta);
     save(); refresh();
   }
-  /* ---------- equipment slots (2 hands + 6 limb-armor) ---------- */
-  const HAND_SLOTS = ["mainHand", "offHand"];
-  const ARMOR_SLOTS = ["head", "torso", "larm", "rarm", "lleg", "rleg"]; // match PC.LIMBS keys
-  const ALL_SLOTS = HAND_SLOTS.concat(ARMOR_SLOTS);
-  const SLOT_LABEL = { mainHand: "Main Hand", offHand: "Off Hand", head: "Head", torso: "Torso", larm: "Left Arm", rarm: "Right Arm", lleg: "Left Leg", rleg: "Right Leg" };
+  /* ---------- equipment slots (8-slot paper-doll: 6 apparel + 2 hands) ---------- */
+  // Apparel slots hold worn gear; hand slots hold weapons/shields. A two-handed weapon fills BOTH hands.
+  const APPAREL_SLOTS = ["head", "torso", "back", "arms", "legs", "feet"];
+  const HAND_SLOTS = ["lhand", "rhand"];
+  const ALL_SLOTS = APPAREL_SLOTS.concat(HAND_SLOTS);
+  const SLOT_LABEL = { head: "Head", torso: "Torso", back: "Back", arms: "Arms", legs: "Legs", feet: "Feet", lhand: "Left Hand", rhand: "Right Hand" };
   function slotLabel(s) { return SLOT_LABEL[s] || s; }
   function isEquippable(it) { return !!it && (it.category === "Weapon" || it.category === "Shield" || it.category === "Armor"); }
-  // Which slots an item OCCUPIES, given the primary slot recorded on it.slot.
+  // The apparel slot a worn piece belongs to. `coverage` is the intrinsic field: "full" = whole-body armor →
+  // Torso; a per-slot piece names its slot directly. Legacy limb-keyed values fold onto the six apparel slots.
+  const COVERAGE_TO_SLOT = { full: "torso", torso: "torso", head: "head", back: "back", arms: "arms", legs: "legs", feet: "feet", larm: "arms", rarm: "arms", lleg: "legs", rleg: "legs" };
+  function armorApparelSlot(it) { return COVERAGE_TO_SLOT[(it && it.coverage) || "full"] || "torso"; }
+  // Which slot(s) an item OCCUPIES once equipped. it.slot records which hand a 1-hander/shield chose.
   function equipSlotsFor(it) {
     if (!it) return [];
-    if (it.category === "Weapon") return Number(it.hands) === 2 ? ["mainHand", "offHand"] : [it.slot === "offHand" ? "offHand" : "mainHand"];
-    if (it.category === "Shield") return [it.slot === "mainHand" ? "mainHand" : "offHand"];
-    if (it.category === "Armor") { const cov = it.coverage || "full"; return cov === "full" ? ARMOR_SLOTS.slice() : [cov]; }
+    if (it.category === "Weapon") return Number(it.hands) === 2 ? HAND_SLOTS.slice() : [it.slot === "lhand" ? "lhand" : "rhand"];
+    if (it.category === "Shield") return [it.slot === "rhand" ? "rhand" : "lhand"];
+    if (it.category === "Armor") return [armorApparelSlot(it)];
     return [];
   }
-  // Can this item be equipped INTO this slot? (drives the per-slot picker; a 2H weapon is only offered in Main Hand)
+  // Can this item be equipped INTO this slot? (drives the per-slot picker.)
   function itemFitsSlot(it, slot) {
-    if (it.category === "Weapon") return HAND_SLOTS.indexOf(slot) > -1 && !(Number(it.hands) === 2 && slot === "offHand");
-    if (it.category === "Shield") return HAND_SLOTS.indexOf(slot) > -1;
-    if (it.category === "Armor") { const cov = it.coverage || "full"; return cov === "full" ? ARMOR_SLOTS.indexOf(slot) > -1 : cov === slot; }
+    if (it.category === "Weapon" || it.category === "Shield") return HAND_SLOTS.indexOf(slot) > -1;
+    if (it.category === "Armor") return slot === armorApparelSlot(it);
     return false;
   }
   function currentlyEquipped() { return (rec.inventory || []).filter((it) => it.equipped && isEquippable(it)); }
   function equippedShield() { return currentlyEquipped().find((it) => it.category === "Shield") || null; }
   // slot -> item map (first item wins a shared slot; used by the paper-doll).
   function equipMap() { const m = {}; currentlyEquipped().forEach((it) => { equipSlotsFor(it).forEach((s) => { if (!m[s]) m[s] = it; }); }); return m; }
-  function defaultSlotFor(it) { return it.category === "Armor" ? (it.coverage && it.coverage !== "full" ? it.coverage : "torso") : it.category === "Shield" ? "offHand" : "mainHand"; }
+  function defaultSlotFor(it) { return it.category === "Armor" ? armorApparelSlot(it) : it.category === "Shield" ? "lhand" : "rhand"; }
 
   // Hard-enforced equip: place the item in `slot`, auto-unequipping anything that occupied a slot it now needs.
   function equipToSlot(it, slot) {
@@ -1028,26 +1032,28 @@
     if (it.equipped) unequipItem(it);
     else equipToSlot(it, defaultSlotFor(it));
   }
-  // One-time migration: assign slots to already-equipped items from the old flag-only model, and enforce
-  // the new limits (2 hands; one body suit). Idempotent — skips once anything carries a slot.
+  // Migration: (a) default armor coverage; (b) remap legacy slot names (old Main/Off-Hand + limb-armor model)
+  // onto the new 8-slot taxonomy; (c) assign slots to already-equipped items that never had one. Idempotent.
   function migrateEquipment() {
     const inv = rec.inventory || [];
     inv.forEach((it) => { if (it.category === "Armor" && !it.coverage) it.coverage = "full"; });
+    const REMAP = { mainHand: "rhand", offHand: "lhand", larm: "arms", rarm: "arms", lleg: "legs", rleg: "legs" };
+    inv.forEach((it) => { if (it.slot && REMAP[it.slot]) it.slot = REMAP[it.slot]; });
     const eq = inv.filter((it) => it.equipped && isEquippable(it));
-    if (!eq.length || eq.some((it) => it.slot)) return; // fresh char or already migrated
+    if (!eq.length || eq.some((it) => it.slot)) return; // fresh char, or already slotted/migrated
     const used = {};
     eq.filter((it) => it.category === "Weapon" || it.category === "Shield").forEach((it) => {
       if (it.category === "Weapon" && Number(it.hands) === 2) {
-        if (!used.mainHand && !used.offHand) { used.mainHand = used.offHand = true; it.slot = "mainHand"; }
+        if (!used.rhand && !used.lhand) { used.rhand = used.lhand = true; it.slot = "rhand"; }
         else { it.equipped = false; it.slot = null; }
-      } else if (!used.mainHand) { used.mainHand = true; it.slot = "mainHand"; }
-      else if (!used.offHand) { used.offHand = true; it.slot = "offHand"; }
+      } else if (!used.rhand) { used.rhand = true; it.slot = "rhand"; }
+      else if (!used.lhand) { used.lhand = true; it.slot = "lhand"; }
       else { it.equipped = false; it.slot = null; }
     });
-    let bodyTaken = false;
+    const bodyUsed = {};
     eq.filter((it) => it.category === "Armor").forEach((it) => {
-      if (!bodyTaken && (it.coverage || "full") === "full") { it.slot = "torso"; bodyTaken = true; }
-      else if ((it.coverage || "full") !== "full") { it.slot = it.coverage; }
+      const s = armorApparelSlot(it);
+      if (!bodyUsed[s]) { bodyUsed[s] = true; it.slot = s; }
       else { it.equipped = false; it.slot = null; }
     });
   }
@@ -2333,48 +2339,35 @@
     vit.appendChild(summary);
     root.appendChild(vit);
 
-    // The paper-doll.
+    // The paper-doll — an SVG body figure with tappable slots, matching the Limbs tab.
     const panel = el("div", "panel");
-    const doll = el("div", "equip-doll");
-    const slotBox = (slot) => {
-      const it = map[slot];
-      const box = el("div", "equip-slot" + (it ? " filled" : "") + " slot-" + slot);
-      const twoH = it && it.category === "Weapon" && Number(it.hands) === 2;
-      box.innerHTML =
-        `<span class="es-label">${slotLabel(slot)}</span>` +
-        `<span class="es-item">${it ? it.name : "— empty —"}</span>` +
-        (it ? `<span class="es-meta">${equipItemMeta(it)}${twoH ? " · 2H" : ""}</span>` : "");
-      box.onclick = () => { equipPickSlot = equipPickSlot === slot ? null : slot; refresh(); };
-      if (equipPickSlot === slot) box.classList.add("picking");
-      return box;
-    };
-    // Layout rows: head; arms+torso; legs; hands.
-    const row = (cls, slots) => { const r = el("div", "equip-row " + cls); slots.forEach((s) => r.appendChild(slotBox(s))); return r; };
-    doll.appendChild(row("er-head", ["head"]));
-    doll.appendChild(row("er-mid", ["larm", "torso", "rarm"]));
-    doll.appendChild(row("er-legs", ["lleg", "rleg"]));
-    doll.appendChild(el("div", "equip-divider", "— hands —"));
-    doll.appendChild(row("er-hands", ["mainHand", "offHand"]));
-    panel.appendChild(doll);
-    root.appendChild(panel);
+    panel.appendChild(el("div", "section-label", "Equipment"));
+    const figWrap = el("div", "equip-figure-wrap");
+    figWrap.innerHTML = equipFigureSVG();
+    figWrap.querySelectorAll(".eqslot[data-key]").forEach((gEl) => {
+      gEl.addEventListener("click", () => { const k = gEl.getAttribute("data-key"); equipPickSlot = equipPickSlot === k ? null : k; refresh(); });
+    });
+    panel.appendChild(figWrap);
 
-    // Picker for the selected slot.
+    // Picker for the tapped slot (opens below the figure, like the Limbs editor).
     if (equipPickSlot) {
-      const pk = el("div", "panel");
       const cur = map[equipPickSlot];
-      pk.appendChild(el("div", "section-label", `${slotLabel(equipPickSlot)} — choose an item`));
+      const pk = el("div", "equip-picker");
+      pk.appendChild(el("div", "equip-pick-head",
+        `<b>${slotLabel(equipPickSlot)}</b>` + (cur ? ` — <span class="ep-cur">${cur.name}</span>` : ' <span class="muted">— empty —</span>')));
       if (cur) {
         const unbtn = el("button", "btn small", `Unequip ${cur.name}`);
         unbtn.onclick = () => { unequipItem(cur); equipPickSlot = null; };
         pk.appendChild(unbtn);
       }
       const eligible = (rec.inventory || []).filter((it) => isEquippable(it) && itemFitsSlot(it, equipPickSlot));
-      if (!eligible.length) pk.appendChild(el("div", "muted", "Nothing in your inventory fits this slot. Add gear on the Inventory tab."));
+      if (!eligible.length) pk.appendChild(el("div", "muted", "Nothing in your inventory fits this slot — add gear on the Inventory tab."));
       const list = el("div", "equip-picklist");
       eligible.forEach((it) => {
         const here = it.equipped && equipSlotsFor(it).indexOf(equipPickSlot) > -1;
+        const twoH = it.category === "Weapon" && Number(it.hands) === 2;
         const b = el("div", "equip-pick" + (here ? " current" : ""));
-        b.innerHTML = `<span class="ep-name">${it.name}${here ? ' <span class="tag">equipped</span>' : ""}</span><span class="ep-meta">${equipItemMeta(it)}</span>`;
+        b.innerHTML = `<span class="ep-name">${it.name}${here ? ' <span class="tag">equipped</span>' : ""}</span><span class="ep-meta">${equipItemMeta(it)}${twoH ? " · fills both hands" : ""}</span>`;
         b.onclick = () => { if (here) { unequipItem(it); } else { equipToSlot(it, equipPickSlot); } equipPickSlot = null; };
         list.appendChild(b);
       });
@@ -2382,17 +2375,46 @@
       const cancel = el("button", "btn small ghost", "Close");
       cancel.onclick = () => { equipPickSlot = null; refresh(); };
       pk.appendChild(cancel);
-      root.appendChild(pk);
+      panel.appendChild(pk);
     } else {
-      root.appendChild(el("p", "hint", "Tap a slot to equip or change what's there. A two-handed weapon fills both hands; a shield takes one hand; body armor fills the torso (a full suit covers every limb). Rules are enforced — equipping something displaces whatever shared its slot."));
+      panel.appendChild(el("div", "pool-hint", "Tap a slot to equip or change what's there"));
     }
+    root.appendChild(panel);
+
+    // Legend / rules note.
+    root.appendChild(el("p", "hint", "Eight slots: <b>Head</b> (hats & helmets), <b>Torso</b> (shirts & body armor), <b>Back</b> (capes & coats), <b>Arms</b> (gloves & gauntlets), <b>Legs</b> (pants, skirts & greaves), <b>Feet</b> (shoes & boots), and <b>Left/Right Hand</b> (weapons & held gear). A <b>two-handed weapon fills both hands</b>; a shield takes one. Rules are enforced — equipping something displaces whatever shared its slot."));
     return root;
+  }
+  // The equipment paper-doll: an SVG humanoid whose regions are the eight slots (same visual language as the
+  // Limbs figure). Grouped slots (Arms/Legs/Feet) draw a left+right shape; Back is a cape behind the torso.
+  function equipFigureSVG() {
+    const map = equipMap();
+    const trunc = (s, n) => { s = String(s || ""); return s.length > n ? s.slice(0, n - 1) + "…" : s; };
+    const regions = [
+      { key: "head",  shapes: ['<ellipse cx="170" cy="46" rx="30" ry="34"/>'], labels: [{ x: 170, y: 47, fs: 12 }], n: 8 },
+      { key: "back",  shapes: ['<rect x="116" y="90" width="108" height="150" rx="18"/>'], labels: [{ x: 170, y: 228, fs: 12 }], n: 10 },
+      { key: "torso", shapes: ['<rect x="128" y="98" width="84" height="118" rx="16"/>'], labels: [{ x: 170, y: 152, fs: 13 }], n: 11 },
+      { key: "arms",  shapes: ['<rect x="58" y="114" width="70" height="26" rx="13"/>', '<rect x="212" y="114" width="70" height="26" rx="13"/>'], labels: [{ x: 93, y: 127, fs: 11 }, { x: 247, y: 127, fs: 11 }], n: 7 },
+      { key: "lhand", shapes: ['<circle cx="34" cy="127" r="22"/>'], labels: [{ x: 34, y: 127, fs: 9 }], n: 6, empty: "L Hand" },
+      { key: "rhand", shapes: ['<circle cx="306" cy="127" r="22"/>'], labels: [{ x: 306, y: 127, fs: 9 }], n: 6, empty: "R Hand" },
+      { key: "legs",  shapes: ['<rect x="130" y="240" width="36" height="140" rx="17"/>', '<rect x="174" y="240" width="36" height="140" rx="17"/>'], labels: [{ x: 148, y: 306, fs: 10 }, { x: 192, y: 306, fs: 10 }], n: 6 },
+      { key: "feet",  shapes: ['<ellipse cx="148" cy="400" rx="24" ry="14"/>', '<ellipse cx="192" cy="400" rx="24" ry="14"/>'], labels: [{ x: 148, y: 400, fs: 9 }, { x: 192, y: 400, fs: 9 }], n: 6 },
+    ];
+    let g = "";
+    regions.forEach((r) => {
+      const it = map[r.key];
+      const sel = equipPickSlot === r.key ? " sel" : "";
+      const txt = it ? trunc(it.name, r.n) : (r.empty || slotLabel(r.key));
+      const labels = r.labels.map((L) => `<text class="eqslot-tx" x="${L.x}" y="${L.y}" font-size="${L.fs}" text-anchor="middle" dominant-baseline="central">${txt}</text>`).join("");
+      g += `<g class="eqslot ${it ? "filled" : "empty"}${sel}" data-key="${r.key}">${r.shapes.join("")}${labels}</g>`;
+    });
+    return `<svg class="equip-figure" viewBox="0 0 340 470" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Equipment — tap a slot">${g}</svg>`;
   }
   // Compact one-line meta for an equippable item (used on the paper-doll + picker).
   function equipItemMeta(it) {
-    if (it.category === "Weapon") return `${it.weaponType || "weapon"}${it.damage ? " · " + it.damage : ""}`;
+    if (it.category === "Weapon") return `${it.weaponType || "weapon"}${it.damage ? " · " + it.damage : ""}${Number(it.hands) === 2 ? " · 2H" : " · 1H"}`;
     if (it.category === "Shield") return `shield · +${it.dsBonus || 0} DS`;
-    if (it.category === "Armor") return `${it.armorClass || "Light"} · +${it.dsBonus || 0} DS`;
+    if (it.category === "Armor") return `${it.armorClass || "Light"} · +${it.dsBonus || 0} DS · ${slotLabel(armorApparelSlot(it))}`;
     return it.category || "";
   }
 
