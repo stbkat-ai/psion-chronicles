@@ -189,8 +189,9 @@ Account menu brings it back). Tap the **Psion Chronicles wordmark** in the heade
     two-handed weapon fills both hands, a **shield** takes one hand, body armor sits in the torso, and equipping
     something displaces whatever shared its slot. **Shields** are a real item now: held one-handed,
     they add Defense and unlock a **Block** reaction on the Combat tab (spend your reaction to add the shield's
-    Defense again against one hit). The whole current armor catalog counts as full-body **suits**; per-limb pieces
-    can be added later.
+    Defense again against one hit). The catalog now stocks **gear for every slot** — helmets & hats, cloaks &
+    coats, gloves & gauntlets, leggings & greaves, boots — alongside the body armor and a full shield ladder
+    (Buckler → Tower), so you can build out the whole paper-doll.
   - **Inventory tab** — carry weight, carried items (equip, actions, config), a custom-item form, and a
     **🔍 Browse Item Catalog** button that opens a dedicated **catalog screen**: search/filter the item
     catalog (weapons + armor, consumables, tools, gear) and Add any of them (weapons arrive attack-ready

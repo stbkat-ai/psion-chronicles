@@ -1635,6 +1635,32 @@ correct, 0 console errors. Docs: GAME_RULES + README updated. Cache-buster **v=1
 
 ---
 
+### 72. Apparel content pass — gear for every slot + a fuller shield ladder
+With the 8-slot doll (#71) in place, five of the six apparel slots had **no items** to put in them — only Torso
+(the whole old body-armor catalog) was populated. This pass fills them out so the paper-doll is actually usable.
+
+- **`AP(name, slot, …)`** apparel factory added (delegates to `A()` with `coverage = slot`). Body armor still uses
+  `A()` (→ Torso).
+- **Reclassified** the catalog's cloaks/ponchos/shawls/coats out of body armor into **Back** (Padded Cloak, Camo
+  Poncho, Enchanted Shawl, Nightweave Cloak, Reinforced Coat) — they were never really torso armor.
+- **Added ~31 apparel pieces**: Head (hoods, caps, coifs, iron/combat/great helms, a rare circlet), Back (wool/
+  traveler's cloaks, longcoat, trench coat, duelist's cape), Arms (leather/tactical gloves, bracers, chain sleeves,
+  steel/vanguard gauntlets), Legs (cloth/combat trousers, leather leggings, chain faulds, steel greaves, padded
+  kilt), Feet (sandals, leather/traveler's/combat boots, steel sabatons, silent soles). Each spans Light/Medium/
+  Heavy so class-gating still means something, plus a rarity or two per slot.
+- **Shields** grew from 7 → 11: added Targe, Spiked Shield, Pavise, and a Legendary Aegis of the Vault.
+- Catalog now: **57 armor** (torso 21, head 8, back 10, arms/legs/feet 6 each) + **11 shields**. Every slot's
+  picker offers only its fitting items (verified in-browser; a fully-kitted heavy build filled all 8 slots, 0
+  console errors).
+
+**Balance flag (for Luke):** accessory Defense **stacks** — a fully-matched heavy set (body +6, helm +2, cloak +1,
+gauntlets +1, greaves +2, boots +1, shield +5) can push DS into the low 20s. Kept accessory bonuses deliberately
+modest (mostly +0/+1, a few +2) so body armor + shield stay dominant, but if the ceiling is too high the easy
+levers are: cap total armor DS, zero-out accessory DS (flavor only), or only count the highest-DS piece per region.
+Awaiting Luke's call. Docs: CLAUDE.md, GAME_RULES, README. Cache-buster **v=101**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

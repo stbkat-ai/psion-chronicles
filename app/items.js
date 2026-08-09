@@ -27,6 +27,13 @@ window.PC = window.PC || {};
     if (grants) a.grants = grants;
     return a;
   }
+  // Apparel piece for one specific paper-doll slot (head|back|arms|legs|feet — torso uses A()). It IS armor
+  // (armorClass still gates AGI/proficiency, dsBonus still sums into Defense), it just fills a single slot so
+  // pieces layer: a helm + cloak + gauntlets + greaves + boots stack alongside body armor. Keep dsBonus modest
+  // (0–2) — body armor and shields stay the big Defense contributors; accessories are mostly utility.
+  function AP(name, slot, cls, dsBonus, weight, rarity, note, grants) {
+    return A(name, cls, dsBonus, weight, rarity, note, grants, slot);
+  }
   // effect = structured mechanics applied on Use (optional). Keys the play sheet understands:
   //   hp / kp: dice string ("2d6") or flat number — restore that much HP / KP
   //   hpFull / kpFull: true — restore HP / KP to max
@@ -162,17 +169,15 @@ window.PC = window.PC || {};
      Everyone is proficient with Light; Medium/Heavy proficiency comes from your Heritage. Wearing a
      class you're not proficient with gives NO Defense bonus and disadvantage on AGI checks/attacks.
      `grants` perks (e.g. advSkill) auto-apply while equipped & proficient; `note` effects are GM-applied. */
+  /* --- TORSO — body armor (the primary Defense piece; fills the Torso slot) --- */
   // Light (Defense +1..+2)
-  A("Padded Cloak", "Light", 1, 4), A("Traveling Robes", "Light", 1, 4), A("Fine Clothes", "Light", 1, 3),
+  A("Traveling Robes", "Light", 1, 4), A("Fine Clothes", "Light", 1, 3),
   A("Fine Robes", "Light", 1, 3), A("Monk's Wraps", "Light", 1, 2), A("Ceremonial Vestments", "Light", 1, 6),
   A("Combat Fatigues", "Light", 2, 4), A("Leather Armor", "Light", 2, 8), A("Weathered Leathers", "Light", 2, 8),
-  A("Camo Poncho", "Light", 2, 4, "Uncommon", "Patterned to melt into terrain.", { advSkill: "Stealth" }),
   A("Shadowed Leathers", "Light", 2, 8, "Uncommon", "Matte-black, sound-muffling leathers.", { advSkill: "Stealth" }),
-  A("Enchanted Shawl", "Light", 2, 5, "Uncommon", "Woven wards soften the first blow of each fight (GM)."),
-  A("Nightweave Cloak", "Light", 2, 4, "Rare", "Drinks in the light and sound around you.", { advSkill: "Stealth" }),
   A("Shadowplate", "Light", 2, 6, "Legendary", "Veil-shadow armor: you leave no tracks and can hide even while observed (GM).", { advSkill: "Stealth" }),
   // Medium (Defense +3..+4)
-  A("Reinforced Coat", "Medium", 3, 6), A("Reinforced Vest", "Medium", 3, 15), A("Kevlar Vest", "Medium", 3, 12),
+  A("Reinforced Vest", "Medium", 3, 15), A("Kevlar Vest", "Medium", 3, 12),
   A("Lab Exosuit", "Medium", 3, 18, "Uncommon", "Sealed against gas, acid, and lab hazards (GM)."),
   A("Mirrormail", "Medium", 4, 16, "Rare", "Once per fight, turn a ranged attack back on its attacker (GM)."),
   A("Sentinel's Regalia", "Medium", 4, 14, "Legendary", "You can't be surprised while you wear it.", { advSkill: "Awareness" }),
@@ -183,16 +188,66 @@ window.PC = window.PC || {};
   A("Powered Armor", "Heavy", 6, 40, "Very Rare", "Servos negate Heavy armor's movement penalty; resists ballistic damage (GM).", { noMovePenalty: true }),
   A("Warden's Aegis", "Heavy", 6, 30, "Legendary", "Resistance to physical damage; advantage to resist being moved or knocked prone (GM).", { advSkill: "Hardiness" }),
 
+  /* --- HEAD — hats & helmets --- */
+  AP("Cloth Hood", "head", "Light", 0, 1),
+  AP("Padded Cap", "head", "Light", 1, 1),
+  AP("Leather Coif", "head", "Light", 1, 2),
+  AP("Iron Helm", "head", "Medium", 1, 4),
+  AP("Combat Helmet", "head", "Medium", 1, 3),
+  AP("Great Helm", "head", "Heavy", 2, 7),
+  AP("Visored Sallet", "head", "Heavy", 2, 6, "Uncommon", "A full-face plate helm — narrows your sightlines (GM)."),
+  AP("Circlet of Insight", "head", "Light", 0, 1, "Rare", "Wards that sharpen the senses.", { advSkill: "Awareness" }),
+
+  /* --- BACK — capes & coats (cloaks/ponchos/shawls moved here from the old body-armor list) --- */
+  AP("Padded Cloak", "back", "Light", 1, 4),
+  AP("Wool Cloak", "back", "Light", 0, 2),
+  AP("Traveler's Cloak", "back", "Light", 0, 3),
+  AP("Longcoat", "back", "Light", 1, 4),
+  AP("Reinforced Coat", "back", "Medium", 2, 6),
+  AP("Trench Coat", "back", "Medium", 1, 6),
+  AP("Camo Poncho", "back", "Light", 1, 4, "Uncommon", "Patterned to melt into terrain.", { advSkill: "Stealth" }),
+  AP("Enchanted Shawl", "back", "Light", 1, 5, "Uncommon", "Woven wards soften the first blow of each fight (GM)."),
+  AP("Nightweave Cloak", "back", "Light", 1, 4, "Rare", "Drinks in the light and sound around you.", { advSkill: "Stealth" }),
+  AP("Duelist's Cape", "back", "Light", 1, 3, "Rare", "Flourished to bait a strike — advantage to parry once per fight (GM)."),
+
+  /* --- ARMS — gloves & gauntlets --- */
+  AP("Leather Gloves", "arms", "Light", 0, 1),
+  AP("Tactical Gloves", "arms", "Light", 0, 1),
+  AP("Padded Bracers", "arms", "Light", 1, 2),
+  AP("Chain Sleeves", "arms", "Medium", 1, 4),
+  AP("Steel Gauntlets", "arms", "Heavy", 1, 5),
+  AP("Vanguard Gauntlets", "arms", "Heavy", 2, 6, "Rare", "Reinforced war-gauntlets; advantage to keep a grip or a grapple (GM)."),
+
+  /* --- LEGS — pants, skirts & greaves --- */
+  AP("Cloth Trousers", "legs", "Light", 0, 1),
+  AP("Combat Trousers", "legs", "Light", 0, 2),
+  AP("Leather Leggings", "legs", "Light", 1, 3),
+  AP("Chain Faulds", "legs", "Medium", 1, 6),
+  AP("Steel Greaves", "legs", "Heavy", 2, 8),
+  AP("Padded Kilt", "legs", "Light", 1, 3, "Uncommon", "A layered war-kilt that never binds your stride."),
+
+  /* --- FEET — shoes & boots --- */
+  AP("Sandals", "feet", "Light", 0, 1),
+  AP("Leather Boots", "feet", "Light", 0, 2),
+  AP("Traveler's Boots", "feet", "Light", 1, 3),
+  AP("Combat Boots", "feet", "Medium", 1, 3),
+  AP("Steel Sabatons", "feet", "Heavy", 1, 5),
+  AP("Silent Soles", "feet", "Light", 0, 2, "Uncommon", "A muffled tread.", { advSkill: "Stealth" }),
+
   /* ===== SHIELDS =====
      Held in one hand (blocks a second weapon or a two-handed weapon). Grants its dsBonus while equipped, and
      enables the Block reaction. Escalating ladder: Buckler → Round → Kite → Tower (more Defense, more weight). */
   S("Buckler", "Buckler", 1, 2, "Common", "A small fist-shield, quick and light."),
+  S("Targe", "Buckler", 1, 3, "Common", "A small round Highland shield strapped to the forearm."),
   S("Round Shield", "Round Shield", 2, 6, "Common", "A sturdy wooden round shield banded in iron."),
   S("Heater Shield", "Heater Shield", 2, 7, "Common", "A knight's heater — broad enough to guard the torso."),
+  S("Spiked Shield", "Round Shield", 2, 8, "Uncommon", "A round shield rimmed with spikes — shove to deal damage (GM)."),
   S("Kite Shield", "Kite Shield", 3, 10, "Common", "A tall kite shield covering body and leg."),
   S("Tower Shield", "Tower Shield", 4, 16, "Common", "A great slab of a shield — a wall you carry."),
   S("Riot Shield", "Riot Shield", 4, 10, "Common", "A transparent shield built to weather a beating."),
+  S("Pavise", "Tower Shield", 4, 20, "Common", "A massive standing shield — plant it and fight from behind a wall."),
   S("Aegis Bulwark", "Tower Shield", 5, 14, "Rare", "A warded tower shield; once per fight, negate a hit entirely (GM)."),
+  S("Aegis of the Vault", "Tower Shield", 5, 18, "Legendary", "An ancient bulwark — while raised, allies sheltering behind you share its Defense (GM)."),
 
   /* ===== CONSUMABLES =====
      4th arg = structured effect applied on Use (see C() above). Items without one are

@@ -121,6 +121,12 @@ There are **eight slots**:
   equipping something **displaces** whatever shared its slot (logged). Equip/unequip from the Equipment tab
   (tap a slot on the figure → pick from the list) or from the Inventory tab's Equip button (routes to a sensible
   default slot).
+- **The catalog spans every slot.** Torso holds the body armor (Light/Medium/Heavy, +1 to +6 Defense); the other
+  apparel slots hold lighter pieces — helmets, cloaks/coats, gloves & gauntlets, leggings & greaves, boots — that
+  carry the same class (so a heavy helm gates AGI like heavy armor) and add a **modest Defense** (mostly +0 to +2).
+  Each equipped piece's Defense **sums**, so a fully-matched set is a real investment. **Shields** are a one-hand
+  ladder — Buckler/Targe (+1) → Round/Heater/Spiked (+2) → Kite (+3) → Tower/Riot/Pavise (+4) → warded bulwarks
+  (+5) — each adding its Defense while held and enabling the **Block** reaction.
 
 ### Shields (CONFIRMED Luke)
 A **shield** is its own item category, **held in one hand**. It adds its **Defense bonus** while equipped (no
