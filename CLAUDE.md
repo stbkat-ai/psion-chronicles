@@ -31,11 +31,11 @@ in the browser's `localStorage` (key `psion_chronicles_characters`), so saved da
   18 weapon types, 216 techniques (18 Kinetics × 4 tiers × 3), fighting styles/combat skills, per-background & per-heritage flaws).
   Also `PC.FUSIONS` (153 **Fusion Kinetics** — every pair of the 18 base Kinetics; hidden until unlocked) + `PC.FUSION_TECHNIQUES` (1377 = 153 × 3 tiers × 3);
   a fusion technique is a **pair of parent techniques** (offset a tier up), auto-granted free when both halves are known.
-- `items.js` — the weapon/item catalog (~342 gear items + 64 component entries; skill tool kits via `it.skill`;
+- `items.js` — the weapon/item catalog (~355 gear items + 64 component entries; skill tool kits via `it.skill`;
   functioning consumables via `it.effect`). **Armor is slot-based:** each piece carries a `coverage` (`"full"` =
   whole-body → the **Torso** paper-doll slot, or a single apparel slot `head`/`back`/`arms`/`legs`/`feet`); the
   `A()` factory makes body armor, `AP(name, slot, …)` makes per-slot apparel (hats, cloaks, gloves, greaves,
-  boots). **Shields** are their own `category: "Shield"` (held one-handed, +DS + Block reaction). **Ammunition**
+  boots). **Shields** are their own `category: "Shield"` (23 of them via `S(name, subtype, …)`; held one-handed, +DS + Block reaction; craftable like armor — Plating + Straps, +Padding for big ones). **Ammunition**
   is `category: "Ammo"` (via `AM(name, feeds, …)`, 12 stacks covering every ranged mechanism); **thrown** weapons
   carry a `thrown` flag (their own ammo — light, recovered after a throw). **Crafting is two-tier:** raw
   `PC.SALVAGE` (14 materials) →

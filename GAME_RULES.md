@@ -127,9 +127,11 @@ There are **eight slots**:
   **Accessory Defense is capped:** Torso body armor and a held shield add their full bonus, but the five accessory
   slots (Head/Back/Arms/Legs/Feet) **sum to at most +3 Defense together** — so a fully-matched set is a real perk
   without letting Defense run away. Every piece is also **craftable** (accessories take a slimmer component recipe
-  than a full body suit). **Shields** are a one-hand ladder — Buckler/Targe (+1) → Round/Heater/Spiked (+2) →
-  Kite (+3) → Tower/Riot/Pavise (+4) → warded bulwarks (+5) — each adding its Defense while held and enabling the
-  **Block** reaction.
+  than a full body suit). **Shields** are a one-hand ladder of **23** — bucklers & targes (+1) → round & heater
+  shields (+2) → kite shields & the bronze aspis (+3) → tower/riot/pavise/wall & a **modern ballistic** branch
+  (+4) → warded bulwarks (+5) — in wood, steel and bronze, with rare/legendary pieces (Mirror Shield, Draugr
+  Bulwark, Sunforged Aegis). Each adds its Defense while held and enables the **Block** reaction, and (except
+  Legendary) is **craftable** like armor.
 - **Ammunition (per-shot).** Ranged weapons draw from an **Ammo** stack of rounds: **Arrows** (bows), **Sling
   Bullets**, **Crossbow Bolts**, **Blowgun Darts**, firearm rounds (**Pistol / Rifle / Shotgun / Heavy**),
   **Rockets**, **Fuel** & **Chemical Canisters**, and a **Charge Pack** for energy arms. Ammo is tracked in

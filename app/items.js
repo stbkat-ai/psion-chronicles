@@ -275,6 +275,19 @@ window.PC = window.PC || {};
   S("Pavise", "Tower Shield", 4, 20, "Common", "A massive standing shield — plant it and fight from behind a wall."),
   S("Aegis Bulwark", "Tower Shield", 5, 14, "Rare", "A warded tower shield; once per fight, negate a hit entirely (GM)."),
   S("Aegis of the Vault", "Tower Shield", 5, 18, "Legendary", "An ancient bulwark — while raised, allies sheltering behind you share its Defense (GM)."),
+  // — more shields: materials, a modern branch, and a few special ones —
+  S("Steel Buckler", "Buckler", 1, 3, "Common", "A small steel fist-shield, quick to punch and parry with."),
+  S("Norse Round Shield", "Round Shield", 2, 6, "Common", "A broad limewood round shield — the wall of the shield-wall."),
+  S("Bronze Aspis", "Round Shield", 3, 13, "Uncommon", "A polished bronze warshield of the old phalanx — heavy, but it guards the whole body."),
+  S("Knight's Heater", "Heater Shield", 3, 9, "Common", "A steel heater blazoned with a device — the duelist's guard."),
+  S("War Kite", "Kite Shield", 3, 11, "Common", "A long iron-banded kite shield for the mounted charge."),
+  S("Wall Shield", "Tower Shield", 4, 18, "Common", "A plank-and-iron wall carried into the breach."),
+  S("Mantlet", "Tower Shield", 4, 22, "Common", "A braced siege shield you plant and fight from behind."),
+  S("Ballistic Shield", "Ballistic Shield", 4, 12, "Common", "A modern polymer-and-steel shield rated against gunfire."),
+  S("Blast Shield", "Ballistic Shield", 4, 16, "Uncommon", "A heavy EOD shield built to eat an explosion."),
+  S("Mirror Shield", "Heater Shield", 3, 8, "Rare", "A mirror-bright shield; once per fight your Block can turn a ranged attack back on its attacker (GM)."),
+  S("Draugr Bulwark", "Round Shield", 4, 10, "Rare", "A grave-cold shield of northern legend; foes that strike it are chilled (GM)."),
+  S("Sunforged Aegis", "Kite Shield", 5, 12, "Legendary", "A shield of caught sunfire — while raised it sheds bright light and sears those who close (GM)."),
 
   /* ===== AMMUNITION — a stack that feeds a family of ranged weapons =====
      Each ammo item covers a firing mechanism, not one weapon. Thrown weapons are their OWN ammo (they carry a
@@ -946,6 +959,10 @@ window.PC = window.PC || {};
       }
       var at = PC.ARMOR_TEMPLATES[cls]; return at ? at.slots.slice() : ["Armor Weave", "Straps & Fittings"];
     }
+    if (item.category === "Shield") {
+      // A rigid guard: plating + straps, with padding added for the big ones (tower/pavise/ballistic).
+      return (Number(item.dsBonus) || 0) >= 4 ? ["Plating", "Padding", "Straps & Fittings"] : ["Plating", "Straps & Fittings"];
+    }
     return null;
   };
   // Average grade of a set of component grades → clamped 1–4 (the "average of parts" quality rule).
@@ -1048,8 +1065,8 @@ window.PC = window.PC || {};
     if (item.category === "Component" || item.part) {
       return PC.componentRecipe(_partOf(item), item.quality || PC.rarityQuality(item.rarity) || 1);
     }
-    // A weapon or armor: one of each template component slot, at the item's rarity grade.
-    if (item.category === "Weapon" || item.category === "Armor") {
+    // A weapon, armor, or shield: one of each template component slot, at the item's rarity grade.
+    if (item.category === "Weapon" || item.category === "Armor" || item.category === "Shield") {
       var slots = PC.itemComponentSlots(item);
       var q = PC.rarityQuality(item.rarity);
       return slots.map(function (part) { return { mat: PC.componentName(part, q), qty: 1, component: true, part: part, quality: q }; });
@@ -1065,7 +1082,7 @@ window.PC = window.PC || {};
   // higher-value ones, ceil(half) of the slots — at the item's grade, so teardown is lossy (no loop).
   PC.itemSalvageYield = function (item) {
     if (!item) return null;
-    if ((item.category === "Weapon" || item.category === "Armor") && PC.itemRecipe(item)) {
+    if ((item.category === "Weapon" || item.category === "Armor" || item.category === "Shield") && PC.itemRecipe(item)) {
       var slots = PC.itemComponentSlots(item);
       var q = PC.rarityQuality(item.rarity);
       var _pri = function (part) { var r = (PC.componentByPart[part] || {}).role; return _rolePri[r] != null ? _rolePri[r] : 9; };

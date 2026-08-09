@@ -1765,6 +1765,25 @@ log; a bow at 0 arrows shows the Attack button DISABLED ("Out of Arrows"); a Shu
 
 ---
 
+### 78. Shield list fleshed out (11 → 23) + shields made craftable
+Expanded the shield catalog the way the apparel pass expanded armor, and fixed a crafting gap.
+
+- **+12 shields (11 → 23):** Steel Buckler; Norse Round Shield & Bronze Aspis; Knight's Heater; War Kite; Wall
+  Shield & Mantlet; a **modern ballistic branch** (Ballistic Shield, Blast Shield); and rare/legendary specials
+  (Mirror Shield — reflect a ranged hit; Draugr Bulwark — chill on contact; Sunforged Aegis — sheds light & sears).
+  Spread across the +1→+5 ladder in wood/steel/bronze/polymer. (Norse Round Shield & Draugr Bulwark tie to the
+  new Norse heritage.)
+- **Shields are now craftable.** They previously fell through to a junk "1× Cloth" recipe; `itemComponentSlots()`
+  gained a Shield branch (**Plating + Straps & Fittings**, plus **Padding** for the big +4/+5 shields), and
+  `itemRecipe()`/`itemSalvageYield()` now treat Shield like Weapon/Armor, so shields assemble from graded
+  components at their rarity and salvage back sensibly.
+
+Verified: 23 shields, no duplicate names, each non-Legendary shield shows a real component recipe (Tower Shield →
+Plating + Padding + Straps), Codex Shields = 23, catalog Shield filter groups all 23, 0 console errors. Docs:
+CLAUDE.md, GAME_RULES. Cache-buster **v=107**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is
