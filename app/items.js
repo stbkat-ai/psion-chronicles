@@ -13,7 +13,17 @@ window.PC = window.PC || {};
   function W(name, weaponType, damage, weight, hands, rarity, note) {
     const w = { name: name, category: "Weapon", weaponType: weaponType, damage: damage, weight: weight, hands: hands || 1, rarity: rarity || "Common" };
     if (note) w.note = note;
+    // Thrown weapons ARE their own ammunition: expended on the throw, recovered afterward. Flagged so the UI
+    // can say so; kept deliberately light (see their weights) so players carry several.
+    if (weaponType === "Thrown Weapons") w.thrown = true;
     return w;
+  }
+  // Ammunition — a stack/quantity that feeds a family of ranged weapons. `feeds` is a plain-English label of
+  // what it supplies (consumption is tracked by hand for now, like a box/quiver you draw from).
+  function AM(name, feeds, weight, note) {
+    const a = { name: name, category: "Ammo", feeds: feeds, weight: weight, rarity: "Common" };
+    if (note) a.note = note;
+    return a;
   }
   // Armor. cls = "Light"|"Medium"|"Heavy"; rarity default Common. note = descriptive special effect
   // (GM-applied). grants = structured perks the engine auto-applies while equipped & proficient, e.g.
@@ -125,9 +135,9 @@ window.PC = window.PC || {};
   // AGI — Quick (ranged) / Thrown
   W("Pistol Crossbow", "Quick Weapons", "1d6", 3, 1), W("Repeater Crossbow", "Quick Weapons", "1d6", 4, 2), W("Bracer Bow", "Quick Weapons", "1d6", 2, 1),
   W("Poison Blowpipe", "Quick Weapons", "1d4", 1, 2), W("Reed Blowgun", "Quick Weapons", "1d4", 1, 2),
-  W("Shuriken", "Thrown Weapons", "1d4", 1, 1), W("Bo-Shuriken", "Thrown Weapons", "1d4", 1, 1),
-  W("Throwing Knives", "Thrown Weapons", "1d4", 1, 1), W("Flechettes", "Thrown Weapons", "1d4", 1, 1), W("Throwing Darts", "Thrown Weapons", "1d4", 1, 1),
-  W("Returning Kunai", "Thrown Weapons", "1d6", 1, 1, "Uncommon", "Returns to your hand at the end of your turn."),
+  W("Shuriken", "Thrown Weapons", "1d4", 0.5, 1), W("Bo-Shuriken", "Thrown Weapons", "1d4", 0.5, 1),
+  W("Throwing Knives", "Thrown Weapons", "1d4", 0.5, 1), W("Flechettes", "Thrown Weapons", "1d4", 0.5, 1), W("Throwing Darts", "Thrown Weapons", "1d4", 0.5, 1),
+  W("Returning Kunai", "Thrown Weapons", "1d6", 0.5, 1, "Uncommon", "Returns to your hand at the end of your turn — no need to recover it."),
   // CON — Firearms / Explosives / Volatile
   W("Bolt-Action Rifle", "Firearms", "1d10", 8, 2), W("Hunting Rifle", "Firearms", "1d10", 8, 2), W("Marksman Rifle", "Firearms", "1d10", 9, 2), W("Assault Rifle", "Firearms", "1d10", 8, 2),
   W("Semi-Auto Pistol", "Firearms", "1d8", 3, 1), W("Machine Pistol", "Firearms", "1d8", 4, 1), W("Sidearm", "Firearms", "1d8", 2, 1),
@@ -264,6 +274,23 @@ window.PC = window.PC || {};
   S("Pavise", "Tower Shield", 4, 20, "Common", "A massive standing shield — plant it and fight from behind a wall."),
   S("Aegis Bulwark", "Tower Shield", 5, 14, "Rare", "A warded tower shield; once per fight, negate a hit entirely (GM)."),
   S("Aegis of the Vault", "Tower Shield", 5, 18, "Legendary", "An ancient bulwark — while raised, allies sheltering behind you share its Defense (GM)."),
+
+  /* ===== AMMUNITION — a stack that feeds a family of ranged weapons =====
+     Each ammo item covers a firing mechanism, not one weapon. Thrown weapons are their OWN ammo (they carry a
+     `thrown` flag instead). Ki-powered arms (Channel/Ritual/Living) burn KP, not ammo; explosives (grenades,
+     mines) are one-use weapons that need no separate ammo. Consumption is tracked by hand for now. */
+  AM("Arrows", "Bows — Longbows & Shortbows", 1, "A quiver of arrows."),
+  AM("Sling Bullets", "Slings & Slingshots", 1, "A pouch of lead bullets and smooth stones."),
+  AM("Crossbow Bolts", "Crossbows — hand, pistol & repeater", 1, "A case of crossbow bolts (quarrels)."),
+  AM("Blowgun Darts", "Blowguns & blowpipes", 0.5, "A tube of blowgun darts — easily tipped with venom."),
+  AM("Pistol Rounds", "Handguns, revolvers & machine pistols", 1, "A box of pistol cartridges."),
+  AM("Rifle Rounds", "Rifles — assault, hunting & marksman", 1.5, "A box of rifle cartridges."),
+  AM("Shotgun Shells", "Pump & combat shotguns", 1.5, "A box of buckshot and slug shells."),
+  AM("Heavy Rounds", "Magnums, hand cannons & anti-materiel rifles", 2, "Oversized, armor-punching cartridges."),
+  AM("Rockets", "Rocket launchers & bazookas", 6, "A backblast rocket for a launcher."),
+  AM("Fuel Canister", "Flamethrowers & napalm sprayers", 5, "Pressurized fuel for a flame projector."),
+  AM("Chemical Canister", "Acid & gas sprayers, chemical weapons", 4, "A sealed canister of acid or toxic gas."),
+  AM("Charge Pack", "Energy arms — laser, plasma, tech & amp weapons", 2, "A rechargeable cell that powers directed-energy and amplified weapons."),
 
   /* ===== CONSUMABLES =====
      4th arg = structured effect applied on Use (see C() above). Items without one are
@@ -979,8 +1006,13 @@ window.PC = window.PC || {};
     "Backpack": ["Leather", "Cloth"], "Bedroll": ["Cloth"], "Component Pouch": ["Cloth", "Botanicals"],
     "Holy Charm": ["Focus Crystal", "Bone & Sinew"], "Prayer Beads": ["Hardwood", "Bone & Sinew"], "Meditation Stone": ["Focus Crystal"],
     "Old-World Relic": ["Circuitry", "Ki Core"], "Journal & Pen": ["Cloth", "Hardwood"], "Sigil Talisman": ["Focus Crystal", "Cloth"],
+    // Ammunition
+    "Arrows": ["Hardwood"], "Sling Bullets": ["Scrap Metal"], "Crossbow Bolts": ["Hardwood", "Scrap Metal"], "Blowgun Darts": ["Hardwood"],
+    "Pistol Rounds": ["Scrap Metal", "Chemicals"], "Rifle Rounds": ["Scrap Metal", "Chemicals"], "Shotgun Shells": ["Scrap Metal", "Chemicals"],
+    "Heavy Rounds": ["Scrap Metal", "Volatile Compound"], "Rockets": ["Scrap Metal", "Volatile Compound"], "Fuel Canister": ["Chemicals", "Volatile Compound"],
+    "Chemical Canister": ["Chemicals", "Volatile Compound"], "Charge Pack": ["Power Cell", "Circuitry"],
   };
-  var _catDefault = { "Consumable": ["Botanicals", "Chemicals"], "Tool": ["Scrap Metal", "Leather"], "Misc": ["Cloth", "Leather"] };
+  var _catDefault = { "Consumable": ["Botanicals", "Chemicals"], "Tool": ["Scrap Metal", "Leather"], "Misc": ["Cloth", "Leather"], "Ammo": ["Scrap Metal"] };
   var _nonCraft = { "Scrip / Currency": true };
   // Advisory crafting skill, from the recipe's primary material.
   var _craftSkill = {

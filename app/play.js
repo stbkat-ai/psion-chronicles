@@ -1724,6 +1724,11 @@
       // Consumables show what Use does (the mechanical note), so the effect is clear up front.
       if (it.category === "Consumable" && it.note) detail.appendChild(el("div", "inv-skill", `⚕ <b>Use:</b> ${it.note}`));
 
+      // Thrown weapons are their own ammo — expended on the throw, recovered after; carry several.
+      if (it.thrown) detail.appendChild(el("div", "inv-skill", "🎯 <b>Thrown</b> — expended when thrown; recover it afterward. Light, so carry several."));
+      // Ammunition shows what family of ranged weapons it feeds.
+      if (it.category === "Ammo") detail.appendChild(el("div", "inv-skill", `🎯 <b>Ammunition</b> — feeds ${it.feeds || "ranged weapons"}.`));
+
       // Crafting: what it's made of, the required skill, and what salvaging returns (downtime activity).
       const recipe = it.category !== "Salvage" ? recipeOf(it) : null;
       if (recipe) {
@@ -2278,7 +2283,7 @@
     // Category filter — armor breaks out into its six equipment slots so you can browse one slot at a time.
     [["All", "All"], ["Weapon", "Weapon"], ["Armor", "Armor (all)"],
      ["head", "  · Head"], ["torso", "  · Torso"], ["back", "  · Back"], ["arms", "  · Arms"], ["legs", "  · Legs"], ["feet", "  · Feet"],
-     ["Shield", "Shield"], ["Consumable", "Consumable"], ["Tool", "Tool"], ["Misc", "Misc"], ["Component", "Component"], ["Salvage", "Salvage"]
+     ["Shield", "Shield"], ["Ammo", "Ammo"], ["Consumable", "Consumable"], ["Tool", "Tool"], ["Misc", "Misc"], ["Component", "Component"], ["Salvage", "Salvage"]
     ].forEach(([v, l]) => { const o = el("option", null, l); o.value = v; catFilter.appendChild(o); });
     catFilter.value = invSearchCat;
     searchRow.appendChild(search); searchRow.appendChild(catFilter);
@@ -2288,10 +2293,11 @@
     panel.appendChild(results);
     // Catalog grouping: armor splits into its six equipment slots; everything else buckets by kind.
     const APSLOTS = ["head", "torso", "back", "arms", "legs", "feet"];
-    const GROUP_ORDER = ["Weapons", "Shields", "Head", "Torso", "Back", "Arms", "Legs", "Feet", "Consumables", "Tools", "Miscellaneous", "Components", "Salvage", "Other"];
+    const GROUP_ORDER = ["Weapons", "Ammunition", "Shields", "Head", "Torso", "Back", "Arms", "Legs", "Feet", "Consumables", "Tools", "Miscellaneous", "Components", "Salvage", "Other"];
     const groupOf = (it) => {
       if (it.category === "Armor") return slotLabel(armorApparelSlot(it));
       if (it.category === "Weapon") return "Weapons";
+      if (it.category === "Ammo") return "Ammunition";
       if (it.category === "Shield") return "Shields";
       if (it.category === "Consumable") return "Consumables";
       if (it.category === "Tool") return "Tools";
@@ -2303,9 +2309,10 @@
     function catalogRow(it) {
       const row = el("div", "catalog-row");
       let meta = it.category;
-      if (it.category === "Weapon") { meta += ` · ${it.weaponType} · ${it.damage} · ${it.hands === 2 ? "two-handed" : "one-handed"}`; if (it.note) meta += ` · ${it.note}`; }
+      if (it.category === "Weapon") { meta += ` · ${it.weaponType} · ${it.damage} · ${it.hands === 2 ? "two-handed" : "one-handed"}`; if (it.thrown) meta += " · 🎯 thrown (recover after)"; if (it.note) meta += ` · ${it.note}`; }
       else if (it.category === "Armor") { meta += ` · ${slotLabel(armorApparelSlot(it))} · ${it.armorClass || "Light"} · +${it.dsBonus} DS`; if (it.note) meta += ` · ${it.note}`; }
       else if (it.category === "Shield") { meta += ` · +${it.dsBonus} DS · one hand`; if (it.note) meta += ` · ${it.note}`; }
+      else if (it.category === "Ammo") { meta += ` · feeds ${it.feeds || "ranged weapons"}`; if (it.note) meta += ` · ${it.note}`; }
       else { if (it.skill) meta += ` · 🛠 ${it.skill}`; if (it.note) meta += ` · ${it.note}`; }
       const rarityTag = (it.category === "Weapon" || it.category === "Armor" || it.category === "Shield") && it.rarity
         ? `<span class="rarity-tag rarity-${it.rarity.toLowerCase().replace(/\s+/g, "-")}">${it.rarity}</span>` : "";
@@ -2483,7 +2490,7 @@
     const wtI = el("input"); wtI.type = "number"; wtI.placeholder = "lb"; wtI.min = 0; wtI.step = "0.1"; wtI.className = "inv-wt";
     const qtyI = el("input"); qtyI.type = "number"; qtyI.placeholder = "qty"; qtyI.min = 1; qtyI.value = 1; qtyI.className = "inv-qty";
     const catS = el("select"); catS.className = "inv-cat";
-    ["Weapon", "Armor", "Consumable", "Tool", "Misc"].forEach((c) => { const o = el("option", null, c); o.value = c; catS.appendChild(o); });
+    ["Weapon", "Armor", "Shield", "Ammo", "Consumable", "Tool", "Misc"].forEach((c) => { const o = el("option", null, c); o.value = c; catS.appendChild(o); });
     catS.value = "Misc";
     const addBtn = el("button", "btn small primary", "+ Add");
     addBtn.onclick = () => {

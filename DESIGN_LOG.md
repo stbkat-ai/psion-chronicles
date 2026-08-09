@@ -1721,6 +1721,29 @@ Feet 8), the Feet filter narrows to the 8 boots, 0 console errors. Cache-buster 
 
 ---
 
+### 76. Ammunition family + thrown weapons as self-ammo
+Ran an item-type audit (weapons/armor/shields/crafting/skill-kits/consumables all deep; the real gap was
+**ammunition** — the catalog abstracted it away). Luke: add ammo for all ranged weapons, and make thrown weapons
+behave as their own ammo.
+
+- **New `category: "Ammo"`** (factory `AM(name, feeds, weight, note)`), **12 stacks** mapped by firing mechanism,
+  not by weapon: **Arrows** (bows), **Sling Bullets**, **Crossbow Bolts**, **Blowgun Darts**, **Pistol / Rifle /
+  Shotgun / Heavy Rounds**, **Rockets**, **Fuel Canister**, **Chemical Canister**, and a **Charge Pack** for
+  energy arms (laser/plasma/tech/amp). Each carries a `feeds` label (what it supplies) and a sensible **craft
+  recipe** (arrows← Hardwood, bullets← Scrap Metal + Chemicals, charge pack← Power Cell + Circuitry, …).
+  Consumption is tracked by hand for now (a quiver/box you draw from) — no per-shot rules hook.
+- **Thrown weapons = self-ammo.** `W()` now auto-flags any *Thrown Weapons* item with `thrown: true`; their weight
+  dropped from 1 → **0.5 lb** so players carry several, and the UI (inventory detail + catalog meta) shows
+  "🎯 Thrown — expended when thrown; recover it afterward." (Returning Kunai's note says it comes back, no recovery
+  needed.) Ki-powered arms burn KP; grenades/mines are one-use — neither needs an ammo stack (documented).
+- **Integration:** the Item Catalog gained an **Ammunition** group + an **Ammo** filter (and the missing Shield
+  filter/quick-add option); a new **Codex → Ammunition** section lists all 12. Docs: CLAUDE.md, GAME_RULES, README.
+
+Catalog now ~342 gear items. Verified in-browser: Ammo filter shows the 12-item Ammunition group, Shuriken reads
+"🎯 thrown (recover after)", Codex Ammunition = 12, 0 console errors. Cache-buster **v=105**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

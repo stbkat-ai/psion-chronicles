@@ -312,6 +312,22 @@
     },
   });
 
+  /* Ammunition */
+  addSection({
+    key: "ammo", icon: "🎯", title: "Ammunition", blurb: "Rounds, arrows, cells & canisters for the ranged weapons.",
+    list: () => (PC.ITEMS || []).filter((i) => i.category === "Ammo").map((a) => ({ id: a.name, name: a.name, sub: a.feeds || "ranged weapons", group: "Ammunition", keywords: `ammo ammunition ${a.feeds || ""} ${a.note || ""}` })),
+    detail: (id) => {
+      const a = (PC.ITEMS || []).find((i) => i.category === "Ammo" && i.name === id); if (!a) return el("div", "muted", "Not found.");
+      const box = el("div"); const rows = el("div", "codex-kvs");
+      rows.appendChild(kv("Feeds", esc(a.feeds || "ranged weapons")));
+      rows.appendChild(kv("Weight", `${a.weight}`));
+      box.appendChild(rows);
+      if (a.note) box.appendChild(el("p", "codex-desc", esc(a.note)));
+      box.appendChild(el("div", "codex-effect", "▸ A stack you draw from — track it by hand. Thrown weapons are their own ammo; Ki-powered arms burn KP instead; grenades & mines are one-use."));
+      return box;
+    },
+  });
+
   /* Gear (consumables, tools, misc) */
   addSection({
     key: "gear", icon: "🎒", title: "Gear", blurb: "Consumables, tool kits, and miscellaneous equipment.",
