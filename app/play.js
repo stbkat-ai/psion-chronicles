@@ -2275,53 +2275,74 @@
     const searchRow = el("div", "inv-form");
     const search = el("input"); search.type = "text"; search.placeholder = "Search items (e.g. rifle, staff, stimpak)…"; search.value = invSearchQ; search.className = "inv-name";
     const catFilter = el("select"); catFilter.className = "inv-cat";
-    ["All", "Weapon", "Armor", "Consumable", "Tool", "Misc", "Component", "Salvage"].forEach((c) => { const o = el("option", null, c); o.value = c; catFilter.appendChild(o); });
+    // Category filter — armor breaks out into its six equipment slots so you can browse one slot at a time.
+    [["All", "All"], ["Weapon", "Weapon"], ["Armor", "Armor (all)"],
+     ["head", "  · Head"], ["torso", "  · Torso"], ["back", "  · Back"], ["arms", "  · Arms"], ["legs", "  · Legs"], ["feet", "  · Feet"],
+     ["Shield", "Shield"], ["Consumable", "Consumable"], ["Tool", "Tool"], ["Misc", "Misc"], ["Component", "Component"], ["Salvage", "Salvage"]
+    ].forEach(([v, l]) => { const o = el("option", null, l); o.value = v; catFilter.appendChild(o); });
     catFilter.value = invSearchCat;
     searchRow.appendChild(search); searchRow.appendChild(catFilter);
     panel.appendChild(searchRow);
 
     const results = el("div", "catalog-results catalog-full");
     panel.appendChild(results);
+    // Catalog grouping: armor splits into its six equipment slots; everything else buckets by kind.
+    const APSLOTS = ["head", "torso", "back", "arms", "legs", "feet"];
+    const GROUP_ORDER = ["Weapons", "Shields", "Head", "Torso", "Back", "Arms", "Legs", "Feet", "Consumables", "Tools", "Miscellaneous", "Components", "Salvage", "Other"];
+    const groupOf = (it) => {
+      if (it.category === "Armor") return slotLabel(armorApparelSlot(it));
+      if (it.category === "Weapon") return "Weapons";
+      if (it.category === "Shield") return "Shields";
+      if (it.category === "Consumable") return "Consumables";
+      if (it.category === "Tool") return "Tools";
+      if (it.category === "Component") return "Components";
+      if (it.category === "Salvage") return "Salvage";
+      if (it.category === "Misc") return "Miscellaneous";
+      return "Other";
+    };
+    function catalogRow(it) {
+      const row = el("div", "catalog-row");
+      let meta = it.category;
+      if (it.category === "Weapon") { meta += ` · ${it.weaponType} · ${it.damage} · ${it.hands === 2 ? "two-handed" : "one-handed"}`; if (it.note) meta += ` · ${it.note}`; }
+      else if (it.category === "Armor") { meta += ` · ${slotLabel(armorApparelSlot(it))} · ${it.armorClass || "Light"} · +${it.dsBonus} DS`; if (it.note) meta += ` · ${it.note}`; }
+      else if (it.category === "Shield") { meta += ` · +${it.dsBonus} DS · one hand`; if (it.note) meta += ` · ${it.note}`; }
+      else { if (it.skill) meta += ` · 🛠 ${it.skill}`; if (it.note) meta += ` · ${it.note}`; }
+      const rarityTag = (it.category === "Weapon" || it.category === "Armor" || it.category === "Shield") && it.rarity
+        ? `<span class="rarity-tag rarity-${it.rarity.toLowerCase().replace(/\s+/g, "-")}">${it.rarity}</span>` : "";
+      const descLine = it.desc ? `<span class="cat-desc">${it.desc}</span>` : "";
+      const recipe = it.category !== "Salvage" ? recipeOf(it) : null;
+      let craftLine = "";
+      if (recipe) {
+        const ci = craftCheckInfo(it);
+        const skillTag = ci.name ? ` · <span class="cat-craft-skill">🎲 ${ci.name} DC ${ci.dc}${ci.prof ? " ✓" : ""}</span>` : "";
+        const knownTag = knowsRecipe(it) ? ' · <span class="rc-ok">📖 recipe known</span>' : "";
+        craftLine = `<span class="cat-craft">🔨 ${fmtMats(recipe)}${skillTag}${knownTag}</span>`;
+      } else if (it.category !== "Salvage" && it.rarity === "Legendary") craftLine = `<span class="cat-craft leg">🔨 Legendary — cannot be crafted</span>`;
+      row.innerHTML = `<div class="cat-info"><span class="cat-name">${it.name}${rarityTag}</span><span class="cat-meta">${meta}</span>${descLine}${craftLine}</div><span class="cat-wt">${it.weight} lb</span>`;
+      const btns = el("div", "cat-btns");
+      const add = el("button", "btn small primary", "＋ Add");
+      add.onclick = () => addCatalogItem(it);
+      btns.appendChild(add);
+      row.appendChild(btns);
+      return row;
+    }
     function renderResults() {
       const q = invSearchQ.trim().toLowerCase();
       const cat = invSearchCat;
-      let matches = (PC.ITEMS || []).filter((it) =>
-        (cat === "All" || it.category === cat) &&
+      const catMatch = (it) => cat === "All" || it.category === cat || (APSLOTS.indexOf(cat) > -1 && it.category === "Armor" && armorApparelSlot(it) === cat);
+      let matches = (PC.ITEMS || []).filter((it) => catMatch(it) &&
         (!q || it.name.toLowerCase().indexOf(q) > -1 || (it.weaponType && it.weaponType.toLowerCase().indexOf(q) > -1) || (it.rarity && it.rarity.toLowerCase().indexOf(q) > -1) || (it.note && it.note.toLowerCase().indexOf(q) > -1) || (it.desc && it.desc.toLowerCase().indexOf(q) > -1)));
       results.innerHTML = "";
       if (!matches.length) { results.appendChild(el("div", "muted", "No items match. Try another search.")); return; }
       const total = matches.length;
       matches = matches.slice(0, 80);
-      matches.forEach((it) => {
-        const row = el("div", "catalog-row");
-        let meta = it.category;
-        if (it.category === "Weapon") {
-          meta += ` · ${it.weaponType} · ${it.damage} · ${it.hands === 2 ? "two-handed" : "one-handed"}`;
-          if (it.note) meta += ` · ${it.note}`;
-        }
-        else if (it.category === "Armor") { meta += ` · ${it.armorClass || "Light"} · +${it.dsBonus} DS`; if (it.note) meta += ` · ${it.note}`; }
-        else if (it.category === "Shield") { meta += ` · +${it.dsBonus} DS · one hand`; if (it.note) meta += ` · ${it.note}`; }
-        else { if (it.skill) meta += ` · 🛠 ${it.skill}`; if (it.note) meta += ` · ${it.note}`; }
-        // Rarity tag for weapons & armor (Common shown muted; higher rarities colored).
-        const rarityTag = (it.category === "Weapon" || it.category === "Armor") && it.rarity
-          ? `<span class="rarity-tag rarity-${it.rarity.toLowerCase().replace(/\s+/g, "-")}">${it.rarity}</span>` : "";
-        const descLine = it.desc ? `<span class="cat-desc">${it.desc}</span>` : "";
-        // Crafting line: recipe + the craft check (skill vs DC). Anyone may attempt.
-        const recipe = it.category !== "Salvage" ? recipeOf(it) : null;
-        let craftLine = "";
-        if (recipe) {
-          const ci = craftCheckInfo(it);
-          const skillTag = ci.name ? ` · <span class="cat-craft-skill">🎲 ${ci.name} DC ${ci.dc}${ci.prof ? " ✓" : ""}</span>` : "";
-          const knownTag = knowsRecipe(it) ? ' · <span class="rc-ok">📖 recipe known</span>' : "";
-          craftLine = `<span class="cat-craft">🔨 ${fmtMats(recipe)}${skillTag}${knownTag}</span>`;
-        } else if (it.category !== "Salvage" && it.rarity === "Legendary") craftLine = `<span class="cat-craft leg">🔨 Legendary — cannot be crafted</span>`;
-        row.innerHTML = `<div class="cat-info"><span class="cat-name">${it.name}${rarityTag}</span><span class="cat-meta">${meta}</span>${descLine}${craftLine}</div><span class="cat-wt">${it.weight} lb</span>`;
-        const btns = el("div", "cat-btns");
-        const add = el("button", "btn small primary", "＋ Add");
-        add.onclick = () => addCatalogItem(it);
-        btns.appendChild(add);
-        row.appendChild(btns);
-        results.appendChild(row);
+      // Bucket into groups, then render each non-empty group in order under its own header.
+      const buckets = {};
+      matches.forEach((it) => { const g = groupOf(it); (buckets[g] = buckets[g] || []).push(it); });
+      GROUP_ORDER.forEach((g) => {
+        const list = buckets[g]; if (!list || !list.length) return;
+        results.appendChild(el("div", "catalog-group", `${g} <span class="cg-n">${list.length}</span>`));
+        list.forEach((it) => results.appendChild(catalogRow(it)));
       });
       if (total > 80) results.appendChild(el("div", "muted", `Showing 80 of ${total} — refine your search.`));
     }

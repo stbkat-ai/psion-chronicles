@@ -1710,6 +1710,17 @@ names, syntax clean, 0 console errors. Docs: CLAUDE.md, GAME_RULES. Cache-buster
 
 ---
 
+### 75. Item Catalog — armor grouped and filterable by equipment slot
+Small browse-UX follow-up (Luke): in the Inventory's **Item Catalog**, separate the armor by equipment slot
+instead of one undivided "Armor" blob. Results now render under **group headers** (armor splits into Head /
+Torso / Back / Arms / Legs / Feet; weapons, shields, consumables, etc. get their own headers too), and the
+category filter gained six **per-slot options** (Armor → · Head / · Torso / …) plus the missing **Shield** filter.
+Each armor row also now shows its slot in the meta line. Pure presentation over `PC.ITEMS` — no data changes.
+Verified in-browser: Armor filter shows all six slot groups (Head 11 / Torso 21 / Back 12 / Arms 9 / Legs 8 /
+Feet 8), the Feet filter narrows to the 8 boots, 0 console errors. Cache-buster **v=104**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

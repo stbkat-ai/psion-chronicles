@@ -625,6 +625,10 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 .catalog-row .cat-wt { font-size: .78rem; color: var(--text-dim); white-space: nowrap; }
 .catalog-row .cat-craft { font-size: .72rem; color: var(--gold); margin-top: 2px; }
 .catalog-row .cat-craft.leg { color: var(--text-dim); font-style: italic; }
+.catalog-group { text-transform: uppercase; letter-spacing: 1.5px; font-size: .7rem; color: var(--psi-bright);
+  margin: 12px 0 2px; padding-bottom: 4px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--panel); z-index: 1; }
+.catalog-group:first-child { margin-top: 0; }
+.catalog-group .cg-n { color: var(--text-faint); margin-left: 6px; }
 .catalog-row .cat-craft-skill { color: var(--psi-bright); }
 .catalog-row .cat-btns { display: flex; flex-direction: column; gap: 4px; }
 /* Craft-skill status in item detail */
