@@ -737,6 +737,17 @@ PC.FIGHTING_STYLES = [
       { name: "Shield the Fallen", action: "Reaction", effect: "When an ally within your reach is hit by an attack, take that attack's damage in their place — you interpose your body and shield." },
       { name: "Plate-Steel", action: "Passive", effect: "Reduce all incoming damage by 2 (the weight of steel), and you cannot be knocked prone while conscious." },
     ] },
+  { name: "Way of the Raider", heritage: "The Norse",
+    blurb: "The bear-shirt frenzy and the axe that answers every blow — raid from the water, strike without fear, and refuse to fall.",
+    startWeaponTypes: ["Heavy Weapons", "Light Weapons", "Thrown Weapons"], // Dane axe (great axe), seax/hand-axe, thrown axe/spear
+    skills: [
+      { name: "Berserkergang", action: "Bonus Action", effect: "Enter the bear-shirt frenzy: until combat ends or you fall, your melee attacks have advantage and deal extra damage — but attacks against you also have advantage. There is no retreat, only the axe." },
+      { name: "Reaver's Swing", action: "Action", effect: "One sweeping axe blow strikes a foe and a second enemy within your reach — the wide arc of the Dane axe catches all who crowd you." },
+      { name: "Shield-Breaker", action: "Action", effect: "A hooking overhead strike that sunders the guard: this attack ignores the target's Defense bonus from armor and shields, and may wrench a held shield from its grip (GM)." },
+      { name: "Skald's Cry", action: "Bonus Action", effect: "A booming war-cry: you and each ally who can hear you gain advantage on their next attack this round as the war-band answers." },
+      { name: "Answer in Kind", action: "Reaction", effect: "When a foe hits you with a melee attack, you may take the blow and immediately strike back with a melee attack of your own — blood for blood." },
+      { name: "Valhalla-Bound", action: "Passive", effect: "The first time each battle you would drop to 0 HP, you instead stay on your feet at 1 HP and fight on until the end of your next turn before you fall — no Norseman dies with their axe unswung." },
+    ] },
 ];
 
 /* Flattened master list — every combat skill across all styles, tagged with its style.
@@ -792,6 +803,11 @@ PC.HERITAGES = [
     traits: [ { name: "Steel Resolve", desc: "Advantage on saves to resist Fear and on Concentration checks — the disciplined, sworn mind of a knight." },
               { name: "Noble Bearing", desc: "Advantage on Etiquette and on Insight in courtly or formal settings; you are literate in heraldry and protocol and given deference where rank and honor are respected." } ],
     flaw: { name: "Clad in Steel", desc: "Full plate and rigid drill leave no room for the tumbler's art. Disadvantage on Acrobatics.", disadvSkill: "Acrobatics" } },
+  { name: "The Norse", blurb: "A present-day descendant of the Norse — the seafaring peoples of the North, of the longship and the saga. Heir to the bear-shirt frenzy, the raid from the water, and an axe-oath that fears no death.",
+    fightingStyle: "Way of the Raider", combatSkills: ["Berserkergang", "Reaver's Swing"], weaponSubtype: "Great Axes", armorProf: ["Medium"],  // mail (byrnja) — Medium, no full plate
+    traits: [ { name: "Keeper of the Sagas", desc: "Advantage on History and Mythology; you carry your people's law, lineage, and legend in memory the way the skalds and law-speakers did, and can recite them at need." },
+              { name: "Longship Raider", desc: "You can pilot and row longships and coastal craft, and you have advantage on Athletics to climb, board, haul, and force your way in — the sudden raid from the water is your birthright." } ],
+    flaw: { name: "A Straight Word", desc: "Honor and the plain-spoken oath run deep; the sly lie and the con sit ill with you and never come easily. Disadvantage on Deception.", disadvSkill: "Deception" } },
 ];
 
 /* --- Constants ----------------------------------------------------------- */

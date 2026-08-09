@@ -1661,6 +1661,32 @@ Awaiting Luke's call. Docs: CLAUDE.md, GAME_RULES, README. Cache-buster **v=101*
 
 ---
 
+### 73. Heritage #9 — The Norse (Way of the Raider); Europe's second, the berserk seafarer
+Resumed the heritage roster (paused since the Franks for the equipment work). Europe's second entry, and a
+deliberately **new pole**: where the Franks are the disciplined armored duelist, the Norse are the **berserk
+seafaring raider** — escalating all-out aggression that trades safety for reach and refuses to fall. (The prior
+Norse proposal predated a context compaction, so this was rebuilt fresh to the established heritage pattern.)
+
+**Way of the Raider** — signature **Berserkergang** (Bonus: the bear-shirt frenzy — advantage + extra melee
+damage, but foes get advantage against you too) and **Reaver's Swing** (Action: one axe blow hits two adjacent
+foes). Rounded out by **Shield-Breaker** (ignore a target's armor/shield Defense), **Skald's Cry** (Bonus:
+war-cry granting allies advantage on their next attack), **Answer in Kind** (Reaction: take a melee hit, strike
+back), and the passive **Valhalla-Bound** (once per battle, the blow that would drop you leaves you at 1 HP,
+fighting on until end of your next turn). Signature weapon **Great Axes** (the Dane axe — an existing Heavy
+subtype, per the no-new-subtypes rule); armor **Light + Medium** (mail, not full plate — that stays the Franks'
+distinction). Traits **Keeper of the Sagas** (History + Mythology; oral law & lineage) and **Longship Raider**
+(pilot/row coastal craft; Athletics to board, climb, haul, force entry). Flaw **A Straight Word** — disadvantage
+on **Deception** (a plain, oath-bound people; the sly lie doesn't come easily — a disadvSkill no other heritage
+used).
+
+Verified: 9 heritages / 9 styles / **54 combat skills**, **no name collisions**, Great Axes subtype valid,
+Deception flaw valid, signature skills resolve; Traits tab and creator render The Norse, Codex shows 9 / 54,
+0 console errors (favicon 404 only). Distinct from Mexico's rage (Norse escalates + won't die), the Andes'
+shield-wall (Norse is offense, not the protector pole), and the Franks (mail raider vs plate duelist).
+Docs: CLAUDE.md, GAME_RULES (roster table), README. Cache-buster **v=102**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

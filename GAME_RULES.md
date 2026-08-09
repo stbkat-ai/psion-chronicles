@@ -514,7 +514,7 @@ is retained for the rebuild even though no current heritage uses one yet):
 Heritage never touches attribute scores or pools. Two characters of the same Background differ by the
 Fighting Style, Combat Skills, and Traits their Heritage opened up.
 
-**The fresh roster (8 built so far; the "9" cap is dropped — the roster grows region by region):**
+**The fresh roster (9 built so far; the "9" cap is dropped — the roster grows region by region):**
 
 | Heritage | People / region | Fighting Style | Signature weapon | Armor | Flaw |
 |---|---|---|---|---|---|
@@ -526,6 +526,7 @@ Fighting Style, Combat Skills, and Traits their Heritage opened up.
 | **The Andes** | Descendants of the Andean peoples (Quechua, Aymara, heirs of the mountain empires) | Way of the Vanguard | **Great Hammers** (Heavy/STR) — the star-mace | Light + Medium | Stealth |
 | **The Amazon** | Descendants of the rainforest nations of the Amazon | Way of the Silent Dart | **Blowguns** (Quick/AGI) | Light only | Laborer's Tools |
 | **The Franks** | Descendants of the Franks (Francia — cradle of chivalry & the medieval knight) | Way of the Oath | **Great Swords** (Heavy/STR) — the longsword | Light + Medium + **Heavy** | Acrobatics |
+| **The Norse** | Descendants of the Norse — the seafaring peoples of the North (longship & saga) | Way of the Raider | **Great Axes** (Heavy/STR) — the Dane axe | Light + Medium | Deception |
 
 *More heritages are in development, built one at a time with Luke.* **Weapon convention (Luke):** every heritage
 uses **only existing weapon subtypes** — we do **not** add new ones. Where an iconic weapon has no subtype (the
