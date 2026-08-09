@@ -18,10 +18,11 @@ window.PC = window.PC || {};
     if (weaponType === "Thrown Weapons") w.thrown = true;
     return w;
   }
-  // Ammunition — a stack/quantity that feeds a family of ranged weapons. `feeds` is a plain-English label of
-  // what it supplies (consumption is tracked by hand for now, like a box/quiver you draw from).
-  function AM(name, feeds, weight, note) {
-    const a = { name: name, category: "Ammo", feeds: feeds, weight: weight, rarity: "Common" };
+  // Ammunition — a stack of ROUNDS that feeds a family of ranged weapons. `feeds` = plain-English label of what
+  // it supplies; `weight` is PER ROUND (so a stack's weight = weight × rounds); `count` = rounds one pickup adds
+  // (a box/quiver/canister). The play sheet spends one round per shot and stacks merge by name.
+  function AM(name, feeds, weight, count, note) {
+    const a = { name: name, category: "Ammo", feeds: feeds, weight: weight, count: count || 1, rarity: "Common" };
     if (note) a.note = note;
     return a;
   }
@@ -279,18 +280,18 @@ window.PC = window.PC || {};
      Each ammo item covers a firing mechanism, not one weapon. Thrown weapons are their OWN ammo (they carry a
      `thrown` flag instead). Ki-powered arms (Channel/Ritual/Living) burn KP, not ammo; explosives (grenades,
      mines) are one-use weapons that need no separate ammo. Consumption is tracked by hand for now. */
-  AM("Arrows", "Bows — Longbows & Shortbows", 1, "A quiver of arrows."),
-  AM("Sling Bullets", "Slings & Slingshots", 1, "A pouch of lead bullets and smooth stones."),
-  AM("Crossbow Bolts", "Crossbows — hand, pistol & repeater", 1, "A case of crossbow bolts (quarrels)."),
-  AM("Blowgun Darts", "Blowguns & blowpipes", 0.5, "A tube of blowgun darts — easily tipped with venom."),
-  AM("Pistol Rounds", "Handguns, revolvers & machine pistols", 1, "A box of pistol cartridges."),
-  AM("Rifle Rounds", "Rifles — assault, hunting & marksman", 1.5, "A box of rifle cartridges."),
-  AM("Shotgun Shells", "Pump & combat shotguns", 1.5, "A box of buckshot and slug shells."),
-  AM("Heavy Rounds", "Magnums, hand cannons & anti-materiel rifles", 2, "Oversized, armor-punching cartridges."),
-  AM("Rockets", "Rocket launchers & bazookas", 6, "A backblast rocket for a launcher."),
-  AM("Fuel Canister", "Flamethrowers & napalm sprayers", 5, "Pressurized fuel for a flame projector."),
-  AM("Chemical Canister", "Acid & gas sprayers, chemical weapons", 4, "A sealed canister of acid or toxic gas."),
-  AM("Charge Pack", "Energy arms — laser, plasma, tech & amp weapons", 2, "A rechargeable cell that powers directed-energy and amplified weapons."),
+  AM("Arrows", "Bows — Longbows & Shortbows", 0.05, 20, "A quiver of arrows."),
+  AM("Sling Bullets", "Slings & Slingshots", 0.05, 20, "A pouch of lead bullets and smooth stones."),
+  AM("Crossbow Bolts", "Crossbows — hand, pistol & repeater", 0.05, 20, "A case of crossbow bolts (quarrels)."),
+  AM("Blowgun Darts", "Blowguns & blowpipes", 0.02, 10, "A tube of blowgun darts — easily tipped with venom."),
+  AM("Pistol Rounds", "Handguns, revolvers & machine pistols", 0.03, 30, "A box of pistol cartridges."),
+  AM("Rifle Rounds", "Rifles — assault, hunting & marksman", 0.05, 20, "A box of rifle cartridges."),
+  AM("Shotgun Shells", "Pump & combat shotguns", 0.1, 12, "A box of buckshot and slug shells."),
+  AM("Heavy Rounds", "Magnums, hand cannons & anti-materiel rifles", 0.15, 10, "Oversized, armor-punching cartridges."),
+  AM("Rockets", "Rocket launchers & bazookas", 6, 1, "A backblast rocket for a launcher."),
+  AM("Fuel Canister", "Flamethrowers & napalm sprayers", 0.5, 10, "Pressurized fuel for a flame projector — good for several bursts."),
+  AM("Chemical Canister", "Acid & gas sprayers, chemical weapons", 0.5, 8, "A sealed canister of acid or toxic gas — several charges."),
+  AM("Charge Pack", "Energy arms — laser, plasma, tech & amp weapons", 0.1, 20, "A rechargeable cell that powers directed-energy and amplified weapons."),
 
   /* ===== CONSUMABLES =====
      4th arg = structured effect applied on Use (see C() above). Items without one are

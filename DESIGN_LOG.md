@@ -1744,6 +1744,27 @@ Catalog now ~342 gear items. Verified in-browser: Ammo filter shows the 12-item 
 
 ---
 
+### 77. Per-shot ammo consumption wired into attacks
+Made the ammo family (#76) live: ranged attacks now **spend a round automatically** and can't fire empty.
+
+- **Model:** an Ammo stack's `qty` is now its **rounds**; `AM()` gained a `count` (rounds per pickup) and its
+  `weight` is **per-round**, so a stack's weight = weight × rounds. `addCatalogItem()` adds `count` rounds and
+  **merges** into an existing stack of the same name. Thrown weapons start at **qty 5** when added.
+- **Mapping:** `weaponAmmo(it)` maps a weapon to its ammo — an Ammo name, `"__self__"` (thrown/explosive spends
+  the weapon itself), or `null` (melee / Ki-powered). Inferred from weapon type + name (items carry no subtype),
+  validated across all 194 weapons — every bow/sling/crossbow/blowgun/firearm/launcher/energy arm maps right
+  (fixed one miss: the wrist-mounted **Bracer Bow** → Arrows).
+- **Attacks:** `attackWith()` now checks ammo **before** spending your action (blocks with a toast if empty),
+  then `spendAmmo()` decrements the round (or the thrown weapon) and the roll log notes `· −1 Arrows (19 left)` /
+  `· thrown (2 left)` / `(empty!)`. The **⚔ Attack** button (inventory + Combat tab) is **disabled** when out,
+  titled "Out of {ammo}". Weapon/ammo detail lines show rounds remaining.
+
+Verified in-browser: adding an Arrows box → qty 20, a second merges → 40; firing steps 2→1→empty with correct
+log; a bow at 0 arrows shows the Attack button DISABLED ("Out of Arrows"); a Shuriken throw steps 2→1
+("thrown (1 left)"); 0 console errors. Docs: GAME_RULES, README. Cache-buster **v=106**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

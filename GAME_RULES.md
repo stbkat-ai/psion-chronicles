@@ -130,12 +130,14 @@ There are **eight slots**:
   than a full body suit). **Shields** are a one-hand ladder — Buckler/Targe (+1) → Round/Heater/Spiked (+2) →
   Kite (+3) → Tower/Riot/Pavise (+4) → warded bulwarks (+5) — each adding its Defense while held and enabling the
   **Block** reaction.
-- **Ammunition.** Ranged weapons draw from an **Ammo** stack you carry (a quiver/box/canister/cell you track by
-  hand): **Arrows** (bows), **Sling Bullets**, **Crossbow Bolts**, **Blowgun Darts**, firearm rounds (**Pistol /
-  Rifle / Shotgun / Heavy**), **Rockets**, **Fuel** & **Chemical Canisters**, and a **Charge Pack** for energy
-  arms. **Thrown weapons are their own ammunition** — you throw the weapon itself, so it's expended on the throw
-  and **recovered afterward**; they're light (½ lb) so you carry several. **Ki-powered** arms (Channel/Ritual/
-  Living) burn KP instead of ammo, and **grenades/mines** are one-use, so neither needs a separate ammo stack.
+- **Ammunition (per-shot).** Ranged weapons draw from an **Ammo** stack of rounds: **Arrows** (bows), **Sling
+  Bullets**, **Crossbow Bolts**, **Blowgun Darts**, firearm rounds (**Pistol / Rifle / Shotgun / Heavy**),
+  **Rockets**, **Fuel** & **Chemical Canisters**, and a **Charge Pack** for energy arms. Ammo is tracked in
+  **rounds** (a pickup adds a box/quiver of them); **each attack spends one round automatically**, the roll log
+  notes what's left, and the **shot is blocked when the stack is empty** (top up on the Inventory tab).
+  **Thrown weapons are their own ammunition** — the throw spends the weapon itself (expended, then **recovered
+  afterward**); they're light (½ lb) so you carry several. **Ki-powered** arms (Channel/Ritual/Living) burn KP
+  instead of ammo, and **grenades/mines** are one-use — neither needs a separate stack.
 
 ### Shields (CONFIRMED Luke)
 A **shield** is its own item category, **held in one hand**. It adds its **Defense bonus** while equipped (no

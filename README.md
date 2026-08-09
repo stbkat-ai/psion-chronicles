@@ -198,8 +198,9 @@ Account menu brings it back). Tap the **Psion Chronicles wordmark** in the heade
     arrive attack-ready with type + damage die). Results are **grouped under headers** — armor is separated by
     **equipment slot** (Head / Torso / Back / Arms / Legs / Feet), and the filter can narrow to a single slot,
     shields, or ammo. **Ammunition** covers every ranged weapon (arrows, sling bullets, bolts, blowgun darts,
-    firearm rounds, rockets, fuel/chemical canisters, energy charge packs); **thrown weapons are their own ammo**
-    — light and recovered after a throw. **Every item carries a short flavor description** of what it is — shown when you
+    firearm rounds, rockets, fuel/chemical canisters, energy charge packs) and is **spent per shot** — each
+    ranged attack automatically uses a round (the log shows what's left) and the attack is **blocked when you're
+    out**; **thrown weapons are their own ammo** — light, spent on the throw, and recovered afterward. **Every item carries a short flavor description** of what it is — shown when you
     expand a carried item and on each catalog row (and the search matches description text too). Each weapon
     also shows whether it's **one- or two-handed** (matters for dual-wielding) and its **rarity** — Common ·
     Uncommon · Rare · Very Rare · Legendary. Only **Common** weapons are offered as starting gear;

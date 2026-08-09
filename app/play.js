@@ -804,12 +804,22 @@
   }
   // Add a catalog item (from the browse/search list) to the character's inventory.
   function addCatalogItem(item) {
+    // Ammo is tracked in rounds: a pickup adds `count` rounds, merging into an existing stack of the same name.
+    if (item.category === "Ammo") {
+      const rounds = Number(item.count) || 1;
+      const ex = (rec.inventory || []).find((it) => it.category === "Ammo" && it.name === item.name);
+      if (ex) ex.qty = (Number(ex.qty) || 0) + rounds;
+      else rec.inventory.push(Object.assign({}, item, { qty: rounds, id: "it_" + Date.now().toString(36) + "_" + item.name.replace(/\s+/g, "").slice(0, 6) }));
+      logLine(`Added ${rounds} ${item.name}.`); App.toast(`Added ${rounds} ${item.name}.`); save(); refresh(); return;
+    }
+    // Thrown weapons are their own ammo — start with a handful so you can actually throw a few.
+    const startQty = item.thrown ? 5 : 1;
     const copy = Object.assign({}, item, {
-      qty: 1,
+      qty: startQty,
       id: "it_" + Date.now().toString(36) + "_" + item.name.replace(/\s+/g, "").slice(0, 6),
     });
     rec.inventory.push(copy);
-    logLine(`Added ${item.name} to inventory.`);
+    logLine(`Added ${item.name} to inventory.${startQty > 1 ? ` (×${startQty})` : ""}`);
     App.toast(`Added ${item.name}.`);
     save(); refresh();
   }
@@ -1141,6 +1151,9 @@
     if (!attr) { App.toast("Set this weapon's type first."); return; }
     if (isLocked(attr)) { App.toast(`${PC.CHAKRAS[attr].name} chakra locked — can't attack with ${attr}.`); return; }
     if (bothArmsCrippled()) { App.toast("Both arms are crippled — you can't make weapon attacks."); return; }
+    // Ammunition gate — a ranged/thrown weapon can't fire with an empty stack (checked before spending your action).
+    const ammoStop = ammoBlocked(it);
+    if (ammoStop) { App.toast(`${ammoStop} — add ammo on the Inventory tab.`); return; }
     if (econBlocked(econType)) { App.toast(`You've already used your ${econName(econType)} this turn.`); return; }
     consumeEcon(econType);
     const prof = proficientWithType(it);
@@ -1150,7 +1163,8 @@
     const r = PC.rollCheck(mod, mode);
     const dis = mode === "dis" ? ` (disadv [${r.d20s.join(",")}]→${r.picked})` : "";
     const oa = econType === "Reaction" ? " (Opportunity)" : "";
-    announce(r.total, `${it.name} attack${oa}: d20${dis}${PC.fmtMod(mod)} = ${r.total}${prof ? " ✓prof" : ""} (vs Defense Score)`);
+    const ammoTag = spendAmmo(it); // fire the shot — spend a round (or the thrown weapon itself)
+    announce(r.total, `${it.name} attack${oa}: d20${dis}${PC.fmtMod(mod)} = ${r.total}${prof ? " ✓prof" : ""} (vs Defense Score)${ammoTag}`);
     save(); refresh();
   }
 
@@ -1218,6 +1232,64 @@
     if (!it.weaponType) return false;
     const w = PC.WEAPON_TYPES.find((x) => x.name === it.weaponType);
     return !!w && w.melee !== false;
+  }
+
+  /* ---------- ammunition ---------- */
+  // What a weapon draws per shot: an Ammo item name, "__self__" (thrown/explosive — spends the weapon itself),
+  // or null (melee / Ki-powered — no ammo). Inferred from type + name, since items don't carry a subtype.
+  function weaponAmmo(it) {
+    if (!it || it.category !== "Weapon" || !it.weaponType) return null;
+    if (it.thrown || it.weaponType === "Explosives") return "__self__";
+    const t = it.weaponType, n = (it.name || "").toLowerCase();
+    if (/crossbow/.test(n)) return "Crossbow Bolts";
+    if (/blowgun|blowpipe/.test(n)) return "Blowgun Darts";
+    if (t === "Archery") return /sling|slingshot|wrist rocket/.test(n) ? "Sling Bullets" : "Arrows";
+    if (/\bbow\b/.test(n)) return "Arrows"; // a bow filed under another type (e.g. the wrist-mounted Bracer Bow)
+    if (t === "Firearms") {
+      if (/shotgun/.test(n)) return "Shotgun Shells";
+      if (/magnum|hand cannon|anti-materiel|revolver|six-shooter|executioner/.test(n)) return "Heavy Rounds";
+      if (/rifle|carbine/.test(n)) return "Rifle Rounds";
+      return "Pistol Rounds";
+    }
+    if (t === "Volatile Weapons") {
+      if (/flame|napalm|inferno/.test(n)) return "Fuel Canister";
+      if (/rocket|bazooka|launcher/.test(n)) return "Rockets";
+      return "Chemical Canister";
+    }
+    if (t === "Laser Weapons" || t === "Plasma Weapons" || t === "Tech Weapons" || t === "Noise Weapons") {
+      // Only the energy-projecting arms draw a charge; melee energy weapons (blades, fists, hammers…) don't.
+      if (/blade|sword|saber|katana|fist|gauntlet|maul|hammer|axe|chainsword|buzz|ripsaw|drumstick|whip|lash/.test(n)) return null;
+      return "Charge Pack";
+    }
+    return null;
+  }
+  function ammoStack(name) { return (rec.inventory || []).find((it) => it.category === "Ammo" && it.name === name) || null; }
+  // Rounds available to a weapon (null = it needs no ammo).
+  function ammoLeft(it) {
+    const a = weaponAmmo(it); if (!a) return null;
+    if (a === "__self__") return Number(it.qty) || 0;
+    const s = ammoStack(a); return s ? (Number(s.qty) || 0) : 0;
+  }
+  // Reason a shot is blocked for lack of ammo, or "" if fine / not applicable.
+  function ammoBlocked(it) {
+    const a = weaponAmmo(it); if (!a) return "";
+    if ((ammoLeft(it) || 0) >= 1) return "";
+    return a === "__self__" ? `No ${it.name} left to throw` : `Out of ${a}`;
+  }
+  // Spend one shot. Returns a log tag like " · −1 Arrows (19 left)", or "" if none needed. Removes an emptied stack.
+  function spendAmmo(it) {
+    const a = weaponAmmo(it); if (!a) return "";
+    if (a === "__self__") {
+      it.qty = (Number(it.qty) || 1) - 1;
+      const last = it.qty <= 0;
+      if (last) { const idx = rec.inventory.indexOf(it); if (idx > -1) rec.inventory.splice(idx, 1); }
+      return last ? ` · thrown your last ${it.name} (recover it after)` : ` · thrown (${it.qty} left)`;
+    }
+    const s = ammoStack(a); if (!s) return "";
+    s.qty = (Number(s.qty) || 1) - 1;
+    const empty = s.qty <= 0;
+    if (empty) { const idx = rec.inventory.indexOf(s); if (idx > -1) rec.inventory.splice(idx, 1); }
+    return ` · −1 ${a} (${empty ? "empty!" : s.qty + " left"})`;
   }
 
   function rollRaw(sides, count) {
@@ -1725,9 +1797,11 @@
       if (it.category === "Consumable" && it.note) detail.appendChild(el("div", "inv-skill", `⚕ <b>Use:</b> ${it.note}`));
 
       // Thrown weapons are their own ammo — expended on the throw, recovered after; carry several.
-      if (it.thrown) detail.appendChild(el("div", "inv-skill", "🎯 <b>Thrown</b> — expended when thrown; recover it afterward. Light, so carry several."));
-      // Ammunition shows what family of ranged weapons it feeds.
-      if (it.category === "Ammo") detail.appendChild(el("div", "inv-skill", `🎯 <b>Ammunition</b> — feeds ${it.feeds || "ranged weapons"}.`));
+      if (it.thrown) detail.appendChild(el("div", "inv-skill", `🎯 <b>Thrown</b> — expended on a throw, recovered afterward; carry several. You have <b>${Number(it.qty) || 0}</b> to throw.`));
+      // A projectile weapon shows which ammo it draws and how many rounds you have.
+      else if (it.category === "Weapon") { const a = weaponAmmo(it); if (a && a !== "__self__") { const left = ammoLeft(it) || 0; detail.appendChild(el("div", "inv-skill", `🎯 <b>Ammo:</b> ${a} — <b>${left}</b> round${left === 1 ? "" : "s"} left${left < 1 ? ' <span class="craft-dt">· out, add some</span>' : ""}`)); } }
+      // Ammunition shows what family of ranged weapons it feeds, and the rounds in the stack.
+      if (it.category === "Ammo") detail.appendChild(el("div", "inv-skill", `🎯 <b>Ammunition</b> — feeds ${it.feeds || "ranged weapons"} · <b>${Number(it.qty) || 0}</b> rounds`));
 
       // Crafting: what it's made of, the required skill, and what salvaging returns (downtime activity).
       const recipe = it.category !== "Salvage" ? recipeOf(it) : null;
@@ -1753,8 +1827,9 @@
       if (it.category === "Weapon") {
         const lk = lockReason(weaponAttr(it));
         const atk = el("button", "btn small", "⚔ Attack");
-        atk.disabled = !!lk || econBlocked("Action");
-        atk.title = lk || (atk.disabled ? "Action already used this turn" : "");
+        const ammoStop = ammoBlocked(it);
+        atk.disabled = !!lk || econBlocked("Action") || !!ammoStop;
+        atk.title = lk || ammoStop || (econBlocked("Action") ? "Action already used this turn" : "");
         atk.onclick = () => attackWith(it);
         const dmg = el("button", "btn small", "🎲 Damage");
         dmg.disabled = !!lk; if (lk) dmg.title = lk;
@@ -2312,7 +2387,7 @@
       if (it.category === "Weapon") { meta += ` · ${it.weaponType} · ${it.damage} · ${it.hands === 2 ? "two-handed" : "one-handed"}`; if (it.thrown) meta += " · 🎯 thrown (recover after)"; if (it.note) meta += ` · ${it.note}`; }
       else if (it.category === "Armor") { meta += ` · ${slotLabel(armorApparelSlot(it))} · ${it.armorClass || "Light"} · +${it.dsBonus} DS`; if (it.note) meta += ` · ${it.note}`; }
       else if (it.category === "Shield") { meta += ` · +${it.dsBonus} DS · one hand`; if (it.note) meta += ` · ${it.note}`; }
-      else if (it.category === "Ammo") { meta += ` · feeds ${it.feeds || "ranged weapons"}`; if (it.note) meta += ` · ${it.note}`; }
+      else if (it.category === "Ammo") { meta += ` · feeds ${it.feeds || "ranged weapons"} · +${it.count || 1} rounds`; if (it.note) meta += ` · ${it.note}`; }
       else { if (it.skill) meta += ` · 🛠 ${it.skill}`; if (it.note) meta += ` · ${it.note}`; }
       const rarityTag = (it.category === "Weapon" || it.category === "Armor" || it.category === "Shield") && it.rarity
         ? `<span class="rarity-tag rarity-${it.rarity.toLowerCase().replace(/\s+/g, "-")}">${it.rarity}</span>` : "";
@@ -3425,8 +3500,9 @@
     } else {
       const lk = lockReason(attr);
       const atk = el("button", "btn small primary", "⚔ Attack"); atk.onclick = () => attackWith(it);
-      atk.disabled = !!lk || econBlocked("Action");
-      atk.title = lk || (atk.disabled ? "Action already used this turn" : "");
+      const ammoStop = ammoBlocked(it);
+      atk.disabled = !!lk || econBlocked("Action") || !!ammoStop;
+      atk.title = lk || ammoStop || (econBlocked("Action") ? "Action already used this turn" : "");
       const dmg = el("button", "btn small", "🎲 Damage"); dmg.onclick = () => damageWith(it);
       dmg.disabled = !!lk; if (lk) dmg.title = lk;
       row.appendChild(atk); row.appendChild(dmg);
