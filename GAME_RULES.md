@@ -124,9 +124,12 @@ There are **eight slots**:
 - **The catalog spans every slot.** Torso holds the body armor (Light/Medium/Heavy, +1 to +6 Defense); the other
   apparel slots hold lighter pieces — helmets, cloaks/coats, gloves & gauntlets, leggings & greaves, boots — that
   carry the same class (so a heavy helm gates AGI like heavy armor) and add a **modest Defense** (mostly +0 to +2).
-  Each equipped piece's Defense **sums**, so a fully-matched set is a real investment. **Shields** are a one-hand
-  ladder — Buckler/Targe (+1) → Round/Heater/Spiked (+2) → Kite (+3) → Tower/Riot/Pavise (+4) → warded bulwarks
-  (+5) — each adding its Defense while held and enabling the **Block** reaction.
+  **Accessory Defense is capped:** Torso body armor and a held shield add their full bonus, but the five accessory
+  slots (Head/Back/Arms/Legs/Feet) **sum to at most +3 Defense together** — so a fully-matched set is a real perk
+  without letting Defense run away. Every piece is also **craftable** (accessories take a slimmer component recipe
+  than a full body suit). **Shields** are a one-hand ladder — Buckler/Targe (+1) → Round/Heater/Spiked (+2) →
+  Kite (+3) → Tower/Riot/Pavise (+4) → warded bulwarks (+5) — each adding its Defense while held and enabling the
+  **Block** reaction.
 
 ### Shields (CONFIRMED Luke)
 A **shield** is its own item category, **held in one hand**. It adds its **Defense bonus** while equipped (no

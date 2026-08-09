@@ -437,9 +437,12 @@
       if (t && t.buff && t.buff.dsFromMod) ds += adjMod(t.buff.dsFromMod);
     });
     // Armor's Defense bonus applies only if you're proficient with its class; otherwise it grants nothing.
+    // Torso body armor counts in full; the five accessory slots (head/back/arms/legs/feet) sum but are
+    // capped (accessoryDS), so a fully-matched set can't run the score away — body armor + shield stay king.
     equippedArmor().forEach((it) => {
-      if (it.dsBonus && proficientWithArmorClass(it.armorClass)) ds += Number(it.dsBonus) || 0;
+      if (it.dsBonus && proficientWithArmorClass(it.armorClass) && armorApparelSlot(it) === "torso") ds += Number(it.dsBonus) || 0;
     });
+    ds += accessoryDS().applied;
     // A held shield adds its Defense while equipped (no proficiency gate — anyone can raise a shield).
     const sh = equippedShield();
     if (sh) ds += Number(sh.dsBonus) || 0;
@@ -986,6 +989,7 @@
   // Apparel slots hold worn gear; hand slots hold weapons/shields. A two-handed weapon fills BOTH hands.
   const APPAREL_SLOTS = ["head", "torso", "back", "arms", "legs", "feet"];
   const HAND_SLOTS = ["lhand", "rhand"];
+  const ACCESSORY_DS_CAP = 3; // most Defense the five non-torso apparel slots can add, summed (keeps stacking in check)
   const ALL_SLOTS = APPAREL_SLOTS.concat(HAND_SLOTS);
   const SLOT_LABEL = { head: "Head", torso: "Torso", back: "Back", arms: "Arms", legs: "Legs", feet: "Feet", lhand: "Left Hand", rhand: "Right Hand" };
   function slotLabel(s) { return SLOT_LABEL[s] || s; }
@@ -994,6 +998,14 @@
   // Torso; a per-slot piece names its slot directly. Legacy limb-keyed values fold onto the six apparel slots.
   const COVERAGE_TO_SLOT = { full: "torso", torso: "torso", head: "head", back: "back", arms: "arms", legs: "legs", feet: "feet", larm: "arms", rarm: "arms", lleg: "legs", rleg: "legs" };
   function armorApparelSlot(it) { return COVERAGE_TO_SLOT[(it && it.coverage) || "full"] || "torso"; }
+  // Summed Defense from the five accessory slots (everything but Torso), and the capped amount that applies.
+  function accessoryDS() {
+    let raw = 0;
+    equippedArmor().forEach((it) => {
+      if (it.dsBonus && proficientWithArmorClass(it.armorClass) && armorApparelSlot(it) !== "torso") raw += Number(it.dsBonus) || 0;
+    });
+    return { raw: raw, applied: Math.min(raw, ACCESSORY_DS_CAP), capped: raw > ACCESSORY_DS_CAP };
+  }
   // Which slot(s) an item OCCUPIES once equipped. it.slot records which hand a 1-hander/shield chose.
   function equipSlotsFor(it) {
     if (!it) return [];
@@ -2331,10 +2343,12 @@
     vit.appendChild(el("div", "section-label", "Equipped"));
     const handsUsed = HAND_SLOTS.filter((s) => map[s]).length;
     const sh = equippedShield();
+    const acc = accessoryDS();
     const summary = el("div", "equip-summary");
     summary.innerHTML =
       `<span>✋ Hands: <b>${handsUsed}/2</b></span>` +
       `<span>🛡 Shield: <b>${sh ? sh.name + " (+" + (sh.dsBonus || 0) + " DS)" : "—"}</b></span>` +
+      `<span>🧥 Apparel: <b>+${acc.applied} DS</b>${acc.capped ? ' <span class="tag" title="Accessory Defense is capped at +' + ACCESSORY_DS_CAP + ' (raw +' + acc.raw + ')">capped</span>' : ""}</span>` +
       `<span>🎯 Defense: <b>${defenseScore()}</b>${play.blockDS ? ' <span class="tag">blocking</span>' : ""}</span>`;
     vit.appendChild(summary);
     root.appendChild(vit);

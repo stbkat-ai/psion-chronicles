@@ -234,6 +234,22 @@ window.PC = window.PC || {};
   AP("Steel Sabatons", "feet", "Heavy", 1, 5),
   AP("Silent Soles", "feet", "Light", 0, 2, "Uncommon", "A muffled tread.", { advSkill: "Stealth" }),
 
+  /* --- more apparel: gap-fillers across the classes --- */
+  AP("Straw Hat", "head", "Light", 0, 1),
+  AP("Bascinet", "head", "Heavy", 1, 5),
+  AP("Bearskin Mantle", "back", "Medium", 1, 7, "Uncommon", "A heavy bear-pelt mantle — warmth against the cold and a little armor besides."),
+  AP("Vambraces", "arms", "Medium", 1, 3),
+  AP("Mail Mittens", "arms", "Heavy", 1, 4),
+  AP("Mail Chausses", "legs", "Heavy", 1, 6),
+  AP("Riding Boots", "feet", "Light", 0, 2),
+
+  /* --- the Wolfhide kit: a matched northern-raider set, one light piece per slot (Uncommon, +1 each) --- */
+  AP("Wolfhide Hood", "head", "Light", 1, 2, "Uncommon", "Part of a northern raider's wolfhide kit — warm, quiet, and tough."),
+  AP("Wolfhide Cloak", "back", "Light", 1, 3, "Uncommon", "A wolf-pelt cloak from the northern raider's wolfhide kit."),
+  AP("Wolfhide Bracers", "arms", "Light", 1, 2, "Uncommon", "Fur-lined leather bracers from the wolfhide kit."),
+  AP("Wolfhide Leggings", "legs", "Light", 1, 3, "Uncommon", "Fur-lined leggings from the wolfhide kit."),
+  AP("Wolfhide Boots", "feet", "Light", 1, 2, "Uncommon", "Fur-lined boots from the wolfhide kit."),
+
   /* ===== SHIELDS =====
      Held in one hand (blocks a second weapon or a two-handed weapon). Grants its dsBonus while equipped, and
      enables the Block reaction. Escalating ladder: Buckler → Round → Kite → Tower (more Defense, more weight). */
@@ -616,6 +632,42 @@ window.PC = window.PC || {};
     "Sentinel's Regalia": "Ceremonial guard-plate whose wards keep the wearer ever watchful.",
     "Aegis Plate": "Rune-banded plate hardened against a chosen kind of harm.",
     "Warden's Aegis": "A legendary bulwark harness that makes its warden all but immovable.",
+    // — Apparel: Head —
+    "Cloth Hood": "A simple cloth hood that keeps off sun and rain.",
+    "Padded Cap": "A quilted cap that softens a glancing blow to the head.",
+    "Leather Coif": "A close leather hood laced under the chin.",
+    "Iron Helm": "A plain iron helmet, dented but dependable.",
+    "Combat Helmet": "A modern ballistic helmet with a padded liner.",
+    "Great Helm": "A heavy full-face war-helm that turns aside all but the hardest blow.",
+    "Straw Hat": "A woven wide-brimmed hat — shade, not protection.",
+    "Bascinet": "A pointed steel war-helm, a favorite of heavy foot.",
+    // — Apparel: Back —
+    "Wool Cloak": "A thick wool cloak against wind and weather.",
+    "Traveler's Cloak": "A weatherproofed cloak cut for the long road.",
+    "Longcoat": "A rugged long coat with reinforced shoulders.",
+    "Trench Coat": "A heavy weatherproof coat lined with light plating.",
+    // — Apparel: Arms —
+    "Leather Gloves": "Supple leather gloves for grip and a little cover.",
+    "Tactical Gloves": "Reinforced modern gloves with knuckle padding.",
+    "Padded Bracers": "Quilted forearm guards that blunt a cut.",
+    "Chain Sleeves": "Riveted mail sleeves guarding the arms.",
+    "Steel Gauntlets": "Articulated plate gauntlets that armor the hands.",
+    "Vambraces": "Banded forearm plates strapped over the sleeve.",
+    "Mail Mittens": "Heavy mail mittens sewn to the sleeve.",
+    // — Apparel: Legs —
+    "Cloth Trousers": "Plain woven trousers — comfort, not cover.",
+    "Combat Trousers": "Rugged field trousers with reinforced knees.",
+    "Leather Leggings": "Hardened leather leggings that turn a glancing cut.",
+    "Chain Faulds": "A skirt of mail guarding the hips and thighs.",
+    "Steel Greaves": "Plate greaves that armor the shins and knees.",
+    "Mail Chausses": "Full mail leggings laced up the leg.",
+    // — Apparel: Feet —
+    "Sandals": "Simple strapped sandals — barely there.",
+    "Leather Boots": "Sturdy leather boots for hard walking.",
+    "Traveler's Boots": "Broken-in road boots that never blister.",
+    "Combat Boots": "Reinforced tactical boots with ankle support.",
+    "Steel Sabatons": "Plated foot-armor, jointed to still let you march.",
+    "Riding Boots": "Tall boots cut for the saddle and the trail.",
     // — Consumables —
     "Trail Rations": "Dried, packable food that keeps a traveler going.",
     "Waterskin": "A sealed hide flask for carrying drinking water.",
@@ -854,7 +906,18 @@ window.PC = window.PC || {};
   PC.itemComponentSlots = function (item) {
     if (!item) return null;
     if (item.category === "Weapon") { var wt = PC.WEAPON_TEMPLATES[item.weaponType]; return wt ? wt.slots.slice() : ["Blade", "Haft"]; }
-    if (item.category === "Armor") { var at = PC.ARMOR_TEMPLATES[item.armorClass || "Light"]; return at ? at.slots.slice() : ["Armor Weave", "Straps & Fittings"]; }
+    if (item.category === "Armor") {
+      var cls = item.armorClass || "Light";
+      var cov = item.coverage || "full";
+      // Accessory pieces (head/back/arms/legs/feet) are smaller than a body suit, so they take a slimmer,
+      // class-appropriate set of components instead of the full body-armor template.
+      if (cov !== "full" && cov !== "torso") {
+        if (cls === "Heavy")  return ["Plating", "Straps & Fittings"];
+        if (cls === "Medium") return ["Armor Weave", "Straps & Fittings"];
+        return ["Armor Weave"];
+      }
+      var at = PC.ARMOR_TEMPLATES[cls]; return at ? at.slots.slice() : ["Armor Weave", "Straps & Fittings"];
+    }
     return null;
   };
   // Average grade of a set of component grades → clamped 1–4 (the "average of parts" quality rule).

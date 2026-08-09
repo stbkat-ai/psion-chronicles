@@ -1687,6 +1687,29 @@ Docs: CLAUDE.md, GAME_RULES (roster table), README. Cache-buster **v=102**.
 
 ---
 
+### 74. Armor polish — accessory-DS cap, apparel crafting recipes, descriptions & more variety
+A four-part follow-up to the apparel pass (#72), all in one go at Luke's "all of the above":
+
+1. **Balance — accessory-DS cap.** The flagged stacking is resolved: Torso body armor and a held shield add their
+   full Defense, but the five accessory slots (Head/Back/Arms/Legs/Feet) now **sum to at most +3** together
+   (`ACCESSORY_DS_CAP` in play.js; `accessoryDS()` computes raw vs applied). `defenseScore()` adds torso in full +
+   the capped accessory total; the Equipment summary shows "🧥 Apparel: +N DS" with a **capped** tag when the raw
+   sum exceeds the cap. Verified: a raw +7 set applies exactly +3 (delta test).
+2. **Crafting integration.** Apparel already flowed through the class-based armor templates, but a hood shared a
+   full body-suit's recipe. `itemComponentSlots()` now gives non-torso apparel a **slimmer, class-appropriate**
+   component set (Light accessory = 1 part; Medium = 2; Heavy = Plating + Straps) so accessories craft and salvage
+   cheaper than body armor.
+3. **Descriptions.** Added in-world descriptions for ~30 previously stats-only apparel pieces (helmets, cloaks,
+   gloves, greaves, boots) so they read well in the Codex and inventory.
+4. **More variety.** Added gap-fillers (Straw Hat, Bascinet, Bearskin Mantle, Vambraces, Mail Mittens, Mail
+   Chausses, Riding Boots) plus a **themed matched set** — the **Wolfhide kit** (Hood/Cloak/Bracers/Leggings/Boots,
+   Light/Uncommon, +1 each), a northern-raider set that pairs naturally with the new Norse heritage.
+
+Catalog now: **69 armor** (torso 21, head 11, back 12, arms 9, legs 8, feet 8) + **11 shields**. No duplicate
+names, syntax clean, 0 console errors. Docs: CLAUDE.md, GAME_RULES. Cache-buster **v=103**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is
