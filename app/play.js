@@ -1103,7 +1103,7 @@
     if (!it) return;
     const eff = it.effect || (window.PC.itemEffect ? PC.itemEffect(it.name) : null);
     const parts = [];
-    let flashTotal = null;
+    let flashTotal = null, throwTotal = null;
     if (eff) {
       // Self-revive first, so any HP heal in the same item lands above 0.
       if (eff.reviveSelf && play.hp <= 0) { play.hp = 1; parts.push("revived to 1 HP"); }
@@ -1131,14 +1131,56 @@
         PC.LIMBS.forEach((L) => { if (left > 0 && limbCurrent(L.key) <= 0) { play.limbs[L.key] = limbMaxFor(L.key); left--; n++; } });
         if (n) parts.push(`restored ${n} crippled limb${n > 1 ? "s" : ""}`);
       }
+      // Cure tracked ailments (Antitoxin, Panacea). "allBad" clears every active bad/warn condition;
+      // an explicit list clears just those keys. Neutral/good conditions (Marked, Invisible) are left alone.
+      if (eff.clearConditions) {
+        const isBad = (k) => { const cat = PC.condition(k); return cat && (cat.sev === "bad" || cat.sev === "warn"); };
+        const targets = eff.clearConditions === "allBad"
+          ? (play.conditions || []).filter((c) => isBad(c.key)).map((c) => c.key)
+          : eff.clearConditions;
+        const cleared = [];
+        targets.forEach((k) => {
+          if (hasCondition(k)) { play.conditions = (play.conditions || []).filter((c) => c.key !== k); const cat = PC.condition(k); cleared.push(cat ? cat.name : k); }
+        });
+        if (cleared.length) parts.push(`cured ${cleared.join(", ")}`);
+        else if (eff.clearConditions !== "allBad") parts.push("no matching ailment to cure");
+      }
+      // Applied poison / weapon coat: arm the NEXT weapon hit to apply a condition to the target.
+      if (eff.coat) {
+        const cat = PC.condition(eff.coat.condition);
+        play.weaponCoat = { condition: eff.coat.condition, label: eff.coat.label || (cat ? cat.name : eff.coat.condition) };
+        parts.push(`coated your weapon — its next hit applies ${cat ? cat.emoji + " " + cat.name : eff.coat.condition} to the target (GM)`);
+      }
+      // Thrown alchemical: roll any splash damage and flag the target condition for the GM.
+      if (eff.throwHit) {
+        const th = eff.throwHit;
+        if (th.damage) {
+          const dr = PC.rollDiceExpr(th.damage);
+          if (dr) { throwTotal = dr.total; parts.push(`thrown — ${th.damage}${th.dtype ? " " + th.dtype : ""} = [${dr.rolls.join(",")}] → ${dr.total}`); }
+        } else { parts.push("thrown"); }
+        if (th.targetCondition) { const cat = PC.condition(th.targetCondition); parts.push(`target ${cat ? cat.emoji + " " + cat.name : th.targetCondition} (GM)`); }
+        if (th.note) parts.push(th.note + " (GM)");
+      }
       if (eff.cure) parts.push(`cures ${eff.cure}`);
       if (eff.note) parts.push(eff.note);
     }
     const msg = `Used ${it.name}${parts.length ? " — " + parts.join(", ") : ""}.`;
-    if (flashTotal != null && flashTotal > 0) announce(flashTotal, msg); else logLine(msg);
+    if (flashTotal != null && flashTotal > 0) announce(flashTotal, msg);
+    else if (throwTotal != null) announce(throwTotal, msg);
+    else logLine(msg);
     it.qty = (Number(it.qty) || 1) - 1;
     if (it.qty <= 0) { expandedItem = null; rec.inventory.splice(idx, 1); }
     save(); refresh();
+  }
+  // A weapon coated with applied poison (from a Poison Vial) tags its NEXT weapon attack: on a hit,
+  // the target takes the coat's condition (the GM tracks the enemy). One-shot — attacking spends the
+  // coat whether the swing lands or not, so returns the log tag and clears the coat.
+  function consumeCoat() {
+    const c = play.weaponCoat;
+    if (!c) return "";
+    play.weaponCoat = null;
+    const cat = PC.condition(c.condition);
+    return ` · ☠ coated: on a hit, target is ${cat ? cat.emoji + " " + cat.name : c.condition} (GM)`;
   }
   // weapon helpers
   function weaponAttr(it) { const w = PC.WEAPON_TYPES.find((x) => x.name === it.weaponType); return w ? w.attr : null; }
@@ -1172,7 +1214,8 @@
     const dis = mode === "dis" ? ` (disadv [${r.d20s.join(",")}]→${r.picked})` : "";
     const oa = econType === "Reaction" ? " (Opportunity)" : "";
     const ammoTag = spendAmmo(it); // fire the shot — spend a round (or the thrown weapon itself)
-    announce(r.total, `${it.name} attack${oa}: d20${dis}${PC.fmtMod(mod)} = ${r.total}${prof ? " ✓prof" : ""} (vs Defense Score)${ammoTag}`);
+    const coatTag = consumeCoat(); // applied poison, if the weapon was coated — one-shot
+    announce(r.total, `${it.name} attack${oa}: d20${dis}${PC.fmtMod(mod)} = ${r.total}${prof ? " ✓prof" : ""} (vs Defense Score)${ammoTag}${coatTag}`);
     save(); refresh();
   }
 
@@ -3440,6 +3483,19 @@
 
     // Conditions / status-effects tracker
     root.appendChild(conditionsPanel());
+
+    // Applied-poison reminder — a coated weapon is armed until its next hit (or you wipe it off).
+    if (play.weaponCoat) {
+      const cat = PC.condition(play.weaponCoat.condition);
+      const cp = el("div", "panel coat-banner");
+      const row = el("div", "coat-row");
+      row.appendChild(el("span", "coat-msg", `☠ <b>Weapon coated</b> — its next hit applies ${cat ? cat.emoji + " " + cat.name : play.weaponCoat.condition} to the target (GM).`));
+      const x = el("button", "btn small", "Wipe off");
+      x.onclick = () => { play.weaponCoat = null; logLine("☠ Wiped the coating off your weapon."); save(); refresh(); };
+      row.appendChild(x);
+      cp.appendChild(row);
+      root.appendChild(cp);
+    }
 
     // gather techniques by action economy (augments excluded — they rider onto weapons).
     // Fusion techniques the character has earned are folded in alongside base techniques.

@@ -350,6 +350,10 @@ label.field > span { display: block; font-size: .82rem; color: var(--text-dim); 
 .cond-step:hover, .cond-x:hover { color: var(--text); border-color: var(--psi); }
 .cond-x:hover { color: var(--danger); border-color: var(--danger); }
 .cond-chip.readonly { padding-right: 10px; }
+/* applied-poison (coated weapon) reminder banner on the Combat tab */
+.coat-banner { border-color: var(--danger); box-shadow: 0 0 0 1px rgba(255,92,114,.25); }
+.coat-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.coat-row .coat-msg { font-size: .86rem; }
 /* severity coloring — a left accent + tinted border so the chip reads at a glance */
 .cond-chip.sev-bad     { border-color: var(--danger); box-shadow: inset 3px 0 0 var(--danger); }
 .cond-chip.sev-warn    { border-color: var(--gold);   box-shadow: inset 3px 0 0 var(--gold); }

@@ -59,6 +59,12 @@ window.PC = window.PC || {};
   //   chakraHeal: N — heal N hits on each damaged chakra
   //   uncripple: N — restore N crippled limbs to full; uncrippleAll: true — restore every crippled limb
   //   reviveSelf: true — if you're at 0 HP, come back to 1 HP first
+  //   clearConditions: ["poisoned",…] | "allBad" — cure those tracked conditions on yourself
+  //     ("allBad" clears every active bad/warn ailment; keeps neutral/good ones like Marked/Invisible)
+  //   coat: { condition, label } — applied poison: arm your NEXT weapon hit to apply `condition` to
+  //     the target (the play sheet flags it in the attack log; the GM tracks the enemy)
+  //   throwHit: { damage?, dtype?, targetCondition?, note? } — thrown alchemical: rolls its splash
+  //     damage and flags the target condition for the GM (enemy conditions aren't tracked on your sheet)
   //   cure / note: text — narrative effects the GM adjudicates (no tracked condition yet)
   function C(name, weight, note, effect) { const c = { name: name, category: "Consumable", weight: weight, note: note }; if (effect) c.effect = effect; return c; }
   // skill = the Skill this kit supports (optional). Skill kits carry it; general gear leaves it null.
@@ -328,9 +334,9 @@ window.PC = window.PC || {};
   // — Combined / restorative —
   C("Vital Tonic", 0.5, "Restores 2d6 HP and 2d6 KP.", { hp: "2d6", kp: "2d6" }),
   C("Chakra Salve", 0.5, "Heals 1 hit on each damaged chakra.", { chakraHeal: 1 }),
-  C("Panacea", 1, "Fully restores HP & KP, heals all chakras, and un-cripples every limb.", { hpFull: true, kpFull: true, chakraHeal: 4, uncrippleAll: true }),
+  C("Panacea", 1, "Fully restores HP & KP, heals all chakras, un-cripples every limb, and cures all ailments.", { hpFull: true, kpFull: true, chakraHeal: 4, uncrippleAll: true, clearConditions: "allBad" }),
   C("Rez Serum", 1, "Revives you from downed to 1 HP (or a downed ally).", { reviveSelf: true }),
-  C("Antitoxin", 0.5, "Cures poison / ends Weakened.", { cure: "poison / Weakened" }),
+  C("Antitoxin", 0.5, "Cures poison / ends Weakened.", { clearConditions: ["poisoned", "weakened"] }),
   // — Narrative / utility (no tracked mechanic) —
   C("Adrenaline Shot", 0.5, "Gain an extra action this turn (once).", { note: "gain an extra action this turn (toggle it on the This-Turn tracker)" }),
   C("Trail Rations", 2, "A day's food."),
@@ -338,13 +344,13 @@ window.PC = window.PC || {};
   C("Smoke Bomb", 1, "Creates a 15-ft smoke cloud (obscured)."),
   C("Flare", 0.5, "Bright light for several minutes."),
   // — thrown alchemicals & applied poison (GM-adjudicated; no self-effect) —
-  C("Acid Flask", 1, "Thrown — splashes 2d6 acid on a target and may eat through armor (GM)."),
-  C("Alchemist's Fire", 1, "Thrown — sets the target Burning until it's put out (GM)."),
-  C("Holy Water", 0.5, "Thrown or splashed — sears undead, demons, and Veil-things (GM)."),
-  C("Flash Powder", 0.5, "Thrown — a blinding burst leaves those nearby Dazzled or Blinded (GM)."),
-  C("Caltrops", 2, "Scatter a 5-ft patch of spikes — difficult terrain that pricks who crosses it (GM)."),
-  C("Tanglefoot Bag", 1, "Thrown — bursts into sticky goo that leaves the target Rooted or Slowed (GM)."),
-  C("Poison Vial", 0.5, "Coat a weapon before a fight — its next hit leaves the target Poisoned (GM)."),
+  C("Acid Flask", 1, "Thrown — splashes 2d6 acid on a target and may eat through armor.", { throwHit: { damage: "2d6", dtype: "acid", note: "may corrode the target's armor" } }),
+  C("Alchemist's Fire", 1, "Thrown — sets the target Burning until it's put out.", { throwHit: { damage: "1d6", dtype: "fire", targetCondition: "burning" } }),
+  C("Holy Water", 0.5, "Thrown or splashed — sears undead, demons, and Veil-things.", { throwHit: { damage: "2d6", dtype: "radiant", note: "damage applies only to undead / demons / Veil-things" } }),
+  C("Flash Powder", 0.5, "Thrown — a blinding burst leaves those nearby Dazzled or Blinded.", { throwHit: { targetCondition: "dazzled", note: "Blinded instead if very close" } }),
+  C("Caltrops", 2, "Scatter a 5-ft patch of spikes — difficult terrain that pricks who crosses it.", { throwHit: { note: "5-ft difficult terrain; pricks anyone who crosses" } }),
+  C("Tanglefoot Bag", 1, "Thrown — bursts into sticky goo that leaves the target Rooted or Slowed.", { throwHit: { targetCondition: "rooted", note: "Slowed instead on a partial hit" } }),
+  C("Poison Vial", 0.5, "Coat a weapon before a fight — its next hit leaves the target Poisoned.", { coat: { condition: "poisoned", label: "poison" } }),
 
   /* ===== TOOLS =====
      Skill kits (4th arg = the Skill they support): one kit for every tool-using skill, so a

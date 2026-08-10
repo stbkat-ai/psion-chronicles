@@ -209,7 +209,11 @@ Account menu brings it back). Tap the **Psion Chronicles wordmark** in the heade
     Medicine, Disguise Kit → Deception), and the kit shows the skill it aids (🛠 *Aids &lt;Skill&gt;*).
     **Consumables actually work** — Use a Health Draught, KP Elixir, Stimpak, Vital Tonic, Chakra Salve,
     or Panacea and it rolls the effect and updates your HP/KP, chakras, and limbs on the spot (capped at
-    your max), then logs it. A **← Inventory** button returns.
+    your max), then logs it. **Antitoxin** and **Panacea** also **cure your active conditions** (Antitoxin
+    clears Poisoned/Weakened; Panacea clears every ailment). **Poison Vial coats your weapon** — its next hit
+    tags the target as Poisoned (a reminder banner shows on the Combat tab until you swing or wipe it off), and
+    **thrown alchemicals** (Acid Flask, Alchemist's Fire, Flash Powder, Tanglefoot Bag…) roll their splash
+    damage and note the condition they'd inflict for the GM. A **← Inventory** button returns.
   - **🔨 Crafting tab** (after Inventory; a **downtime** activity — no combat action) — the whole crafting
     workshop: your **Salvage Materials** and **Components** on hand, a **⚙ Craft Components** workbench, your
     **Known Recipes**, a **📖 Learn a Recipe** browser, and a **✎ Create Custom Item** builder.

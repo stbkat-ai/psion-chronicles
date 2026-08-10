@@ -1825,6 +1825,37 @@ errors. Docs: CLAUDE.md, GAME_RULES. Cache-buster **v=109**.
 
 ---
 
+### 81. Consumable effects — cure conditions, applied poison, thrown alchemicals
+The last consumables that were "narrative only" now do something real, tying the item catalog into the Combat
+tab's condition tracker. Three new `effect` primitives on `C()` items (`app/items.js`), all read by
+`useConsumable()` in `app/play.js`:
+
+- **`clearConditions`** — cures tracked conditions on yourself. **Antitoxin** = `["poisoned","weakened"]`;
+  **Panacea** = `"allBad"` (wipes every active **bad/warn** condition, leaves neutral/good like Marked &
+  Invisible). Previously Antitoxin only printed a `cure:` string and changed nothing on the sheet. The log names
+  exactly what was cured.
+- **`coat`** (applied poison) — **Poison Vial** no longer does nothing: Using it sets `play.weaponCoat` and
+  arms your **next weapon attack**. `consumeCoat()` fires alongside `spendAmmo()` inside `attackWith()`, appends
+  a `☠ coated: on a hit, target is Poisoned (GM)` tag to the roll log, and clears the coat (one swing, hit or
+  miss — the GM tracks the enemy). A dismissable **coat banner** shows on the Combat tab until it's spent/wiped.
+- **`throwHit`** — thrown alchemicals (Acid Flask, Alchemist's Fire, Holy Water, Flash Powder, Tanglefoot Bag,
+  Caltrops) now **roll their splash damage** and **flag the target condition** for the GM in one log line.
+
+**Why this shape:** the play sheet only tracks the *player's own* conditions, so self-cures (Antitoxin/Panacea)
+apply directly, while enemy-facing effects (poison coat, thrown alchemicals) surface as structured **log tags +
+a reminder banner** for the GM to adjudicate rather than pretending to track enemy state. Coat is deliberately
+**one-shot on the attack roll** (not gated on a confirmed hit) because the app doesn't know hit/miss — the log
+says "on a hit," leaving the call to the table. Restricted to `attackWith()` (real weapons); unarmed strikes
+don't carry a coat.
+
+Verified in-browser (Playwright, seeded character): Antitoxin cured Poisoned+Weakened and left Burning; Poison
+Vial set the coat + banner; the next Warmaul attack consumed the coat and logged the tag; Acid Flask rolled
+2d6→9 acid and decremented 2→1; 0 console errors. Codex needs no change (reads live from `PC`; only `note` text
+and `effect` data changed, no new content kind or renamed field). Docs: DESIGN_LOG, GAME_RULES, README.
+Cache-buster **v=110**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

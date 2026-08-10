@@ -755,13 +755,26 @@ Every catalog weapon records two extra properties:
   | KP Elixir / Greater | +2d6 / +4d6 KP |
   | Vital Tonic | +2d6 HP **and** +2d6 KP |
   | Chakra Salve | heals 1 hit on every damaged chakra |
-  | Panacea | full HP & KP, heals all chakras, un-cripples all limbs |
+  | Panacea | full HP & KP, heals all chakras, un-cripples all limbs, **and cures every active ailment** |
   | Rez Serum | revives you from downed to 1 HP |
-  | Antitoxin / Adrenaline Shot | narrative (GM-adjudicated; logged) |
+  | Antitoxin | **cures Poisoned and Weakened** (clears those tracked conditions on you) |
+  | Adrenaline Shot | narrative (gain an extra action; logged, GM-adjudicated) |
 
   Effects are structured data on each item (`effect` in `PC.ITEMS`, e.g. `{ hp: "3d6", uncripple: 1 }`), with a
   name→effect fallback so older saved items still work. Using a consumable does **not** yet spend an action —
   the GM adjudicates timing. Food, water, smoke, and flares are narrative-only.
+- **Curing conditions.** A consumable can list `clearConditions` — either specific keys (Antitoxin →
+  Poisoned + Weakened) or `"allBad"` (Panacea), which wipes every active **bad/warn** condition while leaving
+  neutral/good ones (Marked, Invisible) alone. The log names exactly what was cured.
+- **Applied poison (weapon coat).** **Poison Vial** doesn't heal — Using it **coats your equipped weapon**. A
+  reminder banner appears on the Combat tab, and your **next weapon attack** carries a "☠ coated: on a hit, the
+  target is Poisoned" tag in the roll log, then the coat is spent (one hit, whether it lands or not — the GM
+  tracks the enemy). You can wipe the coat off from the banner. Enemy conditions aren't tracked on your sheet,
+  so the target's Poisoned is the GM's to apply.
+- **Thrown alchemicals.** Acid Flask, Alchemist's Fire, Holy Water, Flash Powder, Tanglefoot Bag, and Caltrops
+  now **roll their splash damage on Use** (e.g. Acid Flask 2d6 acid) and **flag the target condition for the GM**
+  (Alchemist's Fire → Burning, Tanglefoot Bag → Rooted, Flash Powder → Dazzled). The throw's damage and the
+  condition it would inflict are written to the log so the table can adjudicate the hit cleanly.
 - **Beginner weapons — the starting-gear shortlist (CONFIRMED).** Common rarity isn't enough on its own: only a
   curated **beginner** subset — **up to two weapons per weapon _subtype_**, the simplest/most iconic of each —
   is offered at character creation. This keeps the creation weapon picker short (a handful per type instead of
