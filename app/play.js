@@ -804,6 +804,14 @@
   }
   // Add a catalog item (from the browse/search list) to the character's inventory.
   function addCatalogItem(item) {
+    // Stackable rewards (raw salvage, components, junk) merge into an existing same-name stack instead of
+    // littering the bag with qty-1 duplicates — handy when a GM hands out a pile of loot.
+    if (item.category === "Salvage" || item.category === "Component" || item.category === "Junk") {
+      const ex = (rec.inventory || []).find((it) => it.category === item.category && it.name === item.name);
+      if (ex) ex.qty = (Number(ex.qty) || 0) + 1;
+      else rec.inventory.push(Object.assign({}, item, { qty: 1, id: "it_" + Date.now().toString(36) + "_" + item.name.replace(/\s+/g, "").slice(0, 6) }));
+      logLine(`Added ${item.name}.`); App.toast(`Added ${item.name}.`); save(); refresh(); return;
+    }
     // Ammo is tracked in rounds: a pickup adds `count` rounds, merging into an existing stack of the same name.
     if (item.category === "Ammo") {
       const rounds = Number(item.count) || 1;
@@ -1815,6 +1823,12 @@
       } else if (it.category !== "Salvage" && it.rarity === "Legendary") {
         detail.appendChild(el("div", "inv-skill", "🔨 <b>Legendary</b> — too intricate to craft or salvage."));
       }
+      // Junk: no use but salvage (and a few trade as scrip).
+      if (it.category === "Junk") {
+        const jy = PC.itemSalvageYield ? PC.itemSalvageYield(it) : null;
+        detail.appendChild(el("div", "inv-skill", `🗑 <b>Junk</b> — no real use.${it.currency ? " Traded as scrip in some settlements." : ""}`));
+        detail.appendChild(el("div", "inv-skill", jy && jy.length ? `♻ <b>Salvage yields:</b> ${fmtMats(jy)} <span class="craft-dt">· downtime</span>` : "♻ <b>Salvage:</b> nothing usable."));
+      }
 
       // Actions
       const actions = el("div", "inv-actions");
@@ -1851,8 +1865,8 @@
         use.onclick = () => useConsumable(idx);
         actions.appendChild(use);
       }
-      // Salvage: break one unit down into its materials (craftable, non-material items).
-      if (it.category !== "Salvage" && recipeOf(it)) {
+      // Salvage: break one unit down into its materials (craftable items, plus junk that yields something).
+      if (it.category !== "Salvage" && (recipeOf(it) || (it.category === "Junk" && PC.itemSalvageYield && PC.itemSalvageYield(it)))) {
         const salv = el("button", "btn small ghost", "♻ Salvage");
         salv.title = "Downtime: break one down into salvage materials";
         salv.onclick = () => salvageItem(idx);
@@ -2358,7 +2372,7 @@
     // Category filter — armor breaks out into its six equipment slots so you can browse one slot at a time.
     [["All", "All"], ["Weapon", "Weapon"], ["Armor", "Armor (all)"],
      ["head", "  · Head"], ["torso", "  · Torso"], ["back", "  · Back"], ["arms", "  · Arms"], ["legs", "  · Legs"], ["feet", "  · Feet"],
-     ["Shield", "Shield"], ["Ammo", "Ammo"], ["Consumable", "Consumable"], ["Tool", "Tool"], ["Misc", "Misc"], ["Component", "Component"], ["Salvage", "Salvage"]
+     ["Shield", "Shield"], ["Ammo", "Ammo"], ["Consumable", "Consumable"], ["Tool", "Tool"], ["Misc", "Misc"], ["Junk", "Junk"], ["Component", "Component"], ["Salvage", "Salvage"]
     ].forEach(([v, l]) => { const o = el("option", null, l); o.value = v; catFilter.appendChild(o); });
     catFilter.value = invSearchCat;
     searchRow.appendChild(search); searchRow.appendChild(catFilter);
@@ -2368,7 +2382,7 @@
     panel.appendChild(results);
     // Catalog grouping: armor splits into its six equipment slots; everything else buckets by kind.
     const APSLOTS = ["head", "torso", "back", "arms", "legs", "feet"];
-    const GROUP_ORDER = ["Weapons", "Ammunition", "Shields", "Head", "Torso", "Back", "Arms", "Legs", "Feet", "Consumables", "Tools", "Miscellaneous", "Components", "Salvage", "Other"];
+    const GROUP_ORDER = ["Weapons", "Ammunition", "Shields", "Head", "Torso", "Back", "Arms", "Legs", "Feet", "Consumables", "Tools", "Miscellaneous", "Junk", "Components", "Salvage", "Other"];
     const groupOf = (it) => {
       if (it.category === "Armor") return slotLabel(armorApparelSlot(it));
       if (it.category === "Weapon") return "Weapons";
@@ -2376,6 +2390,7 @@
       if (it.category === "Shield") return "Shields";
       if (it.category === "Consumable") return "Consumables";
       if (it.category === "Tool") return "Tools";
+      if (it.category === "Junk") return "Junk";
       if (it.category === "Component") return "Components";
       if (it.category === "Salvage") return "Salvage";
       if (it.category === "Misc") return "Miscellaneous";
@@ -2388,6 +2403,7 @@
       else if (it.category === "Armor") { meta += ` · ${slotLabel(armorApparelSlot(it))} · ${it.armorClass || "Light"} · +${it.dsBonus} DS`; if (it.note) meta += ` · ${it.note}`; }
       else if (it.category === "Shield") { meta += ` · +${it.dsBonus} DS · one hand`; if (it.note) meta += ` · ${it.note}`; }
       else if (it.category === "Ammo") { meta += ` · feeds ${it.feeds || "ranged weapons"} · +${it.count || 1} rounds`; if (it.note) meta += ` · ${it.note}`; }
+      else if (it.category === "Junk") { meta += (it.salvage && it.salvage.length ? ` · salvages to ${it.salvage.join(", ")}` : " · no salvage") + (it.currency ? " · 💰 barter scrip" : ""); if (it.note) meta += ` · ${it.note}`; }
       else { if (it.skill) meta += ` · 🛠 ${it.skill}`; if (it.note) meta += ` · ${it.note}`; }
       const rarityTag = (it.category === "Weapon" || it.category === "Armor" || it.category === "Shield") && it.rarity
         ? `<span class="rarity-tag rarity-${it.rarity.toLowerCase().replace(/\s+/g, "-")}">${it.rarity}</span>` : "";

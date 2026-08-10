@@ -26,6 +26,14 @@ window.PC = window.PC || {};
     if (note) a.note = note;
     return a;
   }
+  // Junk — no functional use; its only value is what it SALVAGES into (`salvage` = material names, [] = nothing).
+  // `currency: true` marks the few pieces that some settlements still trade as scrip. Not craftable.
+  function J(name, weight, note, salvage, currency) {
+    const j = { name: name, category: "Junk", weight: weight, rarity: "Common", salvage: salvage || [] };
+    if (note) j.note = note;
+    if (currency) j.currency = true;
+    return j;
+  }
   // Armor. cls = "Light"|"Medium"|"Heavy"; rarity default Common. note = descriptive special effect
   // (GM-applied). grants = structured perks the engine auto-applies while equipped & proficient, e.g.
   // { advSkill: "Stealth" } (advantage on that skill) or { noMovePenalty: true }.
@@ -400,6 +408,28 @@ window.PC = window.PC || {};
   M("Ration Ticket", 0, "Settlement scrip — redeemable for a day's food and board."),
   M("Salvage Chit", 0, "A stamped token traded at a settlement's salvage exchange."),
   M("Trade Bar", 1, "A stamped ingot of scrap-alloy used as barter across settlements."),
+
+  /* ===== JUNK — no use but salvage; a handful double as barter scrip in some settlements =====
+     `salvage` lists the materials you get for breaking it down ([] = nothing, pure junk/currency). Not
+     craftable. Great low-tier GM loot: a pocketful of scrap that a resourceful crafter can still use. */
+  J("Scrap Wiring", 0.5, "A tangle of stripped, knotted wiring.", ["Circuitry"]),
+  J("Broken Circuit Board", 0.5, "A cracked board with most of its traces dead.", ["Circuitry"]),
+  J("Cracked Screen", 1, "A shattered display panel, still faintly flickering.", ["Circuitry", "Scrap Metal"]),
+  J("Rusted Gears", 1, "A fistful of seized, rust-locked gears.", ["Scrap Metal"]),
+  J("Bent Rebar", 3, "A length of bent, gritty construction rebar.", ["Scrap Metal"]),
+  J("Corroded Pipe", 2, "A section of pitted, leaking pipe.", ["Scrap Metal"]),
+  J("Dead Battery", 1, "A drained battery weeping corrosion.", ["Chemicals", "Scrap Metal"]),
+  J("Frayed Rope", 0.5, "A rotted, unravelling coil of rope.", ["Cloth"]),
+  J("Tattered Rags", 0.5, "A bundle of filthy, threadbare rags.", ["Cloth"]),
+  J("Worn Boot", 0.5, "A single split, sole-flapping boot.", ["Leather"]),
+  J("Cracked Hide", 1, "A stiff, cracked offcut of old hide.", ["Leather"]),
+  J("Splintered Plank", 2, "A warped, splintering board full of old nails.", ["Hardwood"]),
+  J("Bone Shards", 0.5, "A handful of weathered bone fragments.", ["Bone & Sinew"]),
+  J("Clouded Crystal", 0.5, "A focus crystal gone milky and cracked.", ["Focus Crystal"]),
+  J("Empty Vial", 0.2, "A grimy, empty alchemical vial.", ["Chemicals"]),
+  J("Bottle Caps", 0.1, "Worthless bottle caps — yet a few settlements trade in them.", ["Scrap Metal"], true),
+  J("Old-World Coins", 0.2, "Pre-Veil coins, worthless as money now, but barter fodder in some towns.", ["Scrap Metal"], true),
+  J("Casino Chips", 0.1, "Plastic gaming chips still honored as scrip in a few enclaves.", [], true),
   ];
 
   /* ===== BEGINNER (STARTING-GEAR) WEAPONS, grouped by type → subtype =====
@@ -1114,7 +1144,7 @@ window.PC = window.PC || {};
   // raw salvage, or currency). Weapons & armor are assembled from COMPONENTS (at the grade matching
   // their rarity); components themselves, and consumables/tools/misc, are made from raw salvage.
   PC.itemRecipe = function (item) {
-    if (!item || item.category === "Salvage") return null;
+    if (!item || item.category === "Salvage" || item.category === "Junk") return null; // junk is salvage-only, not crafted
     if (item.rarity === "Legendary") return null;
     if (_nonCraft[item.name]) return null;
     // A component: raw-material recipe at its grade.
@@ -1138,6 +1168,8 @@ window.PC = window.PC || {};
   // higher-value ones, ceil(half) of the slots — at the item's grade, so teardown is lossy (no loop).
   PC.itemSalvageYield = function (item) {
     if (!item) return null;
+    // Junk yields exactly the materials it lists (nothing if the list is empty — pure currency/trash).
+    if (item.category === "Junk") { var js = item.salvage || []; return js.length ? _merge(js.map(function (m) { return { mat: m, qty: 1 }; })) : null; }
     if ((item.category === "Weapon" || item.category === "Armor" || item.category === "Shield") && PC.itemRecipe(item)) {
       var slots = PC.itemComponentSlots(item);
       var q = PC.rarityQuality(item.rarity);

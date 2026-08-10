@@ -1804,6 +1804,27 @@ GAME_RULES (economy note). Cache-buster **v=108**.
 
 ---
 
+### 80. Junk items + components-as-rewards (stacking fix)
+Two things: worthless-but-salvageable **junk**, and making the **components/salvage** list a clean GM reward pool.
+
+- **New `category: "Junk"` (18 items)** via `J(name, weight, note, salvage[], currency?)`: scrap wiring, broken
+  circuit board, rusted gears, bent rebar, dead battery, tattered rags, bone shards, clouded crystal, etc. — **no
+  use but salvage**, yielding the materials each lists (Casino Chips yield nothing). **Not craftable**
+  (`itemRecipe` returns null for Junk; `itemSalvageYield` reads `item.salvage`). Three double as **barter scrip**
+  (`currency: true`) — **Bottle Caps, Old-World Coins, Casino Chips** — worthless as goods but traded in some
+  settlements. The inventory shows a 🗑 Junk line + its salvage yield and offers a **Salvage** button.
+- **Components as rewards.** All 64 graded components + 14 raw salvage were already browsable/Add-able in the Item
+  Catalog and listed in the Codex Crafting section — but catalog **Add didn't stack** (adding a component twice
+  made two qty-1 piles). Fixed: `addCatalogItem()` now **merges** salvage / component / junk stacks by name, so a
+  GM handing out loot gets tidy stacks. New **Codex → Junk** section (grouped Scrap vs Barter scrip); catalog
+  gained a **Junk** filter + group.
+
+Catalog now ~394 items across 10 categories. Verified: 18 junk (correct salvage, none craftable), Junk filter
+groups all 18, Codex Junk = 18, component Add now merges (Crude Blade ×2 → one ×2 stack), no dup names, 0 console
+errors. Docs: CLAUDE.md, GAME_RULES. Cache-buster **v=109**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

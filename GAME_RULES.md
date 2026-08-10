@@ -809,10 +809,17 @@ built from — **salvage materials**.
 - **Higher-grade parts → better gear (CONFIRMED Luke).** An assembled item's **quality is the AVERAGE of its
   components' grades** (rounded down); that quality sets its **rarity** and its **damage/DS** off the template,
   never above the cap. So a Fine blade on a Standard haft yields a Standard weapon.
-- **Recipes are derived, not hand-listed.** A weapon/armor recipe is its template's **component slots** at the
-  grade matching its rarity; a component's recipe is raw salvage; consumables/tools/misc are raw salvage keyed
+- **Recipes are derived, not hand-listed.** A weapon/armor/shield recipe is its template's **component slots** at
+  the grade matching its rarity; a component's recipe is raw salvage; consumables/tools/misc are raw salvage keyed
   by name. (`PC.itemRecipe(item)` in `app/items.js` is the single source; `null` for Legendary, raw salvage,
-  and currency.)
+  junk, and currency.)
+- **Junk (salvage fodder & GM loot).** A **Junk** category holds worthless oddments — scrap wiring, rusted gears,
+  tattered rags, bone shards, and the like — that **can't be crafted or used**, only **salvaged** for the
+  materials they list (some yield nothing at all). A few — **bottle caps, old-world coins, casino chips** — are
+  worthless as such but **traded as scrip in some settlements**. It's ideal low-tier loot: the whole catalog
+  (weapons, armor, shields, ammo, gear, junk, **components & raw salvage**) is browsable and **Add-able as a
+  reward** from the Item Catalog and cross-listed in the Codex, and material/component/junk stacks **merge** on
+  pickup so a handful of loot stays tidy.
 - **Salvaging** breaks **one** unit down: weapons/armor return **some of their components** (the higher-value
   half — edge/core parts first — at the item's grade); components and other items return **raw salvage**
   (Basic ≈ half min 1, Exotic floor half). Teardown is always **lossy** — no infinite loop.

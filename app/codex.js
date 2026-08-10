@@ -345,6 +345,23 @@
     },
   });
 
+  /* Junk — no use but salvage; a few trade as scrip. Handy low-tier GM loot. */
+  addSection({
+    key: "junk", icon: "🗑️", title: "Junk", blurb: "No use but salvage — a few trade as scrip in some settlements.",
+    list: () => (PC.ITEMS || []).filter((i) => i.category === "Junk").map((j) => ({ id: j.name, name: j.name, sub: (j.salvage && j.salvage.length ? "→ " + j.salvage.join(", ") : "no salvage") + (j.currency ? " · barter scrip" : ""), group: j.currency ? "Barter scrip" : "Scrap", keywords: `junk salvage scrap ${(j.salvage || []).join(" ")} ${j.currency ? "currency scrip barter" : ""} ${j.note || ""}` })),
+    detail: (id) => {
+      const j = (PC.ITEMS || []).find((i) => i.category === "Junk" && i.name === id); if (!j) return el("div", "muted", "Not found.");
+      const box = el("div"); const rows = el("div", "codex-kvs");
+      rows.appendChild(kv("Kind", "Junk — salvage only"));
+      rows.appendChild(kv("Weight", `${j.weight}`));
+      rows.appendChild(kv("Salvages to", j.salvage && j.salvage.length ? esc(j.salvage.join(", ")) : "nothing"));
+      if (j.currency) rows.appendChild(kv("Barter", "Traded as scrip in some settlements"));
+      box.appendChild(rows);
+      if (j.note) box.appendChild(el("p", "codex-desc", esc(j.note)));
+      return box;
+    },
+  });
+
   /* Crafting (salvage + component parts) */
   addSection({
     key: "crafting", icon: "🔨", title: "Crafting", blurb: "Raw salvage and the component parts they build into.",
