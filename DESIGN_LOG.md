@@ -1784,6 +1784,26 @@ CLAUDE.md, GAME_RULES. Cache-buster **v=107**.
 
 ---
 
+### 79. Utility item batch — alchemicals, a poison, everyday gear & barter tokens
+A second item-type audit found the combat side complete (weapons/armor/shields/ammo) but the **utility** side
+thin. Added ~21 items (Luke: build the utility batch):
+
+- **Consumables (+7):** thrown alchemicals — **Acid Flask, Alchemist's Fire, Holy Water, Flash Powder, Caltrops,
+  Tanglefoot Bag** — plus **Poison Vial** (coat a weapon; fills the gap where Antitoxin *cured* poison but nothing
+  *applied* it — serves the Amazon's poison theme). All GM-adjudicated notes (no self-effect), like Smoke Bomb.
+- **Tools (+6):** everyday gear the skill-kits didn't cover — **Crowbar** (aids Force), **Manacles, Lighter,
+  Flashlight, Signal Mirror, Whistle.**
+- **Misc (+8):** containers & shelter (**Pouch, Satchel, Tent, Map & Compass, Whetstone**) and — realizing the
+  recorded barter economy — concrete trade goods: **Ration Ticket, Salvage Chit, Trade Bar** (marked non-craftable,
+  since scrip is issued/traded, not made).
+
+All craftable items got sensible salvage recipes (`_override`); barter tokens went in `_nonCraft`; every new item
+has a flavor description. Catalog now ~376 items (Consumables 23 / Tools 28 / Misc 18). Verified: all appear in
+the catalog, add correctly (Poison Vial → inventory), no duplicate names, 0 console errors. Docs: CLAUDE.md,
+GAME_RULES (economy note). Cache-buster **v=108**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

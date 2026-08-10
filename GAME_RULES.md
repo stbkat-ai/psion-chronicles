@@ -775,8 +775,10 @@ Every catalog weapon records two extra properties:
 There is **no universal currency** in Psion Chronicles. The economy is **barter and trade** — goods, salvage,
 components, and services exchanged directly by relative value. Some **settlements run their own local currency
 and economy** (e.g. a military settlement using **ration tickets** as scrip). Those local currencies are just
-**in-game items** that occupy inventory space like anything else — there is no global money stat. *(Not built
-yet — recorded so no content, especially heritage traits/flaws, ever assumes a universal currency. The **Barter**
+**in-game items** that occupy inventory space like anything else — there is no global money stat. The catalog now
+stocks a few of these as concrete items — **Ration Ticket** (settlement scrip), **Salvage Chit**, and **Trade
+Bar** (a barter ingot) — non-craftable, since they're issued/traded rather than made. *(No money *stat* is built
+— recorded so no content, especially heritage traits/flaws, ever assumes a universal currency. The **Barter**
 skill covers direct-trade negotiation; it is deliberately **not** used as a heritage flaw, since barter is the
 universal exchange.)*
 

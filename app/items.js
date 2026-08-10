@@ -329,6 +329,14 @@ window.PC = window.PC || {};
   C("Waterskin", 3, "Holds a day of water."),
   C("Smoke Bomb", 1, "Creates a 15-ft smoke cloud (obscured)."),
   C("Flare", 0.5, "Bright light for several minutes."),
+  // — thrown alchemicals & applied poison (GM-adjudicated; no self-effect) —
+  C("Acid Flask", 1, "Thrown — splashes 2d6 acid on a target and may eat through armor (GM)."),
+  C("Alchemist's Fire", 1, "Thrown — sets the target Burning until it's put out (GM)."),
+  C("Holy Water", 0.5, "Thrown or splashed — sears undead, demons, and Veil-things (GM)."),
+  C("Flash Powder", 0.5, "Thrown — a blinding burst leaves those nearby Dazzled or Blinded (GM)."),
+  C("Caltrops", 2, "Scatter a 5-ft patch of spikes — difficult terrain that pricks who crosses it (GM)."),
+  C("Tanglefoot Bag", 1, "Thrown — bursts into sticky goo that leaves the target Rooted or Slowed (GM)."),
+  C("Poison Vial", 0.5, "Coat a weapon before a fight — its next hit leaves the target Poisoned (GM)."),
 
   /* ===== TOOLS =====
      Skill kits (4th arg = the Skill they support): one kit for every tool-using skill, so a
@@ -363,6 +371,13 @@ window.PC = window.PC || {};
   T("Comm Device", 1, "Short-range communication."),
   T("Lantern", 2, "Bright light in a radius."),
   T("Torch", 1, "Improvised light / fire source."),
+  // — everyday adventuring gear —
+  T("Crowbar", 4, "A steel pry-bar for forcing doors, crates, and hatches.", "Force"),
+  T("Manacles", 2, "Lockable iron cuffs for restraining a captive."),
+  T("Lighter", 0.5, "A reliable flame on demand — fire, fuses, and kindling."),
+  T("Flashlight", 1, "A focused electric beam for searching the dark."),
+  T("Signal Mirror", 0.5, "A polished mirror for flashing a signal across distance."),
+  T("Whistle", 0.5, "A shrill signal-whistle to rally, alert, or command."),
 
   /* ===== MISC ===== */
   M("Backpack", 2, "Carries your gear."),
@@ -375,6 +390,16 @@ window.PC = window.PC || {};
   M("Scrip / Currency", 0, "The coin of the Post-Veil world."),
   M("Journal & Pen", 1, "For notes and records."),
   M("Sigil Talisman", 1, "A personal ward."),
+  // — containers, shelter & navigation —
+  M("Pouch", 0.5, "A small belt pouch for coins, salvage, and oddments."),
+  M("Satchel", 1, "A shoulder bag for documents and small gear."),
+  M("Tent", 6, "A packable two-person shelter against the weather."),
+  M("Map & Compass", 0.5, "Charts and a lodestone needle for finding your way."),
+  M("Whetstone", 1, "A sharpening stone to hone a blade before a fight (GM)."),
+  // — barter economy: settlement scrip & trade goods (there is no universal coin) —
+  M("Ration Ticket", 0, "Settlement scrip — redeemable for a day's food and board."),
+  M("Salvage Chit", 0, "A stamped token traded at a settlement's salvage exchange."),
+  M("Trade Bar", 1, "A stamped ingot of scrap-alloy used as barter across settlements."),
   ];
 
   /* ===== BEGINNER (STARTING-GEAR) WEAPONS, grouped by type → subtype =====
@@ -760,6 +785,28 @@ window.PC = window.PC || {};
     "Scrip / Currency": "The scrip and coin traded across the Post-Veil world.",
     "Journal & Pen": "A bound journal and pen for keeping records.",
     "Sigil Talisman": "A personal warding sigil worn against ill fortune.",
+    // — Utility batch —
+    "Acid Flask": "A stoppered flask of caustic acid, thrown to splash and corrode.",
+    "Alchemist's Fire": "A flask of sticky fire that clings and burns until smothered.",
+    "Holy Water": "Blessed water that scalds the undead and Veil-touched.",
+    "Flash Powder": "A pinch of powder that erupts in a blinding, deafening flash.",
+    "Caltrops": "A handful of four-pointed spikes scattered to slow a pursuer.",
+    "Tanglefoot Bag": "A sack of alchemical goo that bursts into a gluey snare.",
+    "Poison Vial": "A dose of toxin brushed onto a blade before the fight.",
+    "Crowbar": "A steel pry-bar for forcing doors, crates, and hatches.",
+    "Manacles": "Lockable iron cuffs for restraining a captive.",
+    "Lighter": "A refillable lighter — a reliable flame on demand.",
+    "Flashlight": "A battery torch throwing a focused electric beam.",
+    "Signal Mirror": "A polished signaling mirror for flashing messages by daylight.",
+    "Whistle": "A shrill signal-whistle to rally allies or raise an alarm.",
+    "Pouch": "A small belt pouch for coins, salvage, and oddments.",
+    "Satchel": "A sturdy shoulder bag for papers and small gear.",
+    "Tent": "A packable shelter that sleeps two against the weather.",
+    "Map & Compass": "Charts and a lodestone needle for keeping your bearings.",
+    "Whetstone": "A sharpening stone to put a fresh edge on a blade.",
+    "Ration Ticket": "Settlement scrip, redeemable for a day's food and board.",
+    "Salvage Chit": "A stamped token traded at a settlement's salvage exchange.",
+    "Trade Bar": "A stamped ingot of scrap-alloy passed hand to hand as barter.",
   };
   PC.itemDesc = function (name) { return PC.ITEM_DESCRIPTIONS[name] || ""; };
   // Stamp the description onto each catalog item so copies (inventory, starting gear) carry it.
@@ -1029,9 +1076,18 @@ window.PC = window.PC || {};
     "Pistol Rounds": ["Scrap Metal", "Chemicals"], "Rifle Rounds": ["Scrap Metal", "Chemicals"], "Shotgun Shells": ["Scrap Metal", "Chemicals"],
     "Heavy Rounds": ["Scrap Metal", "Volatile Compound"], "Rockets": ["Scrap Metal", "Volatile Compound"], "Fuel Canister": ["Chemicals", "Volatile Compound"],
     "Chemical Canister": ["Chemicals", "Volatile Compound"], "Charge Pack": ["Power Cell", "Circuitry"],
+    // Alchemical throwables & poison
+    "Acid Flask": ["Chemicals"], "Alchemist's Fire": ["Chemicals", "Volatile Compound"], "Holy Water": ["Focus Crystal", "Botanicals"],
+    "Flash Powder": ["Chemicals"], "Caltrops": ["Scrap Metal"], "Tanglefoot Bag": ["Botanicals", "Chemicals"], "Poison Vial": ["Botanicals", "Chemicals"],
+    // Everyday tools
+    "Crowbar": ["Scrap Metal"], "Manacles": ["Scrap Metal"], "Lighter": ["Scrap Metal", "Chemicals"], "Flashlight": ["Circuitry", "Scrap Metal"],
+    "Signal Mirror": ["Scrap Metal"], "Whistle": ["Scrap Metal"],
+    // Containers, shelter & navigation
+    "Pouch": ["Leather"], "Satchel": ["Leather", "Cloth"], "Tent": ["Cloth"], "Map & Compass": ["Cloth", "Scrap Metal"], "Whetstone": ["Scrap Metal"],
   };
   var _catDefault = { "Consumable": ["Botanicals", "Chemicals"], "Tool": ["Scrap Metal", "Leather"], "Misc": ["Cloth", "Leather"], "Ammo": ["Scrap Metal"] };
-  var _nonCraft = { "Scrip / Currency": true };
+  // Currency-like barter goods aren't crafted — they're issued/traded.
+  var _nonCraft = { "Scrip / Currency": true, "Ration Ticket": true, "Salvage Chit": true, "Trade Bar": true };
   // Advisory crafting skill, from the recipe's primary material.
   var _craftSkill = {
     "Scrap Metal": "Laborer's Tools", "Pristine Alloy": "Laborer's Tools",
