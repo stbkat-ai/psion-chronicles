@@ -1888,6 +1888,41 @@ GAME_RULES (top table + prose + summary table), README, CLAUDE.md (9→10 herita
 
 ---
 
+### 83. Heritage #11 — The Celts (Way of the Wild Charge); Europe's fourth, the fear-dealer
+Luke: "do the celts next." Europe now had the **Franks** (plate duelist), **Norse** (mail frenzy), and **Rome**
+(disciplined line) — all resist or ignore fear and stand their ground. The Celts fill the opposite pole: the
+**light, fast, fear-*dealing* terror-charger** who wins in the first rush or not at all.
+
+- **Heritage "The Celts"** + **Fighting Style "Way of the Wild Charge"** (`app/data.js`). Signature **Great Swords**
+  — the long **La Tène slashing sword** (rule #67: reuses an existing subtype; the starter set already offers the
+  **Claymore**, a real Celtic great sword). **Light armor only** — the woad-painted, unarmored warrior trades
+  steel for speed and terror (contrast the Frankish plate, Norse/Roman mail). Deliberately shares the Great Swords
+  subtype with the Franks but inverts the doctrine (light & wild vs. heavy & defensive).
+- **6 combat skills** (5 active + 1 Passive): **Wild Charge** (charge → advantage + extra die, but you're exposed
+  till your next turn), **Carnyx Cry** (war-horn → area Fear), **Head-Taker** (a melee kill lets you surge half
+  your speed and Frightens witnesses), **Chariot Dash** (Dash past enemies without provoking), **Run Them Down**
+  (chase & strike a fleeing/Frightened foe), and the **Battle-Fury** passive (move ≥ half speed toward a foe →
+  first melee hit deals an extra die). Heritage grants **Wild Charge + Carnyx Cry** + the passive.
+- Traits **Druid-Taught** (Mythology/Paranormal — the druids' lore) and **Bardic Tongue** (Performance/Persuasion
+  — the bards' praise-song & satire; a neat inverse of Rome's *gravitas* flaw). Flaw **Impetuous → Concentration**
+  (fresh, unused flaw skill; the wild charge has no patience for the long careful hold — the direct foil to Rome's
+  Discipline and the Frankish sworn mind).
+- **Design intent — the four European poles now don't overlap:** Franks *compel a duel and outlast in plate*;
+  Norse *go all-out and refuse to fall*; Rome *holds the line and shrugs off fear*; Celts *deal fear, and are
+  light, fast, and all-or-nothing on the charge*. No combat-skill name collisions (note: Rome already had "Close
+  Ranks"; the Celtic pursuit skill is **Run Them Down**, and its charge is **Wild Charge**, distinct from the
+  Frankish "Lance Charge").
+
+Verified in-browser (Playwright): 11 heritages / 11 styles / **66** combat skills, no dup names; a seeded Celtic
+character shows **Traits → The Celts** (Druid-Taught, Bardic Tongue + the flaw), the Combat tab lists **Wild
+Charge** (Action) and the **Battle-Fury** passive, with **Carnyx Cry** under the Bonus Actions group (count 1,
+which is collapsed by default — same as the Norse's Berserkergang; confirmed it reveals on expand, **not** a bug);
+Claymore offered at creation; **0 console errors**. Codex needs no code change (reads live from `PC`). Docs:
+DESIGN_LOG, GAME_RULES (top table + prose + summary table + count 10→11), README, CLAUDE.md (10→11). Cache-buster
+**v=112**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

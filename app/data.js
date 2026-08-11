@@ -759,6 +759,17 @@ PC.FIGHTING_STYLES = [
       { name: "Close Ranks", action: "Reaction", effect: "The line does not let you pass: when a foe within your reach tries to leave it, make a melee attack against that foe; on a hit its movement immediately ends." },
       { name: "Discipline of the Legion", action: "Passive", effect: "The legion does not break: you have advantage on saves against Fear and against being forcibly moved or knocked prone, and once per battle you may treat a failed save against Fear as a success — the rank steadies you where a lone soldier would rout." },
     ] },
+  { name: "Way of the Wild Charge", heritage: "The Celts",
+    blurb: "Woad-painted and unarmored, the war-horn screaming — win the battle in the first rush or not at all. Speed, ferocity, and terror: the Celts broke the disciplined empires by making them run.",
+    startWeaponTypes: ["Heavy Weapons", "Thrown Weapons", "Archery"], // the long La Tène sword (Great Swords), thrown spears, sling/bow
+    skills: [
+      { name: "Wild Charge", action: "Action", effect: "Move up to your full speed toward a foe and make a melee attack. If you moved at least half your speed, the attack has advantage and deals an extra damage die — but until the start of your next turn, attacks against you also have advantage: you hold nothing back." },
+      { name: "Carnyx Cry", action: "Bonus Action", effect: "Sound the boar-headed war-horn and scream the battle-cry: each enemy within earshot must save or be Frightened until the end of its next turn — the wall of noise that broke legions before a blade was swung." },
+      { name: "Head-Taker", action: "Reaction", effect: "The first time each turn you drop a foe to 0 HP with a melee attack, you may immediately move up to half your speed, and the sight of the taken head forces each enemy that witnessed it to save or be Frightened until the end of its next turn." },
+      { name: "Chariot Dash", action: "Bonus Action", effect: "Ride the reckless speed of the war-band: Dash, and your movement this turn does not provoke reactions from any enemy you move past — you are through the line before it can turn." },
+      { name: "Run Them Down", action: "Reaction", effect: "When a Frightened or fleeing foe you can see moves, you may move up to your speed toward it and make a melee attack the moment you reach it — a broken enemy is a dead one." },
+      { name: "Battle-Fury", action: "Passive", effect: "On any turn you move at least half your speed toward an enemy before you attack, your first melee hit that turn deals an extra damage die — the whole weight of the charge rides the blade." },
+    ] },
 ];
 
 /* Flattened master list — every combat skill across all styles, tagged with its style.
@@ -824,6 +835,11 @@ PC.HERITAGES = [
     traits: [ { name: "Rule of Law", desc: "You are versed in codified law, citizenship, and civic administration — advantage on checks to argue a case, draft a binding contract or treaty, and deal with courts, magistrates, and bureaucracy; where Rome's authority is recognized your word carries the weight of the law." },
               { name: "Legion Engineer", desc: "Advantage on checks to raise military works — a fortified marching camp, roads, bridges, siege engines, and field fortifications — and to organize labor and logistics for a body of troops." } ],
     flaw: { name: "Roman Gravitas", desc: "The grave dignity of Rome has little patience for the mummer's art and the stage. Disadvantage on Performance.", disadvSkill: "Performance" } },
+  { name: "The Celts", blurb: "A present-day descendant of the Celtic peoples — Gauls, Britons, Gaels and their kin — the woad-painted warriors of the wild charge, the war-horn and the head-taking champions, reared among druids and bards. Where the empires drilled and dug in, the Celts came fast, loud, and fearless, and won or lost it all in the first rush.",
+    fightingStyle: "Way of the Wild Charge", combatSkills: ["Wild Charge", "Carnyx Cry"], weaponSubtype: "Great Swords", armorProf: ["Light"],  // the long La Tène slashing sword; light and unarmored — speed and terror over steel
+    traits: [ { name: "Druid-Taught", desc: "Advantage on Mythology and Paranormal checks — you carry the druids' keeping of the old gods, the sacred groves, the reading of omens, and the lore of the otherworld." },
+              { name: "Bardic Tongue", desc: "Advantage on Performance and Persuasion; reared on the bards' art — the praise-song that makes a hero, the satire that shames a king, and the tale that holds a whole hall." } ],
+    flaw: { name: "Impetuous", desc: "The wild charge has no patience for the long, careful hold; slow focus is not the Celtic way. Disadvantage on Concentration.", disadvSkill: "Concentration" } },
 ];
 
 /* --- Constants ----------------------------------------------------------- */

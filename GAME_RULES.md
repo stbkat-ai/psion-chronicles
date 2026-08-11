@@ -541,6 +541,7 @@ Fighting Style, Combat Skills, and Traits their Heritage opened up.
 | **The Franks** | Descendants of the Franks (Francia — cradle of chivalry & the medieval knight) | Way of the Oath | **Great Swords** (Heavy/STR) — the longsword | Light + Medium + **Heavy** | Acrobatics |
 | **The Norse** | Descendants of the Norse — the seafaring peoples of the North (longship & saga) | Way of the Raider | **Great Axes** (Heavy/STR) — the Dane axe | Light + Medium | Deception |
 | **Rome** | Descendants of Rome — the legions and the Republic-and-Empire (roads, law, the short sword) | Way of the Legion | **Short Swords** (Light/AGI) — the gladius | Light + Medium | Performance |
+| **The Celts** | Descendants of the Celtic peoples — Gauls, Britons, Gaels & kin (woad, war-horn, the wild charge) | Way of the Wild Charge | **Great Swords** (Heavy/STR) — the long La Tène slashing sword | Light only | Concentration |
 
 *More heritages are in development, built one at a time with Luke.* **Weapon convention (Luke):** every heritage
 uses **only existing weapon subtypes** — we do **not** add new ones. Where an iconic weapon has no subtype (the
@@ -613,8 +614,19 @@ hunter (The Amazon).
   Traits: **Rule of Law** (law, citizenship, administration) and **Legion Engineer** (camps, roads, siege works,
   logistics). Signature **Short Swords** (the gladius); Light + Medium armor (lorica — mail/segmented; **not** the
   Franks' full plate). Flaw **Performance** (Roman gravitas). *Europe's third heritage — the disciplined line, a
-  foil to the Frankish lone champion and the Norse berserker.* More European regions to come (Celts, Hellenes, a
-  gunpowder tradition, an occult tradition, Slavs, Iberia…).
+  foil to the Frankish lone champion and the Norse berserker.*
+- **Way of the Wild Charge** (The Celts) — the fearless, light-armored terror-charger: Wild Charge (charge for
+  advantage + a die, but expose yourself), Carnyx Cry (the war-horn — area Fear), Head-Taker (a kill lets you
+  surge forward and Frightens witnesses), Chariot Dash (Dash past enemies without provoking), Run Them Down (chase
+  and cut down a fleeing/Frightened foe), and the **Battle-Fury** passive (charge at least half your speed → your
+  first melee hit deals an extra die). Traits **Druid-Taught** (Mythology/Paranormal lore) and **Bardic Tongue**
+  (Performance/Persuasion — the praise-song and the satire). Signature **Great Swords** (the long La Tène slashing
+  sword); **Light armor only**. Flaw **Concentration** (*Impetuous* — the wild charge has no patience for the long,
+  careful hold). *Europe's fourth heritage and a distinct pole: where Rome resists fear and stands, and the Franks
+  duel in plate, the Celts are the **fear-dealers** — light, fast, and terrifying, winning it all in the first
+  rush.* **Europe = the Old World's "advanced" continent** — steel plate, and (per Luke) firearms, explosives,
+  channel & ritual weapons are on the table for its heritages (never tech/laser/plasma/living). More European
+  regions to come (Hellenes, a gunpowder tradition, an occult tradition, Slavs, Iberia…).
 
 ### Fighting Styles & Combat Skills (the mechanic)
 Combat Skills work like Kinetic Techniques: there are **many**, organized into categories called
@@ -634,7 +646,7 @@ forage with advantage, and leave no trail).
 - A style's Passive **can be learned by any character** with CSP, regardless of Heritage — as can any other
   style's skills.
 
-### Heritages → Fighting Styles (fresh roster — 10 built; growing region by region)
+### Heritages → Fighting Styles (fresh roster — 11 built; growing region by region)
 | Heritage | Fighting Style | Starting Combat Skills | Signature Passive | Traits | Flaw (disadvantage) |
 |---|---|---|---|---|---|
 | **North America** | Way of the Hunt | Hunter's Aim, Fade Away | Pathfinder | One with the Land, Keen Senses | *Unversed in Old-World Customs* — Etiquette |
@@ -647,6 +659,7 @@ forage with advantage, and leave no trail).
 | **The Franks** | Way of the Oath | Challenge, Cleaving Blow | Plate-Steel | Steel Resolve, Noble Bearing | *Clad in Steel* — Acrobatics |
 | **The Norse** | Way of the Raider | Berserkergang, Reaver's Swing | Valhalla-Bound | Keeper of the Sagas, Longship Raider | *A Straight Word* — Deception |
 | **Rome** | Way of the Legion | Pilum Throw, Gladius Work | Discipline of the Legion | Rule of Law, Legion Engineer | *Roman Gravitas* — Performance |
+| **The Celts** | Way of the Wild Charge | Wild Charge, Carnyx Cry | Battle-Fury | Druid-Taught, Bardic Tongue | *Impetuous* — Concentration |
 
 *More heritages are being built one at a time (see 3b). Each style holds **5 active skills + 1 Passive**. Full
 skill text lives in `app/data.js` (`PC.FIGHTING_STYLES`); the app is the source of truth.*
