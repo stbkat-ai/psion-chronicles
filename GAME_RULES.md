@@ -540,6 +540,7 @@ Fighting Style, Combat Skills, and Traits their Heritage opened up.
 | **The Amazon** | Descendants of the rainforest nations of the Amazon | Way of the Silent Dart | **Blowguns** (Quick/AGI) | Light only | Laborer's Tools |
 | **The Franks** | Descendants of the Franks (Francia — cradle of chivalry & the medieval knight) | Way of the Oath | **Great Swords** (Heavy/STR) — the longsword | Light + Medium + **Heavy** | Acrobatics |
 | **The Norse** | Descendants of the Norse — the seafaring peoples of the North (longship & saga) | Way of the Raider | **Great Axes** (Heavy/STR) — the Dane axe | Light + Medium | Deception |
+| **Rome** | Descendants of Rome — the legions and the Republic-and-Empire (roads, law, the short sword) | Way of the Legion | **Short Swords** (Light/AGI) — the gladius | Light + Medium | Performance |
 
 *More heritages are in development, built one at a time with Luke.* **Weapon convention (Luke):** every heritage
 uses **only existing weapon subtypes** — we do **not** add new ones. Where an iconic weapon has no subtype (the
@@ -596,8 +597,24 @@ hunter (The Amazon).
   **Heavy** armor. Flaw **Acrobatics** (full plate, no tumbling). *Distinct from the Andes: the Andes protect &
   hold formation; the Franks compel single combat and outlast in plate.* **Europe = the Old World's "advanced"
   continent** — steel plate, and (per Luke) firearms, explosives, channel & ritual weapons are on the table for
-  its heritages (never tech/laser/plasma/living). This is the first European heritage; more regions to come
-  (Norse, Celts, Hellenes/Romans, a gunpowder tradition, an occult tradition, Slavs, Iberia…).
+  its heritages (never tech/laser/plasma/living).
+- **Way of the Raider** (The Norse) — the seafaring berserker: Berserkergang (frenzy — advantage & extra damage,
+  but you're easier to hit), Reaver's Swing (cleave a second foe in reach), Shield-Breaker (ignore armor/shield
+  Defense, wrench a shield free), Skald's Cry (war-band advantage), Answer in Kind (take a hit, strike back), and
+  the **Valhalla-Bound** passive (once per battle, stay up at 1 HP for a turn instead of dropping). Traits:
+  **Keeper of the Sagas** (History/Mythology) and **Longship Raider** (pilot longships, board & haul with
+  advantage). Signature **Great Axes** (the Dane axe); Light + Medium armor (mail). Flaw **Deception** (the
+  plain-spoken oath). *Distinct from the Franks: the Norse trade defense for all-out aggression and refuse to fall.*
+- **Way of the Legion** (Rome) — the disciplined shield-and-shortsword line infantryman: Pilum Throw (thrown; a
+  bent pilum fouls the target's shield), Gladius Work (stab from behind the scutum — keep your shield Defense
+  while attacking, +die when an ally flanks the target), Scutum Wall (add your shield Defense for you or an ally),
+  Testudo (formation cover vs. missiles & area), Close Ranks (punish a foe leaving your reach), and the
+  **Discipline of the Legion** passive (advantage vs. Fear & forced movement/prone; shrug off one Fear per battle).
+  Traits: **Rule of Law** (law, citizenship, administration) and **Legion Engineer** (camps, roads, siege works,
+  logistics). Signature **Short Swords** (the gladius); Light + Medium armor (lorica — mail/segmented; **not** the
+  Franks' full plate). Flaw **Performance** (Roman gravitas). *Europe's third heritage — the disciplined line, a
+  foil to the Frankish lone champion and the Norse berserker.* More European regions to come (Celts, Hellenes, a
+  gunpowder tradition, an occult tradition, Slavs, Iberia…).
 
 ### Fighting Styles & Combat Skills (the mechanic)
 Combat Skills work like Kinetic Techniques: there are **many**, organized into categories called
@@ -617,7 +634,7 @@ forage with advantage, and leave no trail).
 - A style's Passive **can be learned by any character** with CSP, regardless of Heritage — as can any other
   style's skills.
 
-### Heritages → Fighting Styles (fresh roster — 8 built; growing region by region)
+### Heritages → Fighting Styles (fresh roster — 10 built; growing region by region)
 | Heritage | Fighting Style | Starting Combat Skills | Signature Passive | Traits | Flaw (disadvantage) |
 |---|---|---|---|---|---|
 | **North America** | Way of the Hunt | Hunter's Aim, Fade Away | Pathfinder | One with the Land, Keen Senses | *Unversed in Old-World Customs* — Etiquette |
@@ -628,6 +645,8 @@ forage with advantage, and leave no trail).
 | **The Andes** | Way of the Vanguard | Star-Mace, Bulwark | Highland-Bred | Master Builders, Keeper of the Quipu | *Ranks, Not Shadows* — Stealth |
 | **The Amazon** | Way of the Silent Dart | Poison Dart, Silent Shot | Venom-Wise | Green Apothecary, Unconquered | *Light on the Land* — Laborer's Tools |
 | **The Franks** | Way of the Oath | Challenge, Cleaving Blow | Plate-Steel | Steel Resolve, Noble Bearing | *Clad in Steel* — Acrobatics |
+| **The Norse** | Way of the Raider | Berserkergang, Reaver's Swing | Valhalla-Bound | Keeper of the Sagas, Longship Raider | *A Straight Word* — Deception |
+| **Rome** | Way of the Legion | Pilum Throw, Gladius Work | Discipline of the Legion | Rule of Law, Legion Engineer | *Roman Gravitas* — Performance |
 
 *More heritages are being built one at a time (see 3b). Each style holds **5 active skills + 1 Passive**. Full
 skill text lives in `app/data.js` (`PC.FIGHTING_STYLES`); the app is the source of truth.*

@@ -1856,6 +1856,38 @@ Cache-buster **v=110**.
 
 ---
 
+### 82. Heritage #10 — Rome (Way of the Legion); Europe's third, the disciplined line
+Back to the heritage roster (Luke: "continue Europe"). Europe had the **Franks** (plate duelist) and the
+**Norse** (axe berserker); Rome fills the missing pole — the **disciplined shield-and-shortsword line infantry**.
+
+- **Heritage "Rome"** + **Fighting Style "Way of the Legion"** (`app/data.js`). Signature subtype **Short Swords**
+  — the **gladius** (already the beginner Short Sword in `STARTER_WEAPONS_BY_SUBTYPE`), so creation offers the
+  historically perfect weapon with **no new subtype** (rule #67 honored — the pilum maps to Thrown, the scutum to
+  the shield system, all existing). Armor **Medium** (lorica mail/segmented) — **Heavy plate stays the Franks'
+  alone**, keeping that heritage distinct.
+- **6 combat skills** (5 active + 1 Passive): **Pilum Throw** (thrown; fouls a shield), **Gladius Work** (attack
+  while keeping shield Defense, +die when an ally flanks), **Scutum Wall** (lend shield Defense to an ally),
+  **Testudo** (formation cover vs. missiles/AoE), **Close Ranks** (punish a foe leaving your reach), and the
+  **Discipline of the Legion** passive (advantage vs. Fear & forced movement/prone; shrug off one Fear per
+  battle). Heritage grants **Pilum Throw + Gladius Work** + the passive. Traits **Rule of Law** and **Legion
+  Engineer**; flaw **Roman Gravitas → Performance** (a fresh, unused flaw skill — Roman severity vs. the stage).
+- **Design intent:** three European melee identities that don't overlap — Frankish **lone champion** (compel a
+  duel, outlast in plate), Norse **berserker** (all-out aggression, refuse to fall), Roman **line** (fight as a
+  unit, shields and formation). No combat-skill name collisions (note: "Hold the Line" was already the Andes' —
+  Rome's equivalent is **Close Ranks**).
+
+Also **fixed a stale-doc gap**: entry #73 (Norse) had updated only the top GAME_RULES table — the prose style
+list and the summary table were still missing the Norse. Added both the **Norse** and **Rome** prose bullets and
+summary-table rows while here.
+
+Verified in-browser (Playwright): 10 heritages / 10 styles / **60** combat skills, no dup names; a seeded Rome
+character shows **Traits → Rome** (Rule of Law, Legion Engineer + the flaw), **Combat** shows the two granted
+skills + the passive, Codex Heritages/Combat-Skills surface Rome & the Legion live, gladius offered at creation;
+**0 console errors**. Codex needs no code change (reads live from `PC`; no new content kind). Docs: DESIGN_LOG,
+GAME_RULES (top table + prose + summary table), README, CLAUDE.md (9→10 heritages). Cache-buster **v=111**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

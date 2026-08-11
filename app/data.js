@@ -748,6 +748,17 @@ PC.FIGHTING_STYLES = [
       { name: "Answer in Kind", action: "Reaction", effect: "When a foe hits you with a melee attack, you may take the blow and immediately strike back with a melee attack of your own — blood for blood." },
       { name: "Valhalla-Bound", action: "Passive", effect: "The first time each battle you would drop to 0 HP, you instead stay on your feet at 1 HP and fight on until the end of your next turn before you fall — no Norseman dies with their axe unswung." },
     ] },
+  { name: "Way of the Legion", heritage: "Rome",
+    blurb: "The gladius behind the great shield and the pilum before the charge — fight as one wall, hold the rank, and let no gap open. Rome's strength was never one soldier; it was the line.",
+    startWeaponTypes: ["Light Weapons", "Thrown Weapons", "Heavy Weapons"], // gladius (short sword), pilum (thrown), heavier line weapon
+    skills: [
+      { name: "Pilum Throw", action: "Action", effect: "Hurl a pilum before you close: a thrown-weapon attack that deals its damage on a hit, and if the target is using a shield the bent, barbed shaft fouls it — the target loses its shield's Defense bonus until it spends an action to wrench the pilum free (GM)." },
+      { name: "Gladius Work", action: "Action", effect: "The short, covered stab from behind the scutum: make a melee attack without dropping your guard — you keep your shield's Defense bonus this turn even though you attacked — and if an ally is within reach of your target, the blow lands with the weight of the line and deals an extra damage die." },
+      { name: "Scutum Wall", action: "Reaction", effect: "Raise the great shield: when you or an ally within your reach is hit by an attack, add your shield's Defense bonus against that hit; the guard holds for that ally until the start of your next turn." },
+      { name: "Testudo", action: "Action", effect: "Form the tortoise: until any of you moves, you and each adjacent ally gain three-quarters cover from ranged attacks and advantage on saves against area effects — locked shields turn aside the arrow-storm." },
+      { name: "Close Ranks", action: "Reaction", effect: "The line does not let you pass: when a foe within your reach tries to leave it, make a melee attack against that foe; on a hit its movement immediately ends." },
+      { name: "Discipline of the Legion", action: "Passive", effect: "The legion does not break: you have advantage on saves against Fear and against being forcibly moved or knocked prone, and once per battle you may treat a failed save against Fear as a success — the rank steadies you where a lone soldier would rout." },
+    ] },
 ];
 
 /* Flattened master list — every combat skill across all styles, tagged with its style.
@@ -808,6 +819,11 @@ PC.HERITAGES = [
     traits: [ { name: "Keeper of the Sagas", desc: "Advantage on History and Mythology; you carry your people's law, lineage, and legend in memory the way the skalds and law-speakers did, and can recite them at need." },
               { name: "Longship Raider", desc: "You can pilot and row longships and coastal craft, and you have advantage on Athletics to climb, board, haul, and force your way in — the sudden raid from the water is your birthright." } ],
     flaw: { name: "A Straight Word", desc: "Honor and the plain-spoken oath run deep; the sly lie and the con sit ill with you and never come easily. Disadvantage on Deception.", disadvSkill: "Deception" } },
+  { name: "Rome", blurb: "A present-day descendant of Rome — heir to the legions and to the Republic-and-Empire that bound the old world with roads, law, and the short sword. Raised to the standard and the line: the gladius behind the great shield, the pilum before the charge, and a discipline that does not break.",
+    fightingStyle: "Way of the Legion", combatSkills: ["Pilum Throw", "Gladius Work"], weaponSubtype: "Short Swords", armorProf: ["Medium"],  // lorica (mail / segmented plate) — Medium; full plate stays the Franks' alone
+    traits: [ { name: "Rule of Law", desc: "You are versed in codified law, citizenship, and civic administration — advantage on checks to argue a case, draft a binding contract or treaty, and deal with courts, magistrates, and bureaucracy; where Rome's authority is recognized your word carries the weight of the law." },
+              { name: "Legion Engineer", desc: "Advantage on checks to raise military works — a fortified marching camp, roads, bridges, siege engines, and field fortifications — and to organize labor and logistics for a body of troops." } ],
+    flaw: { name: "Roman Gravitas", desc: "The grave dignity of Rome has little patience for the mummer's art and the stage. Disadvantage on Performance.", disadvSkill: "Performance" } },
 ];
 
 /* --- Constants ----------------------------------------------------------- */
