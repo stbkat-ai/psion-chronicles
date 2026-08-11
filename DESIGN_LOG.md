@@ -1923,6 +1923,42 @@ DESIGN_LOG, GAME_RULES (top table + prose + summary table + count 10→11), READ
 
 ---
 
+### 84. Heritage #12 — The Hellenes (Way of the Phalanx); Europe's fifth, built as Rome's foil
+Luke: "now the hellenes." Rome (#10) already owns the "disciplined shield-line" pole, so the Hellenes are
+deliberately built as its **historical and mechanical foil**: the **long-spear phalanx** — reach, first-strike,
+and spacing control. Greece keeps you at the point; the legion beat the phalanx only by getting *inside* the
+spears. Two systems, two mechanics.
+
+- **Heritage "The Hellenes"** + **Fighting Style "Way of the Phalanx"** (`app/data.js`). Signature **Great Swords**
+  = the long **two-handed spear** (dory/sarissa), mapped per rule #67/3b (no Spears subtype; the two-handed reach
+  weapon rides the STR Great Swords bin — deliberately **no shield**, unlike Rome's one-handed gladius + scutum).
+  Armor **Medium** (the bronze panoply — linothorax/cuirass), i.e. Light + Medium.
+- **6 combat skills** (5 active + 1 Passive): **Set Spears** (Reaction — brace and halt a charge/approach, stop
+  its movement), **Overbear** (reach thrust: damage + push, so *you* set the distance), **Sarissa Reach** (Bonus —
+  extend reach, strike over the front rank), **Phalanx Advance** (advance-attack; ignore shield/cover and can't be
+  pushed while an ally is adjacent), **Give Ground** (Reaction — fighting withdrawal, step back without provoking +
+  thrust), and the **Reach of the Phalanx** passive (first melee hit each turn vs a foe that began *outside* your
+  reach → extra die; you strike first as they close). Heritage grants **Set Spears + Overbear** + the passive.
+- Traits **Philosopher's Mind** (Investigation/Persuasion — logic & rhetoric) and **Heirs of Hippocrates**
+  (Medicine/History — the classical learning: the physician, the mathematician, the long memory). Flaw **The
+  Reasoned Word → Intimidation** (fresh, unused flaw skill; the Hellene persuades where cruder folk threaten — a
+  neat inverse of the Pacific Islander's *Feared Warrior* strength).
+- **Design intent — Greece vs Rome as a matched pair:** Rome closes and stabs from behind the scutum (anti-fear,
+  testudo, short sword); Greece holds the enemy at spear's length, strikes first, and stops the charge (reach,
+  spacing, brace). No shared skill names; no combat-skill collisions.
+
+Also **normalized a small inconsistency** from #83: the Celts' `armorProf` was `["Light"]`; every other Light-only
+heritage uses `[]` (Light is universal and `armorProfClasses()` filters "Light" out anyway, so this was cosmetic —
+no behavior change). Set it to `[]`.
+
+Verified in-browser (Playwright): 12 heritages / 12 styles / **72** combat skills, no dup names; a seeded Hellene
+shows **Traits → The Hellenes** (Philosopher's Mind, Heirs of Hippocrates + the flaw), Combat lists **Overbear**
+(Action) and the **Reach of the Phalanx** passive, with **Set Spears** under the default-collapsed Reactions group
+(confirmed it reveals on expand); Codex surfaces the heritage & style live; **0 console errors**. Docs: DESIGN_LOG,
+GAME_RULES (top table + prose + summary table + count 11→12), README, CLAUDE.md (11→12). Cache-buster **v=113**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

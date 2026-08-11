@@ -770,6 +770,17 @@ PC.FIGHTING_STYLES = [
       { name: "Run Them Down", action: "Reaction", effect: "When a Frightened or fleeing foe you can see moves, you may move up to your speed toward it and make a melee attack the moment you reach it — a broken enemy is a dead one." },
       { name: "Battle-Fury", action: "Passive", effect: "On any turn you move at least half your speed toward an enemy before you attack, your first melee hit that turn deals an extra damage die — the whole weight of the charge rides the blade." },
     ] },
+  { name: "Way of the Phalanx", heritage: "The Hellenes",
+    blurb: "A hedge of long spears, moving as one — keep the enemy at the point, strike before they reach you, and stop a charge dead. Rome learned to beat the phalanx only by getting inside the spears.",
+    startWeaponTypes: ["Heavy Weapons", "Thrown Weapons", "Archery"], // the long two-handed spear (dory/sarissa → Great Swords), thrown javelins, the peltast's bow/sling
+    skills: [
+      { name: "Set Spears", action: "Reaction", effect: "Brace the long spear against an approach: when an enemy enters your reach or charges you, make a melee attack against it before it can strike, and on a hit its movement ends — the hedge of points halts the rush." },
+      { name: "Overbear", action: "Action", effect: "A two-handed thrust with the full weight behind it: a melee attack that on a hit deals extra damage and pushes the target back out of its own reach — you decide the distance the fight is fought at." },
+      { name: "Sarissa Reach", action: "Bonus Action", effect: "Level the long pike: until the start of your next turn your melee attacks gain extended reach, and you may strike a foe engaged with an ally in front of you without being adjacent yourself — the second rank kills over the first." },
+      { name: "Phalanx Advance", action: "Action", effect: "The wall moves as one: move up to your speed and make a melee attack; while you and at least one ally are adjacent, the attack ignores the target's shield or cover bonus and you cannot be pushed back this turn." },
+      { name: "Give Ground", action: "Reaction", effect: "A fighting withdrawal: when a foe closes inside your reach or hits you, step back up to 10 ft without provoking reactions and make a spear thrust as you go, keeping the enemy at the point." },
+      { name: "Reach of the Phalanx", action: "Passive", effect: "You threaten farther than they expect: the first melee attack you make each turn against a foe that began its turn outside your reach deals an extra damage die — you strike first as they close the distance." },
+    ] },
 ];
 
 /* Flattened master list — every combat skill across all styles, tagged with its style.
@@ -836,10 +847,15 @@ PC.HERITAGES = [
               { name: "Legion Engineer", desc: "Advantage on checks to raise military works — a fortified marching camp, roads, bridges, siege engines, and field fortifications — and to organize labor and logistics for a body of troops." } ],
     flaw: { name: "Roman Gravitas", desc: "The grave dignity of Rome has little patience for the mummer's art and the stage. Disadvantage on Performance.", disadvSkill: "Performance" } },
   { name: "The Celts", blurb: "A present-day descendant of the Celtic peoples — Gauls, Britons, Gaels and their kin — the woad-painted warriors of the wild charge, the war-horn and the head-taking champions, reared among druids and bards. Where the empires drilled and dug in, the Celts came fast, loud, and fearless, and won or lost it all in the first rush.",
-    fightingStyle: "Way of the Wild Charge", combatSkills: ["Wild Charge", "Carnyx Cry"], weaponSubtype: "Great Swords", armorProf: ["Light"],  // the long La Tène slashing sword; light and unarmored — speed and terror over steel
+    fightingStyle: "Way of the Wild Charge", combatSkills: ["Wild Charge", "Carnyx Cry"], weaponSubtype: "Great Swords", armorProf: [],  // Light only (Light is universal) — the long La Tène slashing sword; unarmored, speed and terror over steel
     traits: [ { name: "Druid-Taught", desc: "Advantage on Mythology and Paranormal checks — you carry the druids' keeping of the old gods, the sacred groves, the reading of omens, and the lore of the otherworld." },
               { name: "Bardic Tongue", desc: "Advantage on Performance and Persuasion; reared on the bards' art — the praise-song that makes a hero, the satire that shames a king, and the tale that holds a whole hall." } ],
     flaw: { name: "Impetuous", desc: "The wild charge has no patience for the long, careful hold; slow focus is not the Celtic way. Disadvantage on Concentration.", disadvSkill: "Concentration" } },
+  { name: "The Hellenes", blurb: "A present-day descendant of the Hellenic world — the Greek city-states, Sparta and Athens, Macedon and the kingdoms that followed Alexander. Heir to the phalanx and the long spear, and to the gymnasium, the theatre, and the birth of philosophy, mathematics, and medicine.",
+    fightingStyle: "Way of the Phalanx", combatSkills: ["Set Spears", "Overbear"], weaponSubtype: "Great Swords", armorProf: ["Medium"],  // the long two-handed spear (dory/sarissa) → Great Swords per rule 3b; bronze panoply (linothorax/cuirass) = Medium
+    traits: [ { name: "Philosopher's Mind", desc: "Advantage on Investigation and Persuasion; schooled in logic, rhetoric, and the art of argument, you reason from first principles and can carry a debate before any crowd." },
+              { name: "Heirs of Hippocrates", desc: "Advantage on Medicine and History; you inherit the classical learning — the physician's craft, the mathematician's proof, and the long memory of the Hellenic world." } ],
+    flaw: { name: "The Reasoned Word", desc: "The Hellene reasons and persuades where cruder folk simply threaten; the bully's art comes poorly to you. Disadvantage on Intimidation.", disadvSkill: "Intimidation" } },
 ];
 
 /* --- Constants ----------------------------------------------------------- */
