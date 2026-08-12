@@ -1959,6 +1959,44 @@ GAME_RULES (top table + prose + summary table + count 11→12), README, CLAUDE.m
 
 ---
 
+### 85. Heritage #13 — Iberia (Way of the Tercio); the gunpowder heritage — first Firearms + Explosives
+Luke picked **Iberia** for "the gunpowder tradition" (asked which region it was; chose the Spanish/Portuguese
+tercio). This **merges the roadmap's two separate slots** — "a gunpowder tradition" and "Iberia" — into one, and
+it's the **first heritage to actually use the Firearms + Explosives palette** Luke opened for Europe back in #69
+(no prior heritage had touched guns). Naming follows the region-style already in use (The Andes/The Amazon/Rome):
+**"Iberia."**
+
+- **Heritage "Iberia"** + **Fighting Style "Way of the Tercio"** (`app/data.js`). Signature **Rifles** = the
+  arquebus/musket (**Firearms/CON** — the roster's **first CON-attack heritage**; every prior signature was STR or
+  AGI). Armor **Medium** (morion & breastplate). Starters are modern (Bolt-Action/Hunting Rifle) — consistent with
+  the standing "present-day descendant" framing (ancestral tercio flavor, modern gear).
+- **6 combat skills** (5 active + 1 Passive): **Give Fire** (volley shot → Dazes target + neighbours in shock/
+  smoke), **Grenado** (thrown black-powder grenade — burst + prone; the Explosives half), **Countermarch** (Bonus
+  — reload + fall back behind the line without provoking, the rolling-fire tercio), **Pike Guard** (Reaction — set
+  the pike to shield the gunners, stop a charge, attacker at disadvantage — the "pike" of pike-and-shot),
+  **Breastplate-Breaker** (a shot that ignores armor & shield Defense — the ball that ended the age of plate), and
+  the **Powder and Steel** passive (freely swap firearm/polearm; reload once each turn free — so the reload-tax the
+  other skills imply is handled). Heritage grants **Give Fire + Grenado** (one firearm, one explosive — both halves
+  at level 1) + the passive.
+- Traits **Powder and Shot** (Technology/Deft Tools — the gunsmith who mixes a charge and clears a jam) and
+  **Merchant-Adventurer** (Language/Barter — the globe-spanning sea empire). Flaw **No Truck with the Occult →
+  Paranormal** (fresh, unused flaw skill; the crusading faith dismisses the occult — a deliberate inverse of the
+  Celts' *Druid-Taught* strength and a foil to the planned occult heritage).
+- **Design intent:** even though Rome/Hellenes already cover "formation," Iberia is unmistakably distinct — it's
+  the **gunpowder** pole (ranged CON firearms + thrown explosives + the reload/volley economy), which no other
+  heritage touches. Pike Guard is the one melee/pike nod (kept clearly ally-protection so it doesn't clone the
+  Hellene *Set Spears* self-brace).
+
+Verified in-browser (Playwright): 13 heritages / 13 styles / **78** combat skills, no dup names; a seeded Iberian
+shows **Traits → Iberia** (Powder and Shot, Merchant-Adventurer + the flaw), Combat lists both granted skills
+(**Give Fire**, **Grenado**) + the **Powder and Steel** passive; Codex surfaces heritage & style live; **0 console
+errors**. Firearms attribute confirmed **CON**; Rifles starters offered at creation. Codex needs no code change
+(reads live; Firearms/Explosives subtypes already listed). Docs: DESIGN_LOG, GAME_RULES (top table + prose +
+summary table + count 12→13, "regions to come" updated — gunpowder & Iberia now spent), README, CLAUDE.md (12→13).
+Cache-buster **v=114**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

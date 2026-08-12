@@ -543,6 +543,7 @@ Fighting Style, Combat Skills, and Traits their Heritage opened up.
 | **Rome** | Descendants of Rome — the legions and the Republic-and-Empire (roads, law, the short sword) | Way of the Legion | **Short Swords** (Light/AGI) — the gladius | Light + Medium | Performance |
 | **The Celts** | Descendants of the Celtic peoples — Gauls, Britons, Gaels & kin (woad, war-horn, the wild charge) | Way of the Wild Charge | **Great Swords** (Heavy/STR) — the long La Tène slashing sword | Light only | Concentration |
 | **The Hellenes** | Descendants of the Hellenic world — Greek city-states, Sparta, Athens, Macedon (the phalanx; philosophy) | Way of the Phalanx | **Great Swords** (Heavy/STR) — the long two-handed spear (dory/sarissa) | Light + Medium | Intimidation |
+| **Iberia** | Descendants of Iberia — the Spanish & Portuguese crowns (the tercio, the powder empire, the age of sail) | Way of the Tercio | **Rifles** (Firearms/**CON**) — the arquebus/musket | Light + Medium | Paranormal |
 
 *More heritages are in development, built one at a time with Luke.* **Weapon convention (Luke):** every heritage
 uses **only existing weapon subtypes** — we do **not** add new ones. Where an iconic weapon has no subtype (the
@@ -637,8 +638,20 @@ hunter (The Amazon).
   learning). Signature **Great Swords** = the long two-handed spear (dory/sarissa, per 3b); Light + Medium armor
   (bronze panoply). Flaw **Intimidation** (*The Reasoned Word* — the Hellene persuades where others threaten).
   *The deliberate foil to Rome: the phalanx keeps you at spear's length and strikes first; the legion beat it by
-  getting **inside** the reach. Greece = reach & spacing; Rome = close shield-line & short sword.* More European
-  regions to come (a gunpowder tradition, an occult tradition, Slavs, Iberia…).
+  getting **inside** the reach. Greece = reach & spacing; Rome = close shield-line & short sword.*
+- **Way of the Tercio** (Iberia) — the pike-and-shot **gunpowder** heritage, and the **first to use Firearms +
+  Explosives** (the palette Luke opened for Europe): Give Fire (a volley shot that Dazes the target & its
+  neighbours in smoke and shock), Grenado (a thrown black-powder grenade — burst damage + prone), Countermarch
+  (Bonus — reload and fall back behind the line without provoking), Pike Guard (Reaction — set the pike to shield
+  the gunners, stop a charge, attacker at disadvantage), Breastplate-Breaker (a heavy shot that ignores armor &
+  shield Defense — the ball that ended the age of plate), and the **Powder and Steel** passive (freely swap
+  firearm/polearm; reload once each turn without spending an action). Traits **Powder and Shot** (Technology/Deft
+  Tools — the gunsmith) and **Merchant-Adventurer** (Language/Barter — the globe-spanning sea empire). Signature
+  **Rifles** = the arquebus/musket (**Firearms/CON** — the roster's first CON-attack heritage); Light + Medium
+  armor (morion & breastplate). Flaw **Paranormal** (*No Truck with the Occult* — the crusading faith dismisses
+  the occult; a deliberate foil to the Celts' druid-lore and the planned occult heritage). *This heritage merges
+  the roadmap's separate "gunpowder tradition" and "Iberia" slots into one — Luke's call.* More European regions
+  to come (an occult tradition, the Slavs, the Baltic/steppe…).
 
 ### Fighting Styles & Combat Skills (the mechanic)
 Combat Skills work like Kinetic Techniques: there are **many**, organized into categories called
@@ -658,7 +671,7 @@ forage with advantage, and leave no trail).
 - A style's Passive **can be learned by any character** with CSP, regardless of Heritage — as can any other
   style's skills.
 
-### Heritages → Fighting Styles (fresh roster — 12 built; growing region by region)
+### Heritages → Fighting Styles (fresh roster — 13 built; growing region by region)
 | Heritage | Fighting Style | Starting Combat Skills | Signature Passive | Traits | Flaw (disadvantage) |
 |---|---|---|---|---|---|
 | **North America** | Way of the Hunt | Hunter's Aim, Fade Away | Pathfinder | One with the Land, Keen Senses | *Unversed in Old-World Customs* — Etiquette |
@@ -673,6 +686,7 @@ forage with advantage, and leave no trail).
 | **Rome** | Way of the Legion | Pilum Throw, Gladius Work | Discipline of the Legion | Rule of Law, Legion Engineer | *Roman Gravitas* — Performance |
 | **The Celts** | Way of the Wild Charge | Wild Charge, Carnyx Cry | Battle-Fury | Druid-Taught, Bardic Tongue | *Impetuous* — Concentration |
 | **The Hellenes** | Way of the Phalanx | Set Spears, Overbear | Reach of the Phalanx | Philosopher's Mind, Heirs of Hippocrates | *The Reasoned Word* — Intimidation |
+| **Iberia** | Way of the Tercio | Give Fire, Grenado | Powder and Steel | Powder and Shot, Merchant-Adventurer | *No Truck with the Occult* — Paranormal |
 
 *More heritages are being built one at a time (see 3b). Each style holds **5 active skills + 1 Passive**. Full
 skill text lives in `app/data.js` (`PC.FIGHTING_STYLES`); the app is the source of truth.*

@@ -781,6 +781,17 @@ PC.FIGHTING_STYLES = [
       { name: "Give Ground", action: "Reaction", effect: "A fighting withdrawal: when a foe closes inside your reach or hits you, step back up to 10 ft without provoking reactions and make a spear thrust as you go, keeping the enemy at the point." },
       { name: "Reach of the Phalanx", action: "Passive", effect: "You threaten farther than they expect: the first melee attack you make each turn against a foe that began its turn outside your reach deals an extra damage die — you strike first as they close the distance." },
     ] },
+  { name: "Way of the Tercio", heritage: "Iberia",
+    blurb: "Pike-and-shot: the disciplined square that traded steel for the roar of black powder. Level the arquebus, give fire by ranks, and let the grenado and the pike do the rest. This is the tradition that ended the age of plate.",
+    startWeaponTypes: ["Firearms", "Heavy Weapons", "Explosives"], // the arquebus/musket (Rifles), the pike (→ Heavy), the grenado (Explosives)
+    skills: [
+      { name: "Give Fire", action: "Action", effect: "The massed command to fire: a firearm attack that deals an extra damage die, and on a hit the target and any enemy adjacent to it must save or be Dazed (disadvantage on its next attack) until the end of its next turn — the shock, smoke, and roar of the volley." },
+      { name: "Grenado", action: "Action", effect: "Light and hurl a black-powder grenado: each creature in a small burst takes the damage (a save halves it) and is knocked prone on a failed save — the first grenades were clay and iron and terror." },
+      { name: "Countermarch", action: "Bonus Action", effect: "The rolling fire of the tercio: reload your firearm and step back up to 10 ft without provoking reactions, as the next rank steps up to take your place at the front." },
+      { name: "Pike Guard", action: "Reaction", effect: "Pike-and-shot: when an enemy moves to attack you or an ally within your reach, set the pike — its movement ends and it makes that attack at disadvantage, the hedge of points shielding the gunners behind." },
+      { name: "Breastplate-Breaker", action: "Action", effect: "A heavy shot at close range: a firearm attack that ignores the target's armor and shield Defense bonus — the black-powder ball that punched through plate and ended the knight's reign." },
+      { name: "Powder and Steel", action: "Passive", effect: "Drilled in pike-and-shot, you may draw or stow a firearm or polearm freely, and once on each of your turns you may reload a firearm without spending an action — the tercio never stops firing." },
+    ] },
 ];
 
 /* Flattened master list — every combat skill across all styles, tagged with its style.
@@ -856,6 +867,11 @@ PC.HERITAGES = [
     traits: [ { name: "Philosopher's Mind", desc: "Advantage on Investigation and Persuasion; schooled in logic, rhetoric, and the art of argument, you reason from first principles and can carry a debate before any crowd." },
               { name: "Heirs of Hippocrates", desc: "Advantage on Medicine and History; you inherit the classical learning — the physician's craft, the mathematician's proof, and the long memory of the Hellenic world." } ],
     flaw: { name: "The Reasoned Word", desc: "The Hellene reasons and persuades where cruder folk simply threaten; the bully's art comes poorly to you. Disadvantage on Intimidation.", disadvSkill: "Intimidation" } },
+  { name: "Iberia", blurb: "A present-day descendant of Iberia — the Spanish and Portuguese crowns whose tercios, powder, and ocean-crossing ships remade the world. Heir to the age of pike-and-shot: the arquebus and the grenado, the disciplined square that first traded steel for the roar of black powder.",
+    fightingStyle: "Way of the Tercio", combatSkills: ["Give Fire", "Grenado"], weaponSubtype: "Rifles", armorProf: ["Medium"],  // the arquebus/musket → Rifles (Firearms/CON); morion & breastplate = Medium. First heritage to use the Firearms+Explosives palette (rule #69).
+    traits: [ { name: "Powder and Shot", desc: "Advantage on Technology and Deft Tools — you know powder, ball, primer, and mechanism cold: maintain and repair firearms, mix a charge, and clear a jam under fire." },
+              { name: "Merchant-Adventurer", desc: "Advantage on Language and Barter; heir to a seaborne empire that spanned the globe, you can deal, bargain, and make yourself understood in any port and half its tongues." } ],
+    flaw: { name: "No Truck with the Occult", desc: "The crusading faith brooks no dealing with pagan lore, spirits, or the occult — such things you dismiss or fear rather than study. Disadvantage on Paranormal.", disadvSkill: "Paranormal" } },
 ];
 
 /* --- Constants ----------------------------------------------------------- */
