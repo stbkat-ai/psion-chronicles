@@ -1997,6 +1997,40 @@ Cache-buster **v=114**.
 
 ---
 
+### 86. Heritage #14 — The Slavs (Way of the Long War); Europe's seventh, the attrition pole
+Luke: "let's do the slavs." Built deliberately clear of the two heritages the Slavs risk echoing — the **Norse**
+(all-out frenzy) and the **Great North** (winter endurance). The Slavs' pole is **attrition and the frontier war**:
+give ground on purpose, fight from the forest, and grow stronger the longer the battle drags on.
+
+- **Heritage "The Slavs"** + **Fighting Style "Way of the Long War"** (`app/data.js`). Signature **Axes** = the
+  one-handed **bearded axe** — a **fresh signature subtype** (the Norse hold "Great Axes," the big Dane axe; the
+  smaller one-handed "Axes" bin was still unused). Armor **Medium** (druzhina mail/lamellar). Starters
+  Battleaxe/Hatchet.
+- **6 combat skills** (5 active + 1 Passive): **Axe-Hook** (hook the beard of the axe — wrench a shield aside or
+  drag the target in), **Bear's Hide** (Reaction — shrug a hit; can't be moved/proned), **Feigned Retreat** (Bonus
+  — withdraw without provoking, then punish the pursuer at advantage and stop it — the false rout), **From the
+  Treeline** (partisan ambush from cover: strike at advantage and stay hidden), **Rasputitsa** (Reaction — the
+  mud/mire that stopped every invader: halve a mover's speed, no Dash), and the signature **Outlast** passive
+  (+1 melee damage per full round of combat, to +5 — the attrition mechanic; no other heritage scales with time).
+  Heritage grants **Axe-Hook + Bear's Hide** + the passive.
+- Traits **Hard-Wintered** (Fortitude/Tolerance — endure cold, hunger, poison, pain) and **Old Beast-Lore**
+  (Mythology/Zoology — the forest's stories & creatures; kept *off* Paranormal so it doesn't clone the Celts'
+  Druid-Taught). Flaw **The Commune's Way → Barter** (fresh, unused flaw skill; the non-commercial peasant commune
+  is fleeced in any market — a foil to Iberia's *Merchant-Adventurer* Barter strength).
+- **Design intent:** the **Outlast** time-scaling passive + Feigned Retreat + Rasputitsa give the Slavs a genuinely
+  new feel — a fighter who *wants* the long, grinding battle and turns the ground and the pursuit against the foe,
+  where the Norse want it fast and the Great North just endures. (Note: the occult side of Slavic folklore is left
+  for the planned Ritual/occult heritage; the Slavs stay martial with only a beast-lore flavor trait.)
+
+Verified in-browser (Playwright): 14 heritages / 14 styles / **84** combat skills, no dup names; a seeded Slav
+shows **Traits → The Slavs** (Hard-Wintered, Old Beast-Lore + the flaw), Combat lists **Axe-Hook** (Action) + the
+**Outlast** passive, with **Bear's Hide** under the default-collapsed Reactions group (confirmed reveals on
+expand); Codex live; **0 console errors**. Axes starters offered at creation; all four trait skills valid. Docs:
+DESIGN_LOG, GAME_RULES (top table + prose + summary table + count 13→14, regions-to-come updated), README,
+CLAUDE.md (13→14). Cache-buster **v=115**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

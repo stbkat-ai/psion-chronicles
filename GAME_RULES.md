@@ -544,6 +544,7 @@ Fighting Style, Combat Skills, and Traits their Heritage opened up.
 | **The Celts** | Descendants of the Celtic peoples — Gauls, Britons, Gaels & kin (woad, war-horn, the wild charge) | Way of the Wild Charge | **Great Swords** (Heavy/STR) — the long La Tène slashing sword | Light only | Concentration |
 | **The Hellenes** | Descendants of the Hellenic world — Greek city-states, Sparta, Athens, Macedon (the phalanx; philosophy) | Way of the Phalanx | **Great Swords** (Heavy/STR) — the long two-handed spear (dory/sarissa) | Light + Medium | Intimidation |
 | **Iberia** | Descendants of Iberia — the Spanish & Portuguese crowns (the tercio, the powder empire, the age of sail) | Way of the Tercio | **Rifles** (Firearms/**CON**) — the arquebus/musket | Light + Medium | Paranormal |
+| **The Slavs** | Descendants of the Slavic peoples — Rus, Poles, Serbs, Czechs, Bulgars & kin (the forest, the long frontier war) | Way of the Long War | **Axes** (Heavy/STR) — the one-handed bearded axe | Light + Medium | Barter |
 
 *More heritages are in development, built one at a time with Luke.* **Weapon convention (Luke):** every heritage
 uses **only existing weapon subtypes** — we do **not** add new ones. Where an iconic weapon has no subtype (the
@@ -650,8 +651,19 @@ hunter (The Amazon).
   **Rifles** = the arquebus/musket (**Firearms/CON** — the roster's first CON-attack heritage); Light + Medium
   armor (morion & breastplate). Flaw **Paranormal** (*No Truck with the Occult* — the crusading faith dismisses
   the occult; a deliberate foil to the Celts' druid-lore and the planned occult heritage). *This heritage merges
-  the roadmap's separate "gunpowder tradition" and "Iberia" slots into one — Luke's call.* More European regions
-  to come (an occult tradition, the Slavs, the Baltic/steppe…).
+  the roadmap's separate "gunpowder tradition" and "Iberia" slots into one — Luke's call.*
+- **Way of the Long War** (The Slavs) — the forest-and-frontier **attrition** fighter: Axe-Hook (bearded-axe
+  hook — wrench a shield aside or drag the target in), Bear's Hide (Reaction — shrug a hit; can't be moved or
+  proned), Feigned Retreat (Bonus — fall back without provoking, then punish the pursuer at advantage and stop
+  it), From the Treeline (partisan ambush from cover; strike at advantage and stay hidden), Rasputitsa (Reaction —
+  the mud/mire that stopped invaders: halve a mover's speed, no Dash), and the **Outlast** passive (+1 melee
+  damage for every full round of combat that passes, to +5 — you only grow stronger the longer it drags on).
+  Traits **Hard-Wintered** (Fortitude/Tolerance — endure cold, hunger, poison, pain) and **Old Beast-Lore**
+  (Mythology/Zoology — the forest's stories and creatures). Signature **Axes** = the one-handed bearded axe (a
+  fresh subtype); Light + Medium armor (druzhina mail/lamellar). Flaw **Barter** (*The Commune's Way* — the
+  non-commercial peasant is fleeced in any market; a foil to Iberia's Merchant-Adventurer). *A distinct pole from
+  the Norse (all-out frenzy) and the Great North (winter endurance): the Slavs trade nothing away, give ground on
+  purpose, and win the long war.* More European regions to come (an occult tradition, the Baltic/steppe…).
 
 ### Fighting Styles & Combat Skills (the mechanic)
 Combat Skills work like Kinetic Techniques: there are **many**, organized into categories called
@@ -671,7 +683,7 @@ forage with advantage, and leave no trail).
 - A style's Passive **can be learned by any character** with CSP, regardless of Heritage — as can any other
   style's skills.
 
-### Heritages → Fighting Styles (fresh roster — 13 built; growing region by region)
+### Heritages → Fighting Styles (fresh roster — 14 built; growing region by region)
 | Heritage | Fighting Style | Starting Combat Skills | Signature Passive | Traits | Flaw (disadvantage) |
 |---|---|---|---|---|---|
 | **North America** | Way of the Hunt | Hunter's Aim, Fade Away | Pathfinder | One with the Land, Keen Senses | *Unversed in Old-World Customs* — Etiquette |
@@ -687,6 +699,7 @@ forage with advantage, and leave no trail).
 | **The Celts** | Way of the Wild Charge | Wild Charge, Carnyx Cry | Battle-Fury | Druid-Taught, Bardic Tongue | *Impetuous* — Concentration |
 | **The Hellenes** | Way of the Phalanx | Set Spears, Overbear | Reach of the Phalanx | Philosopher's Mind, Heirs of Hippocrates | *The Reasoned Word* — Intimidation |
 | **Iberia** | Way of the Tercio | Give Fire, Grenado | Powder and Steel | Powder and Shot, Merchant-Adventurer | *No Truck with the Occult* — Paranormal |
+| **The Slavs** | Way of the Long War | Axe-Hook, Bear's Hide | Outlast | Hard-Wintered, Old Beast-Lore | *The Commune's Way* — Barter |
 
 *More heritages are being built one at a time (see 3b). Each style holds **5 active skills + 1 Passive**. Full
 skill text lives in `app/data.js` (`PC.FIGHTING_STYLES`); the app is the source of truth.*

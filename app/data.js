@@ -792,6 +792,17 @@ PC.FIGHTING_STYLES = [
       { name: "Breastplate-Breaker", action: "Action", effect: "A heavy shot at close range: a firearm attack that ignores the target's armor and shield Defense bonus — the black-powder ball that punched through plate and ended the knight's reign." },
       { name: "Powder and Steel", action: "Passive", effect: "Drilled in pike-and-shot, you may draw or stow a firearm or polearm freely, and once on each of your turns you may reload a firearm without spending an action — the tercio never stops firing." },
     ] },
+  { name: "Way of the Long War", heritage: "The Slavs",
+    blurb: "Let them march in. The forest, the winter, and the long war are on your side — hook them with the axe, fall back and swallow the pursuit, and grow stronger with every hour the fight drags on. Empires come; the Slavs outlast them.",
+    startWeaponTypes: ["Heavy Weapons", "Archery", "Thrown Weapons"], // the bearded axe (Axes), the bow, thrown axes/spears
+    skills: [
+      { name: "Axe-Hook", action: "Action", effect: "Hook with the beard of the axe: a melee attack that on a hit deals its damage and then either wrenches the target's shield aside (it loses its shield's Defense bonus until it spends an action) or drags the target up to 5 ft toward you." },
+      { name: "Bear's Hide", action: "Reaction", effect: "Shrug the blow like the bear: when you are hit, reduce the damage you take, and that attack cannot knock you prone or move you an inch — nothing shifts you from the ground you hold." },
+      { name: "Feigned Retreat", action: "Bonus Action", effect: "The false rout that has swallowed armies: fall back up to your speed without provoking reactions; the first enemy that pursues you into your reach before your next turn is struck at advantage and its movement immediately ends." },
+      { name: "From the Treeline", action: "Action", effect: "The partisan's strike: if you are in cover or lightly obscured, make an attack with advantage that deals an extra damage die, and you remain hidden afterward — the enemy never learns where the blow came from." },
+      { name: "Rasputitsa", action: "Reaction", effect: "Name the mud and mire that stopped every invader: when an enemy moves within your reach, the ground itself fights them — their speed is halved and they cannot Dash until the end of their next turn." },
+      { name: "Outlast", action: "Passive", effect: "For each full round of combat that has passed, your melee attacks deal +1 damage (to a maximum of +5) — you wear the enemy down and only grow stronger the longer the battle drags on." },
+    ] },
 ];
 
 /* Flattened master list — every combat skill across all styles, tagged with its style.
@@ -872,6 +883,11 @@ PC.HERITAGES = [
     traits: [ { name: "Powder and Shot", desc: "Advantage on Technology and Deft Tools — you know powder, ball, primer, and mechanism cold: maintain and repair firearms, mix a charge, and clear a jam under fire." },
               { name: "Merchant-Adventurer", desc: "Advantage on Language and Barter; heir to a seaborne empire that spanned the globe, you can deal, bargain, and make yourself understood in any port and half its tongues." } ],
     flaw: { name: "No Truck with the Occult", desc: "The crusading faith brooks no dealing with pagan lore, spirits, or the occult — such things you dismiss or fear rather than study. Disadvantage on Paranormal.", disadvSkill: "Paranormal" } },
+  { name: "The Slavs", blurb: "A present-day descendant of the Slavic peoples — the Rus, the Poles, the Serbs, Czechs, Bulgars and their many kin, the forest-and-river folk of the vast east. Heir to the long war of the frontier: the bearded axe, the deep woods, the endless winter, and a people who outlast every empire that marches in.",
+    fightingStyle: "Way of the Long War", combatSkills: ["Axe-Hook", "Bear's Hide"], weaponSubtype: "Axes", armorProf: ["Medium"],  // the one-handed bearded axe (Axes — a fresh signature subtype); mail/lamellar of the druzhina = Medium
+    traits: [ { name: "Hard-Wintered", desc: "Advantage on Fortitude and Tolerance — the frozen forest and the lean year forged you, and you endure cold, hunger, poison, and pain that fell softer folk." },
+              { name: "Old Beast-Lore", desc: "Advantage on Mythology and Zoology; you keep the forest's old stories and know its creatures — the bear and the wolf, the firebird, and the things that howl past the treeline." } ],
+    flaw: { name: "The Commune's Way", desc: "The old commune shared what it had and had no love of the haggle; in any market a sharper trader will fleece you. Disadvantage on Barter.", disadvSkill: "Barter" } },
 ];
 
 /* --- Constants ----------------------------------------------------------- */

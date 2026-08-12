@@ -60,7 +60,7 @@ Account menu brings it back). Tap the **Psion Chronicles wordmark** in the heade
      frontier six-shooters.
      *(The roster is being rebuilt toward the final design — a fresh set of peoples, **one at a time**, with
      Brittany writing the final version. Done so far: **North America**, **The Great North**, **Mexico**, **The Caribbean**, **Pacific
-     Islander**, **The Andes**, **The Amazon**, **The Franks**, **The Norse**, **Rome**, **The Celts**, **The Hellenes**, and **Iberia**; more are in development, region by region.)* Each grants a
+     Islander**, **The Andes**, **The Amazon**, **The Franks**, **The Norse**, **Rome**, **The Celts**, **The Hellenes**, **Iberia**, and **The Slavs**; more are in development, region by region.)* Each grants a
      **Fighting Style** — and from it **2 Combat Skills + the style's signature Passive** — plus **2 Traits** and
      **one flaw** (a narrow, situational disadvantage on a single skill — North America → disadvantage on
      Etiquette). *No* attribute changes. Combat Skills are organized into Fighting Styles the way techniques are
