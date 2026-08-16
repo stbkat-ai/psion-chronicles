@@ -2066,6 +2066,42 @@ subtypes already listed; reads live). Docs: DESIGN_LOG, GAME_RULES (top table + 
 
 ---
 
+### 88. Unique-signature rework — every heritage now carries its own weapon subtype
+Luke: "I don't want to use a weapon subtype multiple times." Audit found **only one duplicate — Great Swords, used
+4×** (Mexico, Franks, Celts, Hellenes); the other 11 were already unique. New standing rule (added to GAME_RULES
+§3b): **each subtype is used by at most one heritage.** Luke's method: **re-flavor the dupes onto unused existing
+subtypes** (keep #67 — no *new* subtypes), rewriting styles/skills where the weapon changes.
+
+Constraint that shaped it: **Heavy Weapons is fully consumed** (Great Hammers/Great Swords/Great Axes/Maces/Axes =
+Andes/keeper/Norse/Pacific/Slavs), so any heritage leaving Great Swords had to drop to a non-Heavy bin (changing
+its weapon and often its attribute). Resolution:
+- **The Franks keep Great Swords** (STR) — the definitive knightly greatsword; no change.
+- **Mexico → Daggers** (Light/**AGI**) — the obsidian knife/*tecpatl*. "Way of the Obsidian Blade" needed almost
+  nothing: the Bleed/Sever/crit-on-a-blade theme fits a knife *better* than a big sword. Edits: subtype, style
+  blurb (macuahuitl→obsidian knife), start-weapons, and "Sever" dropped its "two-handed."
+- **The Celts → Batons** (Light/**AGI**) — the Gaelic **bata/shillelagh** (the blurb already names the Gaels). The
+  wild-charge skills are weapon-agnostic, so no skill rewrite — just subtype + start-weapons flavor. (Chose the
+  shillelagh over a Fencing-Swords "sword" because a woad-painted wild charger is no rapier-duelist; kept them a
+  physical melee fighter.)
+- **The Hellenes → Full Fists** (Fist/**STR**) — **pankration**, the Olympic all-in art. The spear never had a real
+  subtype anyway (it rode Great Swords via #67), so this was the natural one to rebuild. **New style "Way of the
+  Pankration"** replaces "Way of the Phalanx": Clinch, Pankration Throw, Rain of Blows, Joint Lock, Counter-Throw,
+  and the **Palaistra-Trained** passive (grapple/escape advantage, can't be proned, free strike on a throw). The
+  Greek traits (Philosopher's Mind, Heirs of Hippocrates) and flaw (Intimidation) still fit and were kept. This
+  makes the roster's **first unarmed/grappler heritage** — a clean new pole. (Cost: the phalanx/Rome-foil concept
+  is retired; Rome stands fine alone.)
+
+Net: signatures now span STR (many), AGI (Knives/Blowguns/Short Swords/**Daggers**/**Batons**), CON (Rifles), WIS
+(Ritual Blades) — CHA and INT still open for future heritages. Starters map cleanly (Daggers→Stiletto/Parrying
+Dagger, Batons→Nightstick/Tactical Baton, Full Fists→Iron Gauntlets/**Powered Cestus** — the cestus is the ancient
+Greek boxing glove). Verified in-browser (Playwright): **15 heritages / 15 styles / 90 combat skills; every
+signature subtype UNIQUE; no dup skill names; old phalanx skills gone; all three reworked sheets render with 0
+console errors** (Hellene combat groups read Actions 2 / Bonus 1 / Reactions 1, granted Clinch + Pankration Throw +
+Palaistra-Trained). Codex auto-updates (reads live from `PC`). Docs: GAME_RULES (top table ×3, §3b rule, prose ×3,
+summary table). Cache-buster **v=117**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

@@ -672,14 +672,14 @@ PC.FIGHTING_STYLES = [
       { name: "Winterhardened", action: "Passive", effect: "Extreme cold and icy or snowy terrain never affect you (no cold damage, no extra movement cost), and you have advantage on checks to resist exhaustion. Once per combat, you may ignore being knocked prone or forcibly moved." },
     ] },
   { name: "Way of the Obsidian Blade", heritage: "Mexico",
-    blurb: "The disciplined warrior of the macuahuitl and the atlatl — press the attack, cut deep, and take your foe alive if you can.",
-    startWeaponTypes: ["Heavy Weapons", "Thrown Weapons", "Light Weapons"], // macuahuitl (greatsword-club), atlatl darts, obsidian knife
+    blurb: "The disciplined warrior of the obsidian knife and the atlatl — press the attack, cut deep, and take your foe alive if you can.",
+    startWeaponTypes: ["Light Weapons", "Thrown Weapons", "Archery"], // the obsidian knife (tecpatl → Daggers), atlatl darts, the bow
     skills: [
       { name: "Obsidian Strike", action: "Action", effect: "A savage melee attack; on a hit the target also begins Bleeding (loses HP at the start of each turn until tended) — the razor obsidian edge." },
       { name: "Warrior's Fury", action: "Bonus Action", effect: "When you drop a foe to 0 HP or bloody one (reduce it below half HP), immediately make one melee attack against a target in reach — the eagle or jaguar knight presses on." },
       { name: "Atlatl Dart", action: "Action", effect: "Loose an atlatl dart — a hard-hitting ranged attack out to good range, further and heavier than a hand-thrown weapon." },
       { name: "Take Captive", action: "Action", effect: "Subdue rather than slay: a melee attack that, on a hit, lets you attempt to knock the target prone and restrain or grapple it — the captive-taking tradition of the flower wars." },
-      { name: "Sever", action: "Action", effect: "A two-handed obsidian blow that ignores part of the target's armor Defense bonus and deals extra damage on a hit." },
+      { name: "Sever", action: "Action", effect: "A savage obsidian cut that ignores part of the target's armor Defense bonus and deals extra damage on a hit." },
       { name: "Obsidian Edge", action: "Passive", effect: "Your melee attacks with a bladed weapon score a critical hit on a roll of 19–20, and a creature you critically hit begins Bleeding." },
     ] },
   { name: "Way of the Tides", heritage: "The Caribbean",
@@ -761,7 +761,7 @@ PC.FIGHTING_STYLES = [
     ] },
   { name: "Way of the Wild Charge", heritage: "The Celts",
     blurb: "Woad-painted and unarmored, the war-horn screaming — win the battle in the first rush or not at all. Speed, ferocity, and terror: the Celts broke the disciplined empires by making them run.",
-    startWeaponTypes: ["Heavy Weapons", "Thrown Weapons", "Archery"], // the long La Tène sword (Great Swords), thrown spears, sling/bow
+    startWeaponTypes: ["Light Weapons", "Thrown Weapons", "Archery"], // the cudgel — the Gaelic bata/shillelagh (Batons) — plus thrown spears and the sling/bow
     skills: [
       { name: "Wild Charge", action: "Action", effect: "Move up to your full speed toward a foe and make a melee attack. If you moved at least half your speed, the attack has advantage and deals an extra damage die — but until the start of your next turn, attacks against you also have advantage: you hold nothing back." },
       { name: "Carnyx Cry", action: "Bonus Action", effect: "Sound the boar-headed war-horn and scream the battle-cry: each enemy within earshot must save or be Frightened until the end of its next turn — the wall of noise that broke legions before a blade was swung." },
@@ -770,16 +770,16 @@ PC.FIGHTING_STYLES = [
       { name: "Run Them Down", action: "Reaction", effect: "When a Frightened or fleeing foe you can see moves, you may move up to your speed toward it and make a melee attack the moment you reach it — a broken enemy is a dead one." },
       { name: "Battle-Fury", action: "Passive", effect: "On any turn you move at least half your speed toward an enemy before you attack, your first melee hit that turn deals an extra damage die — the whole weight of the charge rides the blade." },
     ] },
-  { name: "Way of the Phalanx", heritage: "The Hellenes",
-    blurb: "A hedge of long spears, moving as one — keep the enemy at the point, strike before they reach you, and stop a charge dead. Rome learned to beat the phalanx only by getting inside the spears.",
-    startWeaponTypes: ["Heavy Weapons", "Thrown Weapons", "Archery"], // the long two-handed spear (dory/sarissa → Great Swords), thrown javelins, the peltast's bow/sling
+  { name: "Way of the Pankration", heritage: "The Hellenes",
+    blurb: "No weapon but the body, and no rule but victory — the all-in art of the Olympic Games. Clinch, throw, lock, and batter; the pankratiast wins where the fight goes to the ground.",
+    startWeaponTypes: ["Fist Weapons", "Light Weapons", "Thrown Weapons"], // the bare hand & the cestus (Fist Weapons), the xiphos knife, the thrown javelin/discus
     skills: [
-      { name: "Set Spears", action: "Reaction", effect: "Brace the long spear against an approach: when an enemy enters your reach or charges you, make a melee attack against it before it can strike, and on a hit its movement ends — the hedge of points halts the rush." },
-      { name: "Overbear", action: "Action", effect: "A two-handed thrust with the full weight behind it: a melee attack that on a hit deals extra damage and pushes the target back out of its own reach — you decide the distance the fight is fought at." },
-      { name: "Sarissa Reach", action: "Bonus Action", effect: "Level the long pike: until the start of your next turn your melee attacks gain extended reach, and you may strike a foe engaged with an ally in front of you without being adjacent yourself — the second rank kills over the first." },
-      { name: "Phalanx Advance", action: "Action", effect: "The wall moves as one: move up to your speed and make a melee attack; while you and at least one ally are adjacent, the attack ignores the target's shield or cover bonus and you cannot be pushed back this turn." },
-      { name: "Give Ground", action: "Reaction", effect: "A fighting withdrawal: when a foe closes inside your reach or hits you, step back up to 10 ft without provoking reactions and make a spear thrust as you go, keeping the enemy at the point." },
-      { name: "Reach of the Phalanx", action: "Passive", effect: "You threaten farther than they expect: the first melee attack you make each turn against a foe that began its turn outside your reach deals an extra damage die — you strike first as they close the distance." },
+      { name: "Clinch", action: "Bonus Action", effect: "Seize the hold: a creature within reach is Grappled — it rolls at disadvantage to break free, and you roll your unarmed strikes against it at advantage while the clinch holds." },
+      { name: "Pankration Throw", action: "Action", effect: "The wrestler's throw: an unarmed melee attack that on a hit deals its damage, knocks the target prone, and lets you move it up to 5 ft — the hip-throw that ends bouts." },
+      { name: "Rain of Blows", action: "Action", effect: "The all-in barrage: an unarmed attack that deals an extra damage die, and another die again if the target is Grappled by you or prone — no let-up until it drops." },
+      { name: "Joint Lock", action: "Action", effect: "A submission on a foe you have Grappled (or one adjacent and prone): it takes damage and rolls its attacks at disadvantage until it breaks free — bend the limb until the fight leaves it." },
+      { name: "Counter-Throw", action: "Reaction", effect: "Turn their force against them: when a foe misses you with a melee attack, use the opening to make a free unarmed strike against it or attempt to knock it prone." },
+      { name: "Palaistra-Trained", action: "Passive", effect: "Schooled in the wrestling-ground: you roll grapples and escapes at advantage, you cannot be knocked prone while conscious and on your feet, and once on each of your turns when you throw or prone a foe you may make one unarmed strike against it." },
     ] },
   { name: "Way of the Tercio", heritage: "Iberia",
     blurb: "Pike-and-shot: the disciplined square that traded steel for the roar of black powder. Level the arquebus, give fire by ranks, and let the grenado and the pike do the rest. This is the tradition that ended the age of plate.",
@@ -840,7 +840,7 @@ PC.HERITAGES = [
               { name: "Iron Constitution", desc: "Advantage on checks and saves to resist exhaustion, hunger, thirst, poison, and disease — your body is forged to outlast the long dark." } ],
     flaw: { name: "Plain-Spoken", desc: "The elaborate courtesies of the southern courts weren't part of how you were raised. Disadvantage on Etiquette.", disadvSkill: "Etiquette" } },
   { name: "Mexico", blurb: "A present-day descendant of the Mesoamerican civilizations — Mexica, Maya, and their kin. Heir to the obsidian blade and the eagle-and-jaguar warrior orders, and to a people who charted the stars and raised cities of stone.",
-    fightingStyle: "Way of the Obsidian Blade", combatSkills: ["Obsidian Strike", "Warrior's Fury"], weaponSubtype: "Great Swords", armorProf: ["Medium"],  // ichcahuipilli quilted-cotton armor
+    fightingStyle: "Way of the Obsidian Blade", combatSkills: ["Obsidian Strike", "Warrior's Fury"], weaponSubtype: "Daggers", armorProf: ["Medium"],  // the obsidian knife (tecpatl) — Daggers/AGI; ichcahuipilli quilted-cotton armor = Medium
     traits: [ { name: "Keepers of the Count", desc: "Advantage on checks involving astronomy, mathematics, calendars, and omens; you can always reckon the date, time, season, and direction." },
               { name: "Warrior's Discipline", desc: "Advantage on checks and saves to resist Fear and intimidation — the eagle and jaguar knights do not flinch." } ],
     flaw: { name: "City-Raised", desc: "Heir to the great cities and cultivated valleys, not the raw wild. Disadvantage on Survival.", disadvSkill: "Survival" } },
@@ -880,12 +880,12 @@ PC.HERITAGES = [
               { name: "Legion Engineer", desc: "Advantage on checks to raise military works — a fortified marching camp, roads, bridges, siege engines, and field fortifications — and to organize labor and logistics for a body of troops." } ],
     flaw: { name: "Roman Gravitas", desc: "The grave dignity of Rome has little patience for the mummer's art and the stage. Disadvantage on Performance.", disadvSkill: "Performance" } },
   { name: "The Celts", blurb: "A present-day descendant of the Celtic peoples — Gauls, Britons, Gaels and their kin — the woad-painted warriors of the wild charge, the war-horn and the head-taking champions, reared among druids and bards. Where the empires drilled and dug in, the Celts came fast, loud, and fearless, and won or lost it all in the first rush.",
-    fightingStyle: "Way of the Wild Charge", combatSkills: ["Wild Charge", "Carnyx Cry"], weaponSubtype: "Great Swords", armorProf: [],  // Light only (Light is universal) — the long La Tène slashing sword; unarmored, speed and terror over steel
+    fightingStyle: "Way of the Wild Charge", combatSkills: ["Wild Charge", "Carnyx Cry"], weaponSubtype: "Batons", armorProf: [],  // the cudgel — the Gaelic bata/shillelagh (Batons/AGI); Light only (unarmored), speed and terror over steel
     traits: [ { name: "Druid-Taught", desc: "Advantage on Mythology and Paranormal checks — you carry the druids' keeping of the old gods, the sacred groves, the reading of omens, and the lore of the otherworld." },
               { name: "Bardic Tongue", desc: "Advantage on Performance and Persuasion; reared on the bards' art — the praise-song that makes a hero, the satire that shames a king, and the tale that holds a whole hall." } ],
     flaw: { name: "Impetuous", desc: "The wild charge has no patience for the long, careful hold; slow focus is not the Celtic way. Disadvantage on Concentration.", disadvSkill: "Concentration" } },
-  { name: "The Hellenes", blurb: "A present-day descendant of the Hellenic world — the Greek city-states, Sparta and Athens, Macedon and the kingdoms that followed Alexander. Heir to the phalanx and the long spear, and to the gymnasium, the theatre, and the birth of philosophy, mathematics, and medicine.",
-    fightingStyle: "Way of the Phalanx", combatSkills: ["Set Spears", "Overbear"], weaponSubtype: "Great Swords", armorProf: ["Medium"],  // the long two-handed spear (dory/sarissa) → Great Swords per rule 3b; bronze panoply (linothorax/cuirass) = Medium
+  { name: "The Hellenes", blurb: "A present-day descendant of the Hellenic world — the Greek city-states, Sparta and Athens, Macedon and the kingdoms that followed Alexander. Heir to pankration, the all-in art of the Olympic Games, and to the gymnasium, the theatre, and the birth of philosophy, mathematics, and medicine.",
+    fightingStyle: "Way of the Pankration", combatSkills: ["Clinch", "Pankration Throw"], weaponSubtype: "Full Fists", armorProf: ["Medium"],  // pankration — the bare hand & the cestus (Full Fists / Fist Weapons / STR); bronze-age training, Medium armor
     traits: [ { name: "Philosopher's Mind", desc: "Advantage on Investigation and Persuasion; schooled in logic, rhetoric, and the art of argument, you reason from first principles and can carry a debate before any crowd." },
               { name: "Heirs of Hippocrates", desc: "Advantage on Medicine and History; you inherit the classical learning — the physician's craft, the mathematician's proof, and the long memory of the Hellenic world." } ],
     flaw: { name: "The Reasoned Word", desc: "The Hellene reasons and persuades where cruder folk simply threaten; the bully's art comes poorly to you. Disadvantage on Intimidation.", disadvSkill: "Intimidation" } },

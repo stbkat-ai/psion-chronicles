@@ -533,7 +533,7 @@ Fighting Style, Combat Skills, and Traits their Heritage opened up.
 |---|---|---|---|---|---|
 | **North America** | Descendants of the Native nations of the continental US | Way of the Hunt | **Shortbows** (Archery/STR) | Light only | Etiquette |
 | **The Great North** | Descendants of the First Nations & Inuit peoples north of the US border | Way of the Long Winter | **Knives** (Light/AGI) | Light + Medium | Etiquette |
-| **Mexico** | Descendants of the Mesoamerican civilizations (Mexica/Aztec, Maya, and kin) | Way of the Obsidian Blade | **Great Swords** (Heavy/STR) — the macuahuitl | Light + Medium | Survival |
+| **Mexico** | Descendants of the Mesoamerican civilizations (Mexica/Aztec, Maya, and kin) | Way of the Obsidian Blade | **Daggers** (Light/AGI) — the obsidian knife (tecpatl) | Light + Medium | Survival |
 | **The Caribbean** | Descendants of the island & coastal seafaring peoples of the Caribbean and Central American coast (Taíno, Kalinago, Arawak, isthmus coastal nations) | Way of the Tides | **Slings** (Archery/STR) | Light only | History |
 | **Pacific Islander** | Descendants of the Pacific Islander peoples — Polynesian, Melanesian, Micronesian (Hawaiʻi to Aotearoa) | Way of the War Club | **Maces** (Heavy/STR) — the war club | Light only | Persuasion |
 | **The Andes** | Descendants of the Andean peoples (Quechua, Aymara, heirs of the mountain empires) | Way of the Vanguard | **Great Hammers** (Heavy/STR) — the star-mace | Light + Medium | Stealth |
@@ -541,8 +541,8 @@ Fighting Style, Combat Skills, and Traits their Heritage opened up.
 | **The Franks** | Descendants of the Franks (Francia — cradle of chivalry & the medieval knight) | Way of the Oath | **Great Swords** (Heavy/STR) — the longsword | Light + Medium + **Heavy** | Acrobatics |
 | **The Norse** | Descendants of the Norse — the seafaring peoples of the North (longship & saga) | Way of the Raider | **Great Axes** (Heavy/STR) — the Dane axe | Light + Medium | Deception |
 | **Rome** | Descendants of Rome — the legions and the Republic-and-Empire (roads, law, the short sword) | Way of the Legion | **Short Swords** (Light/AGI) — the gladius | Light + Medium | Performance |
-| **The Celts** | Descendants of the Celtic peoples — Gauls, Britons, Gaels & kin (woad, war-horn, the wild charge) | Way of the Wild Charge | **Great Swords** (Heavy/STR) — the long La Tène slashing sword | Light only | Concentration |
-| **The Hellenes** | Descendants of the Hellenic world — Greek city-states, Sparta, Athens, Macedon (the phalanx; philosophy) | Way of the Phalanx | **Great Swords** (Heavy/STR) — the long two-handed spear (dory/sarissa) | Light + Medium | Intimidation |
+| **The Celts** | Descendants of the Celtic peoples — Gauls, Britons, Gaels & kin (woad, war-horn, the wild charge) | Way of the Wild Charge | **Batons** (Light/AGI) — the cudgel (Gaelic bata/shillelagh) | Light only | Concentration |
+| **The Hellenes** | Descendants of the Hellenic world — Greek city-states, Sparta, Athens, Macedon (pankration; philosophy) | Way of the Pankration | **Full Fists** (Fist/STR) — pankration (bare hand & cestus) | Light + Medium | Intimidation |
 | **Iberia** | Descendants of Iberia — the Spanish & Portuguese crowns (the tercio, the powder empire, the age of sail) | Way of the Tercio | **Rifles** (Firearms/**CON**) — the arquebus/musket | Light + Medium | Paranormal |
 | **The Slavs** | Descendants of the Slavic peoples — Rus, Poles, Serbs, Czechs, Bulgars & kin (the forest, the long frontier war) | Way of the Long War | **Axes** (Heavy/STR) — the one-handed bearded axe | Light + Medium | Barter |
 | **The Carpathians** | Descendants of the Vlach/Carpathian folk — Transylvania & Wallachia (the strigoi, the evil eye, the old night) | Way of the Strigoi | **Ritual Blades** (Ritual/**WIS**) — the athame/blood-knife | Light only | Fortitude |
@@ -550,7 +550,11 @@ Fighting Style, Combat Skills, and Traits their Heritage opened up.
 *More heritages are in development, built one at a time with Luke.* **Weapon convention (Luke):** every heritage
 uses **only existing weapon subtypes** — we do **not** add new ones. Where an iconic weapon has no subtype (the
 harpoon, javelin, spear, taiaha), the signature is mapped to the nearest real subtype and the skill flavor is
-weapon-agnostic (a "thrown weapon" / "reach strike"). Design intent: five distinct combat poles — mobile ranged
+weapon-agnostic (a "thrown weapon" / "reach strike"). **Each subtype is used by at most one heritage** (Luke) —
+signatures are unique across the roster; where two cultures wanted the same bin, one was re-flavored to a distinct
+unused subtype (see §88). The lone case was Great Swords: kept for the Franks (the knightly greatsword), while
+Mexico → Daggers (obsidian knife), the Celts → Batons (the bata/shillelagh), and the Hellenes → Full Fists
+(pankration). Design intent: five distinct combat poles — mobile ranged
 skirmisher (NA), enduring defensive hunter (Great North), aggressive melee striker (Mexico), amphibious raider
 (The Caribbean), ferocious brawler (Pacific Islander), disciplined protector/commander (The Andes), lone venom
 hunter (The Amazon).
@@ -566,8 +570,9 @@ hunter (The Amazon).
   Warrior's Fury (bonus attack on a kill/bloody), Atlatl Dart (ranged), Take Captive (prone/grapple), Sever
   (armor-ignoring), and the **Obsidian Edge** passive (crit on 19–20 + Bleed on crit). Traits: **Keepers of the
   Count** (astronomy/calendar) and **Warrior's Discipline** (resist Fear). Medium armor (ichcahuipilli quilted
-  cotton). Signature weapon **Great Swords** (the macuahuitl in flavor). *(Deliberately avoids the human-sacrifice
-  stereotype; leans on the real achievements — astronomy, obsidian craft, the atlatl, the warrior orders.)*
+  cotton). Signature weapon **Daggers** (the obsidian knife / tecpatl — the Bleed/Sever/crit obsidian edge fits a
+  blade even better than a big sword). *(Deliberately avoids the human-sacrifice stereotype; leans on the real
+  achievements — astronomy, obsidian craft, the atlatl, the warrior orders.)*
 - **Way of the Tides** (The Caribbean) — an amphibious hit-and-run raider/controller: Net Cast (Root), Hurl
   (ranged), Slip the Current (water mobility → Hidden), Rip Tide (prone/push), Sling Stone (Dazzle), and the
   **Sea-Born** passive (swim at full speed, hold breath, ignore water/sand/reef terrain, no disadvantage in/under
@@ -624,23 +629,24 @@ hunter (The Amazon).
   surge forward and Frightens witnesses), Chariot Dash (Dash past enemies without provoking), Run Them Down (chase
   and cut down a fleeing/Frightened foe), and the **Battle-Fury** passive (charge at least half your speed → your
   first melee hit deals an extra die). Traits **Druid-Taught** (Mythology/Paranormal lore) and **Bardic Tongue**
-  (Performance/Persuasion — the praise-song and the satire). Signature **Great Swords** (the long La Tène slashing
-  sword); **Light armor only**. Flaw **Concentration** (*Impetuous* — the wild charge has no patience for the long,
+  (Performance/Persuasion — the praise-song and the satire). Signature **Batons** (the cudgel — the Gaelic
+  bata/shillelagh); **Light armor only**. Flaw **Concentration** (*Impetuous* — the wild charge has no patience for the long,
   careful hold). *Europe's fourth heritage and a distinct pole: where Rome resists fear and stands, and the Franks
   duel in plate, the Celts are the **fear-dealers** — light, fast, and terrifying, winning it all in the first
   rush.* **Europe = the Old World's "advanced" continent** — steel plate, and (per Luke) firearms, explosives,
   channel & ritual weapons are on the table for its heritages (never tech/laser/plasma/living).
-- **Way of the Phalanx** (The Hellenes) — the reach-and-spacing spearman of the hoplite/Macedonian phalanx: Set
-  Spears (Reaction — halt a charge/approach with a braced strike), Overbear (reach thrust that damages + pushes,
-  controlling distance), Sarissa Reach (extend reach; strike over the front rank), Phalanx Advance (advance-attack
-  that ignores shield/cover and can't be pushed while an ally is adjacent), Give Ground (fighting withdrawal — step
-  back without provoking and thrust), and the **Reach of the Phalanx** passive (first melee hit each turn vs a foe
-  that began outside your reach deals an extra die — you strike first as they close). Traits **Philosopher's Mind**
-  (Investigation/Persuasion — logic & rhetoric) and **Heirs of Hippocrates** (Medicine/History — the classical
-  learning). Signature **Great Swords** = the long two-handed spear (dory/sarissa, per 3b); Light + Medium armor
-  (bronze panoply). Flaw **Intimidation** (*The Reasoned Word* — the Hellene persuades where others threaten).
-  *The deliberate foil to Rome: the phalanx keeps you at spear's length and strikes first; the legion beat it by
-  getting **inside** the reach. Greece = reach & spacing; Rome = close shield-line & short sword.*
+- **Way of the Pankration** (The Hellenes) — the Olympic all-in fighter (grappler/striker), the roster's **first
+  unarmed heritage**: Clinch (grab and control — Grapple, advantage to strike it), Pankration Throw (a throw that
+  prones and moves the target), Rain of Blows (an all-in flurry — extra dice, more if the foe is grappled/prone),
+  Joint Lock (a submission — damage + disadvantage on its attacks), Counter-Throw (Reaction — a free strike/prone
+  when a foe misses you), and the **Palaistra-Trained** passive (advantage on grapples/escapes, can't be proned
+  while up, and a free strike when you throw/prone a foe). Traits **Philosopher's Mind** (Investigation/Persuasion
+  — logic & rhetoric) and **Heirs of Hippocrates** (Medicine/History — the classical learning). Signature **Full
+  Fists** = pankration, the bare hand & the cestus (Fist/STR); Light + Medium armor. Flaw **Intimidation** (*The
+  Reasoned Word* — the Hellene persuades where others threaten). *A distinct pole: the only unarmed grappler in the
+  roster, and the Greek gift of "sound mind, sound body" — the gymnasium bred both the philosopher and the
+  pankratiast.* (Originally built as a spear-phalanx / Rome's foil; re-flavored to pankration in §88 so every
+  heritage carries a unique weapon subtype.)
 - **Way of the Tercio** (Iberia) — the pike-and-shot **gunpowder** heritage, and the **first to use Firearms +
   Explosives** (the palette Luke opened for Europe): Give Fire (a volley shot that Dazes the target & its
   neighbours in smoke and shock), Grenado (a thrown black-powder grenade — burst damage + prone), Countermarch
@@ -711,7 +717,7 @@ forage with advantage, and leave no trail).
 | **The Norse** | Way of the Raider | Berserkergang, Reaver's Swing | Valhalla-Bound | Keeper of the Sagas, Longship Raider | *A Straight Word* — Deception |
 | **Rome** | Way of the Legion | Pilum Throw, Gladius Work | Discipline of the Legion | Rule of Law, Legion Engineer | *Roman Gravitas* — Performance |
 | **The Celts** | Way of the Wild Charge | Wild Charge, Carnyx Cry | Battle-Fury | Druid-Taught, Bardic Tongue | *Impetuous* — Concentration |
-| **The Hellenes** | Way of the Phalanx | Set Spears, Overbear | Reach of the Phalanx | Philosopher's Mind, Heirs of Hippocrates | *The Reasoned Word* — Intimidation |
+| **The Hellenes** | Way of the Pankration | Clinch, Pankration Throw | Palaistra-Trained | Philosopher's Mind, Heirs of Hippocrates | *The Reasoned Word* — Intimidation |
 | **Iberia** | Way of the Tercio | Give Fire, Grenado | Powder and Steel | Powder and Shot, Merchant-Adventurer | *No Truck with the Occult* — Paranormal |
 | **The Slavs** | Way of the Long War | Axe-Hook, Bear's Hide | Outlast | Hard-Wintered, Old Beast-Lore | *The Commune's Way* — Barter |
 | **The Carpathians** | Way of the Strigoi | Evil Eye, Blood Draught | Undying | Second Sight, Nightborn | *Sun-Cursed* — Fortitude |
