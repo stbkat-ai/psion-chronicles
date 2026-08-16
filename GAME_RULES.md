@@ -545,6 +545,7 @@ Fighting Style, Combat Skills, and Traits their Heritage opened up.
 | **The Hellenes** | Descendants of the Hellenic world — Greek city-states, Sparta, Athens, Macedon (the phalanx; philosophy) | Way of the Phalanx | **Great Swords** (Heavy/STR) — the long two-handed spear (dory/sarissa) | Light + Medium | Intimidation |
 | **Iberia** | Descendants of Iberia — the Spanish & Portuguese crowns (the tercio, the powder empire, the age of sail) | Way of the Tercio | **Rifles** (Firearms/**CON**) — the arquebus/musket | Light + Medium | Paranormal |
 | **The Slavs** | Descendants of the Slavic peoples — Rus, Poles, Serbs, Czechs, Bulgars & kin (the forest, the long frontier war) | Way of the Long War | **Axes** (Heavy/STR) — the one-handed bearded axe | Light + Medium | Barter |
+| **The Carpathians** | Descendants of the Vlach/Carpathian folk — Transylvania & Wallachia (the strigoi, the evil eye, the old night) | Way of the Strigoi | **Ritual Blades** (Ritual/**WIS**) — the athame/blood-knife | Light only | Fortitude |
 
 *More heritages are in development, built one at a time with Luke.* **Weapon convention (Luke):** every heritage
 uses **only existing weapon subtypes** — we do **not** add new ones. Where an iconic weapon has no subtype (the
@@ -663,7 +664,20 @@ hunter (The Amazon).
   fresh subtype); Light + Medium armor (druzhina mail/lamellar). Flaw **Barter** (*The Commune's Way* — the
   non-commercial peasant is fleeced in any market; a foil to Iberia's Merchant-Adventurer). *A distinct pole from
   the Norse (all-out frenzy) and the Great North (winter endurance): the Slavs trade nothing away, give ground on
-  purpose, and win the long war.* More European regions to come (an occult tradition, the Baltic/steppe…).
+  purpose, and win the long war.*
+- **Way of the Strigoi** (The Carpathians) — the **occult / curse-and-blood** heritage, and the **first to use the
+  Ritual palette** (and the first **WIS**-attack heritage): Evil Eye (the deochi — Curse a foe: disadvantage on
+  its attacks & saves), Blood Draught (ritual-blade strike that heals you for half the damage dealt — life-drain),
+  Ward of Salt and Thorn (Bonus — resistance to the next attack + advantage on saves vs fear/charm/curse),
+  Nightfall (unnatural gloom — enemies relying on sight attack you & nearby allies at disadvantage), Call the
+  Strigoi (Reaction — a servant of the night harries an attacker: disadvantage on its attacks), and the **Undying**
+  passive (resistance to necrotic & curse effects, advantage on death saves, and heal when an enemy in reach drops
+  to 0 HP). Traits **Second Sight** (Paranormal/Insight — sense the unseen, read the mark on a person) and
+  **Nightborn** (Stealth/Awareness in the dark). Signature **Ritual Blades** = the athame/blood-knife
+  (**Ritual/WIS**); Light armor only (the unarmored occultist). Flaw **Fortitude** (*Sun-Cursed* — the pallor of
+  the grave; daylight and toil sap you as they never do the living — a foil to the Slavs' hardy *Hard-Wintered*).
+  *The roster's first curse/hex/life-drain caster; the occult pole no martial heritage touches.* Remaining European
+  threads: the Baltic / the steppe (e.g. the Cossacks or the Balts).
 
 ### Fighting Styles & Combat Skills (the mechanic)
 Combat Skills work like Kinetic Techniques: there are **many**, organized into categories called
@@ -683,7 +697,7 @@ forage with advantage, and leave no trail).
 - A style's Passive **can be learned by any character** with CSP, regardless of Heritage — as can any other
   style's skills.
 
-### Heritages → Fighting Styles (fresh roster — 14 built; growing region by region)
+### Heritages → Fighting Styles (fresh roster — 15 built; growing region by region)
 | Heritage | Fighting Style | Starting Combat Skills | Signature Passive | Traits | Flaw (disadvantage) |
 |---|---|---|---|---|---|
 | **North America** | Way of the Hunt | Hunter's Aim, Fade Away | Pathfinder | One with the Land, Keen Senses | *Unversed in Old-World Customs* — Etiquette |
@@ -700,6 +714,7 @@ forage with advantage, and leave no trail).
 | **The Hellenes** | Way of the Phalanx | Set Spears, Overbear | Reach of the Phalanx | Philosopher's Mind, Heirs of Hippocrates | *The Reasoned Word* — Intimidation |
 | **Iberia** | Way of the Tercio | Give Fire, Grenado | Powder and Steel | Powder and Shot, Merchant-Adventurer | *No Truck with the Occult* — Paranormal |
 | **The Slavs** | Way of the Long War | Axe-Hook, Bear's Hide | Outlast | Hard-Wintered, Old Beast-Lore | *The Commune's Way* — Barter |
+| **The Carpathians** | Way of the Strigoi | Evil Eye, Blood Draught | Undying | Second Sight, Nightborn | *Sun-Cursed* — Fortitude |
 
 *More heritages are being built one at a time (see 3b). Each style holds **5 active skills + 1 Passive**. Full
 skill text lives in `app/data.js` (`PC.FIGHTING_STYLES`); the app is the source of truth.*

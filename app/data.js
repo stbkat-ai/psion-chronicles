@@ -803,6 +803,17 @@ PC.FIGHTING_STYLES = [
       { name: "Rasputitsa", action: "Reaction", effect: "Name the mud and mire that stopped every invader: when an enemy moves within your reach, the ground itself fights them — their speed is halved and they cannot Dash until the end of their next turn." },
       { name: "Outlast", action: "Passive", effect: "For each full round of combat that has passed, your melee attacks deal +1 damage (to a maximum of +5) — you wear the enemy down and only grow stronger the longer the battle drags on." },
     ] },
+  { name: "Way of the Strigoi", heritage: "The Carpathians",
+    blurb: "The old night answers those who know its name. Curse with a look, drink the strength from a wound, ward yourself with salt and thorn, and rise from hurts that would bury the living. This is Europe's oldest dark.",
+    startWeaponTypes: ["Ritual Weapons", "Channel Weapons", "Light Weapons"], // the athame/ritual blade, a channel focus, a mundane dagger
+    skills: [
+      { name: "Evil Eye", action: "Action", effect: "Lay the deochi on a foe you can see: it must save or be Cursed until the end of its next turn — while Cursed it rolls its attacks and saves at disadvantage. The oldest hex in the mountains, cast with nothing but a look." },
+      { name: "Blood Draught", action: "Action", effect: "The blood-rite: a melee attack with your ritual blade that on a hit deals its damage and heals you for half the amount dealt — you take the strength of the wound into yourself." },
+      { name: "Ward of Salt and Thorn", action: "Bonus Action", effect: "Trace the old ward around yourself: until the start of your next turn you have resistance to the next attack against you and roll saves against fear, charm, and curses at advantage." },
+      { name: "Nightfall", action: "Action", effect: "Draw down the Carpathian gloom: until you move, an unnatural dark wreathes the ground around you — enemies that rely on sight attack you and your allies within it at disadvantage." },
+      { name: "Call the Strigoi", action: "Reaction", effect: "When a foe damages you or an ally within your reach, a servant of the night answers — a bat-swarm, a wolf, or the risen dead — and harries the attacker: it rolls its attacks at disadvantage until the start of your next turn (the GM runs the servant)." },
+      { name: "Undying", action: "Passive", effect: "The grave has no firm hold on you: you have resistance to necrotic and curse effects and roll death saves at advantage, and whenever an enemy within your reach drops to 0 HP you regain HP equal to your level — the strength of the taken life." },
+    ] },
 ];
 
 /* Flattened master list — every combat skill across all styles, tagged with its style.
@@ -888,6 +899,11 @@ PC.HERITAGES = [
     traits: [ { name: "Hard-Wintered", desc: "Advantage on Fortitude and Tolerance — the frozen forest and the lean year forged you, and you endure cold, hunger, poison, and pain that fell softer folk." },
               { name: "Old Beast-Lore", desc: "Advantage on Mythology and Zoology; you keep the forest's old stories and know its creatures — the bear and the wolf, the firebird, and the things that howl past the treeline." } ],
     flaw: { name: "The Commune's Way", desc: "The old commune shared what it had and had no love of the haggle; in any market a sharper trader will fleece you. Disadvantage on Barter.", disadvSkill: "Barter" } },
+  { name: "The Carpathians", blurb: "A present-day descendant of the Carpathian peoples — the Vlachs and mountain folk of Transylvania and Wallachia, keepers of Europe's darkest folk-magic. Heir to the old night: the strigoi and the moroi, the evil eye and the wards against it, the blood-rite, and the dead that will not rest.",
+    fightingStyle: "Way of the Strigoi", combatSkills: ["Evil Eye", "Blood Draught"], weaponSubtype: "Ritual Blades", armorProf: [],  // the athame/ritual blade (Ritual Weapons / WIS — the roster's first WIS-attack heritage); Light only, the unarmored occultist. First heritage to use the Ritual palette.
+    traits: [ { name: "Second Sight", desc: "Advantage on Paranormal and Insight; you sense the unseen and read the mark upon a person — a curse, a lie, the shadow of the dead, or the hunger behind a smile." },
+              { name: "Nightborn", desc: "Advantage on Stealth and Awareness in darkness; the dark is no hindrance — you see by starlight, move unseen by night, and little escapes you in the gloom." } ],
+    flaw: { name: "Sun-Cursed", desc: "The pallor of the grave runs in your blood; daylight, the long march, and honest toil sap your strength as they never do the living. Disadvantage on Fortitude.", disadvSkill: "Fortitude" } },
 ];
 
 /* --- Constants ----------------------------------------------------------- */

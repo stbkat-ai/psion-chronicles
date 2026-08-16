@@ -2031,6 +2031,41 @@ CLAUDE.md (13→14). Cache-buster **v=115**.
 
 ---
 
+### 87. Heritage #15 — The Carpathians (Way of the Strigoi); the occult heritage — first Ritual + WIS
+Luke asked for "an occult regional heritage" and picked **the Balkans / Transylvania**. Built it as **The
+Carpathians** (named for the mountains — parallels *The Andes* and avoids collision with the Hellenes/Slavs who
+are also "Balkan"; flagged to Luke that it can be renamed to Wallachia/Transylvania/The Balkans). This is the
+roadmap's **occult/Ritual slot**, the **first heritage to use the Ritual palette**, and the **first WIS-attack
+heritage** — a genuinely new pole: the roster's only **curse / hex / life-drain caster**.
+
+- **Heritage "The Carpathians"** + **Fighting Style "Way of the Strigoi"** (`app/data.js`). Signature **Ritual
+  Blades** = the **athame/blood-knife** (**Ritual Weapons / WIS**; starter Athame/Kris Dagger already in the map).
+  Armor **Light only** — the unarmored occultist (armorProf `[]`).
+- **6 combat skills** (5 active + 1 Passive): **Evil Eye** (the deochi — Curse: target rolls attacks & saves at
+  disadvantage), **Blood Draught** (ritual-blade strike that heals you for half the damage dealt — life-drain),
+  **Ward of Salt and Thorn** (Bonus — resistance to the next attack + advantage vs fear/charm/curse), **Nightfall**
+  (unnatural gloom — sighted enemies attack you & nearby allies at disadvantage), **Call the Strigoi** (Reaction —
+  a servant of the night harries an attacker, GM-run), and the **Undying** passive (resistance to necrotic/curse,
+  advantage on death saves, heal when an enemy in reach drops to 0 HP). Heritage grants **Evil Eye + Blood
+  Draught** + the passive.
+- Traits **Second Sight** (Paranormal/Insight — sense the unseen, read the mark on a person; paired off Mythology
+  so it doesn't clone the Celts' Druid-Taught) and **Nightborn** (Stealth/Awareness in the dark). Flaw **Sun-Cursed
+  → Fortitude** (fresh, unused flaw skill; the pallor of the grave — daylight and toil sap you, a foil to the Slavs'
+  *Hard-Wintered* Fortitude strength).
+- **Design intent:** deliberately a **caster**, not another weapon-brawler — curses, wards, gloom, a summon-harry,
+  and life-drain, all Combat Skills (no KP; GM-adjudicated like the other narrative skills). Nothing in the roster
+  overlaps it. (The Slavs were kept martial precisely so this heritage could own the occult; that split now pays
+  off.)
+
+Verified in-browser (Playwright): 15 heritages / 15 styles / **90** combat skills, no dup names; a seeded
+Carpathian shows **Traits → The Carpathians** (Second Sight, Nightborn + the flaw), Combat lists both granted
+skills (**Evil Eye**, **Blood Draught**) + the **Undying** passive; Codex live; **0 console errors** (the first
+Ritual/WIS heritage renders and plays cleanly). Athame offered at creation. Codex needs no code change (Ritual
+subtypes already listed; reads live). Docs: DESIGN_LOG, GAME_RULES (top table + prose + summary table + count
+14→15, regions-to-come now just Baltic/steppe), README, CLAUDE.md (14→15). Cache-buster **v=116**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is
