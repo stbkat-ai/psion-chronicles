@@ -814,6 +814,17 @@ PC.FIGHTING_STYLES = [
       { name: "Call the Strigoi", action: "Reaction", effect: "When a foe damages you or an ally within your reach, a servant of the night answers — a bat-swarm, a wolf, or the risen dead — and harries the attacker: it rolls its attacks at disadvantage until the start of your next turn (the GM runs the servant)." },
       { name: "Undying", action: "Passive", effect: "The grave has no firm hold on you: you have resistance to necrotic and curse effects and roll death saves at advantage, and whenever an enemy within your reach drops to 0 HP you regain HP equal to your level — the strength of the taken life." },
     ] },
+  { name: "Way of the Drawn Sword", heritage: "Yamato",
+    blurb: "The katana drawn and returned in a single breath; the duel decided in one cut. Read the opponent, wait in stillness, and answer the first mistake with the last stroke — this is iaijutsu.",
+    startWeaponTypes: ["Finesse Weapons", "Archery", "Light Weapons"], // the katana (Finesse), the yumi bow, the wakizashi/tantō
+    skills: [
+      { name: "Iai Strike", action: "Action", effect: "The drawn cut: a katana attack made at advantage, and if it is your first attack of the combat it deals an extra damage die — iaijutsu ends most duels in a single stroke." },
+      { name: "Counter-Cut", action: "Reaction", effect: "When a foe misses you with a melee attack, answer in the same breath: make a free katana strike against it — the miss and the riposte are one motion." },
+      { name: "Kesa Cut", action: "Action", effect: "A diagonal draw-cut, shoulder to hip: a melee attack that ignores part of the target's armor Defense bonus and deals extra damage on a hit — the katana's cutting power." },
+      { name: "Kiai", action: "Bonus Action", effect: "A focusing spirit-shout: one enemy you can see must save or be Dazed (disadvantage on its next attack) until the end of its next turn — the shout that breaks an opponent's composure before the blade moves." },
+      { name: "Flowing Cut", action: "Action", effect: "One continuous stroke: make a melee attack, and on a hit you may immediately move up to 10 ft and make a second cut against a different foe within reach — the blade flows from one to the next without pause." },
+      { name: "Zanshin", action: "Passive", effect: "The lingering, ready mind: you roll initiative at advantage, you cannot be surprised, and the first attack roll made against you in each combat is rolled at disadvantage — nothing catches a trained swordsman unprepared." },
+    ] },
 ];
 
 /* Flattened master list — every combat skill across all styles, tagged with its style.
@@ -904,6 +915,11 @@ PC.HERITAGES = [
     traits: [ { name: "Second Sight", desc: "Advantage on Paranormal and Insight; you sense the unseen and read the mark upon a person — a curse, a lie, the shadow of the dead, or the hunger behind a smile." },
               { name: "Nightborn", desc: "Advantage on Stealth and Awareness in darkness; the dark is no hindrance — you see by starlight, move unseen by night, and little escapes you in the gloom." } ],
     flaw: { name: "Sun-Cursed", desc: "The pallor of the grave runs in your blood; daylight, the long march, and honest toil sap your strength as they never do the living. Disadvantage on Fortitude.", disadvSkill: "Fortitude" } },
+  { name: "Yamato", blurb: "A present-day descendant of Japan — the samurai and the courts of old Yamato. Heir to the way of the sword: the katana drawn and returned in a single breath, the duel decided in one cut, and the calm, ready mind that waits behind the blade.",
+    fightingStyle: "Way of the Drawn Sword", combatSkills: ["Iai Strike", "Counter-Cut"], weaponSubtype: "Fencing Swords", armorProf: ["Medium"],  // the katana → Fencing Swords (Finesse / CHA — the roster's first CHA-attack heritage); lamellar dō = Medium. First Asian heritage.
+    traits: [ { name: "Bushidō", desc: "Advantage on Insight and Concentration; schooled in the warrior's code, you read an opponent's intent and hold a composed, unbreakable focus that fear and pain cannot shake." },
+              { name: "Brush and Sword", desc: "Advantage on Performance and History (bunbu-ryōdō — 'the pen and the sword as one'); the cultured warrior keeps calligraphy, poetry, and tea beside the blade, and the long memory of lineage and lore." } ],
+    flaw: { name: "The Warrior's Code", desc: "Bushidō holds the sly, thieving hand in contempt; palming, pickpocketing, and sleight come poorly to one raised to the code. Disadvantage on Sleight of Hand.", disadvSkill: "Sleight of Hand" } },
 ];
 
 /* --- Constants ----------------------------------------------------------- */

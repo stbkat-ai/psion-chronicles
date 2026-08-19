@@ -2102,6 +2102,40 @@ summary table). Cache-buster **v=117**.
 
 ---
 
+### 89. Asia begins — Heritage #16: Yamato (Way of the Drawn Sword); first Asian, first CHA
+Europe felt complete, so Luke turned the roster to **Asia**, starting with **Japan**. Chose to build **from the
+unused weapon subtypes** (Luke): with every European dupe resolved (§88), CHA and INT were still empty and most of
+the flashy bins (Finesse/Art/Channel/Fist/Longbows/Quick) were free — nearly all iconic Asian weapons. Framing
+(light): Asia = the named **martial disciplines** and their weapon-arts, plus the qi/ki **inner-power** tradition
+(Channel/WIS), with an optional sci-fi **INT** "neon-future" strand if Luke opens it later.
+
+- **Naming:** kept Europe's rule — a **historical people/region**, not the modern nation. So Japan's heritage is
+  **"Yamato"** (its classical name), matching the Franks/Norse/Hellenes/Iberia/Carpathians pattern. Flagged to Luke
+  that it can be renamed to plain "Japan" in one line if he prefers.
+- **Heritage "Yamato"** + **Fighting Style "Way of the Drawn Sword"** (`app/data.js`). Signature **Fencing Swords**
+  = the **katana** (Finesse / **CHA** — the roster's **first CHA-attack heritage**; starter Rapier/**Sabre**, the
+  sabre reading as the curved katana). Armor **Medium** (lamellar dō).
+- **6 combat skills** (5 active + 1 Passive): **Iai Strike** (the drawn cut — advantage, +die on your first strike
+  of the fight), **Counter-Cut** (Reaction riposte on a miss; named to avoid the Franks' "Riposte"), **Kesa Cut**
+  (diagonal cut, ignores part of armor Defense), **Kiai** (spirit-shout → Dazes a foe), **Flowing Cut** (strike,
+  then flow 10 ft into a second foe), and the **Zanshin** passive (advantage on initiative, can't be surprised,
+  first attack against you each combat at disadvantage). Grants **Iai Strike + Counter-Cut** + Zanshin.
+- Traits **Bushidō** (Insight/Concentration — read intent, unbreakable focus) and **Brush and Sword**
+  (Performance/History — *bunbu-ryōdō*, the cultured warrior). Flaw **The Warrior's Code → Sleight of Hand** (fresh,
+  unused flaw skill; the code holds the thief's palming hand in contempt).
+- **Design intent:** a **pure precision counter-duelist** — the whole style is the single decisive strike + the
+  riposte + the ready mind. No other heritage is built on that (the Franks have one Riposte skill; Yamato is the
+  duelist). Also the first heritage on **CHA**, framing the sword-duel as a contest of spirit/presence.
+
+Verified in-browser (Playwright): **16 heritages / 16 styles / 96 combat skills; all signatures still unique; no
+dup skill names; 0 console errors**; a seeded Yamato shows Traits (Bushidō, Brush and Sword + flaw), Combat lists
+Iai Strike + Zanshin with Counter-Cut under the collapsed Reactions group (reveals on expand); Codex live; macron
+glyphs (ō) render. Signature-attribute coverage now STR 8 / AGI 5 / CON 1 / WIS 1 / **CHA 1** (INT still open).
+Docs: GAME_RULES (top table + "Asia begins" note & prose + summary table + count 15→16), README, CLAUDE.md (15→16).
+Cache-buster **v=118**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

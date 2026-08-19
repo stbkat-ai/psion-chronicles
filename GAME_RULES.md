@@ -546,6 +546,7 @@ Fighting Style, Combat Skills, and Traits their Heritage opened up.
 | **Iberia** | Descendants of Iberia — the Spanish & Portuguese crowns (the tercio, the powder empire, the age of sail) | Way of the Tercio | **Rifles** (Firearms/**CON**) — the arquebus/musket | Light + Medium | Paranormal |
 | **The Slavs** | Descendants of the Slavic peoples — Rus, Poles, Serbs, Czechs, Bulgars & kin (the forest, the long frontier war) | Way of the Long War | **Axes** (Heavy/STR) — the one-handed bearded axe | Light + Medium | Barter |
 | **The Carpathians** | Descendants of the Vlach/Carpathian folk — Transylvania & Wallachia (the strigoi, the evil eye, the old night) | Way of the Strigoi | **Ritual Blades** (Ritual/**WIS**) — the athame/blood-knife | Light only | Fortitude |
+| **Yamato** | Descendants of Japan — the samurai and the courts of old Yamato (the sword, iaijutsu, bushidō) | Way of the Drawn Sword | **Fencing Swords** (Finesse/**CHA**) — the katana | Light + Medium | Sleight of Hand |
 
 *More heritages are in development, built one at a time with Luke.* **Weapon convention (Luke):** every heritage
 uses **only existing weapon subtypes** — we do **not** add new ones. Where an iconic weapon has no subtype (the
@@ -685,6 +686,22 @@ hunter (The Amazon).
   *The roster's first curse/hex/life-drain caster; the occult pole no martial heritage touches.* Remaining European
   threads: the Baltic / the steppe (e.g. the Cossacks or the Balts).
 
+**Asia begins.** After Europe, the roster turns to **Asia** — built around the named **martial disciplines** and
+their weapon-arts (and, where fitting, the qi/ki **inner-power** tradition via Channel/WIS). Naming follows the
+same rule as Europe: a **historical people/region**, not the modern nation (so Japan's heritage is **Yamato**, its
+classical name). Asia is also where the roster finally fills **CHA** (the flowing Finesse/Art weapon-arts) and, if
+Luke opens that door, the sci-fi **INT** weapons (a possible neon-future East-Asian strand). First up:
+- **Way of the Drawn Sword** (Yamato / Japan) — the iaijutsu counter-duelist, and the roster's **first CHA-attack
+  heritage**: Iai Strike (the drawn cut — advantage, +die on your first strike of the fight), Counter-Cut
+  (Reaction — a free riposte when a foe misses you), Kesa Cut (a diagonal cut that ignores part of the target's
+  armor), Kiai (a spirit-shout that Dazes a foe), Flowing Cut (strike, then flow 10 ft into a second foe), and the
+  **Zanshin** passive (advantage on initiative, can't be surprised, the first attack against you each combat rolls
+  at disadvantage). Traits **Bushidō** (Insight/Concentration — read intent, unbreakable focus) and **Brush and
+  Sword** (Performance/History — *bunbu-ryōdō*, the cultured warrior). Signature **Fencing Swords** = the katana
+  (Finesse/**CHA**); Light + Medium armor (lamellar dō). Flaw **Sleight of Hand** (*The Warrior's Code* — the code
+  holds the thief's hand in contempt). *A pure precision counter-duelist — no other heritage's whole style is built
+  on the single decisive strike and the riposte.*
+
 ### Fighting Styles & Combat Skills (the mechanic)
 Combat Skills work like Kinetic Techniques: there are **many**, organized into categories called
 **Fighting Styles** (the combat-skill equivalent of the Kinetics). Each Fighting Style is **tied to a
@@ -703,7 +720,7 @@ forage with advantage, and leave no trail).
 - A style's Passive **can be learned by any character** with CSP, regardless of Heritage — as can any other
   style's skills.
 
-### Heritages → Fighting Styles (fresh roster — 15 built; growing region by region)
+### Heritages → Fighting Styles (fresh roster — 16 built; growing region by region)
 | Heritage | Fighting Style | Starting Combat Skills | Signature Passive | Traits | Flaw (disadvantage) |
 |---|---|---|---|---|---|
 | **North America** | Way of the Hunt | Hunter's Aim, Fade Away | Pathfinder | One with the Land, Keen Senses | *Unversed in Old-World Customs* — Etiquette |
@@ -721,6 +738,7 @@ forage with advantage, and leave no trail).
 | **Iberia** | Way of the Tercio | Give Fire, Grenado | Powder and Steel | Powder and Shot, Merchant-Adventurer | *No Truck with the Occult* — Paranormal |
 | **The Slavs** | Way of the Long War | Axe-Hook, Bear's Hide | Outlast | Hard-Wintered, Old Beast-Lore | *The Commune's Way* — Barter |
 | **The Carpathians** | Way of the Strigoi | Evil Eye, Blood Draught | Undying | Second Sight, Nightborn | *Sun-Cursed* — Fortitude |
+| **Yamato** | Way of the Drawn Sword | Iai Strike, Counter-Cut | Zanshin | Bushidō, Brush and Sword | *The Warrior's Code* — Sleight of Hand |
 
 *More heritages are being built one at a time (see 3b). Each style holds **5 active skills + 1 Passive**. Full
 skill text lives in `app/data.js` (`PC.FIGHTING_STYLES`); the app is the source of truth.*

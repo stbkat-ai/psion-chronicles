@@ -27,7 +27,7 @@ in the browser's `localStorage` (key `psion_chronicles_characters`), so saved da
 
 ## Files (all under `app/`)
 - `index.html` — entry point; the 7 asset tags carry `?v=N`.
-- `data.js` — all game data on `window.PC` (9 backgrounds, 15 heritages, 18 kinetics, 36 skills,
+- `data.js` — all game data on `window.PC` (9 backgrounds, 16 heritages, 18 kinetics, 36 skills,
   18 weapon types, 216 techniques (18 Kinetics × 4 tiers × 3), fighting styles/combat skills, per-background & per-heritage flaws).
   Also `PC.FUSIONS` (153 **Fusion Kinetics** — every pair of the 18 base Kinetics; hidden until unlocked) + `PC.FUSION_TECHNIQUES` (1377 = 153 × 3 tiers × 3);
   a fusion technique is a **pair of parent techniques** (offset a tier up), auto-granted free when both halves are known.
