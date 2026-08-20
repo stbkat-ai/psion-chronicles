@@ -2181,6 +2181,36 @@ Cache-buster **v=119**.
 
 ---
 
+### 91. Bestiary — the tameable-beasts category (nine creatures)
+**Decision.** Fill out a **tameable "beasts"** category in the Bestiary: simpler, animal-natured creatures a player
+can **befriend as a companion**, and that a GM can also **field as an encounter**. Same stat block serves both —
+and the existing "Add to companions" button becomes the "you tamed it" path.
+**Brief (Luke).** "A mix of **cryptids, real animals, and mythical creatures of a simple animal-like nature**,"
+consistent with the #90 lore rules (real myth/legend, no mutants, stay-in-region).
+**Choices made.**
+- **Taming = just a flag.** Each beast carries `tameable: true` and nothing more; whether a taming attempt works is
+  **GM-adjudicated for now**. (Options weighed: a lightweight difficulty+method tag, or a full taming skill-check
+  mechanic — both deferred. A real taming action is a future pass.)
+- **Codex = badge only.** No new sections or filters — tameable creatures keep their Soul-Level-band grouping and
+  just get a **🐾 badge** on the row and a one-line "Tameable" note in the detail. Least disruption to the section.
+- **Band bucketing.** Beasts use finer bands ("1–3", "3–6", "5–8", "6–9"), which would have fragmented the
+  band-grouped list. Added `beastBandGroup()` in codex.js: bucket a band into a canonical 5-level group **by its
+  midpoint** ("3–6" → 1–5, "5–8" → 6–10), so the group list stays the same four clean headers. Precise band still
+  shows in the row/detail.
+- **The nine:** real animals — **Gray Wolf, Brown Bear, Hunting Falcon**; cryptids — **Jackalope, Chupacabra,
+  Thunderbird**; animal-like myth — **Pegasus, Salamander, Phoenix**. Threat Minion→Elite, weighted low (these are
+  companions). None collide with the Otherkin nine. (Alternates offered but not taken: Warhorse, War Mastiff, Boar,
+  Raven, Qilin, Raiju, Cù Sìth, Beast of Bodmin.)
+**How.** `data.js`: nine new `PC.BESTIARY` entries under a "Tameable beasts" comment, each `tameable: true`, full
+stat blocks (bond-vs-wild flavor in the notes). `codex.js`: `beastBandGroup()` midpoint bucketing; a 🐾 badge
+appended to tameable list rows; a `.beast-badge` note in the detail; "tameable/tame/beast/companion/mount" folded
+into search keywords. `styles.css`: `.beast-tag` + `.beast-badge`. **Verified** (Playwright): 15 creatures total,
+9 tameable/badged, group list still the four canonical bands, Gray Wolf drops in as a correct companion (Animal,
+18/18, 2 traits), "tameable" search returns 9, **zero console errors**. Docs: GAME_RULES (Bestiary section:
+tameable-beasts bullet + count 6→15), README. Cache-buster **v=120**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

@@ -421,20 +421,32 @@
     },
   });
 
-  /* Bestiary — creatures of myth & legend (data-driven from PC.BESTIARY). */
+  /* Bestiary — creatures of myth & legend (data-driven from PC.BESTIARY).
+     Group label buckets a creature's (possibly ranged) Soul-Level band into a canonical 5-level band by
+     its midpoint, so finer beast bands (e.g. "3–6") don't fragment the group list. */
+  function beastBandGroup(band) {
+    const nums = String(band == null ? "" : band).match(/\d+/g);
+    if (!nums || !nums.length) return "Soul Level 1–5";
+    const lo = Number(nums[0]), hi = Number(nums[nums.length - 1]);
+    const mid = Math.round((lo + hi) / 2);
+    const base = Math.floor((Math.max(1, mid) - 1) / 5) * 5 + 1;
+    return `Soul Level ${base}–${base + 4}`;
+  }
+  const TAME_BADGE = ' <span class="beast-tag" title="Tameable — can be befriended as a companion">🐾</span>';
   addSection({
     key: "bestiary", icon: "🐉", title: "Bestiary", blurb: "Creatures of myth & legend that share the Post-Veil world.",
     list: () => (PC.BESTIARY || []).map((b) => ({
-      id: b.id, name: `${b.emoji} ${esc(b.name)}`,
+      id: b.id, name: `${b.emoji} ${esc(b.name)}${b.tameable ? TAME_BADGE : ""}`,
       sub: `${b.origin} · ${b.role}`,
-      group: `Soul Level ${b.slBand}`,
-      keywords: `${b.origin} ${b.habitat} ${b.kind} ${b.size} ${b.role} ${b.slBand} ${b.blurb} ${(b.traits || []).map((t) => t.name).join(" ")} ${(b.loot || []).join(" ")}`,
+      group: beastBandGroup(b.slBand),
+      keywords: `${b.origin} ${b.habitat} ${b.kind} ${b.size} ${b.role} ${b.slBand} ${b.blurb} ${(b.traits || []).map((t) => t.name).join(" ")} ${(b.loot || []).join(" ")} ${b.tameable ? "tameable tame beast companion mount" : ""}`,
     })),
     detail: (id) => {
       const b = (PC.bestiary && PC.bestiary(id)) || (PC.BESTIARY || []).find((x) => x.id === id);
       if (!b) return el("div", "muted", "Not found.");
       const box = el("div");
       box.appendChild(el("div", "codex-sub", `${b.emoji} ${esc(b.origin)} · ${esc(b.size)} · Soul Level ${esc(b.slBand)} · ${esc(b.role)}`));
+      if (b.tameable) box.appendChild(el("div", "beast-badge", "🐾 <b>Tameable</b> — with the GM's blessing, a player can befriend this creature as a companion."));
       if (b.blurb) box.appendChild(el("p", "codex-desc", esc(b.blurb)));
 
       // Core stat block

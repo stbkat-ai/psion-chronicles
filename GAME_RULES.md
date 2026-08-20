@@ -1051,11 +1051,18 @@ haunts border ruins, a kappa its river, a wendigo the deep-winter northern woods
   vulnerabilities**, an **XP value**, and **loot** on defeat.
 - **Threat scaling** aims for D&D-style balance: the Soul-Level band tells a GM which party a creature suits, and
   the role says how it fights (a swarm of Minions, a Standard line, an Elite threat, or a Boss set-piece).
-- **Drop-in companions.** From a creature's Codex entry, a GM can add it straight to a character's **🐾 Pets** tab
-  as a ready-to-run companion — its stat block, attacks, and traits carry over intact.
-- **Where it lives:** the Codex **Bestiary** section, data-driven from `PC.BESTIARY`. The first six —
-  **Kappa, Redcap, Wendigo, Clay Golem, Manticore, Roc** — are placeholders that stand the system up; the roster
-  grows from here (and threat numbers are first-pass, meant to be tuned in play).
+- **Tameable beasts.** Some creatures — the simple, animal-natured ones — are marked **tameable** (a 🐾 badge in
+  the Codex): a player may befriend one as a companion, and a GM may also field it as an encounter. Whether a
+  taming attempt succeeds is **GM-adjudicated for now** (no taming check exists yet — that's a future pass). The
+  starter beasts mix **real animals** (Gray Wolf, Brown Bear, Hunting Falcon), **cryptids** (Jackalope,
+  Chupacabra, Thunderbird), and **animal-like myth** (Pegasus, Salamander, Phoenix).
+- **Drop-in companions.** From any creature's Codex entry — beast or monster — a GM can add it straight to a
+  character's **🐾 Pets** tab as a ready-to-run companion; its stat block, attacks, and traits carry over intact.
+  (For a tameable beast, that's the "you tamed it" path.)
+- **Where it lives:** the Codex **Bestiary** section, data-driven from `PC.BESTIARY` (`tameable: true` flags a
+  beast). The starter roster is **fifteen** — six monsters/threats (Kappa, Redcap, Wendigo, Clay Golem, Manticore,
+  Roc) and nine tameable beasts — all placeholders that stand the system up; the roster grows from here, and
+  threat numbers are first-pass, meant to be tuned in play.
 
 ---
 

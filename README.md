@@ -39,9 +39,12 @@ The app opens on a **full-screen Home** — the launcher for the whole app. From
   **Kinetics, Techniques, Fusion Kinetics, Otherkin, Backgrounds, Heritages, Skills, Combat Skills, Conditions,
   Weapons, Armor, Gear, Crafting, Bestiary**, and core **Reference** tables (chakras, limbs). Entries cross-link
   (a background's free technique jumps to that technique; a heritage's Fighting Style to its skills; a fusion to
-  its parent Kinetics). The **Bestiary** is now seeded with its first creatures — real-world myth & legend
-  (Kappa, Redcap, Wendigo, Clay Golem, Manticore, Roc) — each a full stat block a GM can drop straight onto a
-  character's **🐾 Pets** tab as a ready-to-run companion. The roster grows from here.
+  its parent Kinetics). The **Bestiary** is now seeded with its first creatures from real-world myth & legend —
+  six monsters/threats (Kappa, Redcap, Wendigo, Clay Golem, Manticore, Roc) plus nine **tameable beasts** (🐾) that
+  mix real animals, cryptids, and animal-like myth (Gray Wolf, Brown Bear, Hunting Falcon, Jackalope, Chupacabra,
+  Thunderbird, Pegasus, Salamander, Phoenix). Each is a full stat block a GM can drop straight onto a character's
+  **🐾 Pets** tab as a ready-to-run companion — for a tameable beast, that's the "you tamed it" path. The roster
+  grows from here.
 - **🧙 Player** — your characters: the creator, roster, level-up and live play sheet. **This is fully built** —
   everything described below lives here.
 

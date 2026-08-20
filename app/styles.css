@@ -1028,6 +1028,12 @@ body.screen-home .wrap { max-width: none; margin: 0; padding: 0; }
 .pill.link { cursor: pointer; }
 .pill.link:hover { border-color: var(--psi); color: var(--psi-bright); }
 
+/* Bestiary — tameable badge (list row) + tameable note (detail). */
+.beast-tag { font-size: .8rem; opacity: .95; }
+.beast-badge { margin: 2px 0 10px; padding: 6px 10px; border-radius: 8px; font-size: .82rem;
+  color: var(--text-dim); background: rgba(70, 196, 110, .10); border: 1px solid rgba(70, 196, 110, .35); }
+.beast-badge b { color: var(--text); }
+
 /* Bestiary → companions drop-in (Codex creature detail). */
 .codex-add-pet { margin-top: 10px; }
 .codex-pet-picker { margin-top: 8px; padding: 8px 10px; border-radius: 8px; background: var(--panel-2); border: 1px solid var(--border); }
