@@ -3296,7 +3296,7 @@
     const root = el("div");
     const intro = el("div", "panel");
     intro.appendChild(el("div", "section-label", "🐾 Pets & Companions"));
-    intro.appendChild(el("p", "hint", "Simple NPC companions you control — animals, robots, small monsters, demons, and more. Add them by hand for now (the <b>bestiary is coming</b>); each gets a mini stat block — HP, Defense, Speed, attacks & traits — with tap-to-roll <b>initiative</b>, <b>attacks</b>, and <b>damage</b> that post to your roll log."));
+    intro.appendChild(el("p", "hint", "Simple NPC companions you control — animals, robots, small monsters, demons, and more. Add one by hand below, or drop in a pre-statted creature from the <b>Codex → Bestiary</b>. Each gets a mini stat block — HP, Defense, Speed, attacks & traits — with tap-to-roll <b>initiative</b>, <b>attacks</b>, and <b>damage</b> that post to your roll log."));
     const form = el("div", "inv-form");
     const nameI = el("input"); nameI.type = "text"; nameI.placeholder = "Companion name"; nameI.className = "inv-name";
     const kindS = el("select"); kindS.className = "inv-cat";
@@ -3308,7 +3308,7 @@
     root.appendChild(intro);
 
     const pets = petList();
-    if (!pets.length) root.appendChild(el("div", "muted", "No companions yet. Add one above — or wait for the bestiary to arrive."));
+    if (!pets.length) root.appendChild(el("div", "muted", "No companions yet. Add one above — or drop in a creature from the Codex Bestiary."));
     else pets.forEach((p) => root.appendChild(petCard(p)));
     return root;
   }

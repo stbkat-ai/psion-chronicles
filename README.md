@@ -37,9 +37,11 @@ The app opens on a **full-screen Home** — the launcher for the whole app. From
 - **🎲 GM** — build and run campaigns (everything a Game Master needs). *Placeholder for now — under construction.*
 - **📖 Codex** — a **searchable reference** for the whole game, **now built**. Browse or search across
   **Kinetics, Techniques, Fusion Kinetics, Otherkin, Backgrounds, Heritages, Skills, Combat Skills, Conditions,
-  Weapons, Armor, Gear, Crafting**, and core **Reference** tables (chakras, limbs). Entries cross-link
+  Weapons, Armor, Gear, Crafting, Bestiary**, and core **Reference** tables (chakras, limbs). Entries cross-link
   (a background's free technique jumps to that technique; a heritage's Fighting Style to its skills; a fusion to
-  its parent Kinetics). Only the **Bestiary** is still a placeholder — monster data comes later.
+  its parent Kinetics). The **Bestiary** is now seeded with its first creatures — real-world myth & legend
+  (Kappa, Redcap, Wendigo, Clay Golem, Manticore, Roc) — each a full stat block a GM can drop straight onto a
+  character's **🐾 Pets** tab as a ready-to-run companion. The roster grows from here.
 - **🧙 Player** — your characters: the creator, roster, level-up and live play sheet. **This is fully built** —
   everything described below lives here.
 
@@ -242,8 +244,8 @@ Account menu brings it back). Tap the **Psion Chronicles wordmark** in the heade
       equip. Consumables/tools/misc stay simple (heal/effect or aided skill). A live preview shows the result,
       recipe, and craft check before you save.
   - **🐾 Pets tab** — **simple NPC companions you control** (animals, robots, small monsters, demons, …). Add
-    them by hand for now — a bestiary of pre-statted creatures is planned. Each companion gets a mini **stat
-    block**: HP (with damage/heal), Defense Score, Speed, an Initiative modifier, a list of **attacks**
+    them by hand, or drop in a **pre-statted creature from the Codex Bestiary** with one tap. Each companion gets
+    a mini **stat block**: HP (with damage/heal), Defense Score, Speed, an Initiative modifier, a list of **attacks**
     (name · to-hit · damage die · note) and **traits/abilities**, plus free-form notes. Tap-to-roll buttons for
     **initiative**, each attack's **to-hit** and **damage** post straight to your roll log, so you can run a
     companion in combat right beside your character.

@@ -2136,6 +2136,51 @@ Cache-buster **v=118**.
 
 ---
 
+### 90. Bestiary — first creatures, and the Codex tile goes live
+**Decision.** Stand up the **Bestiary** with a first handful of placeholder creatures, wire the (previously
+"coming soon") Codex tile to real data, and let a GM **drop a creature straight onto a character's Pets tab** as a
+ready-to-run companion.
+**Lore ground rules (Luke).** The world is full of ordinary life — **all real animals still exist, no mutants**.
+Alongside them live **cryptids, monsters, and mythical creatures**, and every one must be drawn from **real-world
+myth and legend** (no invented chimeras, nothing too whimsical — his example of a hard "no" was a
+"mermaid-unicorn with butterfly wings"). A **soft rule**: creatures mostly keep to their **native habitat / region
+of origin**. Threat should feel **D&D-balanced** — a real, fair challenge.
+**Key call — Otherkin are also wild creatures.** Luke clarified mid-design that the nine **Otherkin** (the Soul
+Creatures — Kitsune, Siren, Gryphon, Lycan, Troll, Unicorn, Sphynx, Wyvern, Strigoi) aren't a walled-off list:
+those beings **also roam the world in the flesh**. So a name can appear in **both** the Otherkin and Bestiary
+Codex sections — the wild creature and the soul-bond, two lenses on one being (specific connecting lore deferred).
+For this first *plumbing* pass we deliberately picked six creatures **distinct** from the nine, so the two sections
+read clearly different while the system is young; wild Otherkin-creatures get their own pass later, with their lore.
+**Choices made.**
+- **Threat scale** = a recommended **Soul-Level band** (e.g. "6–10") **+ a role** (Minion / Standard / Elite /
+  Boss) — CR-like, tells a GM at a glance which party a creature suits and how it fights. (Alternatives offered:
+  a single CR number, or an abstract 1–10 tier.)
+- **Origin** = a **free-form folklore label** ("Japanese folklore", "Scottish Border legend") rather than tying to
+  the existing Regional Heritages — broader, covers regions with no heritage yet.
+- **Stat block = a superset of the play-sheet companion**, so drop-in is lossless. Plus the GM extras Luke asked
+  for: senses, resist/immune/vulnerable, XP value, and loot.
+- **No `BESTIARY.md` yet** — data.js + the Codex are enough for placeholders; the source-of-truth doc comes once
+  the roster is real (matching the TECHNIQUES.md / WEAPONS.md / FUSIONS.md pattern).
+- **The first six** span the curve and the globe: **Kappa** (Japanese, SL 1–5 · Standard), **Redcap** (Scottish
+  Border, SL 1–5 · Elite), **Wendigo** (Algonquian, SL 6–10 · Elite), **Clay Golem** (Jewish/Prague, SL 11–15 ·
+  Standard), **Manticore** (Persian, SL 11–15 · Elite), **Roc** (Arabian/Persian, SL 16–20 · Boss) — Small→
+  Gargantuan, kinds Monster/Spirit/Construct.
+**How.** `data.js`: new **`PC.BESTIARY`** array (the six, richly statted), a **`PC.bestiary(id)`** accessor, and a
+**`PC.beastToPet(beast)`** converter that flattens named traits to text and folds flavor/GM notes into the
+companion's notes (leaving GM-only fields behind) — one shared converter so a future Pets-tab picker can reuse it.
+`codex.js`: replaced the `comingSoon` Bestiary stub with a data-driven **`list()`** (grouped by Soul-Level band,
+searchable on origin/habitat/kind/traits/loot) and a **`detail()`** (stat block, attacks, traits, damage-response
+chips, reward/loot, GM notes) ending in a **"➕ Add to a character's companions"** button — one character adds
+directly, several show an inline picker; it writes through `PsionApp.loadRoster/saveRoster`. `play.js`: refreshed
+the Pets-tab copy ("drop in a pre-statted creature from the Codex → Bestiary") in place of the old "bestiary is
+coming" lines. `styles.css`: small `.codex-add-pet` / `.codex-pet-picker` styles. **Verified** (Playwright): tile
+count 6, all four SL-band groups, Kappa detail renders every section, the drop-in wrote a correct Kappa companion
+(2 attacks, 3 traits, HP 22/22, Def 13), folklore search ("persian" → Manticore + Roc) works, **zero console
+errors**. Docs: GAME_RULES (new "The Bestiary" section + Pets section updated), README (Codex + Pets tab).
+Cache-buster **v=119**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is
@@ -2146,8 +2191,9 @@ Cache-buster **v=118**.
   play). Placeholder in place (#55).
 - **Codex section** — ✅ **built** (#59): searchable reference across 14 categories (Kinetics, Techniques,
   Otherkin, Backgrounds, Heritages, Skills, Combat Skills, Conditions, Weapons, Armor, Gear, Crafting, Reference).
-  Remaining: the **Bestiary** (needs monster data) and a narrative "full rulebook" view. Fusions deliberately
-  excluded (hidden system) — could live in the GM section instead.
+  The **Bestiary** is now live and seeded with its first six creatures (#90) — remaining Codex work is a narrative
+  "full rulebook" view (and growing the bestiary roster). Fusions deliberately excluded (hidden system) — could
+  live in the GM section instead.
 - Heritage-opened starting weapons granting **actual proficiency** (currently start-only).
 - A real **XP-to-next-level** bar once Luke sets the thresholds. — ✅ done (#42, placeholder curve; retune anytime).
 - Off-PC backup of the **source** — ✅ done (public GitHub repo `stbkat-ai/psion-chronicles`).

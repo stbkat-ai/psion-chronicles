@@ -1019,11 +1019,11 @@ system (Section 3b), not the regular skills list.
 
 ---
 
-### Pets & Companions (system in place; bestiary pending)
+### Pets & Companions (system in place; bestiary seeded)
 Players may acquire **pets** — simple NPCs they control during play: **animals** (dogs, cats, hawks, bears…),
-**robots**, **small monsters**, **demons**, constructs, spirits, undead, and the like. The **app system is
-built and ready**; the official **bestiary of pre-statted creatures is still to be written**, so for now pets
-are **added and statted by hand** on the play sheet's **🐾 Pets tab**.
+**robots**, **small monsters**, **demons**, constructs, spirits, undead, and the like. Pets are **added and
+statted by hand** on the play sheet's **🐾 Pets tab**, or **dropped in pre-statted from the Codex Bestiary**
+(see below) with one tap.
 - **Each companion is a mini stat block:** **HP** (current/max, with damage/heal), **Defense Score**, **Speed**,
   an **Initiative modifier**, a list of **attacks** (name · to-hit bonus · damage die · optional note), a list
   of **traits/abilities** (free text), and **notes**. A **kind** (Animal/Robot/Monster/Demon/…) sets a default
@@ -1031,8 +1031,31 @@ are **added and statted by hand** on the play sheet's **🐾 Pets tab**.
 - **You run them from the tab:** tap-to-roll **initiative**, and per attack a **to-hit** roll (d20 + bonus vs a
   target's Defense Score) and a **damage** roll — all posting to the shared roll log, so a companion acts in
   combat alongside its owner.
-- **Open / future:** once the bestiary exists, creatures will drop in pre-statted (rather than hand-entered);
-  taming/summoning costs, action-economy for commanding pets, and loyalty are still to be designed.
+- **Open / future:** taming/summoning costs, action-economy for commanding pets, and loyalty are still to be
+  designed.
+
+---
+
+### The Bestiary (creatures of the Post-Veil world)
+The world is full of ordinary life — **every real animal still exists, and there are no mutants**. Sharing those
+same ecosystems, though, are the **cryptids, monsters, and mythical creatures** of real-world myth and legend.
+A soft rule holds: **most creatures keep to their native habitat and region of origin** — a Scottish redcap
+haunts border ruins, a kappa its river, a wendigo the deep-winter northern woods.
+- **Same beings, two lenses.** The nine creatures a Soul can reach for at Soul Level 15 (the **Otherkin** — Kitsune,
+  Siren, Gryphon, Lycan, Troll, Unicorn, Sphynx, Wyvern, Strigoi) also **roam the world in the flesh**. A bestiary
+  entry and an Otherkin entry may share a name; they are the wild creature and the soul-bond, not a contradiction.
+- **Each creature is a stat block:** a **kind** (Animal/Monster/Demon/Construct/Spirit/Undead/…), **origin** &
+  **habitat**, **size**, a recommended **Soul-Level band** and a **role** (Minion / Standard / Elite / Boss),
+  a flavor description, then the numbers — **HP, Defense Score, Speed, Initiative**, **attacks** (name · to-hit ·
+  damage · note) and named **traits** — plus GM extras: **senses**, damage **resistances / immunities /
+  vulnerabilities**, an **XP value**, and **loot** on defeat.
+- **Threat scaling** aims for D&D-style balance: the Soul-Level band tells a GM which party a creature suits, and
+  the role says how it fights (a swarm of Minions, a Standard line, an Elite threat, or a Boss set-piece).
+- **Drop-in companions.** From a creature's Codex entry, a GM can add it straight to a character's **🐾 Pets** tab
+  as a ready-to-run companion — its stat block, attacks, and traits carry over intact.
+- **Where it lives:** the Codex **Bestiary** section, data-driven from `PC.BESTIARY`. The first six —
+  **Kappa, Redcap, Wendigo, Clay Golem, Manticore, Roc** — are placeholders that stand the system up; the roster
+  grows from here (and threat numbers are first-pass, meant to be tuned in play).
 
 ---
 

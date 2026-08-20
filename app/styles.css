@@ -1028,6 +1028,11 @@ body.screen-home .wrap { max-width: none; margin: 0; padding: 0; }
 .pill.link { cursor: pointer; }
 .pill.link:hover { border-color: var(--psi); color: var(--psi-bright); }
 
+/* Bestiary → companions drop-in (Codex creature detail). */
+.codex-add-pet { margin-top: 10px; }
+.codex-pet-picker { margin-top: 8px; padding: 8px 10px; border-radius: 8px; background: var(--panel-2); border: 1px solid var(--border); }
+.codex-pet-picker .pill-list { margin-top: 6px; }
+
 @media (max-width: 560px) {
   .codex-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
   .codex-list { grid-template-columns: 1fr; }

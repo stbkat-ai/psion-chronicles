@@ -2,7 +2,7 @@
    Psion Chronicles — Codex (searchable in-game reference)
    The "look up everything" section: Kinetics, Techniques, Fusion Kinetics,
    Otherkin, Backgrounds, Heritages, Skills, Combat Skills, Conditions, Weapons,
-   Armor, Gear, Crafting, and core Reference tables.
+   Armor, Gear, Crafting, Bestiary, and core Reference tables.
    Pure UI over the game data already on window.PC (data.js + items.js) — it
    holds NO content of its own, so editing an item/technique/rule in data.js or
    items.js flows through here automatically (counts included). Adding a whole
@@ -421,11 +421,106 @@
     },
   });
 
-  /* Bestiary — placeholder (no monster data yet). */
+  /* Bestiary — creatures of myth & legend (data-driven from PC.BESTIARY). */
   addSection({
-    key: "bestiary", icon: "🐉", title: "Bestiary", blurb: "Monsters & NPCs — coming soon.", comingSoon: true,
-    list: () => [],
-    detail: () => el("div", "muted", "The bestiary is under construction."),
+    key: "bestiary", icon: "🐉", title: "Bestiary", blurb: "Creatures of myth & legend that share the Post-Veil world.",
+    list: () => (PC.BESTIARY || []).map((b) => ({
+      id: b.id, name: `${b.emoji} ${esc(b.name)}`,
+      sub: `${b.origin} · ${b.role}`,
+      group: `Soul Level ${b.slBand}`,
+      keywords: `${b.origin} ${b.habitat} ${b.kind} ${b.size} ${b.role} ${b.slBand} ${b.blurb} ${(b.traits || []).map((t) => t.name).join(" ")} ${(b.loot || []).join(" ")}`,
+    })),
+    detail: (id) => {
+      const b = (PC.bestiary && PC.bestiary(id)) || (PC.BESTIARY || []).find((x) => x.id === id);
+      if (!b) return el("div", "muted", "Not found.");
+      const box = el("div");
+      box.appendChild(el("div", "codex-sub", `${b.emoji} ${esc(b.origin)} · ${esc(b.size)} · Soul Level ${esc(b.slBand)} · ${esc(b.role)}`));
+      if (b.blurb) box.appendChild(el("p", "codex-desc", esc(b.blurb)));
+
+      // Core stat block
+      const rows = el("div", "codex-kvs");
+      rows.appendChild(kv("Defense Score", esc(String(b.defense))));
+      rows.appendChild(kv("HP", esc(String(b.hp))));
+      rows.appendChild(kv("Speed", esc(b.speed || "—")));
+      rows.appendChild(kv("Initiative", PC.fmtMod ? PC.fmtMod(Number(b.initMod) || 0) : String(b.initMod || 0)));
+      if (b.senses) rows.appendChild(kv("Senses", esc(b.senses)));
+      rows.appendChild(kv("Habitat", esc(b.habitat || "—")));
+      box.appendChild(rows);
+
+      // Attacks
+      if ((b.attacks || []).length) {
+        box.appendChild(label(`Attacks (${b.attacks.length})`));
+        b.attacks.forEach((a) => {
+          const r = el("div", "codex-mini");
+          const bits = [PC.fmtMod ? `${PC.fmtMod(Number(a.toHit) || 0)} to hit` : `${a.toHit} to hit`, a.damage ? esc(a.damage) + " damage" : null].filter(Boolean).join(" · ");
+          r.innerHTML = `<span class="cm-name">${esc(a.name)}</span><span class="cm-sub">${bits}</span>`;
+          if (a.note) r.appendChild(el("div", "codex-effect", "▸ " + esc(a.note)));
+          box.appendChild(r);
+        });
+      }
+
+      // Traits
+      if ((b.traits || []).length) {
+        box.appendChild(label(`Traits (${b.traits.length})`));
+        b.traits.forEach((t) => {
+          const r = el("div", "codex-mini");
+          r.innerHTML = `<span class="cm-name">${esc(t.name)}</span>`;
+          if (t.desc) r.appendChild(el("div", "codex-effect", "▸ " + esc(t.desc)));
+          box.appendChild(r);
+        });
+      }
+
+      // Defenses (only what's present)
+      const defRows = el("div", "codex-kvs");
+      if ((b.resist || []).length) defRows.appendChild(kv("Resists", (b.resist).map(esc).join(", ")));
+      if ((b.immune || []).length) defRows.appendChild(kv("Immune", (b.immune).map(esc).join(", ")));
+      if ((b.vulnerable || []).length) defRows.appendChild(kv("Vulnerable", (b.vulnerable).map(esc).join(", ")));
+      if (defRows.childNodes.length) { box.appendChild(label("Damage response")); box.appendChild(defRows); }
+
+      // Reward / loot
+      if (b.xp != null || (b.loot || []).length) {
+        box.appendChild(label("Reward"));
+        const rr = el("div", "codex-kvs");
+        if (b.xp != null) rr.appendChild(kv("XP value", esc(String(b.xp))));
+        box.appendChild(rr);
+        if ((b.loot || []).length) box.appendChild(chips(b.loot));
+      }
+
+      // GM tactics note
+      if (b.notes) { box.appendChild(label("GM notes")); box.appendChild(el("p", "hint", esc(b.notes))); }
+
+      // Drop-into-companions — add this creature to a saved character's Pets tab.
+      const addWrap = el("div", "codex-add-pet");
+      const addBtn = el("button", "btn small primary", "➕ Add to a character's companions");
+      const picker = el("div", "codex-pet-picker"); picker.style.display = "none";
+      function doAdd(charId) {
+        const App = window.PsionApp; if (!App) return;
+        const list = App.loadRoster();
+        const rec = list.find((x) => x.id === charId);
+        if (!rec) { App.toast && App.toast("That character couldn't be found."); return; }
+        if (!Array.isArray(rec.pets)) rec.pets = [];
+        rec.pets.push(PC.beastToPet(b));
+        App.saveRoster(list);
+        App.toast && App.toast(`Added ${b.name} to ${rec.name || "the roster"}'s companions.`);
+        picker.style.display = "none";
+      }
+      addBtn.onclick = () => {
+        const App = window.PsionApp;
+        const roster = (App && App.loadRoster) ? App.loadRoster() : [];
+        if (!roster.length) { App && App.toast && App.toast("Create a character first — then a creature can join their companions."); return; }
+        if (roster.length === 1) { doAdd(roster[0].id); return; }
+        picker.innerHTML = "";
+        picker.appendChild(el("div", "hint", `Add <b>${esc(b.name)}</b> to which character?`));
+        const btns = el("div", "pill-list");
+        roster.forEach((c) => { const cb = el("button", "btn small", esc(c.name || "Unnamed")); cb.onclick = () => doAdd(c.id); btns.appendChild(cb); });
+        picker.appendChild(btns);
+        picker.style.display = picker.style.display === "none" ? "block" : "none";
+      };
+      addWrap.appendChild(addBtn); addWrap.appendChild(picker);
+      box.appendChild(el("p", "hint", "A GM aid — drops this creature onto a character's <b>🐾 Pets</b> tab as a ready-to-run companion (stat block, attacks &amp; traits included)."));
+      box.appendChild(addWrap);
+      return box;
+    },
   });
 
   /* ---------------- rendering ---------------- */
