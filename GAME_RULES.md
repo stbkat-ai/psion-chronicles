@@ -1051,18 +1051,29 @@ haunts border ruins, a kappa its river, a wendigo the deep-winter northern woods
   vulnerabilities**, an **XP value**, and **loot** on defeat.
 - **Threat scaling** aims for D&D-style balance: the Soul-Level band tells a GM which party a creature suits, and
   the role says how it fights (a swarm of Minions, a Standard line, an Elite threat, or a Boss set-piece).
-- **Tameable beasts.** Some creatures — the simple, animal-natured ones — are marked **tameable** (a 🐾 badge in
-  the Codex): a player may befriend one as a companion, and a GM may also field it as an encounter. Whether a
-  taming attempt succeeds is **GM-adjudicated for now** (no taming check exists yet — that's a future pass). The
-  starter beasts mix **real animals** (Gray Wolf, Brown Bear, Hunting Falcon), **cryptids** (Jackalope,
-  Chupacabra, Thunderbird), and **animal-like myth** (Pegasus, Salamander, Phoenix).
+- **Ecosystem & biomes.** Every creature belongs to a **biome** (`PC.BIOMES`) and holds a food-web **niche** —
+  **Apex**, **Predator**, or **Prey**. The Codex Bestiary is organized by biome, each with its own flavor, so the
+  roster reads as a living ecosystem rather than a list. The post-Veil **North American** continent is mapped
+  north→south — **the Boreal North, the Eastern Woodlands, the Great Lakes & Waterways, the Great Plains, Deserts
+  & Canyonlands, Mountains & High Peaks** — plus a **Beyond North America** grouping for creatures native to other
+  continents (which, by the soft stay-in-region law, are travelers and rarities here).
+- **Tameable beasts.** Some creatures — the simple, animal-natured ones — are marked **tameable** (🐾): a player
+  may befriend one as a companion, and a GM may also field it as an encounter. Whether a taming attempt succeeds is
+  **GM-adjudicated for now** (no taming check exists yet — a future pass).
+- **Prey & hunting.** Many creatures are marked **huntable** (🏹) and carry a short **quarry** note — what a hunter
+  takes (meat, hide, reagents), backed by the loot list. As with taming, the hunt itself is **GM-run** for now
+  (no dedicated hunting mechanic yet). Prey animals like the Bison and Moose anchor the food web the predators
+  and apex creatures depend on.
 - **Drop-in companions.** From any creature's Codex entry — beast or monster — a GM can add it straight to a
   character's **🐾 Pets** tab as a ready-to-run companion; its stat block, attacks, and traits carry over intact.
   (For a tameable beast, that's the "you tamed it" path.)
-- **Where it lives:** the Codex **Bestiary** section, data-driven from `PC.BESTIARY` (`tameable: true` flags a
-  beast). The starter roster is **fifteen** — six monsters/threats (Kappa, Redcap, Wendigo, Clay Golem, Manticore,
-  Roc) and nine tameable beasts — all placeholders that stand the system up; the roster grows from here, and
-  threat numbers are first-pass, meant to be tuned in play.
+- **Same beings, two lenses** *(reprise)* — the wild creature and, for the nine Otherkin names, the soul-bond.
+- **Where it lives:** the Codex **Bestiary** section, data-driven from `PC.BESTIARY` (with `PC.BIOMES` for the
+  ecosystem; `tameable` / `huntable` / `niche` / `biome` flag each creature). The roster stands at **twenty-three**
+  and growing — a world set (Kappa, Redcap, Clay Golem, Manticore, Roc, Pegasus, Salamander, Phoenix, and the
+  cosmopolitan real animals) plus a deepening **North American** cast: Wendigo, Thunderbird, Jackalope, Chupacabra,
+  and the new wave — **American Bison, Moose, Ahuizotl, Hodag, Jersey Devil, Hidebehind, Uktena, Mishipeshu**.
+  Threat numbers are first-pass, meant to be tuned in play.
 
 ---
 

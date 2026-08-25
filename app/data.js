@@ -1406,6 +1406,29 @@ PC.OTHERKIN_TECHNIQUES = PC.OTHERKIN.reduce(function (acc, o) { return acc.conca
      senses, resist[], immune[], vulnerable[], xp, loot[], notes  — the GM extras
    These six are placeholders to stand the system up; the roster grows from here. Threat numbers are
    first-pass and meant to be tuned in play. ============================================================ */
+
+/* --- Biomes of the post-Veil North American continent ----------------------------------------
+   The ecosystem framework: each creature carries a `biome` (one of these ids) and a food-web `niche`
+   (Apex / Predator / Prey). The Codex Bestiary groups creatures under these biome headers, using the
+   flavor blurb here. Ordered north→south, then the catch-all for creatures native to other continents
+   (which, by the soft law of the Veil, keep to their own regions). Adding a new biome = one entry here. */
+PC.BIOMES = [
+  { id: "boreal", name: "The Boreal North", region: "North America",
+    blurb: "Black spruce, frozen muskeg, and endless taiga rolling to the tree line. When the Veil fell the old hungers of winter came back with teeth — this is the country of the Wendigo, and little that walks here does so without fear of the dark between the trunks." },
+  { id: "woodlands", name: "The Eastern Woodlands", region: "North America",
+    blurb: "Dense hardwood forest, deep hollows, and mist-drowned Appalachian ridges. The oldest stories on the continent were told under these leaves — and since the Veil thinned they walk again: crowned serpents, things that fly without a body, and shapes half-glimpsed between the pines." },
+  { id: "lakes", name: "The Great Lakes & Waterways", region: "North America",
+    blurb: "Inland freshwater seas, drowned rivers, and reed-choked marsh. The water here is deep and old and full of eyes; the lake-lords stir beneath the ice, and no ferryman crosses at night without an offering to what churns below." },
+  { id: "plains", name: "The Great Plains", region: "North America",
+    blurb: "An ocean of grass under an enormous sky, thundering with herds. This is open country — the hunter's country — where the great grazers move in their millions and the swift and the winged make their living at the ragged edges of the stampede." },
+  { id: "desert", name: "Deserts & Canyonlands", region: "North America",
+    blurb: "Sun-cracked hardpan, red rock, and the long shadows of the arid Southwest. Life here hunts by night and hides by day; the scrub conceals blood-drinkers, and the border ranches learned long ago to bring the animals in before dark." },
+  { id: "mountains", name: "Mountains & High Peaks", region: "North America",
+    blurb: "The great cordillera — thin air, storm-wracked summits, and cliffs no road reaches. The apex things nest up here, above the weather and out of reach, and come down only to hunt." },
+  { id: "distant", name: "Beyond North America", region: "Other continents",
+    blurb: "Creatures whose homelands lie across the seas. By the soft law of the Veil most keep to their own regions — so on this continent they are travelers, escapees, and rarities, far from the lands whose legends made them." },
+];
+
 PC.BESTIARY = [
   {
     id: "kappa", name: "Kappa", emoji: "🐢", kind: "Monster",
@@ -1717,7 +1740,206 @@ PC.BESTIARY = [
     loot: ["Everburning ash (rare reagent)", "Phoenix down (a single feather that mends grievous wounds)"],
     notes: "Wild, it fights until reborn and then withdraws to its aerie; bonded, it is a healer and a second chance with wings. Cold is the only sure way to keep it down.",
   },
+
+  /* --- North American wave (Native folklore · Mesoamerican myth · modern cryptids) ---------------
+     All wild, none civilized. Each carries a `biome` + food-web `niche`; huntable ones carry a `quarry`
+     note (what a hunter takes) backed by the loot list. GM adjudicates taming/hunting for now. */
+  {
+    id: "american-bison", name: "American Bison", emoji: "🦬", kind: "Animal",
+    origin: "Real animal (North American plains)", habitat: "Open prairie & grassland", biome: "plains", niche: "Prey",
+    size: "Large", slBand: "3–6", role: "Standard",
+    huntable: true, quarry: "The great hunt of the Plains — meat to feed a whole camp, hide for shelter and armor, horn and bone for tools.",
+    blurb: "The thunder of the grasslands — a shaggy, thousand-pound grazer that moves in herds so vast they darken the plain. No hunter, but no easy kill: a stampede has flattened more people than any predator on the continent.",
+    hp: 60, defense: 12, speed: "50 ft", initMod: 0,
+    attacks: [
+      { name: "Gore", toHit: 6, damage: "2d8", note: "reach; on a charge of 20+ ft, the target is knocked prone" },
+      { name: "Stomp", toHit: 6, damage: "2d6", note: "against a prone creature" },
+    ],
+    traits: [
+      { name: "Stampede", desc: "When one bison bolts, the herd follows — a line of thundering bodies. Each creature in the herd's path saves or takes 3d6 and is knocked prone." },
+      { name: "Herd Beast", desc: "Rarely alone; a wounded bison's bellow brings the herd, whether to defend it or to flee together." },
+    ],
+    senses: "Keen smell",
+    resist: [], immune: [], vulnerable: [],
+    xp: 450,
+    loot: ["Bison hide (armor stock)", "Bison meat (rations, plentiful)", "Horn & bone (tools)"],
+    notes: "The cornerstone of the Plains food web — what the wolves, the great cats, and worse all follow. Hunt from the edges; never get caught in front of a running herd.",
+  },
+  {
+    id: "moose", name: "Moose", emoji: "🫎", kind: "Animal",
+    origin: "Real animal (northern forests)", habitat: "Boreal forest, bog & lakeshore", biome: "boreal", niche: "Prey",
+    size: "Large", slBand: "3–6", role: "Standard",
+    huntable: true, quarry: "Hunted for a mountain of meat, a thick hide, and broad palmate antler.",
+    blurb: "The largest game of the northern woods — long-legged, heavy, and deceptively dangerous. A bull in the rut will charge anything, and a cornered moose has broken more hunters than the wolves that trail it.",
+    hp: 52, defense: 12, speed: "40 ft, swim 30 ft", initMod: 1,
+    attacks: [
+      { name: "Antler Ram", toHit: 5, damage: "2d8", note: "reach; on a charge, push 10 ft and knock prone" },
+      { name: "Hooves", toHit: 5, damage: "2d6", note: "" },
+    ],
+    traits: [
+      { name: "Rut Fury", desc: "A bull in rut charges anything that nears it, and has advantage on saves against being Frightened or driven off." },
+      { name: "Wetland Strider", desc: "Moves through bog and deep water without slowing; often escapes predators by taking to a lake." },
+    ],
+    senses: "Keen smell & hearing",
+    resist: [], immune: [], vulnerable: [],
+    xp: 450,
+    loot: ["Moose hide (heavy)", "Moose meat (rations, plentiful)", "Palmate antler (crafting)"],
+    notes: "Prey to wolves, bears, and the Wendigo — but a wounded bull is more dangerous than most of them. Respect the antlers.",
+  },
+  {
+    id: "ahuizotl", name: "Ahuizotl", emoji: "🦦", kind: "Monster",
+    origin: "Aztec myth", habitat: "Rivers, cenotes & lake shallows", biome: "lakes", niche: "Predator",
+    size: "Small", slBand: "3–6", role: "Standard",
+    blurb: "A sleek, otter-like water-beast with a fifth limb — a grasping human hand at the tip of its tail. It lurks at the water's edge, mimics a drowning child to draw rescuers close, then seizes them and pulls them under.",
+    hp: 30, defense: 14, speed: "20 ft, swim 40 ft", initMod: 3,
+    attacks: [
+      { name: "Tail-Hand Grab", toHit: 5, damage: "1d6", note: "the hand on its tail seizes a creature within 5 ft — Grappled and dragged toward deep water" },
+      { name: "Claws", toHit: 5, damage: "1d8", note: "two claws, against a Grappled target" },
+    ],
+    traits: [
+      { name: "Drowning Hunter", desc: "Against a Grappled creature underwater its attacks have advantage; it holds prey under until it stops moving." },
+      { name: "Lure of the Shallows", desc: "Mimics the cry of a child or a drowning swimmer to draw the soft-hearted to the water's edge." },
+    ],
+    senses: "Darkvision 60 ft; senses vibration in water",
+    resist: [], immune: [], vulnerable: [],
+    xp: 450,
+    loot: ["Slick waterproof pelt", "Grasping tail-hand (grim curio / reagent)"],
+    notes: "It fishes more than it fights — a grab, a pull, and the water does the killing. Never wade a still pool where one's been seen; make it come onto land.",
+  },
+  {
+    id: "hodag", name: "Hodag", emoji: "🦏", kind: "Monster", tameable: true,
+    origin: "Wisconsin 'fearsome critter' folklore", habitat: "Northern logging forest & cutover swamp", biome: "boreal", niche: "Predator",
+    size: "Medium", slBand: "3–6", role: "Standard",
+    huntable: true, quarry: "Hunted (or captured) for its curved horns and spined hide — and for the bragging rights back at camp.",
+    blurb: "A low, heavy brute out of lumberjack legend: the horns of a bull, the back of a spined lizard, and a legendarily foul temper. A tank of a beast — hard to hurt and harder to budge from its patch of swamp.",
+    hp: 40, defense: 15, speed: "30 ft", initMod: 1,
+    attacks: [
+      { name: "Horn Gore", toHit: 6, damage: "2d6", note: "on a charge, +1d6" },
+      { name: "Bite", toHit: 6, damage: "1d10", note: "a row of iron teeth" },
+    ],
+    traits: [
+      { name: "Spined Hide", desc: "A creature that grapples it, or hits it with an unarmed or natural attack from within 5 ft, takes 1d6 from its back-spikes." },
+      { name: "Stubbornly Loyal", desc: "Ornery to a fault — but folklore swears a hodag can be gentled with the right lure (the old camps used salt pork). A hand-reared one is a living battering ram that never leaves your side." },
+    ],
+    senses: "Darkvision 30 ft",
+    resist: [], immune: [], vulnerable: [],
+    xp: 700,
+    loot: ["Curved horns (crafting)", "Spined hide (armor stock)"],
+    notes: "Wild, it holds its swamp against all comers; tamed, it's a stubborn, low-slung wrecking ball. Either way you'll work for it.",
+  },
+  {
+    id: "jersey-devil", name: "Jersey Devil", emoji: "🦇", kind: "Monster",
+    origin: "New Jersey Pine Barrens cryptid", habitat: "Dense pine barrens & cedar swamp", biome: "woodlands", niche: "Predator",
+    size: "Medium", slBand: "6–10", role: "Elite",
+    huntable: true, quarry: "A trophy hunt for the bold or the foolish — its curved horns and leathery wing-hide are proof of the deed.",
+    blurb: "A winged nightmare of the Pine Barrens: a horse-like head, a goat's horns, leathery bat wings, and cloven hooves. More shrieking terror than tactician — it strafes out of the dark, screams, and is gone into the pines.",
+    hp: 68, defense: 15, speed: "30 ft, fly 60 ft", initMod: 4,
+    attacks: [
+      { name: "Raking Talons", toHit: 7, damage: "2d6", note: "two talons" },
+      { name: "Hooved Kick", toHit: 7, damage: "2d8", note: "" },
+    ],
+    traits: [
+      { name: "Blood-Freezing Scream", desc: "As an action, its unearthly cry forces creatures within 20 ft that hear it to save or be Frightened for a round (recharges after a short rest)." },
+      { name: "Erratic Flight", desc: "It darts and wheels unpredictably — the first ranged attack against it each round is at disadvantage." },
+      { name: "Haunt of the Pines", desc: "Knows every hollow and thicket of the barrens; nearly impossible to track to its lair." },
+    ],
+    senses: "Darkvision 60 ft",
+    resist: [], immune: [], vulnerable: [],
+    xp: 1800,
+    loot: ["Curved horns (trophy)", "Leathery wing-hide"],
+    notes: "It screams, strafes, and vanishes; the fight is catching it. Corner it, though, and it's a vicious brawler with hooves and claws.",
+  },
+  {
+    id: "hidebehind", name: "Hidebehind", emoji: "🫥", kind: "Monster",
+    origin: "Lumberjack folklore (northern woods)", habitat: "Old-growth forest & lonely logging camps", biome: "boreal", niche: "Predator",
+    size: "Medium", slBand: "6–10", role: "Elite",
+    blurb: "The terror of the tree line — a gaunt, clawed thing that no one has ever seen head-on, because it is always, somehow, behind you. It hunts the straggler and the loner, and it takes its kills back into the dark.",
+    hp: 60, defense: 16, speed: "40 ft", initMod: 5,
+    attacks: [
+      { name: "Rending Claws", toHit: 7, damage: "3d6", note: "from concealment, +2d6" },
+    ],
+    traits: [
+      { name: "Always Behind You", desc: "While it has cover or a creature to hide behind, it can't be targeted directly and strikes from concealment at advantage. Turn to face it and it's already gone." },
+      { name: "Preys on the Lone", desc: "It won't press an attack on a group that stays together with their backs to a wall; it waits for someone to wander off." },
+      { name: "Takes Its Kills", desc: "A creature it drops to 0 HP is dragged off into the trees — folklore says no body has ever been recovered." },
+    ],
+    senses: "Darkvision 90 ft",
+    resist: [], immune: [], vulnerable: [],
+    xp: 1800,
+    loot: ["Nothing recoverable — it takes its kills into the dark"],
+    notes: "Splitting the party is death. Open ground, bright light, and staying paired are the only defenses — it cannot hide with nothing to hide behind.",
+  },
+  {
+    id: "uktena", name: "Uktena", emoji: "🐍", kind: "Monster",
+    origin: "Cherokee folklore", habitat: "Deep river gorges, flooded caves & Appalachian headwaters", biome: "woodlands", niche: "Apex",
+    size: "Huge", slBand: "11–15", role: "Elite",
+    huntable: true, quarry: "Slain for the Ulunsuti — the blazing crystal of its crest, the most coveted reagent on the continent. The hunt has killed all but a legendary few who tried.",
+    blurb: "A great horned serpent thick as a tree, scaled like river-stone, with a blazing crystal set in its crest. Its gaze draws you in; its coils crush; and the one soft spot on its whole armored length is the seventh scale behind its head.",
+    hp: 150, defense: 16, speed: "30 ft, swim 40 ft", initMod: 3,
+    attacks: [
+      { name: "Crushing Coils", toHit: 9, damage: "3d8", note: "on hit, the target is Grappled and Restrained" },
+      { name: "Bite", toHit: 9, damage: "2d10", note: "plus 2d6 poison" },
+    ],
+    traits: [
+      { name: "Blazing Crest (Ulunsuti)", desc: "The crystal on its brow blazes; a creature that meets its gaze within 30 ft saves or is Dazzled and drawn one step closer, unable to look away." },
+      { name: "The Seventh Spot", desc: "Its one vulnerable point is the seventh spot behind its head. A called shot that finds it deals triple damage; anywhere else, its stone-scales turn most blows." },
+      { name: "Serpent of the Deep Water", desc: "Lurks in gorge-pools and flooded caves and fights in the water at advantage." },
+    ],
+    senses: "Darkvision 60 ft; tremorsense in water",
+    resist: [], immune: [], vulnerable: [],
+    xp: 5000,
+    loot: ["Ulunsuti crystal (legendary reagent — sight & power)", "Great serpent scales (armor stock)", "Serpent venom (potent toxin)"],
+    notes: "An apex of the eastern waters. The crystal is worth a kingdom — which is why so few live to spend it. Find the seventh spot, or don't go at all.",
+  },
+  {
+    id: "mishipeshu", name: "Mishipeshu", emoji: "🐆", kind: "Monster",
+    origin: "Anishinaabe / Great Lakes folklore", habitat: "The cold deeps of the great lakes & connected rivers", biome: "lakes", niche: "Apex",
+    size: "Huge", slBand: "16–20", role: "Boss",
+    blurb: "The Underwater Panther — lord of the lakes. A great horned lynx sheathed in scales of native copper, with a serpent's lashing tail. It churns whirlpools and sudden storms, and no crossing is safe once it wakes beneath the ice.",
+    hp: 230, defense: 17, speed: "20 ft, swim 60 ft", initMod: 4,
+    attacks: [
+      { name: "Copper Claws", toHit: 11, damage: "4d6", note: "two claws sheathed in native copper" },
+      { name: "Serpent-Lash Tail", toHit: 11, damage: "3d8", note: "reach 15 ft; on hit, drag the target toward the water" },
+      { name: "Bite", toHit: 11, damage: "3d10", note: "" },
+    ],
+    traits: [
+      { name: "Lord of the Lake", desc: "As a boss action it churns the water: a 20-ft area becomes a whirlpool — creatures caught save or are pulled under and Restrained — and it can raise a squall of freezing spray that grounds flying pursuers." },
+      { name: "Storm-Wake", desc: "Immune to cold; its passage raises waves and sudden storms that swamp boats and drown the reckless." },
+      { name: "Copper Hide", desc: "Its scales of native copper turn aside the first instance of damage it takes each round and ground lightning harmlessly." },
+    ],
+    senses: "Darkvision 120 ft; tremorsense in water",
+    resist: [], immune: ["cold"], vulnerable: [],
+    xp: 13000,
+    loot: ["Native copper scales (masterwork armor stock)", "Panther's fang (relic reagent)", "Lake-lord's horn (priceless)"],
+    notes: "The lake itself given claws. In deep water it simply drowns you — fight it in the shallows or draw it onto land. A campaign-defining boss for the Great Lakes.",
+  },
 ];
+// Backfill the North American ecology onto the original roster (#90/#91) so the whole Bestiary slots into
+// the ecosystem view. New entries carry biome/niche/huntable inline (above); this only fills gaps, never
+// overrides an inline value. Non-native creatures sit in the "distant" biome by the soft stay-in-region law.
+(function () {
+  var ECO = {
+    kappa: { biome: "distant", niche: "Predator" },
+    redcap: { biome: "distant", niche: "Predator" },
+    wendigo: { biome: "boreal", niche: "Apex" },
+    "clay-golem": { biome: "distant", niche: "Apex" },
+    manticore: { biome: "distant", niche: "Predator" },
+    roc: { biome: "distant", niche: "Apex" },
+    "gray-wolf": { biome: "boreal", niche: "Predator", huntable: true, quarry: "Hunted for its pelt, and culled to protect herds and camps." },
+    "brown-bear": { biome: "mountains", niche: "Apex", huntable: true, quarry: "A dangerous prize — hunted for its heavy pelt, fat, and claws." },
+    "hunting-falcon": { biome: "plains", niche: "Predator" },
+    jackalope: { biome: "plains", niche: "Prey", huntable: true, quarry: "Hunted more for the tall tale and the antlered hide than for the meat." },
+    chupacabra: { biome: "desert", niche: "Predator", huntable: true, quarry: "Culled to protect livestock; its venom sac and spined hide fetch a price." },
+    thunderbird: { biome: "mountains", niche: "Apex" },
+    pegasus: { biome: "distant", niche: "Prey" },
+    "salamander-beast": { biome: "distant", niche: "Predator", huntable: true, quarry: "Sought by alchemists for its everwarm scales and ember gland." },
+    phoenix: { biome: "distant", niche: "Apex" },
+  };
+  (PC.BESTIARY || []).forEach(function (b) {
+    var e = ECO[b.id]; if (!e) return;
+    for (var k in e) { if (b[k] == null) b[k] = e[k]; }
+  });
+})();
 // Look up a creature by id (or name). Used by the Codex Bestiary and the companion drop-in.
 PC.bestiary = function (id) { return (PC.BESTIARY || []).find(function (b) { return b.id === id || b.name === id; }); };
 // Convert a bestiary creature into a play-sheet companion (see play.js Pets tab). Flattens named traits

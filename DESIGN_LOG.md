@@ -2211,6 +2211,49 @@ tameable-beasts bullet + count 6→15), README. Cache-buster **v=120**.
 
 ---
 
+### 92. Bestiary — a post-Veil North American ecosystem (+8 creatures, biomes & niches)
+**Decision.** Keep **adding** to the bestiary (not replacing) and start shaping it into an **ecosystem for the
+post-Veil North American continent**, with lore/flavor. Add a wave of creatures usable as **monsters, possible
+pets, and/or prey to be hunted**, drawn from **Native American folklore, Mesoamerican myth, and modern American
+cryptids** — explicitly **only creatures that could not reasonably be considered civilized** (no humanoid "folk",
+tribes, or societies).
+**Cultural care.** Stuck to widely-published folkloric creatures, attributed to their culture and framed
+respectfully — no invented "secret"/ceremonial detail. **Deliberately excluded the Skinwalker** (genuinely taboo
+to depict casually in Navajo tradition, and a cursed-human witch — fails the not-civilized rule); noted it to Luke.
+Left Sasquatch/Bigfoot off this pass (sits on the "is it a people?" line).
+**Choices made (Luke).**
+- **Ecosystem UI = biome headers + niche badges** (additive, no new section). Bestiary now **groups by biome**,
+  each header carrying a **flavor blurb**, and every creature shows a food-web **niche** tag (**Apex / Predator /
+  Prey**). (Alternatives weighed: a dedicated Ecosystem Codex section; or data+lore first, UI later.)
+- **Scope = starter wave (~6–8)** layered on the 15 → added **8**.
+- **Prey = flag + quarry note.** Huntable creatures carry `huntable: true` + a one-line **`quarry`** note (what a
+  hunter takes), backed by loot. Hunting is **GM-run** for now, like taming.
+**Framework.** New **`PC.BIOMES`** (ordered north→south): Boreal North, Eastern Woodlands, Great Lakes & Waterways,
+Great Plains, Deserts & Canyonlands, Mountains & High Peaks, + **Beyond North America** (catch-all for non-native
+creatures, per the soft stay-in-region law). Each biome has post-Veil flavor text. Every creature now carries
+`biome` + `niche`; the original 15 were **backfilled** via a small documented ecology table (only fills gaps —
+inline values win), placing the world creatures (Kappa, Redcap, Clay Golem, Manticore, Roc, Pegasus, Salamander,
+Phoenix) in "distant" and the Americas creatures (Wendigo→boreal, Thunderbird→mountains, Jackalope→plains,
+Chupacabra→desert) into their NA biomes, real animals too.
+**The eight (all wild, non-civilized).** Prey: **American Bison** (Plains), **Moose** (Boreal). Predators:
+**Ahuizotl** (Aztec water-beast, Lakes), **Hodag** (Wisconsin fearsome-critter, Boreal — also tameable +
+huntable), **Jersey Devil** (Pine Barrens cryptid, Woodlands), **Hidebehind** (lumberjack folklore, Boreal).
+Apex: **Uktena** (Cherokee horned serpent, Woodlands — huntable for the Ulunsuti crystal), **Mishipeshu** /
+Underwater Panther (Anishinaabe, Great Lakes — SL 16–20 Boss). Bench for later: Mothman, Flying Head, Cipactli,
+Piasa, Snallygaster, Wampus Cat, Hoop Snake, Champ/Ogopogo, Onza, Bigfoot.
+**How.** `data.js`: `PC.BIOMES`; 8 new `PC.BESTIARY` entries (inline `biome`/`niche`/`huntable`/`quarry`); an
+ecology backfill IIFE for the original roster. `codex.js`: Bestiary `list()` now groups by biome (sorted within a
+biome Apex→Predator→Prey, then threat), with **niche tags** and a **🏹 huntable badge** alongside the 🐾 tameable
+badge; a `groupInfo` hook feeds biome blurbs; the generic section renderer gained optional **per-group blurb**
+support; detail adds **Biome / Niche / Huntable(quarry)**. `styles.css`: `.niche-tag` (apex/predator/prey),
+`.hunt-tag`, `.beast-badge.hunt`, `.codex-group-blurb`. **Verified** (Playwright): 23 creatures, all 7 biome
+groups in order (Boreal North→Beyond North America) with blurbs, 23 niche tags, 10 🐾 + 10 🏹, Uktena detail shows
+Biome/Niche/Huntable/Ulunsuti, a beast still drops into companions, biome/niche/huntable all searchable, **zero
+console errors**. Docs: GAME_RULES (Bestiary section: ecosystem/biomes/niche/hunting bullets + count 15→23),
+README. Cache-buster **v=121**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

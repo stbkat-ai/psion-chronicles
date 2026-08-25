@@ -1028,11 +1028,22 @@ body.screen-home .wrap { max-width: none; margin: 0; padding: 0; }
 .pill.link { cursor: pointer; }
 .pill.link:hover { border-color: var(--psi); color: var(--psi-bright); }
 
-/* Bestiary — tameable badge (list row) + tameable note (detail). */
-.beast-tag { font-size: .8rem; opacity: .95; }
+/* Bestiary — tameable / huntable badges (list row) + notes (detail). */
+.beast-tag, .hunt-tag { font-size: .8rem; opacity: .95; }
 .beast-badge { margin: 2px 0 10px; padding: 6px 10px; border-radius: 8px; font-size: .82rem;
   color: var(--text-dim); background: rgba(70, 196, 110, .10); border: 1px solid rgba(70, 196, 110, .35); }
+.beast-badge.hunt { background: rgba(212, 160, 60, .10); border-color: rgba(212, 160, 60, .38); }
 .beast-badge b { color: var(--text); }
+
+/* Bestiary — food-web niche tags on list rows. */
+.niche-tag { font-size: .62rem; text-transform: uppercase; letter-spacing: .5px; font-weight: 700;
+  padding: 1px 6px; border-radius: 10px; margin-left: 6px; vertical-align: middle; border: 1px solid transparent; }
+.niche-apex { color: #ff9b9b; background: rgba(220, 80, 80, .14); border-color: rgba(220, 80, 80, .40); }
+.niche-predator { color: #ffd58a; background: rgba(212, 160, 60, .14); border-color: rgba(212, 160, 60, .40); }
+.niche-prey { color: #9be6b0; background: rgba(70, 196, 110, .14); border-color: rgba(70, 196, 110, .40); }
+
+/* Bestiary — biome flavor blurb under a group header. */
+.codex-group-blurb { color: var(--text-dim); font-size: .85rem; line-height: 1.5; margin: -2px 0 12px; font-style: italic; }
 
 /* Bestiary → companions drop-in (Codex creature detail). */
 .codex-add-pet { margin-top: 10px; }

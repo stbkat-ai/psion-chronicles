@@ -422,31 +422,41 @@
   });
 
   /* Bestiary — creatures of myth & legend (data-driven from PC.BESTIARY).
-     Group label buckets a creature's (possibly ranged) Soul-Level band into a canonical 5-level band by
-     its midpoint, so finer beast bands (e.g. "3–6") don't fragment the group list. */
-  function beastBandGroup(band) {
-    const nums = String(band == null ? "" : band).match(/\d+/g);
-    if (!nums || !nums.length) return "Soul Level 1–5";
-    const lo = Number(nums[0]), hi = Number(nums[nums.length - 1]);
-    const mid = Math.round((lo + hi) / 2);
-    const base = Math.floor((Math.max(1, mid) - 1) / 5) * 5 + 1;
-    return `Soul Level ${base}–${base + 4}`;
-  }
+     Grouped by ecosystem biome (PC.BIOMES, north→south, then "Beyond North America"); within a biome,
+     sorted by food-web niche (Apex → Predator → Prey) then by threat. Rows carry a niche tag plus 🐾
+     (tameable) and 🏹 (huntable) badges. */
   const TAME_BADGE = ' <span class="beast-tag" title="Tameable — can be befriended as a companion">🐾</span>';
+  const HUNT_BADGE = ' <span class="hunt-tag" title="Huntable — quarry for meat, hide, or reagents">🏹</span>';
+  const NICHE_ORDER = { Apex: 0, Predator: 1, Prey: 2 };
+  const nicheTag = (n) => n ? ` <span class="niche-tag niche-${String(n).toLowerCase()}">${esc(n)}</span>` : "";
+  function bandMid(band) { const m = String(band == null ? "" : band).match(/\d+/g); return m ? (Number(m[0]) + Number(m[m.length - 1])) / 2 : 0; }
   addSection({
     key: "bestiary", icon: "🐉", title: "Bestiary", blurb: "Creatures of myth & legend that share the Post-Veil world.",
-    list: () => (PC.BESTIARY || []).map((b) => ({
-      id: b.id, name: `${b.emoji} ${esc(b.name)}${b.tameable ? TAME_BADGE : ""}`,
-      sub: `${b.origin} · ${b.role}`,
-      group: beastBandGroup(b.slBand),
-      keywords: `${b.origin} ${b.habitat} ${b.kind} ${b.size} ${b.role} ${b.slBand} ${b.blurb} ${(b.traits || []).map((t) => t.name).join(" ")} ${(b.loot || []).join(" ")} ${b.tameable ? "tameable tame beast companion mount" : ""}`,
-    })),
+    list: () => {
+      const biomes = PC.BIOMES || [];
+      const bIndex = (id) => { const i = biomes.findIndex((x) => x.id === id); return i < 0 ? 999 : i; };
+      const rows = (PC.BESTIARY || []).map((b) => {
+        const bi = biomes.find((x) => x.id === b.biome) || null;
+        return {
+          id: b.id,
+          name: `${b.emoji} ${esc(b.name)}${nicheTag(b.niche)}${b.tameable ? TAME_BADGE : ""}${b.huntable ? HUNT_BADGE : ""}`,
+          sub: `${b.origin} · ${b.role} · SL ${b.slBand}`,
+          group: bi ? bi.name : "Uncharted",
+          _b: bIndex(b.biome), _n: (NICHE_ORDER[b.niche] != null ? NICHE_ORDER[b.niche] : 3), _s: bandMid(b.slBand),
+          keywords: `${b.origin} ${b.habitat} ${b.kind} ${b.size} ${b.role} ${b.slBand} ${b.niche || ""} ${bi ? bi.name : ""} ${b.biome || ""} ${b.blurb} ${(b.traits || []).map((t) => t.name).join(" ")} ${(b.loot || []).join(" ")} ${b.tameable ? "tameable tame companion mount" : ""} ${b.huntable ? "huntable quarry hunt prey game " + (b.quarry || "") : ""}`,
+        };
+      });
+      rows.sort((a, b) => a._b - b._b || a._n - b._n || b._s - a._s);
+      return rows;
+    },
+    groupInfo: (name) => (PC.BIOMES || []).find((x) => x.name === name) || null,
     detail: (id) => {
       const b = (PC.bestiary && PC.bestiary(id)) || (PC.BESTIARY || []).find((x) => x.id === id);
       if (!b) return el("div", "muted", "Not found.");
       const box = el("div");
       box.appendChild(el("div", "codex-sub", `${b.emoji} ${esc(b.origin)} · ${esc(b.size)} · Soul Level ${esc(b.slBand)} · ${esc(b.role)}`));
       if (b.tameable) box.appendChild(el("div", "beast-badge", "🐾 <b>Tameable</b> — with the GM's blessing, a player can befriend this creature as a companion."));
+      if (b.huntable) box.appendChild(el("div", "beast-badge hunt", "🏹 <b>Huntable</b> — " + esc(b.quarry || "quarry for meat, hide, or reagents.")));
       if (b.blurb) box.appendChild(el("p", "codex-desc", esc(b.blurb)));
 
       // Core stat block
@@ -456,6 +466,9 @@
       rows.appendChild(kv("Speed", esc(b.speed || "—")));
       rows.appendChild(kv("Initiative", PC.fmtMod ? PC.fmtMod(Number(b.initMod) || 0) : String(b.initMod || 0)));
       if (b.senses) rows.appendChild(kv("Senses", esc(b.senses)));
+      const biomeObj = (PC.BIOMES || []).find((x) => x.id === b.biome);
+      if (biomeObj) rows.appendChild(kv("Biome", esc(biomeObj.name)));
+      if (b.niche) rows.appendChild(kv("Niche", esc(b.niche)));
       rows.appendChild(kv("Habitat", esc(b.habitat || "—")));
       box.appendChild(rows);
 
@@ -598,7 +611,12 @@
     items.forEach((it) => { const g = it.group || ""; if (!(g in byGroup)) { byGroup[g] = []; groups.push(g); } byGroup[g].push(it); });
     const panel = el("div", "panel");
     groups.forEach((g) => {
-      if (g) panel.appendChild(el("div", "codex-group-label", g));
+      if (g) {
+        panel.appendChild(el("div", "codex-group-label", g));
+        // Optional per-group flavor blurb (e.g. the Bestiary's biome descriptions).
+        const gi = s.groupInfo ? s.groupInfo(g) : null;
+        if (gi && gi.blurb) panel.appendChild(el("div", "codex-group-blurb", esc(gi.blurb)));
+      }
       const list = el("div", "codex-list");
       byGroup[g].forEach((it) => {
         const row = el("div", "codex-row");
