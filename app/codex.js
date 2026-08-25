@@ -443,7 +443,7 @@
           sub: `${b.origin} · ${b.role} · SL ${b.slBand}`,
           group: bi ? bi.name : "Uncharted",
           _b: bIndex(b.biome), _n: (NICHE_ORDER[b.niche] != null ? NICHE_ORDER[b.niche] : 3), _s: bandMid(b.slBand),
-          keywords: `${b.origin} ${b.habitat} ${b.kind} ${b.size} ${b.role} ${b.slBand} ${b.niche || ""} ${bi ? bi.name : ""} ${b.biome || ""} ${b.blurb} ${(b.traits || []).map((t) => t.name).join(" ")} ${(b.loot || []).join(" ")} ${b.tameable ? "tameable tame companion mount" : ""} ${b.huntable ? "huntable quarry hunt prey game " + (b.quarry || "") : ""}`,
+          keywords: `${b.origin} ${b.habitat} ${b.kind} ${b.size} ${b.role} ${b.slBand} ${b.niche || ""} ${bi ? bi.name : ""} ${b.biome || ""} ${b.diet || ""} ${b.abundance || ""} ${b.social || ""} ${b.activity || ""} ${b.blurb} ${b.naturalHistory || ""} ${(b.traits || []).map((t) => t.name).join(" ")} ${(b.loot || []).join(" ")} ${b.tameable ? "tameable tame companion mount" : ""} ${b.huntable ? "huntable quarry hunt prey game " + (b.quarry || "") : ""}`,
         };
       });
       rows.sort((a, b) => a._b - b._b || a._n - b._n || b._s - a._s);
@@ -458,6 +458,18 @@
       if (b.tameable) box.appendChild(el("div", "beast-badge", "🐾 <b>Tameable</b> — with the GM's blessing, a player can befriend this creature as a companion."));
       if (b.huntable) box.appendChild(el("div", "beast-badge hunt", "🏹 <b>Huntable</b> — " + esc(b.quarry || "quarry for meat, hide, or reagents.")));
       if (b.blurb) box.appendChild(el("p", "codex-desc", esc(b.blurb)));
+
+      // Natural history (species entries) — abundance / social / diet / activity + a field-guide paragraph.
+      if (b.naturalHistory || b.abundance || b.diet || b.social || b.activity) {
+        box.appendChild(label("Natural history"));
+        const nh = el("div", "codex-kvs");
+        if (b.abundance) nh.appendChild(kv("Abundance", esc(b.abundance)));
+        if (b.social) nh.appendChild(kv("Social", esc(b.social)));
+        if (b.diet) nh.appendChild(kv("Diet", esc(b.diet)));
+        if (b.activity) nh.appendChild(kv("Activity", esc(b.activity)));
+        if (nh.childNodes.length) box.appendChild(nh);
+        if (b.naturalHistory) box.appendChild(el("p", "codex-desc", esc(b.naturalHistory)));
+      }
 
       // Core stat block
       const rows = el("div", "codex-kvs");

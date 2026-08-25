@@ -2254,6 +2254,37 @@ README. Cache-buster **v=121**.
 
 ---
 
+### 93. Bestiary — cryptids as species; +8 creatures, +2 biomes, natural-history layer
+**Decision.** Keep building the North American bestiary, and reframe cryptids like **Sasquatch, Jersey Devil, and
+Chupacabra** not as rare one-off monsters but as **animal species** — populations that range, breed, and hold
+territory — so the continent reads as a real ecology.
+**Choices made (Luke).**
+- **Species reach = all North American creatures.** Every NA creature (real animals + cryptids) gets a
+  **natural-history** block; only the truly singular (constructed Clay Golem, apex Uktena & Mishipeshu) stay
+  one-offs. Distant/non-native creatures keep biome + niche only for now.
+- **Add both new biomes:** **Pacific Northwest & Coast** and **Southern Swamps & Bayou**, bringing the NA map to
+  **eight** biomes. Also reordered `PC.BIOMES` into a rough north/west→south/east tour.
+**Natural-history schema.** Added `abundance` (Common→Legendary-ish, i.e. how often encountered), `social`
+(solitary / pack / herd / band…), `diet`, `activity` (nocturnal/diurnal/…), and a `naturalHistory` field-guide
+paragraph (range, behavior, breeding, food-web role, relationship to people).
+**The eight new species.** Pacific NW: **Sasquatch** (reclusive apex ape — non-tameable, non-huntable, a creature
+you avoid) and **Cadborosaurus** (coastal sea-serpent). Swamps: **Skunk Ape** (Sasquatch's meaner southern cousin)
+and **Altamaha-ha** (blackwater river serpent). Woodlands: **Mothman** (harbinger — half omen, half predator) and
+**Snallygaster** (Maryland dragon-bird). Mountains: **Wampus Cat** (six-legged Appalachian cat) and the **Ozark
+Howler** (horned howling cave-beast). Sasquatch was the one Luke named explicitly; Jersey Devil & Chupacabra were
+already in the roster and got the species reframe via the backfill.
+**How.** `data.js`: two new `PC.BIOMES` entries (+ reorder); 8 new `PC.BESTIARY` species with inline
+natural-history; the ecology-backfill IIFE expanded to add natural-history to the 13 existing NA creatures
+(gap-fill only — inline still wins). `codex.js`: detail now renders a **Natural history** section (abundance /
+social / diet / activity + the paragraph) between the blurb and the stat block; those fields folded into search
+keywords. No new styles needed (reused `codex-kvs` / `label`). **Verified** (Playwright): 31 creatures, 9 biome
+groups in order with blurbs, 21 natural-history blocks (8 new + 13 retrofit), **every** NA creature covered,
+Sasquatch & Gray Wolf field-guide entries render, a species drops into companions, natural-history terms
+("omnivore", "nocturnal", "herd") now search, **zero console errors**. Docs: GAME_RULES (species + biomes +
+count 23→31), README. Cache-buster **v=122**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

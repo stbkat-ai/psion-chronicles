@@ -1053,10 +1053,17 @@ haunts border ruins, a kappa its river, a wendigo the deep-winter northern woods
   the role says how it fights (a swarm of Minions, a Standard line, an Elite threat, or a Boss set-piece).
 - **Ecosystem & biomes.** Every creature belongs to a **biome** (`PC.BIOMES`) and holds a food-web **niche** —
   **Apex**, **Predator**, or **Prey**. The Codex Bestiary is organized by biome, each with its own flavor, so the
-  roster reads as a living ecosystem rather than a list. The post-Veil **North American** continent is mapped
-  north→south — **the Boreal North, the Eastern Woodlands, the Great Lakes & Waterways, the Great Plains, Deserts
-  & Canyonlands, Mountains & High Peaks** — plus a **Beyond North America** grouping for creatures native to other
-  continents (which, by the soft stay-in-region law, are travelers and rarities here).
+  roster reads as a living ecosystem rather than a list. The post-Veil **North American** continent is mapped in
+  eight biomes — **the Boreal North, the Pacific Northwest & Coast, Mountains & High Peaks, the Great Plains, the
+  Great Lakes & Waterways, the Eastern Woodlands, Southern Swamps & Bayou, and Deserts & Canyonlands** — plus a
+  **Beyond North America** grouping for creatures native to other continents (which, by the soft stay-in-region
+  law, are travelers and rarities here).
+- **Species, not one-offs.** Most creatures are treated as **animal species** with a **natural-history** block —
+  **abundance** (how often encountered), **social** structure (solitary / pack / herd / band), **diet**, and
+  **activity** (nocturnal / diurnal / …), plus a field-guide paragraph on range, behavior, breeding, and place in
+  the food web. A cryptid like the Sasquatch, Chupacabra, or Jersey Devil is a breeding population that holds
+  territory — not a single legendary monster. Only the truly singular (a constructed Clay Golem, the apex Uktena
+  and Mishipeshu) stay one-offs.
 - **Tameable beasts.** Some creatures — the simple, animal-natured ones — are marked **tameable** (🐾): a player
   may befriend one as a companion, and a GM may also field it as an encounter. Whether a taming attempt succeeds is
   **GM-adjudicated for now** (no taming check exists yet — a future pass).
@@ -1069,11 +1076,12 @@ haunts border ruins, a kappa its river, a wendigo the deep-winter northern woods
   (For a tameable beast, that's the "you tamed it" path.)
 - **Same beings, two lenses** *(reprise)* — the wild creature and, for the nine Otherkin names, the soul-bond.
 - **Where it lives:** the Codex **Bestiary** section, data-driven from `PC.BESTIARY` (with `PC.BIOMES` for the
-  ecosystem; `tameable` / `huntable` / `niche` / `biome` flag each creature). The roster stands at **twenty-three**
-  and growing — a world set (Kappa, Redcap, Clay Golem, Manticore, Roc, Pegasus, Salamander, Phoenix, and the
-  cosmopolitan real animals) plus a deepening **North American** cast: Wendigo, Thunderbird, Jackalope, Chupacabra,
-  and the new wave — **American Bison, Moose, Ahuizotl, Hodag, Jersey Devil, Hidebehind, Uktena, Mishipeshu**.
-  Threat numbers are first-pass, meant to be tuned in play.
+  ecosystem; `biome` / `niche` / `tameable` / `huntable` and the natural-history fields flag each creature). The
+  roster stands at **thirty-one** and growing — a world set (Kappa, Redcap, Clay Golem, Manticore, Roc, Pegasus,
+  Salamander, Phoenix, and the cosmopolitan real animals) atop a deepening **North American** cast: the Wendigo,
+  Thunderbird, Jackalope, Chupacabra, American Bison, Moose, Ahuizotl, Hodag, Jersey Devil, Hidebehind, Uktena,
+  and Mishipeshu, plus the newest species — **Sasquatch, Cadborosaurus, Skunk Ape, Altamaha-ha, Mothman, Wampus
+  Cat, Snallygaster, and the Ozark Howler**. Threat numbers are first-pass, meant to be tuned in play.
 
 ---
 
