@@ -1033,6 +1033,7 @@ body.screen-home .wrap { max-width: none; margin: 0; padding: 0; }
 .beast-badge { margin: 2px 0 10px; padding: 6px 10px; border-radius: 8px; font-size: .82rem;
   color: var(--text-dim); background: rgba(70, 196, 110, .10); border: 1px solid rgba(70, 196, 110, .35); }
 .beast-badge.hunt { background: rgba(212, 160, 60, .10); border-color: rgba(212, 160, 60, .38); }
+.beast-badge.civ { background: rgba(139, 122, 255, .12); border-color: rgba(139, 122, 255, .40); }
 .beast-badge b { color: var(--text); }
 
 /* Bestiary — food-web niche tags on list rows. */

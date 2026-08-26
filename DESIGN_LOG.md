@@ -2320,6 +2320,38 @@ searches resolve; **zero console errors**. Docs: GAME_RULES (new bloodlines bull
 
 ---
 
+### 95. Bestiary — fill the thin biomes (+15) & refine the bloodlines (civilized races, rarity)
+**Two things this pass.**
+**(1) Filled the thin biomes** (Luke: "fill in the thin biomes for now"). Added **15** species, balancing each
+into its food web (prey / predator / apex) and mixing real animals, cryptids, and fearsome-critter folklore:
+- **Deserts & Canyonlands** (+3): Onza (cryptid cat), Cactus Cat (fearsome-critter, tameable), Desert Bighorn (prey).
+- **Great Lakes & Waterways** (+3): Piasa (Illini bluff-monster), Champ (lake serpent), Lake Sturgeon (prey).
+- **Southern Swamps & Bayou** (+3): American Alligator (apex, real), Feral Razorback Hog (game), Honey Island Swamp Monster (cryptid).
+- **Pacific Northwest & Coast** (+3): Orca (apex, real), Roosevelt Elk (prey), Cougar (predator).
+- **The Great Plains** (+3): Pronghorn (prey), Coyote (predator), Mustang (tameable mount).
+Roster **35 → 50**; every NA biome now sits at 4–8 creatures.
+**(2) Refined the four bloodlines** (Luke's follow-up notes):
+- **Civilized races.** Lycan, Vampire, and Strigoi are **peoples**, not animalistic monsters — added a `civilized:
+  true` flag and a "🏛 Civilized race" badge in the Codex detail (searchable). The **Werewolf** stays the true
+  monster (savage, not civilized).
+- **Rarity.** **Strigoi** are now **extremely rare** ("perhaps only a few hundred in all the world"); **Vampires**
+  are **common** by comparison (abundance "Uncommon", outnumbering Strigoi a thousandfold). **Lycans** are **rare
+  and recovering**.
+- **Lycan lore.** For centuries the Lycans were thought **extinct** — no male born in living memory, the line
+  dying with its daughters — until a **male was born ~30 years before the Veil fell**; the race is now slowly
+  **repopulating**. Written into the Lycan's natural-history + blurb.
+- **Niche swap.** **Lycan → Apex**, **Vampire → Predator** (per Luke).
+**How.** `data.js`: 15 new `PC.BESTIARY` species (inline biome/niche/natural-history, huntable/tameable as fit);
+edited the Lycan/Vampire/Strigoi entries (civilized flag, abundance, niche, Lycan history). `codex.js`: a
+"Civilized race" badge in detail + `civilized` folded into search keywords. `styles.css`: `.beast-badge.civ`.
+**Verified** (Playwright): 50 creatures; biome counts desert 4 / lakes 5 / swamps 5 / pacificnw 5 / plains 6
+(mountains 4, boreal 5, woodlands 8, distant 8); every NA creature has biome+niche+natural-history; Lycan Apex +
+civilized + extinction lore, Vampire Predator + civilized + "far more numerous", Strigoi Apex + civilized +
+"a few hundred", Werewolf **not** civilized; "civilized" search → the 3 races; nine biome groups render with
+blurbs; **zero console errors**. Docs: GAME_RULES (bloodlines rewrite + count 35→50), README. Cache-buster **v=124**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

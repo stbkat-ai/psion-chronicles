@@ -39,7 +39,7 @@ The app opens on a **full-screen Home** — the launcher for the whole app. From
   **Kinetics, Techniques, Fusion Kinetics, Otherkin, Backgrounds, Heritages, Skills, Combat Skills, Conditions,
   Weapons, Armor, Gear, Crafting, Bestiary**, and core **Reference** tables (chakras, limbs). Entries cross-link
   (a background's free technique jumps to that technique; a heritage's Fighting Style to its skills; a fusion to
-  its parent Kinetics). The **Bestiary** now holds **35 creatures** from real-world myth & legend, organized as a
+  its parent Kinetics). The **Bestiary** now holds **50 creatures** from real-world myth & legend, organized as a
   living **ecosystem** — grouped across an eight-biome post-Veil **North American** map (Boreal North · Pacific
   Northwest & Coast · Mountains · Great Plains · Great Lakes & Waterways · Eastern Woodlands · Southern Swamps &
   Bayou · Deserts & Canyonlands), plus a *Beyond North America* group, each biome with its own flavor. Most
@@ -49,8 +49,9 @@ The app opens on a **full-screen Home** — the launcher for the whole app. From
   **huntable** (🏹 — quarry for meat, hide, or reagents), and any of them drops straight onto a character's **🐾
   Pets** tab as a ready-to-run companion. It also draws the world's distinctions sharply — the **Lycan** (a born,
   in-control shifter) beside the cursed, moon-bound **Werewolf**, and the sun-proof, bane-immune **Strigoi** beside
-  the traditional **Vampire** — with the Lycan and Strigoi appearing here in the flesh *and* as Otherkin. The
-  roster keeps growing.
+  the traditional **Vampire** — with the Lycan and Strigoi appearing here in the flesh *and* as Otherkin. Three of
+  those four (Lycan, Vampire, Strigoi) are **civilized races**, not wild monsters; the Strigoi is famously rare
+  (a few hundred in all the world), while vampires are common. The roster keeps growing.
 - **🧙 Player** — your characters: the creator, roster, level-up and live play sheet. **This is fully built** —
   everything described below lives here.
 

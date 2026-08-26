@@ -443,7 +443,7 @@
           sub: `${b.origin} · ${b.role} · SL ${b.slBand}`,
           group: bi ? bi.name : "Uncharted",
           _b: bIndex(b.biome), _n: (NICHE_ORDER[b.niche] != null ? NICHE_ORDER[b.niche] : 3), _s: bandMid(b.slBand),
-          keywords: `${b.origin} ${b.habitat} ${b.kind} ${b.size} ${b.role} ${b.slBand} ${b.niche || ""} ${bi ? bi.name : ""} ${b.biome || ""} ${b.diet || ""} ${b.abundance || ""} ${b.social || ""} ${b.activity || ""} ${b.blurb} ${b.naturalHistory || ""} ${(b.traits || []).map((t) => t.name).join(" ")} ${(b.loot || []).join(" ")} ${b.tameable ? "tameable tame companion mount" : ""} ${b.huntable ? "huntable quarry hunt prey game " + (b.quarry || "") : ""}`,
+          keywords: `${b.origin} ${b.habitat} ${b.kind} ${b.size} ${b.role} ${b.slBand} ${b.niche || ""} ${bi ? bi.name : ""} ${b.biome || ""} ${b.diet || ""} ${b.abundance || ""} ${b.social || ""} ${b.activity || ""} ${b.blurb} ${b.naturalHistory || ""} ${(b.traits || []).map((t) => t.name).join(" ")} ${(b.loot || []).join(" ")} ${b.tameable ? "tameable tame companion mount" : ""} ${b.huntable ? "huntable quarry hunt prey game " + (b.quarry || "") : ""} ${b.civilized ? "civilized race people society sapient" : ""}`,
         };
       });
       rows.sort((a, b) => a._b - b._b || a._n - b._n || b._s - a._s);
@@ -457,6 +457,7 @@
       box.appendChild(el("div", "codex-sub", `${b.emoji} ${esc(b.origin)} · ${esc(b.size)} · Soul Level ${esc(b.slBand)} · ${esc(b.role)}`));
       if (b.tameable) box.appendChild(el("div", "beast-badge", "🐾 <b>Tameable</b> — with the GM's blessing, a player can befriend this creature as a companion."));
       if (b.huntable) box.appendChild(el("div", "beast-badge hunt", "🏹 <b>Huntable</b> — " + esc(b.quarry || "quarry for meat, hide, or reagents.")));
+      if (b.civilized) box.appendChild(el("div", "beast-badge civ", "🏛 <b>Civilized race</b> — a people with mind, society, and culture; met as an individual, not a wild animal."));
       if (b.blurb) box.appendChild(el("p", "codex-desc", esc(b.blurb)));
 
       // Natural history (species entries) — abundance / social / diet / activity + a field-guide paragraph.
