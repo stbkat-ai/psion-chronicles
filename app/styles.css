@@ -1046,6 +1046,53 @@ body.screen-home .wrap { max-width: none; margin: 0; padding: 0; }
 /* Bestiary — biome flavor blurb under a group header. */
 .codex-group-blurb { color: var(--text-dim); font-size: .85rem; line-height: 1.5; margin: -2px 0 12px; font-style: italic; }
 
+/* ===== GM section — Campaign & Session Manager ===== */
+.gm-topbar { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.gm-brand { font-weight: 700; letter-spacing: .3px; color: var(--gold); }
+.gm-head h2 { margin: 0 0 6px; }
+.gm-newform { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
+.gm-newform .gm-field { flex: 1 1 240px; }
+.gm-field { display: flex; flex-direction: column; gap: 4px; margin: 0 0 12px; }
+.gm-label { font-size: .72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); }
+.gm-input, .gm-area { width: 100%; box-sizing: border-box; background: var(--panel-2); color: var(--text);
+  border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font: inherit; }
+.gm-input:focus, .gm-area:focus { outline: none; border-color: var(--psi); }
+.gm-area { resize: vertical; line-height: 1.5; }
+
+.gm-camp-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.gm-camp-card { transition: border-color .12s; }
+.gm-camp-card:hover { border-color: var(--psi); }
+.gm-camp-name { font-weight: 700; font-size: 1.05rem; margin-bottom: 4px; }
+.gm-camp-premise { color: var(--text-dim); font-size: .88rem; line-height: 1.45; margin-bottom: 8px;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.gm-camp-meta { display: flex; gap: 14px; font-size: .78rem; color: var(--text-dim); }
+
+.gm-crumbs { font-weight: 700; font-size: 1.15rem; margin-bottom: 10px; }
+.gm-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; border-bottom: 1px solid var(--border); }
+.gm-tab { background: none; border: none; color: var(--text-dim); padding: 8px 12px; cursor: pointer;
+  font: inherit; border-bottom: 2px solid transparent; }
+.gm-tab:hover { color: var(--text); }
+.gm-tab.active { color: var(--psi-bright); border-bottom-color: var(--psi); }
+
+.gm-overview-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; }
+.gm-editor { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+.btn.danger { color: var(--danger); }
+.btn.danger:hover { border-color: var(--danger); }
+
+.gm-session-head, .gm-npc-head { display: flex; align-items: center; gap: 10px; }
+.gm-session-title, .gm-npc-name { font-weight: 700; }
+.gm-session-date, .gm-npc-role { color: var(--text-dim); font-size: .82rem; }
+.gm-caret { margin-left: auto; color: var(--text-dim); font-size: .8rem; }
+.gm-session-recap, .gm-npc-notes { margin-top: 6px; font-size: .88rem; line-height: 1.45;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.gm-npc-loc { margin-top: 4px; font-size: .82rem; }
+.gm-npc-beast { margin-top: 6px; font-size: .84rem; color: var(--cyan); }
+.gm-npc-disp { font-size: .68rem; text-transform: uppercase; letter-spacing: .5px; font-weight: 700;
+  padding: 1px 7px; border-radius: 10px; border: 1px solid var(--border); color: var(--text-dim); }
+.gm-npc-disp.disp-friendly { color: #9be6b0; border-color: rgba(70, 196, 110, .4); }
+.gm-npc-disp.disp-hostile { color: #ff9b9b; border-color: rgba(220, 80, 80, .4); }
+.gm-npc-disp.disp-wary { color: #ffd58a; border-color: rgba(212, 160, 60, .4); }
+
 /* Bestiary → companions drop-in (Codex creature detail). */
 .codex-add-pet { margin-top: 10px; }
 .codex-pet-picker { margin-top: 8px; padding: 8px 10px; border-radius: 8px; background: var(--panel-2); border: 1px solid var(--border); }

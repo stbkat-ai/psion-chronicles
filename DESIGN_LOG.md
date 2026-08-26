@@ -2352,6 +2352,31 @@ blurbs; **zero console errors**. Docs: GAME_RULES (bloodlines rewrite + count 35
 
 ---
 
+### 96. GM section begins — the Campaign & Session Manager
+**Decision.** Take a break from the Codex/bestiary and start turning the **GM** section (a "coming soon"
+placeholder until now) into a real tool. Luke chose the **Campaign & Session Manager** as the first piece —
+the "manage the story between sessions" hub the other GM tools (encounter builder, combat tracker) will hang off.
+**Scope (v1, local-first).** No backend, so everything is per-device `localStorage`, mirroring how characters
+work — networked/shared play stays a later phase. A campaign holds a **premise + GM notes**, a dated **session
+log** (title/date/recap, newest first), and an **NPC roster** (name, role, location, disposition, notes, and an
+optional link to a **Bestiary** creature for a stat block via `PC.bestiary`).
+**How.** New module **`app/gm.js`** → `window.PsionGM` (own store key `psion_chronicles_campaigns`), built on the
+same pattern as `codex.js`/`play.js` and using `PsionApp.el`/`toast`. `app.js` router: `screen === "gm"` now calls
+`PsionGM.render(app)` (falls back to the old coming-soon panel if the module is absent). `index.html`: added the
+**8th** asset tag (`gm.js`, loaded before `app.js`). `styles.css`: a `.gm-*` block (topbar, campaign cards, tabs,
+editors, disposition chips). UI: a campaigns home (create/list) → campaign detail with **Overview / Sessions /
+NPCs** tabs; inline add/edit/expand/delete throughout, autosaving on every keystroke.
+**Choices.** Built the whole manager (campaigns + sessions + NPCs + notes) rather than a thinner slice, since
+those pieces are all obviously in-scope for "Campaign & Session Manager." XP/loot awarding and the
+encounter/combat tools were deliberately deferred to follow-up passes. NPC↔Bestiary linking reuses the creature
+data we just built, so an NPC can carry a real stat block.
+**Verified** (Playwright): GM section loads (`window.PsionGM` present); create a campaign → premise, a session
+(title + recap), and an NPC (name + Bestiary "Vampire" link) all save; **persist across reload** with correct tab
+counts; **zero console errors**. Docs: README (GM section now built), CLAUDE.md (gm.js file entry; 7→8 tags).
+Cache-buster **v=124** (gm.js joins the asset tags this build).
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

@@ -240,7 +240,10 @@
     const app = $("#view");
     app.innerHTML = "";
     if (screen === "home") { app.appendChild(renderHome()); return; }
-    if (screen === "gm") { app.appendChild(renderComingSoon("gm")); return; }
+    if (screen === "gm") {
+      if (window.PsionGM) { window.PsionGM.render(app); return; }
+      app.appendChild(renderComingSoon("gm")); return; // fallback if the module didn't load
+    }
     if (screen === "codex") {
       if (window.PsionCodex) { window.PsionCodex.render(app); return; }
       app.appendChild(renderComingSoon("codex")); return; // fallback if the module didn't load

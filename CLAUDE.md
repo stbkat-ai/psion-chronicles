@@ -10,8 +10,8 @@ in the browser's `localStorage` (key `psion_chronicles_characters`), so saved da
 ## Run / preview
 - Open `app/index.html` directly in a browser, **or** serve it: from the `app/` folder run
   `python -m http.server 8777`, then visit `http://localhost:8777`.
-- After any JS/CSS change, bump the `?v=N` cache-buster on the **7 tags** in `app/index.html`
-  (styles.css + data/items/rules/codex/app/play.js) and hard-refresh, so browsers don't serve stale files.
+- After any JS/CSS change, bump the `?v=N` cache-buster on the **8 tags** in `app/index.html`
+  (styles.css + data/items/rules/codex/gm/app/play.js) and hard-refresh, so browsers don't serve stale files.
 - Verify changes in the real app (http.server + the browser tools) before committing.
 
 ## Hosting & access
@@ -55,6 +55,9 @@ in the browser's `localStorage` (key `psion_chronicles_characters`), so saved da
 - `codex.js` — `window.PsionCodex`: the **Codex** section (searchable reference). **Pure UI over `window.PC`** —
   it stores no content of its own, so item/technique/rule edits in data.js/items.js appear here automatically
   (counts included). A data-driven `SECTIONS` array; adding a NEW kind of content = one new SECTIONS entry.
+- `gm.js` — `window.PsionGM`: the **GM** section (Campaign & Session Manager). Local-first (own localStorage key
+  `psion_chronicles_campaigns`); each campaign has a premise + GM notes, a dated **session log**, and an **NPC
+  roster** (with optional Bestiary stat-block links via `PC.bestiary`). Encounter/combat tools are the next phase.
 - `play.js` — `window.PsionPlay`: the live play sheet. Tabs: **Sheet · Combat · Limbs · Chakras · Kinetics ·
   Skills · Traits · Description · Inventory · Crafting · Pets · Otherkin**.
 - `styles.css` — the "Post-Veil" dark theme (CSS variables: `--psi`, `--gold`, `--hp`, `--kp`,
@@ -81,7 +84,7 @@ updated as part of the **same** change — never left for later. On every such c
    user made. This is the plain-English "why" record.
 2. **`GAME_RULES.md`** (and **`README.md`** if it's player-facing) — update the matching section so the
    rules stay accurate.
-3. Bump the `?v=N` cache-buster on the 7 tags in `app/index.html`.
+3. Bump the `?v=N` cache-buster on the 8 tags in `app/index.html`.
    **Codex sync (`app/codex.js`).** The Codex reads live from `window.PC`, so editing an existing
    item/technique/rule in `data.js`/`items.js` needs **no** Codex change — it shows up automatically, counts
    included. You MUST touch `codex.js` only when: (a) you add a **new kind of content** (a new `PC.*` collection
