@@ -2111,6 +2111,111 @@ PC.BESTIARY = [
     loot: ["Shaggy black hide", "Blunt horns (curio)"],
     notes: "The howl is the warning. It's tough and fast in rough country; fight it in the open, where its charge and its climb count for less.",
   },
+
+  /* --- The four bloodlines (shifters & the undead) ---------------------------------------------------
+     European in origin but roaming the settled lands of the continent, following human populations rather
+     than a wild habitat. Two pairs, each split by humanity: Lycan vs Werewolf (control vs the curse),
+     Strigoi vs Vampire (blood-sorcery that shrugs off the old laws vs the traditional European revenant).
+     Lycan and Strigoi are also Otherkin (Soul Level 15) — the bestiary is the being in the world; the
+     Otherkin is the being within. */
+  {
+    id: "werewolf", name: "Werewolf", emoji: "🌕", kind: "Monster",
+    origin: "European legend", habitat: "Forest and farmland at the edge of settlements", biome: "woodlands", niche: "Predator",
+    size: "Large", slBand: "6–10", role: "Elite",
+    abundance: "Uncommon", social: "Solitary, or a pack of turned kin", diet: "Carnivore", activity: "Nocturnal (moon-driven)",
+    naturalHistory: "Not born but made — the bite of a werewolf that fails to kill instead infects. A new-turned werewolf changes only at the full moon, waking human and horrified with no memory of the night's kills. But the curse is progressive: year by year the wolf claims more, the shifts come easier and last longer, until at last the human is gone for good and only a savage dire-beast remains, roaming the deep forest. Packs form where one werewolf turns others; they haunt the woods and farmland at the edge of settled country.",
+    blurb: "A person lost to the curse — a hulking wolf-thing that wakes with the full moon and remembers nothing of what it did. The longer it lives, the less of the person is left, until only the beast remains.",
+    hp: 78, defense: 15, speed: "50 ft", initMod: 3,
+    attacks: [
+      { name: "Bite", toHit: 7, damage: "2d8", note: "a humanoid it bites must save or contract the curse" },
+      { name: "Claws", toHit: 7, damage: "2d6", note: "two claws" },
+    ],
+    traits: [
+      { name: "Moon-Bound, then Lost", desc: "A young werewolf shifts only under the full moon, human and unknowing by day. With each passing year the wolf claims more, until an elder never returns to human form at all — a permanent, mindless dire-beast (elder werewolves fight as a tier higher)." },
+      { name: "Savage Frenzy", desc: "In beast form it is a mindless killer — immune to being Charmed or Frightened, it simply attacks the nearest living thing." },
+      { name: "Regeneration", desc: "Regains HP at the start of each of its turns unless the damage was from silver or fire." },
+      { name: "Silver-Cursed", desc: "Silvered weapons bypass its regeneration and bite deep; almost anything else it shrugs off and heals." },
+    ],
+    senses: "Keen smell & hearing; darkvision 60 ft",
+    resist: [], immune: [], vulnerable: ["silver", "fire"],
+    xp: 2300,
+    loot: ["Silver-scarred pelt", "Great fang (trophy)"],
+    notes: "Silver and fire are the only sure answers — everything else it heals. A newly-turned one might be saved in its human days; an elder is past that, and past reason.",
+  },
+  {
+    id: "lycan", name: "Lycan", emoji: "🐺", kind: "Monster",
+    origin: "European legend — a distinct bloodline", habitat: "Among human settlements and the surrounding wilds", biome: "woodlands", niche: "Predator",
+    size: "Large", slBand: "8–12", role: "Elite",
+    abundance: "Rare", social: "Family bloodlines; often solitary among humans", diet: "Omnivore (lives as a person)", activity: "Cathemeral",
+    naturalHistory: "Where the werewolf is a curse, the Lycan is a lineage — born, not bitten, and in full command of the change. A Lycan shifts at will and keeps its mind entire in the wolf; only the storm of an extreme emotion (rage, terror, grief) can force the change against its wishes. They live among people, often for whole lifetimes, indistinguishable from anyone else until the moment they choose otherwise. The lycanthropy of a bloodline does not spread like the werewolf's bite. (The same being a Soul may awaken as its Otherkin at Soul Level 15 — the bestiary is the Lycan in the world; the Otherkin is the Lycan within.)",
+    blurb: "Not a cursed victim but a born shapeshifter, in full command of the wolf. It shifts when it wills — or when feeling runs too high — and keeps its mind, its memory, and its purpose in the beast.",
+    hp: 92, defense: 16, speed: "50 ft", initMod: 4,
+    attacks: [
+      { name: "Claws", toHit: 8, damage: "2d8", note: "two claws" },
+      { name: "Bite", toHit: 8, damage: "2d6", note: "" },
+    ],
+    traits: [
+      { name: "Shift at Will", desc: "Changes form whenever it chooses, keeping mind and memory intact; an extreme emotional state can also trigger the shift. It fights with tactics, not frenzy, and can speak even in the wolf." },
+      { name: "Master of the Beast", desc: "Unlike the werewolf it is no mindless savage — immune to nothing by way of rage, but never lost to it. Many Lycans live and die without anyone knowing what they were." },
+      { name: "Regeneration", desc: "Regains HP at the start of each of its turns unless the damage was from silver or fire." },
+      { name: "Silver-Bane", desc: "The one weakness it shares with the werewolf: silver cuts past its regeneration and hurts as nothing else does." },
+    ],
+    senses: "Keen smell & hearing; darkvision 60 ft",
+    resist: [], immune: [], vulnerable: ["silver", "fire"],
+    xp: 3900,
+    loot: [],
+    notes: "The thinking wolf is the dangerous wolf — it plans, it retreats, it lays traps. Silver still bites, but a Lycan won't stand and trade blows like a beast. And not every Lycan is a foe: some can be reasoned with, or allied.",
+  },
+  {
+    id: "vampire", name: "Vampire", emoji: "🧛", kind: "Undead",
+    origin: "European legend (Slavic / Carpathian)", habitat: "Old estates, crypts & cellars near settlements", biome: "woodlands", niche: "Apex",
+    size: "Medium", slBand: "10–14", role: "Elite",
+    abundance: "Rare", social: "A lone lord with a household of thralls", diet: "Sanguivore (blood)", activity: "Nocturnal (must rest by day)",
+    naturalHistory: "The classic revenant of European legend — a corpse that will not lie still, risen to feed on the blood of the living. A vampire is made, not born: those it drains dry may rise as thralls, and a master gathers a household of the enslaved dead. Powerful and cunning, it nonetheless labors under the old laws — the sun, the stake, running water, the uninvited threshold — which is the only reason the living survive alongside it. It keeps to old estates and crypts near the settlements it feeds on, sleeping by day in the earth of its homeland.",
+    blurb: "The revenant of old Europe — pale, deathless, and elegant, feeding on blood by night and sleeping in grave-earth by day. Mighty, but bound by every law the old stories promised.",
+    hp: 110, defense: 16, speed: "30 ft, climb 30 ft", initMod: 4,
+    attacks: [
+      { name: "Bite", toHit: 8, damage: "2d6", note: "blood drain — it heals for the damage; advantage vs a Charmed target" },
+      { name: "Raking Claws", toHit: 8, damage: "2d8", note: "two claws" },
+    ],
+    traits: [
+      { name: "Children of the Night", desc: "Commands bats, wolves, and rats, and can take the shape of a single bat or a drifting cloud of mist to escape or slip inside." },
+      { name: "Unnatural Charm", desc: "A creature that meets its gaze saves or is Charmed — it will invite the vampire in and bare its throat." },
+      { name: "Undead Resilience & Regeneration", desc: "Regenerates each turn and shrugs off ordinary weapons — but not sunlight or fire, and not while staked." },
+      { name: "The Old Laws (weaknesses)", desc: "Sunlight sears it to ash; a stake through the heart pins it helpless; it cannot cross running water, abide garlic or a holy symbol, or enter a dwelling uninvited; it throws no reflection and must rest by day in its native earth." },
+    ],
+    senses: "Darkvision 120 ft",
+    resist: ["necrotic"], immune: [], vulnerable: ["radiant", "fire"],
+    xp: 5000,
+    loot: ["Grave-earth (its resting soil)", "Signet & finery (a lord's trappings)", "Vial of ancient blood (reagent)"],
+    notes: "Know the laws and you can win: bait it from its coffin, hold it past dawn, corner it at running water, deny it the invitation. Meet it on its own terms — at night, in its own hall — and you will likely die.",
+  },
+  {
+    id: "strigoi", name: "Strigoi", emoji: "🩸", kind: "Undead",
+    origin: "Romanian / Carpathian legend", habitat: "Wherever it pleases — it does not fear the day", biome: "woodlands", niche: "Apex",
+    size: "Medium", slBand: "14–18", role: "Boss",
+    abundance: "Very rare", social: "Solitary apex", diet: "Sanguivore (blood & vitality)", activity: "Cathemeral (walks by day, rules by night)",
+    naturalHistory: "To the untrained eye a Strigoi is a vampire — until the hunter's every trick fails. It walks in daylight (though its greatest blood-rites wait for night), shrugs off garlic and running water and the stake, and casts a reflection like anyone. Its power is not the vampire's at all but blood-sorcery — the same Blood Rites a Soul may awaken as the Strigoi Otherkin at Soul Level 15. Strigoi are vanishingly rare and immensely old; each is a singular terror, and the graveyards of Europe are full of the hunters who mistook one for something they knew how to kill.",
+    blurb: "A vampire's darker kin — and a hunter's death, because every trick that kills a vampire fails here. The sun does not burn it, the old wards do not bind it, and its power is blood-sorcery, not the vampire's tired gifts.",
+    hp: 210, defense: 18, speed: "30 ft, fly 30 ft (mist)", initMod: 5,
+    attacks: [
+      { name: "Rending Claws", toHit: 11, damage: "3d8", note: "two claws" },
+      { name: "Hemal Bolt", toHit: 11, damage: "3d6", note: "ranged 60 ft — a lance of its own blood" },
+      { name: "Sanguine Bite", toHit: 11, damage: "2d10", note: "it heals for the damage dealt" },
+    ],
+    traits: [
+      { name: "Undaunted by the Sun", desc: "Daylight does not burn it — it merely cannot reach its full power under the sun (its strongest rites are night-only). This alone is why a Strigoi outclasses any vampire." },
+      { name: "The Old Laws Fail", desc: "Stakes, garlic, running water, holy symbols, the uninvited threshold, the mirror — none of it touches a Strigoi. Hunters trained on vampires die learning this." },
+      { name: "Blood Rites", desc: "It wields blood as a weapon — hemal bolts, a mesmerizing gaze, sanguine drain that heals it, dissolution into mist, and a swarm of night-things at its call (the Strigoi Otherkin's Blood Rites, in the world)." },
+      { name: "Blood Moon (boss action)", desc: "Under a red or new moon its power crests: it can pull a Blood Moon over the field, empowering its rites and sapping the strength of the living around it." },
+      { name: "Regeneration", desc: "Knits shut almost any wound; only fire, and its own blood-magic turned against it, seem to leave lasting harm." },
+    ],
+    senses: "Darkvision 120 ft; senses living blood nearby",
+    resist: ["necrotic"], immune: [], vulnerable: ["fire"],
+    xp: 15000,
+    loot: ["Ancient blood (potent reagent)", "Grave-crown or heirloom (relic)", "Strigoi ash (rare — if you can burn one)"],
+    notes: "Everything you know about killing vampires is a trap here — the sun won't save you and the stake won't hold it. Fire, overwhelming force, and denying it the night are the only edges, and even then a Strigoi is a boss, not an encounter.",
+  },
 ];
 // Backfill the North American ecology + natural-history onto the earlier roster so the whole Bestiary slots
 // into the ecosystem view and the NA cast reads as species (as the new entries do inline). Only fills gaps —

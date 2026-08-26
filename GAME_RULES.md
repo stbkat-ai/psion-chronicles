@@ -1074,14 +1074,28 @@ haunts border ruins, a kappa its river, a wendigo the deep-winter northern woods
 - **Drop-in companions.** From any creature's Codex entry — beast or monster — a GM can add it straight to a
   character's **🐾 Pets** tab as a ready-to-run companion; its stat block, attacks, and traits carry over intact.
   (For a tameable beast, that's the "you tamed it" path.)
-- **Same beings, two lenses** *(reprise)* — the wild creature and, for the nine Otherkin names, the soul-bond.
+- **The four bloodlines (shifters & undead).** European in origin but following human populations across the
+  continent, split into two pairs by their humanity:
+  - **Lycan vs Werewolf.** A **Werewolf** is *made* — the bite's curse — and moon-bound: it shifts only at the full
+    moon while young, and year by year the wolf claims more of the person until an elder never turns back at all, a
+    savage dire-beast. A **Lycan** is *born* to a bloodline, **shifts at will** and keeps its mind (an extreme
+    emotion can also force the change), lives among people, and does not spread the curse. Both regenerate; both
+    answer to **silver and fire**.
+  - **Strigoi vs Vampire.** A **Vampire** is the traditional European revenant, bound by every old law — **sunlight,
+    the stake, running water, garlic, the uninvited threshold, no reflection**. A **Strigoi** looks the same until
+    the hunter's tricks fail: **the sun does not burn it** (it only can't reach full power by day), the old banes do
+    nothing, and its power is **blood-sorcery** (the Strigoi Otherkin's Blood Rites), not the vampire's gifts — a
+    far deadlier, boss-tier foe answering only to **fire** and overwhelming force.
+- **Same beings, two lenses** *(reprise)* — the wild creature and, for the Otherkin names (now including the
+  **Lycan** and **Strigoi**, present here in the flesh), the soul-bond.
 - **Where it lives:** the Codex **Bestiary** section, data-driven from `PC.BESTIARY` (with `PC.BIOMES` for the
   ecosystem; `biome` / `niche` / `tameable` / `huntable` and the natural-history fields flag each creature). The
-  roster stands at **thirty-one** and growing — a world set (Kappa, Redcap, Clay Golem, Manticore, Roc, Pegasus,
-  Salamander, Phoenix, and the cosmopolitan real animals) atop a deepening **North American** cast: the Wendigo,
+  roster stands at **thirty-five** and growing — a world set (Kappa, Redcap, Clay Golem, Manticore, Roc, Pegasus,
+  Salamander, Phoenix, and the cosmopolitan real animals) atop a deepening **North American** cast (the Wendigo,
   Thunderbird, Jackalope, Chupacabra, American Bison, Moose, Ahuizotl, Hodag, Jersey Devil, Hidebehind, Uktena,
-  and Mishipeshu, plus the newest species — **Sasquatch, Cadborosaurus, Skunk Ape, Altamaha-ha, Mothman, Wampus
-  Cat, Snallygaster, and the Ozark Howler**. Threat numbers are first-pass, meant to be tuned in play.
+  Mishipeshu, Sasquatch, Cadborosaurus, Skunk Ape, Altamaha-ha, Mothman, Wampus Cat, Snallygaster, Ozark Howler),
+  plus the four Old-World **bloodlines** now roaming the settled lands — **Werewolf, Lycan, Vampire, Strigoi**.
+  Threat numbers are first-pass, meant to be tuned in play.
 
 ---
 

@@ -2285,6 +2285,41 @@ count 23→31), README. Cache-buster **v=122**.
 
 ---
 
+### 94. Bestiary — the four bloodlines: Lycan, Werewolf, Strigoi, Vampire
+**Decision.** Add the two shifter/undead pairs to the bestiary, each split by **humanity** (Luke's lore). Two of
+the four — **Lycan** and **Strigoi** — are already Otherkin, so this is the "same being, two lenses" design made
+real: the bestiary is the being in the world, the Otherkin the being within.
+**Lore (Luke).**
+- **Lycan vs Werewolf** — the difference is humanity. A **Lycan** shifts *at will*, keeps its mind, is triggered by
+  extreme emotion rather than the moon, and is a born bloodline (doesn't spread by bite). A **Werewolf** is the
+  *curse*: moon-bound while young, and as it ages it becomes more and more wolf until it never returns to human
+  form — a savage beast. Both share silver (and fire) as the bane.
+- **Strigoi vs Vampire** — subtle at first, stark when power-scaling. A **Vampire** is the traditional European
+  revenant with every classic weakness (sun kills, stake, garlic, running water, invitation, no reflection). A
+  **Strigoi** is *not* hurt by the sun (it only can't reach full power by day), the other vampire banes do nothing
+  to it, and its powers are entirely different — **blood-sorcery**, the same Blood Rites we built for the Strigoi
+  Otherkin. Net effect: the Strigoi is a boss-tier terror precisely because everything that kills a vampire fails.
+**Choices made.**
+- **Placement (Luke): Old-World origin, roams NA.** Folded into the **Eastern Woodlands** (the settled east) with
+  origin flagged European; habitat notes they follow human populations, not a wild range. (Alternatives weighed: a
+  dedicated "Among Humanity" group, or the "Beyond North America" bucket.)
+- Encoded the distinctions mechanically where it counts: **Werewolf/Lycan** `vulnerable: [silver, fire]`;
+  **Vampire** `vulnerable: [radiant, fire]` with the full "Old Laws" weakness trait; **Strigoi** `vulnerable:
+  [fire]` only, with explicit "Undaunted by the Sun" and "The Old Laws Fail" traits. Threat: Werewolf Elite (6–10),
+  Lycan Elite (8–12), Vampire Elite (10–14), **Strigoi Boss (14–18)**.
+- Treated as adversaries, not game: **not** flagged tameable or huntable (a Lycan can be an ally, not a pet; a
+  Strigoi is a set-piece, not quarry). Kinds set so drop-in still works (Werewolf/Lycan = Monster, Vampire/Strigoi
+  = Undead). Each carries a natural-history block framed around lifecycle/spread rather than a wild niche.
+**How.** `data.js`: four new `PC.BESTIARY` entries (inline biome/niche/natural-history), cross-referencing the
+Lycan & Strigoi Otherkin in their write-ups. No `codex.js`/`styles.css` changes needed (the species/ecosystem
+renderer already covers them). **Verified** (Playwright): 35 creatures; the four present; weakness sets exactly as
+intended (Strigoi fire-only, Vampire radiant+fire, wolves silver+fire); Strigoi Boss SL 14–18; Lycan & Strigoi
+confirmed in **both** the Otherkin and Bestiary data; distinguishing traits render; "silver" / "blood rites"
+searches resolve; **zero console errors**. Docs: GAME_RULES (new bloodlines bullet + two-lens reprise + count
+31→35), README. Cache-buster **v=123**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is
