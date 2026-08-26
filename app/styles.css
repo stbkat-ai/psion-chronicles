@@ -1093,6 +1093,18 @@ body.screen-home .wrap { max-width: none; margin: 0; padding: 0; }
 .gm-npc-disp.disp-hostile { color: #ff9b9b; border-color: rgba(220, 80, 80, .4); }
 .gm-npc-disp.disp-wary { color: #ffd58a; border-color: rgba(212, 160, 60, .4); }
 
+/* GM — party (player characters) */
+.gm-party-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.gm-party-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.gm-party-thumb { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border); }
+.gm-party-name { font-weight: 700; }
+.gm-party-meta { font-size: .8rem; color: var(--text-dim); }
+.gm-party-stats { display: flex; gap: 16px; margin: 8px 0 10px; }
+.gm-party-stats > div { display: flex; flex-direction: column; align-items: center; }
+.gm-party-stats b { font-size: 1.1rem; }
+.gm-party-stats span { font-size: .68rem; text-transform: uppercase; letter-spacing: .5px; color: var(--text-dim); }
+.gm-party-missing { opacity: .7; }
+
 /* Bestiary → companions drop-in (Codex creature detail). */
 .codex-add-pet { margin-top: 10px; }
 .codex-pet-picker { margin-top: 8px; padding: 8px 10px; border-radius: 8px; background: var(--panel-2); border: 1px solid var(--border); }

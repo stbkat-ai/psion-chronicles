@@ -2377,6 +2377,28 @@ Cache-buster **v=124** (gm.js joins the asset tags this build).
 
 ---
 
+### 97. GM — player characters appear in the campaign (the Party, D&D-Beyond-style)
+**Decision.** Have player characters show up inside a campaign, working like the D&D Beyond app's party panel.
+**Reality check.** D&D Beyond's "players join a campaign with their own characters" is a **networked, multi-account**
+feature — it needs the sync backend that's still deferred here. What ships now is the **local-first party view**:
+the GM adds characters from **this device's roster** into the campaign, each rendered as a card the GM can open.
+When online play lands, this same view becomes the remote roster — no UI rework.
+**How.** New **Party** tab (the campaign's default tab), before Overview. `campaign.party` is an array of character
+**ids** into the `PsionApp` roster. The tab offers a picker of local characters not yet in the party; each party
+card shows the portrait, background · heritage · Soul Level, and **HP/KP** (derived exactly as the home roster card
+does — `PC.effectiveScores` → `PC.bodyPool`/`mindPool`, wrapped in try/catch), plus **▶ Open Sheet** and **Remove**.
+Missing characters (deleted from the device) render a graceful "not found" card with a remove button. Added
+**`PsionApp.openPlay(id)`** so a card can jump straight to the live play sheet.
+**Bug found & fixed.** `gm.js` loads **before** `app.js`, so its top-level `const App = window.PsionApp` captured
+`undefined` — the campaign manager worked (it doesn't need App) but the Party tab saw an empty roster. Fixed by
+resolving `window.PsionApp` **lazily** (`const App = () => window.PsionApp || {}`) at every call site.
+**Verified** (Playwright): seeded a real character, added it to the party → card shows "Body Builder · North
+America · Soul Level 4" with 52 HP / 30 KP; party persists across reload with the tab count (Party (1)); **Open
+Sheet** leaves the GM section and renders the live play sheet; **zero console errors**. Docs: README + CLAUDE.md
+(gm.js party + load-order note). Cache-buster **v=125**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

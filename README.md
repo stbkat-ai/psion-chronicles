@@ -35,9 +35,12 @@ Your characters are saved **in the browser** (localStorage). They stay on that d
 ## The app has three sections
 The app opens on a **full-screen Home** — the launcher for the whole app. From here you choose where to go:
 - **🎲 GM** — build and run campaigns. The **Campaign & Session Manager** is now built: create campaigns, each
-  with a premise and freeform GM notes, a dated **session log** (recaps so you can pick the thread back up), and an
-  **NPC roster** (name, role, location, disposition, notes — with an optional link to a **Bestiary** creature for a
-  stat block). All saved on your device. Encounter-building and a live combat/initiative tracker are next.
+  with a **party** of player characters (add characters saved on this device — each shows Soul Level and HP/KP and
+  opens straight to its live sheet), a premise and freeform GM notes, a dated **session log** (recaps so you can
+  pick the thread back up), and an **NPC roster** (name, role, location, disposition, notes — with an optional link
+  to a **Bestiary** creature for a stat block). All saved on your device. *(Inviting players to bring their own
+  characters over the network is a later online-play phase; for now the party is drawn from this device.)*
+  Encounter-building and a live combat/initiative tracker are next.
 - **📖 Codex** — a **searchable reference** for the whole game, **now built**. Browse or search across
   **Kinetics, Techniques, Fusion Kinetics, Otherkin, Backgrounds, Heritages, Skills, Combat Skills, Conditions,
   Weapons, Armor, Gear, Crafting, Bestiary**, and core **Reference** tables (chakras, limbs). Entries cross-link

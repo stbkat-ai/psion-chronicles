@@ -9,11 +9,12 @@
    ============================================================ */
 (function () {
   "use strict";
-  const App = window.PsionApp;
+  // gm.js loads before app.js, so resolve PsionApp lazily (at call time, never at module load).
+  const App = () => window.PsionApp || {};
   const PC = window.PC || {};
   const el = (tag, cls, html) => { const n = document.createElement(tag); if (cls) n.className = cls; if (html != null) n.innerHTML = html; return n; };
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  const toast = (m) => { if (App && App.toast) App.toast(m); };
+  const toast = (m) => { if (App().toast) App().toast(m); };
   const uid = (p) => (p || "id") + "_" + Date.now().toString(36) + "_" + Math.floor(Math.random() * 1e6).toString(36);
 
   const STORE_KEY = "psion_chronicles_campaigns";
@@ -28,10 +29,10 @@
   function findCampaign(id) { return campaigns.find((c) => c.id === id); }
 
   /* ---------- view state (kept across this section's re-renders) ---------- */
-  let mount = null, campaignId = null, tab = "overview", expanded = null;
+  let mount = null, campaignId = null, tab = "party", expanded = null;
 
   function render(host) { if (host) mount = host; campaigns = load(); draw(); }
-  function openCampaign(id) { campaignId = id; tab = "overview"; expanded = null; draw(); window.scrollTo(0, 0); }
+  function openCampaign(id) { campaignId = id; tab = "party"; expanded = null; draw(); window.scrollTo(0, 0); }
   function goHome() { campaignId = null; expanded = null; draw(); }
 
   /* ---------- shared bits ---------- */
@@ -43,7 +44,7 @@
   function topBar() {
     const bar = el("div", "gm-topbar");
     const home = el("button", "btn ghost small", campaignId ? "← All campaigns" : "← Home");
-    home.onclick = () => { if (campaignId) goHome(); else if (App && App.goToHome) App.goToHome(); };
+    home.onclick = () => { if (campaignId) goHome(); else if (App().goToHome) App().goToHome(); };
     bar.appendChild(home);
     bar.appendChild(el("div", "gm-brand", "🎲 Game Master"));
     return bar;
@@ -118,17 +119,109 @@
 
     // Tab bar
     const tabs = el("div", "gm-tabs");
-    [["overview", "Overview"], ["sessions", `Sessions (${(c.sessions || []).length})`], ["npcs", `NPCs (${(c.npcs || []).length})`]].forEach(([k, lbl]) => {
+    [["party", `Party (${(c.party || []).length})`], ["overview", "Overview"], ["sessions", `Sessions (${(c.sessions || []).length})`], ["npcs", `NPCs (${(c.npcs || []).length})`]].forEach(([k, lbl]) => {
       const b = el("button", "gm-tab" + (tab === k ? " active" : ""), lbl);
       b.onclick = () => { tab = k; expanded = null; draw(); };
       tabs.appendChild(b);
     });
     root.appendChild(tabs);
 
-    if (tab === "overview") root.appendChild(overviewTab(c));
+    if (tab === "party") root.appendChild(partyTab(c));
+    else if (tab === "overview") root.appendChild(overviewTab(c));
     else if (tab === "sessions") root.appendChild(sessionsTab(c));
     else root.appendChild(npcsTab(c));
     return root;
+  }
+
+  /* ----- Party (player characters) ----- */
+  // Local-first: the party is drawn from characters saved on this device (PsionApp roster), referenced by id.
+  // When networked play arrives, this same view becomes the remote roster of players' characters.
+  function charVitals(rec) {
+    try {
+      const eff = PC.effectiveScores(rec.baseScores, PC.charAttrBoosts(rec), null);
+      const pb = PC.charPoolBoost(rec);
+      return { hp: PC.bodyPool(eff, pb), kp: PC.mindPool(eff, pb) };
+    } catch (e) { return { hp: "—", kp: "—" }; }
+  }
+  function partyTab(c) {
+    if (!Array.isArray(c.party)) c.party = [];
+    const root = el("div");
+    const roster = App().loadRoster ? App().loadRoster() : [];
+
+    const intro = el("div", "panel");
+    intro.appendChild(el("div", "section-label", "🛡 The Party"));
+    intro.appendChild(el("p", "hint", "The player characters in this campaign. Add characters saved on this device, and open any sheet to run it at the table. <i>(Inviting players to bring their own characters over the network comes with a later online-play phase — for now the party is drawn from this device.)</i>"));
+
+    // Add-character control: roster characters not already in the party.
+    const available = roster.filter((r) => c.party.indexOf(r.id) < 0);
+    if (roster.length === 0) {
+      intro.appendChild(el("div", "muted", "No characters on this device yet. Create one in the Player section first, then add them here."));
+    } else if (available.length === 0) {
+      intro.appendChild(el("div", "muted", "Every character on this device is already in the party."));
+    } else {
+      const form = el("div", "gm-newform");
+      const sel = el("select", "gm-input");
+      sel.innerHTML = `<option value="">— choose a character —</option>` + available.map((r) => `<option value="${esc(r.id)}">${esc(r.name || "Unnamed")} · ${esc(r.background || "—")} · SL ${esc(String(r.level))}</option>`).join("");
+      const add = el("button", "btn small primary", "+ Add to Party");
+      add.onclick = () => { if (!sel.value) { toast("Choose a character to add."); return; } addToParty(c, sel.value); };
+      form.appendChild(labeled("Add character", sel));
+      form.appendChild(add);
+      intro.appendChild(form);
+    }
+    root.appendChild(intro);
+
+    if (!c.party.length) { root.appendChild(el("div", "muted", "No characters in the party yet.")); return root; }
+
+    const grid = el("div", "gm-party-grid");
+    c.party.forEach((id) => {
+      const rec = roster.find((r) => r.id === id);
+      const card = el("div", "panel gm-party-card");
+      if (!rec) {
+        // Referenced character no longer exists on this device.
+        card.classList.add("gm-party-missing");
+        card.appendChild(el("div", "gm-party-name", "Character not found"));
+        card.appendChild(el("div", "muted", "This character was removed from this device."));
+        const rm = el("button", "btn ghost small", "Remove from party");
+        rm.onclick = () => removeFromParty(c, id);
+        card.appendChild(rm);
+        grid.appendChild(card);
+        return;
+      }
+      const v = charVitals(rec);
+      const head = el("div", "gm-party-head");
+      if (rec.thumb) { const th = el("img", "gm-party-thumb"); th.src = rec.thumb; th.alt = rec.name || "portrait"; head.appendChild(th); }
+      const title = el("div");
+      title.appendChild(el("div", "gm-party-name", esc(rec.name || "Unnamed")));
+      title.appendChild(el("div", "gm-party-meta", `${esc(rec.background || "—")}${rec.heritage ? " · " + esc(rec.heritage) : ""} · Soul Level ${esc(String(rec.level))}`));
+      head.appendChild(title);
+      card.appendChild(head);
+
+      const stats = el("div", "gm-party-stats");
+      stats.innerHTML = `<div><b class="hpn">${v.hp}</b><span>HP</span></div><div><b class="kpn">${v.kp}</b><span>KP</span></div><div><b>${esc(String(rec.level))}</b><span>Soul Lv</span></div>`;
+      card.appendChild(stats);
+
+      const row = el("div", "nav-row");
+      const openBtn = el("button", "btn primary small", "▶ Open Sheet");
+      openBtn.onclick = () => { if (App().openPlay) App().openPlay(rec.id); };
+      const rm = el("button", "btn ghost small", "Remove");
+      rm.onclick = () => removeFromParty(c, id);
+      row.appendChild(openBtn); row.appendChild(rm);
+      card.appendChild(row);
+      grid.appendChild(card);
+    });
+    root.appendChild(grid);
+    return root;
+  }
+  function addToParty(c, id) {
+    if (!Array.isArray(c.party)) c.party = [];
+    if (c.party.indexOf(id) < 0) { c.party.push(id); save(); }
+    const rec = App().loadRoster ? App().loadRoster().find((r) => r.id === id) : null;
+    toast(rec ? `${rec.name || "Character"} joined the party.` : "Added to party.");
+    draw();
+  }
+  function removeFromParty(c, id) {
+    const i = c.party.indexOf(id); if (i > -1) { c.party.splice(i, 1); save(); }
+    draw();
   }
 
   /* ----- Overview ----- */

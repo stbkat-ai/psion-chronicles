@@ -1753,6 +1753,8 @@
     goHome: function () { playId = null; levelUpId = null; state = null; render(); },
     goToHome: goToHome, // the app's Home screen (three-section launcher)
     openLevelUp: function (id) { playId = null; state = null; levelUpId = id; levelUpKinTab = null; render(); },
+    // Open a character's live play sheet by id (used by the GM section's party view).
+    openPlay: function (id) { screen = "player"; playId = id; levelUpId = null; state = null; homeMenu = null; render(); },
     render: render,
     el: el,
     // Description schema (shared with play.js so the creator + play tab stay in sync).
