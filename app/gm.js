@@ -29,7 +29,7 @@
   function findCampaign(id) { return campaigns.find((c) => c.id === id); }
 
   /* ---------- view state (kept across this section's re-renders) ---------- */
-  let mount = null, campaignId = null, tab = "party", expanded = null;
+  let mount = null, campaignId = null, tab = "party", expanded = null, xpAmount = "";
 
   function render(host) { if (host) mount = host; campaigns = load(); draw(); }
   function openCampaign(id) { campaignId = id; tab = "party"; expanded = null; draw(); window.scrollTo(0, 0); }
@@ -172,6 +172,8 @@
 
     if (!c.party.length) { root.appendChild(el("div", "muted", "No characters in the party yet.")); return root; }
 
+    root.appendChild(awardsPanel(c, roster));
+
     const grid = el("div", "gm-party-grid");
     c.party.forEach((id) => {
       const rec = roster.find((r) => r.id === id);
@@ -200,18 +202,109 @@
       stats.innerHTML = `<div><b class="hpn">${v.hp}</b><span>HP</span></div><div><b class="kpn">${v.kp}</b><span>KP</span></div><div><b>${esc(String(rec.level))}</b><span>Soul Lv</span></div>`;
       card.appendChild(stats);
 
+      // XP progress toward the next Soul Level (leveling itself is done on the player's own sheet).
+      let bar = null; try { bar = PC.xpBar(rec.xp || 0, rec.level || 1); } catch (e) {}
+      if (bar) {
+        const xpLine = el("div", "gm-party-xp");
+        xpLine.innerHTML = bar.maxed
+          ? `<span class="muted">Max Soul Level (30) · ${(rec.xp || 0).toLocaleString()} XP</span>`
+          : `<span class="muted">${bar.into.toLocaleString()} / ${bar.span.toLocaleString()} XP → Lv ${(rec.level || 1) + 1}</span>${bar.ready ? ` <span class="gm-lvlready">Ready to level up</span>` : ""}`;
+        card.appendChild(xpLine);
+        const track = el("div", "bar-track"); const fill = el("div", "bar-fill");
+        fill.style.width = (bar.maxed ? 100 : bar.pct) + "%";
+        fill.style.background = (bar.ready || bar.maxed) ? "var(--gold)" : "var(--cyan)";
+        track.appendChild(fill); card.appendChild(track);
+      }
+
       const row = el("div", "nav-row");
       const openBtn = el("button", "btn primary small", "▶ Open Sheet");
       openBtn.onclick = () => { if (App().openPlay) App().openPlay(rec.id); };
+      const xpBtn = el("button", "btn small", "＋XP");
+      xpBtn.title = "Award the XP amount above to this character";
+      xpBtn.onclick = () => { const amt = parseInt(xpAmount, 10); if (!amt || amt <= 0) { toast("Enter an XP amount in the Award box first."); return; } awardXp(c, rec.id, amt); };
       const rm = el("button", "btn ghost small", "Remove");
       rm.onclick = () => removeFromParty(c, id);
-      row.appendChild(openBtn); row.appendChild(rm);
+      row.appendChild(openBtn); row.appendChild(xpBtn); row.appendChild(rm);
       card.appendChild(row);
       grid.appendChild(card);
     });
     root.appendChild(grid);
+    root.appendChild(awardsLog(c));
     return root;
   }
+
+  /* ----- Awards (XP & loot) ----- */
+  function awardsPanel(c, roster) {
+    const p = el("div", "panel");
+    p.appendChild(el("div", "section-label", "🎖 Award XP & Loot"));
+    // XP amount + whole-party award
+    const xrow = el("div", "gm-award-row");
+    const amt = el("input", "gm-input gm-xp-amt"); amt.type = "number"; amt.min = "0"; amt.placeholder = "XP amount"; amt.value = xpAmount;
+    amt.oninput = () => { xpAmount = amt.value; };
+    const partyBtn = el("button", "btn small primary", "Award to whole party");
+    partyBtn.onclick = () => { const v = parseInt(xpAmount, 10); if (!v || v <= 0) { toast("Enter an XP amount."); return; } awardParty(c, v); };
+    xrow.appendChild(labeled("XP", amt)); xrow.appendChild(partyBtn);
+    p.appendChild(xrow);
+    p.appendChild(el("p", "hint", "Award XP to the whole party, or tap <b>＋XP</b> on a character to give just them the amount above. It flows into their Soul Pool; they level up on their own sheet when the bar is full."));
+    // Loot note
+    const lrow = el("div", "gm-award-row");
+    const lootI = el("input", "gm-input"); lootI.type = "text"; lootI.placeholder = "e.g. 200 scrip, a silvered dagger…";
+    const toSel = el("select", "gm-input");
+    toSel.innerHTML = `<option value="party">Whole party</option>` + c.party.map((id) => { const r = roster.find((x) => x.id === id); return r ? `<option value="${esc(r.id)}">${esc(r.name || "Unnamed")}</option>` : ""; }).join("");
+    const lootBtn = el("button", "btn small", "Log loot");
+    lootBtn.onclick = () => { const t = lootI.value.trim(); if (!t) { toast("Describe the loot."); return; } logLoot(c, t, toSel.value); };
+    lrow.appendChild(labeled("Loot", lootI)); lrow.appendChild(labeled("To", toSel)); lrow.appendChild(lootBtn);
+    p.appendChild(lrow);
+    p.appendChild(el("p", "hint", "Loot is recorded here as a note — hand it to your players to add to their own inventory."));
+    return p;
+  }
+  function awardsLog(c) {
+    const awards = c.awards || [];
+    const p = el("div", "panel");
+    p.appendChild(el("div", "section-label", "Recent awards"));
+    if (!awards.length) { p.appendChild(el("div", "muted", "No XP or loot awarded yet.")); return p; }
+    const list = el("div", "gm-award-log");
+    awards.slice().reverse().slice(0, 40).forEach((a) => {
+      const row = el("div", "gm-award-entry");
+      const when = a.at ? new Date(a.at).toLocaleDateString() : "";
+      row.innerHTML = `<span class="gm-award-icon">${a.kind === "xp" ? "✨" : "💰"}</span><span class="gm-award-text">${esc(a.text)}</span><span class="gm-award-when muted">${esc(when)}</span>`;
+      const rm = el("button", "btn ghost small", "✕"); rm.title = "Remove entry"; rm.onclick = () => removeAward(c, a.id);
+      row.appendChild(rm);
+      list.appendChild(row);
+    });
+    p.appendChild(list);
+    return p;
+  }
+  function pushAward(c, kind, text) { if (!Array.isArray(c.awards)) c.awards = []; c.awards.push({ id: uid("awd"), kind: kind, text: text, at: Date.now() }); }
+  function awardXp(c, charId, amount) {
+    const list = App().loadRoster ? App().loadRoster() : [];
+    const rec = list.find((r) => r.id === charId);
+    if (!rec) { toast("That character isn't on this device."); return; }
+    rec.xp = Math.max(0, (rec.xp || 0) + amount);
+    if (App().saveRoster) App().saveRoster(list);
+    pushAward(c, "xp", `${amount.toLocaleString()} XP → ${rec.name || "Unnamed"}`); save();
+    toast(`Awarded ${amount.toLocaleString()} XP to ${rec.name || "the character"}.`);
+    draw();
+  }
+  function awardParty(c, amount) {
+    const list = App().loadRoster ? App().loadRoster() : [];
+    let n = 0;
+    c.party.forEach((id) => { const rec = list.find((r) => r.id === id); if (rec) { rec.xp = Math.max(0, (rec.xp || 0) + amount); n++; } });
+    if (!n) { toast("No party characters on this device to award."); return; }
+    if (App().saveRoster) App().saveRoster(list);
+    pushAward(c, "xp", `${amount.toLocaleString()} XP → whole party (${n})`); save();
+    toast(`Awarded ${amount.toLocaleString()} XP to the party.`);
+    draw();
+  }
+  function logLoot(c, text, toId) {
+    let toName = "the party";
+    if (toId && toId !== "party") { const list = App().loadRoster ? App().loadRoster() : []; const rec = list.find((r) => r.id === toId); toName = rec ? (rec.name || "Unnamed") : "someone"; }
+    pushAward(c, "loot", `${text} → ${toName}`); save();
+    toast("Loot logged.");
+    draw();
+  }
+  function removeAward(c, id) { if (!Array.isArray(c.awards)) return; const i = c.awards.findIndex((a) => a.id === id); if (i > -1) { c.awards.splice(i, 1); save(); draw(); } }
+
   function addToParty(c, id) {
     if (!Array.isArray(c.party)) c.party = [];
     if (c.party.indexOf(id) < 0) { c.party.push(id); save(); }

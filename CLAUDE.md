@@ -57,9 +57,11 @@ in the browser's `localStorage` (key `psion_chronicles_characters`), so saved da
   (counts included). A data-driven `SECTIONS` array; adding a NEW kind of content = one new SECTIONS entry.
 - `gm.js` — `window.PsionGM`: the **GM** section (Campaign & Session Manager). Local-first (own localStorage key
   `psion_chronicles_campaigns`); each campaign has a **party** of player characters (referenced by id from the
-  `PsionApp` roster; a card shows Soul Level + HP/KP and opens the live sheet via `PsionApp.openPlay`), a premise +
-  GM notes, a dated **session log**, and an **NPC roster** (with optional Bestiary stat-block links via
-  `PC.bestiary`). Note: gm.js loads **before** app.js, so it resolves `window.PsionApp` lazily, never at load.
+  `PsionApp` roster; a card shows Soul Level + HP/KP + XP progress and opens the live sheet via `PsionApp.openPlay`;
+  the GM can **award XP** to one character or the whole party — writing `rec.xp` back through `PsionApp.saveRoster`
+  — and log **loot** as notes), a premise + GM notes, a dated **session log**, and an **NPC roster** (with optional
+  Bestiary stat-block links via `PC.bestiary`). Note: gm.js loads **before** app.js, so it resolves
+  `window.PsionApp` lazily, never at load.
   Networked player-join and encounter/combat tools are the next phases.
 - `play.js` — `window.PsionPlay`: the live play sheet. Tabs: **Sheet · Combat · Limbs · Chakras · Kinetics ·
   Skills · Traits · Description · Inventory · Crafting · Pets · Otherkin**.

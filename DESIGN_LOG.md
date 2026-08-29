@@ -2399,6 +2399,28 @@ Sheet** leaves the GM section and renders the live play sheet; **zero console er
 
 ---
 
+### 98. GM — award XP & loot to the party
+**Decision.** Build on the Party view: let the GM hand **XP** to the party's characters (flowing into their Soul
+Pool / level-up bar) and **note loot**, as the next GM tool.
+**How.** In the Party tab: an **Award XP & Loot** panel and per-character XP on each card.
+- **XP** writes straight to the character record: `rec.xp = max(0, rec.xp + amount)` via `PsionApp.loadRoster` /
+  `saveRoster`. A shared amount box drives both **Award to whole party** and a per-card **＋XP** button. Leveling
+  stays **GM-driven and manual** (the design's existing rule) — awards never auto-level; each card shows
+  `PC.xpBar` progress toward the next Soul Level and a **"Ready to level up"** badge when the bar fills, but the
+  player taps Level Up on their own sheet.
+- **Loot** is a note, not an inventory injection (inventories are per-character and per-device): a text + recipient
+  ("whole party" or a specific member) entry recorded in a campaign **award log** (`campaign.awards[]`).
+- A **Recent awards** list shows the XP/loot history (newest first, removable).
+**Choices.** Kept XP as the source of truth on the character (`rec.xp`) so the play sheet's bar and the level-up
+screen stay authoritative — the GM tool just feeds the same number. Loot deliberately stays a ledger note (the GM
+hands it over; players add it to their own inventory) rather than trying to push items into another record.
+**Verified** (Playwright): two-character party — "Award to whole party" (+500) hit both; the XP box value survived
+the redraw; per-card **＋XP** added to just that character (Rell → 1,000); loot logged with recipient; the award
+log persisted (3 entries) and the level-ready badge correctly stayed off below the threshold; **zero console
+errors**. Docs: README + CLAUDE.md (gm.js party now awards XP/loot). Cache-buster **v=126**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is
