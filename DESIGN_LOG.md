@@ -2421,6 +2421,28 @@ errors**. Docs: README + CLAUDE.md (gm.js party now awards XP/loot). Cache-buste
 
 ---
 
+### 99. GM — a real Loot menu (catalog → inventory)
+**Decision.** Turn "loot" from a freeform note into a proper **menu**: browse the game's item catalog and hand items
+to a character, D&D-Beyond-style.
+**How.** New **Loot** tab on the campaign. It reads the full `PC.ITEMS` catalog (463 items) with a **search + a
+category filter**, and each result has a **＋ Give** that drops the item into the recipient's `rec.inventory` —
+copying the whole catalog object and **merging like stacks by category+name**, exactly as the play sheet's own
+catalog-add does (so a granted weapon/armor shows up fully-formed and usable on the player's sheet). A **recipient**
+select (a specific party member or the whole party) and a **quantity** drive the grant; grants are logged to
+`campaign.awards` and shown as **Recent loot**. A **custom (note-only)** row remains for coin, story items, and
+anything not in the catalog (uses `logLoot`, no inventory change). The Party tab's award panel is now **XP-only**
+(its log filters to XP; loot history lives on the Loot tab). The catalog browser re-renders its results list in
+place on search/filter (no full redraw) so the search box keeps focus.
+**Choices.** Loot writes to the **character's own inventory** (the source of truth the play sheet reads) rather than
+a campaign-side copy — a real grant, not a duplicate ledger. Currency stays note-only for now (barter scrip is a
+catalog Junk item, so it can also be given as an item; a dedicated coin field is a later call). Results cap at 80
+shown with a "refine your search" note to keep the list snappy.
+**Verified** (Playwright): 463-item catalog; search "dagger" → 8 results; **Give** (qty 2) put Athame ×2 into the
+recipient's inventory; a second give **merged** to ×4; custom note "200 barter scrip" logged; Recent loot showed 3
+entries; **zero console errors**. Docs: README + CLAUDE.md (Loot tab / catalog→inventory). Cache-buster **v=127**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

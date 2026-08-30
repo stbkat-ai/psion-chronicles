@@ -1118,6 +1118,15 @@ body.screen-home .wrap { max-width: none; margin: 0; padding: 0; }
 .gm-award-text { flex: 1 1 auto; font-size: .88rem; }
 .gm-award-when { flex: 0 0 auto; font-size: .74rem; }
 
+/* GM — loot menu (catalog browser) */
+.gm-loot-count { font-size: .74rem; margin: 4px 2px 6px; }
+.gm-loot-results { max-height: 440px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px;
+  border: 1px solid var(--border); border-radius: 8px; padding: 6px; }
+.gm-loot-row { display: flex; align-items: center; gap: 10px; padding: 5px 8px; border-radius: 7px; background: var(--panel-2); }
+.gm-loot-name { flex: 1 1 auto; font-weight: 600; font-size: .9rem; }
+.gm-loot-cat { flex: 0 0 auto; font-size: .74rem; }
+.gm-loot-row .btn { flex: 0 0 auto; }
+
 /* Bestiary → companions drop-in (Codex creature detail). */
 .codex-add-pet { margin-top: 10px; }
 .codex-pet-picker { margin-top: 8px; padding: 8px 10px; border-radius: 8px; background: var(--panel-2); border: 1px solid var(--border); }

@@ -59,8 +59,10 @@ in the browser's `localStorage` (key `psion_chronicles_characters`), so saved da
   `psion_chronicles_campaigns`); each campaign has a **party** of player characters (referenced by id from the
   `PsionApp` roster; a card shows Soul Level + HP/KP + XP progress and opens the live sheet via `PsionApp.openPlay`;
   the GM can **award XP** to one character or the whole party — writing `rec.xp` back through `PsionApp.saveRoster`
-  — and log **loot** as notes), a premise + GM notes, a dated **session log**, and an **NPC roster** (with optional
-  Bestiary stat-block links via `PC.bestiary`). Note: gm.js loads **before** app.js, so it resolves
+  — and hand out **loot** from a menu: a **Loot** tab browses the `PC.ITEMS` catalog and drops a chosen item into a
+  recipient's `rec.inventory` (merging like stacks, exactly as the play sheet does), plus custom note-only loot),
+  a premise + GM notes, a dated **session log**, and an **NPC roster** (with optional Bestiary stat-block links via
+  `PC.bestiary`). Note: gm.js loads **before** app.js, so it resolves
   `window.PsionApp` lazily, never at load.
   Networked player-join and encounter/combat tools are the next phases.
 - `play.js` — `window.PsionPlay`: the live play sheet. Tabs: **Sheet · Combat · Limbs · Chakras · Kinetics ·

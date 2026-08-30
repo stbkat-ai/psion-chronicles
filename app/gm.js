@@ -30,6 +30,7 @@
 
   /* ---------- view state (kept across this section's re-renders) ---------- */
   let mount = null, campaignId = null, tab = "party", expanded = null, xpAmount = "";
+  let lootSearch = "", lootCat = "All"; // Loot-tab catalog browser state
 
   function render(host) { if (host) mount = host; campaigns = load(); draw(); }
   function openCampaign(id) { campaignId = id; tab = "party"; expanded = null; draw(); window.scrollTo(0, 0); }
@@ -119,7 +120,7 @@
 
     // Tab bar
     const tabs = el("div", "gm-tabs");
-    [["party", `Party (${(c.party || []).length})`], ["overview", "Overview"], ["sessions", `Sessions (${(c.sessions || []).length})`], ["npcs", `NPCs (${(c.npcs || []).length})`]].forEach(([k, lbl]) => {
+    [["party", `Party (${(c.party || []).length})`], ["loot", "Loot"], ["overview", "Overview"], ["sessions", `Sessions (${(c.sessions || []).length})`], ["npcs", `NPCs (${(c.npcs || []).length})`]].forEach(([k, lbl]) => {
       const b = el("button", "gm-tab" + (tab === k ? " active" : ""), lbl);
       b.onclick = () => { tab = k; expanded = null; draw(); };
       tabs.appendChild(b);
@@ -127,6 +128,7 @@
     root.appendChild(tabs);
 
     if (tab === "party") root.appendChild(partyTab(c));
+    else if (tab === "loot") root.appendChild(lootTab(c));
     else if (tab === "overview") root.appendChild(overviewTab(c));
     else if (tab === "sessions") root.appendChild(sessionsTab(c));
     else root.appendChild(npcsTab(c));
@@ -229,15 +231,14 @@
       grid.appendChild(card);
     });
     root.appendChild(grid);
-    root.appendChild(awardsLog(c));
+    root.appendChild(awardsLog(c, "xp", "Recent XP awards"));
     return root;
   }
 
   /* ----- Awards (XP & loot) ----- */
   function awardsPanel(c, roster) {
     const p = el("div", "panel");
-    p.appendChild(el("div", "section-label", "🎖 Award XP & Loot"));
-    // XP amount + whole-party award
+    p.appendChild(el("div", "section-label", "🎖 Award XP"));
     const xrow = el("div", "gm-award-row");
     const amt = el("input", "gm-input gm-xp-amt"); amt.type = "number"; amt.min = "0"; amt.placeholder = "XP amount"; amt.value = xpAmount;
     amt.oninput = () => { xpAmount = amt.value; };
@@ -245,24 +246,14 @@
     partyBtn.onclick = () => { const v = parseInt(xpAmount, 10); if (!v || v <= 0) { toast("Enter an XP amount."); return; } awardParty(c, v); };
     xrow.appendChild(labeled("XP", amt)); xrow.appendChild(partyBtn);
     p.appendChild(xrow);
-    p.appendChild(el("p", "hint", "Award XP to the whole party, or tap <b>＋XP</b> on a character to give just them the amount above. It flows into their Soul Pool; they level up on their own sheet when the bar is full."));
-    // Loot note
-    const lrow = el("div", "gm-award-row");
-    const lootI = el("input", "gm-input"); lootI.type = "text"; lootI.placeholder = "e.g. 200 scrip, a silvered dagger…";
-    const toSel = el("select", "gm-input");
-    toSel.innerHTML = `<option value="party">Whole party</option>` + c.party.map((id) => { const r = roster.find((x) => x.id === id); return r ? `<option value="${esc(r.id)}">${esc(r.name || "Unnamed")}</option>` : ""; }).join("");
-    const lootBtn = el("button", "btn small", "Log loot");
-    lootBtn.onclick = () => { const t = lootI.value.trim(); if (!t) { toast("Describe the loot."); return; } logLoot(c, t, toSel.value); };
-    lrow.appendChild(labeled("Loot", lootI)); lrow.appendChild(labeled("To", toSel)); lrow.appendChild(lootBtn);
-    p.appendChild(lrow);
-    p.appendChild(el("p", "hint", "Loot is recorded here as a note — hand it to your players to add to their own inventory."));
+    p.appendChild(el("p", "hint", "Award XP to the whole party, or tap <b>＋XP</b> on a character to give just them the amount above. It flows into their Soul Pool; they level up on their own sheet when the bar is full. <i>(Hand out items on the <b>Loot</b> tab.)</i>"));
     return p;
   }
-  function awardsLog(c) {
-    const awards = c.awards || [];
+  function awardsLog(c, kind, title) {
+    const awards = (c.awards || []).filter((a) => !kind || a.kind === kind);
     const p = el("div", "panel");
-    p.appendChild(el("div", "section-label", "Recent awards"));
-    if (!awards.length) { p.appendChild(el("div", "muted", "No XP or loot awarded yet.")); return p; }
+    p.appendChild(el("div", "section-label", title || "Recent awards"));
+    if (!awards.length) { p.appendChild(el("div", "muted", "Nothing logged yet.")); return p; }
     const list = el("div", "gm-award-log");
     awards.slice().reverse().slice(0, 40).forEach((a) => {
       const row = el("div", "gm-award-entry");
@@ -301,9 +292,105 @@
     if (toId && toId !== "party") { const list = App().loadRoster ? App().loadRoster() : []; const rec = list.find((r) => r.id === toId); toName = rec ? (rec.name || "Unnamed") : "someone"; }
     pushAward(c, "loot", `${text} → ${toName}`); save();
     toast("Loot logged.");
-    draw();
   }
   function removeAward(c, id) { if (!Array.isArray(c.awards)) return; const i = c.awards.findIndex((a) => a.id === id); if (i > -1) { c.awards.splice(i, 1); save(); draw(); } }
+
+  /* ----- Loot menu (catalog → inventory) ----- */
+  function itemCategories() {
+    const set = {}; (PC.ITEMS || []).forEach((it) => { if (it.category) set[it.category] = true; });
+    return ["All"].concat(Object.keys(set).sort());
+  }
+  // Grant a real catalog item into the recipient's inventory (merging like stacks), then log it.
+  function giveItem(c, recipientId, item, qty, afterHistory) {
+    const list = App().loadRoster ? App().loadRoster() : [];
+    const targets = recipientId === "party"
+      ? c.party.map((id) => list.find((r) => r.id === id)).filter(Boolean)
+      : [list.find((r) => r.id === recipientId)].filter(Boolean);
+    if (!targets.length) { toast("No recipient — add a character to the party first."); return; }
+    targets.forEach((rec) => {
+      if (!Array.isArray(rec.inventory)) rec.inventory = [];
+      const ex = rec.inventory.find((it) => it.category === item.category && it.name === item.name);
+      if (ex) ex.qty = (Number(ex.qty) || 0) + qty;
+      else rec.inventory.push(Object.assign({}, item, { qty: qty, id: "it_" + Date.now().toString(36) + Math.floor(Math.random() * 1e6).toString(36) + "_" + item.name.replace(/\s+/g, "").slice(0, 6) }));
+    });
+    if (App().saveRoster) App().saveRoster(list);
+    const toName = recipientId === "party" ? `the party (${targets.length})` : (targets[0].name || "Unnamed");
+    pushAward(c, "loot", `${qty > 1 ? qty + "× " : ""}${item.name} → ${toName}`); save();
+    toast(`Gave ${qty > 1 ? qty + "× " : ""}${item.name} to ${toName}.`);
+    if (afterHistory) afterHistory();
+  }
+  function lootTab(c) {
+    if (!Array.isArray(c.party)) c.party = [];
+    const root = el("div");
+    const roster = App().loadRoster ? App().loadRoster() : [];
+    const partyOptions = () => c.party.map((id) => { const r = roster.find((x) => x.id === id); return r ? `<option value="${esc(r.id)}">${esc(r.name || "Unnamed")}</option>` : ""; }).join("");
+
+    const panel = el("div", "panel");
+    panel.appendChild(el("div", "section-label", "💰 Loot menu"));
+    panel.appendChild(el("p", "hint", "Hand out gear straight from the catalog — it drops into the chosen character's inventory (and shows on their sheet). For coin or anything not in the catalog, use the custom note below."));
+
+    // Recipient + quantity
+    const ctl = el("div", "gm-award-row");
+    const recip = el("select", "gm-input");
+    recip.innerHTML = (c.party.length ? `<option value="party">Whole party</option>` : "") + partyOptions();
+    const qty = el("input", "gm-input gm-xp-amt"); qty.type = "number"; qty.min = "1"; qty.value = "1";
+    ctl.appendChild(labeled("Give to", recip)); ctl.appendChild(labeled("Qty", qty));
+    panel.appendChild(ctl);
+    if (!c.party.length) panel.appendChild(el("div", "muted", "Add characters to the party (Party tab) to drop items into an inventory. You can still log custom loot notes below."));
+
+    // Search + category
+    const srow = el("div", "gm-award-row");
+    const search = el("input", "gm-input"); search.type = "search"; search.placeholder = "Search the item catalog…"; search.value = lootSearch;
+    const catSel = el("select", "gm-input");
+    catSel.innerHTML = itemCategories().map((k) => `<option value="${esc(k)}" ${lootCat === k ? "selected" : ""}>${esc(k)}</option>`).join("");
+    srow.appendChild(labeled("Search", search)); srow.appendChild(labeled("Category", catSel));
+    panel.appendChild(srow);
+
+    const results = el("div", "gm-loot-results");
+    panel.appendChild(results);
+    root.appendChild(panel);
+
+    function renderHistory() { hist.innerHTML = ""; hist.appendChild(awardsLog(c, "loot", "Recent loot")); }
+    function renderResults() {
+      results.innerHTML = "";
+      const q = lootSearch.trim().toLowerCase();
+      let items = (PC.ITEMS || []).filter((it) => lootCat === "All" || it.category === lootCat);
+      if (q) items = items.filter((it) => (`${it.name} ${it.category} ${it.desc || ""}`).toLowerCase().indexOf(q) > -1);
+      items = items.slice().sort((a, b) => a.name.localeCompare(b.name));
+      results.appendChild(el("div", "gm-loot-count muted", `${items.length} item${items.length === 1 ? "" : "s"}`));
+      const canGive = c.party.length > 0;
+      items.slice(0, 80).forEach((it) => {
+        const row = el("div", "gm-loot-row");
+        row.innerHTML = `<span class="gm-loot-name">${esc(it.name)}</span><span class="gm-loot-cat muted">${esc(it.category || "")}${it.weight != null ? " · " + esc(String(it.weight)) + " wt" : ""}</span>`;
+        const give = el("button", "btn small primary", "＋ Give"); give.disabled = !canGive;
+        give.onclick = () => { const n = Math.max(1, parseInt(qty.value, 10) || 1); giveItem(c, recip.value, it, n, renderHistory); };
+        row.appendChild(give);
+        results.appendChild(row);
+      });
+      if (items.length > 80) results.appendChild(el("div", "muted", "Showing the first 80 — refine your search to narrow it down."));
+    }
+    search.oninput = () => { lootSearch = search.value; renderResults(); };
+    catSel.onchange = () => { lootCat = catSel.value; renderResults(); };
+
+    // Custom (non-catalog) loot note
+    const cpanel = el("div", "panel");
+    cpanel.appendChild(el("div", "section-label", "Custom loot (note only)"));
+    const crow = el("div", "gm-award-row");
+    const ctext = el("input", "gm-input"); ctext.type = "text"; ctext.placeholder = "e.g. 200 barter scrip, a sealed letter…";
+    const cto = el("select", "gm-input");
+    cto.innerHTML = `<option value="party">Whole party</option>` + partyOptions();
+    const cbtn = el("button", "btn small", "Log note");
+    cbtn.onclick = () => { const t = ctext.value.trim(); if (!t) { toast("Describe the loot."); return; } logLoot(c, t, cto.value); ctext.value = ""; renderHistory(); };
+    crow.appendChild(labeled("Loot", ctext)); crow.appendChild(labeled("To", cto)); crow.appendChild(cbtn);
+    cpanel.appendChild(crow);
+    cpanel.appendChild(el("p", "hint", "A note only — nothing enters an inventory. Use it for coin, story items, or anything not in the catalog."));
+    root.appendChild(cpanel);
+
+    const hist = el("div"); root.appendChild(hist);
+
+    renderResults(); renderHistory();
+    return root;
+  }
 
   function addToParty(c, id) {
     if (!Array.isArray(c.party)) c.party = [];
