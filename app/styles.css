@@ -1146,6 +1146,31 @@ body.screen-home .wrap { max-width: none; margin: 0; padding: 0; }
 .gm-enc-ctr { flex: 0 0 auto; display: flex; align-items: center; gap: 6px; }
 .gm-enc-count { min-width: 32px; text-align: center; font-weight: 700; }
 
+/* GM — combat tracker */
+.gm-tab-live { color: var(--danger) !important; }
+.gm-combat-ctl { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.gm-combat-title { font-weight: 700; }
+.gm-combat-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+.gm-cbt { padding: 10px 12px; }
+.gm-cbt-active { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold) inset; }
+.gm-cbt-down { opacity: .6; }
+.gm-cbt-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.gm-cbt-init { min-width: 30px; text-align: center; font-size: 1.1rem; }
+.gm-cbt-name { flex: 1 1 auto; font-weight: 700; }
+.gm-cbt-turn { font-size: .6rem; text-transform: uppercase; letter-spacing: .5px; color: var(--gold);
+  border: 1px solid var(--gold); border-radius: 8px; padding: 0 5px; vertical-align: middle; }
+.gm-cbt-kind { flex: 0 0 auto; font-size: .68rem; text-transform: uppercase; letter-spacing: .5px; }
+.gm-cbt-def { flex: 0 0 auto; font-size: .82rem; color: var(--cyan); }
+.gm-cbt-hpctl { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+.gm-cbt-atks { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.gm-cbt-conds { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-top: 8px; }
+.gm-cond { font-size: .72rem; padding: 2px 8px; border-radius: 10px; cursor: pointer;
+  background: rgba(220, 80, 80, .12); border: 1px solid rgba(220, 80, 80, .4); color: var(--text); }
+.gm-cond-add { font-size: .74rem; padding: 2px 6px; border-radius: 8px; background: var(--panel-2);
+  border: 1px solid var(--border); color: var(--text-dim); }
+.gm-combat-log { display: flex; flex-direction: column; gap: 3px; max-height: 260px; overflow-y: auto; }
+.gm-log-line { font-size: .82rem; color: var(--text-dim); padding: 3px 6px; border-bottom: 1px solid var(--border); }
+
 /* Bestiary → companions drop-in (Codex creature detail). */
 .codex-add-pet { margin-top: 10px; }
 .codex-pet-picker { margin-top: 8px; padding: 8px 10px; border-radius: 8px; background: var(--panel-2); border: 1px solid var(--border); }

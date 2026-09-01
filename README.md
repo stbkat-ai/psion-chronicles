@@ -39,8 +39,9 @@ The app opens on a **full-screen Home** — the launcher for the whole app. From
   XP progress, and opens straight to its live sheet; **award XP** to one character or the whole party), a **Loot
   menu** (browse/search the full item catalog and drop items straight into a character's inventory — plus custom
   note-only loot for coin and story items), an **Encounter Builder** (assemble fights from the Bestiary and see a
-  live difficulty readout — Trivial → Deadly — weighed against your party's Soul Levels), a premise and freeform GM
-  notes, a dated **session log** (recaps so you can
+  live difficulty readout — Trivial → Deadly — weighed against your party's Soul Levels), a **Combat tracker** (run
+  the fight: party + monsters/NPCs, rolled initiative order, HP and conditions for every combatant, and tap-to-roll
+  monster attacks, with a combat log), a premise and freeform GM notes, a dated **session log** (recaps so you can
   pick the thread back up), and an **NPC roster** (name, role, location, disposition, notes — with an optional link
   to a **Bestiary** creature for a stat block). All saved on your device. *(Inviting players to bring their own
   characters over the network is a later online-play phase; for now the party is drawn from this device.)*

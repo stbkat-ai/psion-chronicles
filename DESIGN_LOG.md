@@ -2465,6 +2465,32 @@ Cache-buster **v=128**.
 
 ---
 
+### 101. GM — the Combat tracker
+**Decision.** A combat screen where the GM runs the whole fight — all NPCs and monsters, plus the party — with
+initiative, HP, conditions, and tap-to-roll attacks.
+**How.** New **Combat** tab (`campaign.combat`, one active fight per campaign; the tab shows a live ● dot). Launch
+from an encounter's **▶ Run in Combat** button (or the Combat tab's start panel — from an encounter, or an empty
+party-only combat). Building a fight pulls the **party** (PCs, with HP/Defense/initiative derived via `PC.derive`
++ `PC.bodyPool`) and the encounter's **monsters** (instantiated per count, numbered). In the tracker:
+- **🎲 Roll initiative** rolls `d20 + initMod` for everyone (`PC.rollCheck`), sorts desc, and starts round 1;
+  **Next turn →** advances the turn pointer and bumps the round on wrap. The active combatant's card is highlighted.
+- Per combatant: an **HP bar** with −Damage/+Heal (down at 0), a **Defense** readout, **conditions** (add/remove
+  from `PC.CONDITIONS`, shown as chips), and for monsters/NPCs their **attacks** as tap-to-roll buttons (to-hit +
+  damage via `PC.rollCheck`/`PC.rollDiceExpr`) that post to a **combat log**.
+- **Add to the fight** mid-combat: a Bestiary monster (× qty), a campaign **NPC** (using its linked Bestiary stat
+  block if it has one, else a blank block), or a **custom** combatant (name/HP/Def/Init). **End combat** clears it.
+**Choices.** Combat HP is the GM tracker's own copy — it does **not** write back to a PC's `rec.play.hp` (players
+own their sheets; avoids clobbering their live HP). PCs carry no attack buttons here (they roll on their own
+sheets); the GM taps rolls for the monsters/NPCs — exactly the ask. One active combat per campaign keeps state
+simple; the whole thing persists in `campaign.combat` so a fight survives a reload. Combat actions re-render via
+`draw()` (button-driven, no typing to lose).
+**Verified** (Playwright): Run-in-Combat loaded the party + 2 Gray Wolves; initiative rolled and sorted (16/15/12)
+with the active card highlighted; damage, a condition, and a monster attack-roll all logged; Next turn advanced;
+adding a monster mid-fight grew the list to 4; state persisted (round/turn/combatants/conditions/log); **zero
+console errors**. Docs: README + CLAUDE.md (Combat tab). Cache-buster **v=129**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

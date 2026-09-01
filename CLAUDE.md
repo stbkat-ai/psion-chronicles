@@ -62,10 +62,13 @@ in the browser's `localStorage` (key `psion_chronicles_characters`), so saved da
   — and hand out **loot** from a menu: a **Loot** tab browses the `PC.ITEMS` catalog and drops a chosen item into a
   recipient's `rec.inventory` (merging like stacks, exactly as the play sheet does), plus custom note-only loot),
   a premise + GM notes, a dated **session log**, an **NPC roster** (with optional Bestiary stat-block links via
-  `PC.bestiary`), and an **Encounters** tab (`campaign.encounters[]`) that builds fights from `PC.BESTIARY` with a
-  live, tunable **difficulty** readout weighed against the party's Soul Levels. Note: gm.js loads **before** app.js,
+  `PC.bestiary`), an **Encounters** tab (`campaign.encounters[]`) that builds fights from `PC.BESTIARY` with a
+  live, tunable **difficulty** readout weighed against the party's Soul Levels, and a **Combat** tracker
+  (`campaign.combat`, one active per campaign) that runs a fight — party + encounter monsters/NPCs/custom
+  combatants, **rolled initiative** order, round/turn advance, per-combatant **HP** and **conditions**
+  (`PC.CONDITIONS`), tap-to-roll monster/NPC **attacks**, and a combat log. Note: gm.js loads **before** app.js,
   so it resolves `window.PsionApp` lazily, never at load.
-  Networked player-join and a live combat/initiative tracker are the next phases.
+  Networked/shared player-join (online play) is the next phase.
 - `play.js` — `window.PsionPlay`: the live play sheet. Tabs: **Sheet · Combat · Limbs · Chakras · Kinetics ·
   Skills · Traits · Description · Inventory · Crafting · Pets · Otherkin**.
 - `styles.css` — the "Post-Veil" dark theme (CSS variables: `--psi`, `--gold`, `--hp`, `--kp`,

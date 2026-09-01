@@ -121,8 +121,8 @@
 
     // Tab bar
     const tabs = el("div", "gm-tabs");
-    [["party", `Party (${(c.party || []).length})`], ["loot", "Loot"], ["encounters", `Encounters (${(c.encounters || []).length})`], ["overview", "Overview"], ["sessions", `Sessions (${(c.sessions || []).length})`], ["npcs", `NPCs (${(c.npcs || []).length})`]].forEach(([k, lbl]) => {
-      const b = el("button", "gm-tab" + (tab === k ? " active" : ""), lbl);
+    [["party", `Party (${(c.party || []).length})`], ["loot", "Loot"], ["encounters", `Encounters (${(c.encounters || []).length})`], ["combat", c.combat ? "Combat ●" : "Combat"], ["overview", "Overview"], ["sessions", `Sessions (${(c.sessions || []).length})`], ["npcs", `NPCs (${(c.npcs || []).length})`]].forEach(([k, lbl]) => {
+      const b = el("button", "gm-tab" + (tab === k ? " active" : "") + (k === "combat" && c.combat ? " gm-tab-live" : ""), lbl);
       b.onclick = () => { tab = k; expanded = null; encounterId = null; draw(); };
       tabs.appendChild(b);
     });
@@ -131,6 +131,7 @@
     if (tab === "party") root.appendChild(partyTab(c));
     else if (tab === "loot") root.appendChild(lootTab(c));
     else if (tab === "encounters") root.appendChild(encountersTab(c));
+    else if (tab === "combat") root.appendChild(combatTab(c));
     else if (tab === "overview") root.appendChild(overviewTab(c));
     else if (tab === "sessions") root.appendChild(sessionsTab(c));
     else root.appendChild(npcsTab(c));
@@ -531,7 +532,9 @@
     biomeSel.onchange = () => { encBiome = biomeSel.value; renderResults(); };
 
     const foot = el("div", "gm-overview-foot");
-    foot.appendChild(el("span", "muted", ""));
+    const run = el("button", "btn small primary", "▶ Run in Combat");
+    run.onclick = () => startCombat(c, enc.id);
+    foot.appendChild(run);
     const del = el("button", "btn ghost small danger", "Delete encounter");
     del.onclick = () => { if (confirm(`Delete “${enc.name}”?`)) removeEncounter(c, enc.id); };
     foot.appendChild(del);
@@ -539,6 +542,218 @@
 
     renderDiff(); renderEntries(); renderResults();
     return root;
+  }
+
+  /* ----- Combat tracker ----- */
+  const COMBAT_LOG_MAX = 60;
+  function combatLog(c, text) { if (!c.combat) return; if (!Array.isArray(c.combat.log)) c.combat.log = []; c.combat.log.push({ t: Date.now(), text: text }); if (c.combat.log.length > COMBAT_LOG_MAX) c.combat.log = c.combat.log.slice(-COMBAT_LOG_MAX); }
+  function combatRefresh(c) { save(); draw(); }
+  function monsterCombatant(b, suffix, kind) {
+    return { id: uid("cb"), kind: kind || "monster", name: (b.name || "Creature") + (suffix || ""), emoji: b.emoji || "👹", refId: b.id,
+      init: null, initMod: Number(b.initMod) || 0, hp: Number(b.hp) || 10, hpMax: Number(b.hp) || 10, defense: Number(b.defense) || 10,
+      conditions: [], attacks: (b.attacks || []).map((a) => ({ name: a.name, toHit: a.toHit, damage: a.damage, note: a.note })), down: false, notes: "" };
+  }
+  function pcCombatant(rec) {
+    let hpMax = 10, def = 12, initMod = 0;
+    try { const eff = PC.effectiveScores(rec.baseScores, PC.charAttrBoosts(rec), null); const pb = PC.charPoolBoost(rec); const der = PC.derive(eff, rec.level); hpMax = PC.bodyPool(eff, pb); def = der.defenseScore; initMod = der.initiativeMod; } catch (e) {}
+    const cur = (rec.play && typeof rec.play.hp === "number") ? rec.play.hp : hpMax;
+    return { id: uid("cb"), kind: "pc", name: rec.name || "Unnamed", emoji: "🧙", refId: rec.id, init: null, initMod: initMod, hp: cur, hpMax: hpMax, defense: def, conditions: [], attacks: [], down: cur <= 0, notes: "" };
+  }
+  function startCombat(c, encId) {
+    const roster = App().loadRoster ? App().loadRoster() : [];
+    const combatants = [];
+    (c.party || []).forEach((id) => { const rec = roster.find((r) => r.id === id); if (rec) combatants.push(pcCombatant(rec)); });
+    const enc = encId ? (c.encounters || []).find((e) => e.id === encId) : null;
+    if (enc) (enc.entries || []).forEach((e) => { const b = PC.bestiary && PC.bestiary(e.beastId); if (b) for (let i = 1; i <= e.count; i++) combatants.push(monsterCombatant(b, e.count > 1 ? " " + i : "")); });
+    c.combat = { encounterId: encId || null, name: enc ? enc.name : "Combat", round: 1, turn: 0, started: false, combatants: combatants, log: [] };
+    combatLog(c, enc ? `Combat started — ${enc.name}.` : "Combat started.");
+    tab = "combat"; save(); draw(); window.scrollTo(0, 0);
+  }
+  function endCombat(c) { if (confirm("End this combat? The tracker will be cleared.")) { delete c.combat; save(); draw(); } }
+  function sortByInit(cb) { cb.combatants.sort((a, b) => { const av = a.init == null ? -Infinity : a.init, bv = b.init == null ? -Infinity : b.init; return bv - av; }); }
+  function rollInitiative(c) {
+    const cb = c.combat;
+    cb.combatants.forEach((m) => { const r = PC.rollCheck(Number(m.initMod) || 0, "normal"); m.init = r.total; });
+    sortByInit(cb); cb.turn = 0; cb.started = true;
+    combatLog(c, "Initiative rolled. Order: " + cb.combatants.map((m) => `${m.name} (${m.init})`).join(", "));
+    combatRefresh(c);
+  }
+  function nextTurn(c) {
+    const cb = c.combat; if (!cb.combatants.length) return;
+    cb.turn = (cb.turn + 1) % cb.combatants.length;
+    if (cb.turn === 0) { cb.round++; combatLog(c, `— Round ${cb.round} —`); }
+    combatRefresh(c);
+  }
+  function combatDamage(c, id, delta) {
+    const m = c.combat.combatants.find((x) => x.id === id); if (!m) return;
+    const before = Number(m.hp) || 0;
+    m.hp = Math.max(0, Math.min(Number(m.hpMax) || 0, before + delta));
+    m.down = m.hp <= 0;
+    combatLog(c, `${m.emoji} ${m.name}: ${delta >= 0 ? "+" : ""}${m.hp - before} HP → ${m.hp}/${m.hpMax}${m.down ? " (down!)" : ""}`);
+    combatRefresh(c);
+  }
+  function toggleCond(c, id, key) {
+    const m = c.combat.combatants.find((x) => x.id === id); if (!m) return;
+    if (!Array.isArray(m.conditions)) m.conditions = [];
+    const i = m.conditions.indexOf(key);
+    if (i > -1) m.conditions.splice(i, 1); else m.conditions.push(key);
+    combatRefresh(c);
+  }
+  function rollCombatAttack(c, m, atk) {
+    const hit = PC.rollCheck(Number(atk.toHit) || 0, "normal");
+    let line = `${m.emoji} ${m.name} — ${atk.name || "attack"}: d20${PC.fmtMod(Number(atk.toHit) || 0)} = ${hit.total} to hit`;
+    if (atk.damage) { const dr = PC.rollDiceExpr(atk.damage); if (dr) line += ` · ${atk.damage} = ${dr.total} dmg`; }
+    if (atk.note) line += ` (${atk.note})`;
+    combatLog(c, line); combatRefresh(c);
+  }
+  function removeCombatant(c, id) { const i = c.combat.combatants.findIndex((x) => x.id === id); if (i < 0) return; if (i < c.combat.turn) c.combat.turn = Math.max(0, c.combat.turn - 1); c.combat.combatants.splice(i, 1); combatRefresh(c); }
+  function addCustomCombatant(c, name, hp, def, initMod) {
+    c.combat.combatants.push({ id: uid("cb"), kind: "custom", name: name || "Combatant", emoji: "⭐", refId: null, init: null, initMod: Number(initMod) || 0, hp: Number(hp) || 10, hpMax: Number(hp) || 10, defense: Number(def) || 10, conditions: [], attacks: [], down: false, notes: "" });
+    combatLog(c, `Added ${name || "a combatant"} to the fight.`); combatRefresh(c);
+  }
+
+  function combatTab(c) {
+    if (!c.combat) return combatStart(c);
+    return combatTracker(c);
+  }
+  function combatStart(c) {
+    const root = el("div");
+    const p = el("div", "panel");
+    p.appendChild(el("div", "section-label", "⚔ Combat"));
+    p.appendChild(el("p", "hint", "Run a fight — roll initiative and track HP, conditions, and attacks for the whole table. Start from an encounter, or an empty combat with just the party."));
+    if ((c.encounters || []).length) {
+      const row = el("div", "gm-award-row");
+      const sel = el("select", "gm-input");
+      sel.innerHTML = c.encounters.map((e) => `<option value="${esc(e.id)}">${esc(e.name)}</option>`).join("");
+      const btn = el("button", "btn small primary", "▶ Start from encounter");
+      btn.onclick = () => startCombat(c, sel.value);
+      row.appendChild(labeled("Encounter", sel)); row.appendChild(btn);
+      p.appendChild(row);
+    } else {
+      p.appendChild(el("div", "muted", "No encounters yet — build one on the Encounters tab, or start an empty combat below."));
+    }
+    const eb = el("button", "btn small", "Start empty combat (party only)");
+    eb.onclick = () => startCombat(c, null);
+    p.appendChild(eb);
+    root.appendChild(p);
+    return root;
+  }
+  function combatTracker(c) {
+    const cb = c.combat;
+    const root = el("div");
+
+    // Control bar
+    const ctl = el("div", "panel gm-combat-ctl");
+    ctl.appendChild(el("div", "gm-combat-title", `⚔ ${esc(cb.name)} · Round ${cb.round}`));
+    const btns = el("div", "gm-combat-btns");
+    const roll = el("button", "btn small primary", cb.started ? "↻ Re-roll initiative" : "🎲 Roll initiative");
+    roll.onclick = () => rollInitiative(c);
+    const next = el("button", "btn small", "Next turn →"); next.disabled = !cb.started || !cb.combatants.length; next.onclick = () => nextTurn(c);
+    const end = el("button", "btn ghost small danger", "End combat"); end.onclick = () => endCombat(c);
+    btns.appendChild(roll); btns.appendChild(next); btns.appendChild(end);
+    ctl.appendChild(btns);
+    root.appendChild(ctl);
+
+    // Combatant list
+    if (!cb.combatants.length) root.appendChild(el("div", "muted", "No combatants. Add some below."));
+    cb.combatants.forEach((m, idx) => root.appendChild(combatantCard(c, m, idx)));
+
+    // Add combatants
+    root.appendChild(addCombatantPanel(c));
+
+    // Log
+    const logP = el("div", "panel");
+    logP.appendChild(el("div", "section-label", "Combat log"));
+    const log = cb.log || [];
+    if (!log.length) logP.appendChild(el("div", "muted", "Rolls and HP changes will appear here."));
+    else { const list = el("div", "gm-combat-log"); log.slice().reverse().forEach((L) => list.appendChild(el("div", "gm-log-line", esc(L.text)))); logP.appendChild(list); }
+    root.appendChild(logP);
+    return root;
+  }
+  function combatantCard(c, m, idx) {
+    const cb = c.combat;
+    const active = cb.started && idx === cb.turn;
+    const card = el("div", "panel gm-cbt" + (active ? " gm-cbt-active" : "") + (m.down ? " gm-cbt-down" : ""));
+    // Header row
+    const head = el("div", "gm-cbt-head");
+    const initBox = el("div", "gm-cbt-init");
+    initBox.innerHTML = m.init != null ? `<b>${m.init}</b>` : `<span class="muted">—</span>`;
+    initBox.title = "Initiative";
+    head.appendChild(initBox);
+    head.appendChild(el("span", "gm-cbt-name", `${m.emoji} ${esc(m.name)}${active ? ' <span class="gm-cbt-turn">turn</span>' : ""}`));
+    head.appendChild(el("span", "gm-cbt-kind muted", m.kind === "pc" ? "PC" : m.kind === "npc" ? "NPC" : m.kind === "custom" ? "" : "Monster"));
+    head.appendChild(el("span", "gm-cbt-def", `🎯 ${m.defense}`));
+    const rm = el("button", "btn ghost small", "✕"); rm.title = "Remove"; rm.onclick = () => removeCombatant(c, m.id);
+    head.appendChild(rm);
+    card.appendChild(head);
+
+    // HP row
+    const max = Number(m.hpMax) || 0, hp = Number(m.hp) || 0;
+    const track = el("div", "bar-track"); const fill = el("div", "bar-fill hp"); fill.style.width = (max > 0 ? Math.min(100, hp / max * 100) : 0) + "%"; track.appendChild(fill);
+    const hpHead = el("div", "poolbar-head"); hpHead.innerHTML = `<span>HP</span><span class="poolbar-num">${hp} / ${max}${m.down ? " · down" : ""}</span>`;
+    card.appendChild(hpHead); card.appendChild(track);
+    const hpCtl = el("div", "gm-cbt-hpctl");
+    const amt = el("input", "pet-amt"); amt.type = "number"; amt.min = "1"; amt.value = "1";
+    const dmg = el("button", "btn small", "− Damage"); dmg.onclick = () => combatDamage(c, m.id, -Math.abs(parseInt(amt.value, 10) || 1));
+    const heal = el("button", "btn small", "+ Heal"); heal.onclick = () => combatDamage(c, m.id, Math.abs(parseInt(amt.value, 10) || 1));
+    hpCtl.appendChild(amt); hpCtl.appendChild(dmg); hpCtl.appendChild(heal);
+    card.appendChild(hpCtl);
+
+    // Attacks (monsters / NPCs with a stat block)
+    if ((m.attacks || []).length) {
+      const ag = el("div", "gm-cbt-atks");
+      m.attacks.forEach((a) => {
+        const b = el("button", "btn small", `⚔ ${esc(a.name || "attack")} ${PC.fmtMod(Number(a.toHit) || 0)}${a.damage ? " · " + esc(a.damage) : ""}`);
+        b.onclick = () => rollCombatAttack(c, m, a);
+        ag.appendChild(b);
+      });
+      card.appendChild(ag);
+    }
+
+    // Conditions
+    const cw = el("div", "gm-cbt-conds");
+    (m.conditions || []).forEach((k) => { const cond = PC.condition ? PC.condition(k) : null; const chip = el("button", "gm-cond on", `${cond ? cond.emoji + " " + cond.name : k}`); chip.title = "Remove"; chip.onclick = () => toggleCond(c, m.id, k); cw.appendChild(chip); });
+    const addCond = el("select", "gm-cond-add");
+    addCond.innerHTML = `<option value="">＋ condition</option>` + (PC.CONDITIONS || []).filter((cd) => (m.conditions || []).indexOf(cd.key) < 0).map((cd) => `<option value="${cd.key}">${cd.emoji} ${cd.name}</option>`).join("");
+    addCond.onchange = () => { if (addCond.value) toggleCond(c, m.id, addCond.value); };
+    cw.appendChild(addCond);
+    card.appendChild(cw);
+    return card;
+  }
+  function addCombatantPanel(c) {
+    const roster = App().loadRoster ? App().loadRoster() : [];
+    const p = el("div", "panel");
+    p.appendChild(el("div", "section-label", "Add to the fight"));
+    // Monster from bestiary
+    const mrow = el("div", "gm-award-row");
+    const msel = el("select", "gm-input");
+    msel.innerHTML = (PC.BESTIARY || []).slice().sort((a, b) => a.name.localeCompare(b.name)).map((b) => `<option value="${esc(b.id)}">${b.emoji || "👹"} ${esc(b.name)} (${esc(b.slBand)})</option>`).join("");
+    const mqty = el("input", "gm-input gm-xp-amt"); mqty.type = "number"; mqty.min = "1"; mqty.value = "1";
+    const mbtn = el("button", "btn small primary", "＋ Monster");
+    mbtn.onclick = () => { const b = PC.bestiary && PC.bestiary(msel.value); if (!b) return; const n = Math.max(1, parseInt(mqty.value, 10) || 1); const start = c.combat.combatants.filter((x) => x.refId === b.id).length; for (let i = 1; i <= n; i++) c.combat.combatants.push(monsterCombatant(b, " " + (start + i))); combatLog(c, `Added ${n}× ${b.name}.`); combatRefresh(c); };
+    mrow.appendChild(labeled("Monster", msel)); mrow.appendChild(labeled("Qty", mqty)); mrow.appendChild(mbtn);
+    p.appendChild(mrow);
+    // NPC from roster
+    if ((c.npcs || []).length) {
+      const nrow = el("div", "gm-award-row");
+      const nsel = el("select", "gm-input");
+      nsel.innerHTML = c.npcs.map((n) => `<option value="${esc(n.id)}">${esc(n.name || "Unnamed")}${n.beastId ? " (statted)" : ""}</option>`).join("");
+      const nbtn = el("button", "btn small", "＋ NPC");
+      nbtn.onclick = () => { const npc = c.npcs.find((x) => x.id === nsel.value); if (!npc) return; let cbt; const b = npc.beastId && PC.bestiary ? PC.bestiary(npc.beastId) : null; if (b) { cbt = monsterCombatant(b, "", "npc"); cbt.name = npc.name || cbt.name; } else { cbt = { id: uid("cb"), kind: "npc", name: npc.name || "NPC", emoji: "🎭", refId: npc.id, init: null, initMod: 0, hp: 10, hpMax: 10, defense: 12, conditions: [], attacks: [], down: false, notes: "" }; } c.combat.combatants.push(cbt); combatLog(c, `Added NPC ${cbt.name}.`); combatRefresh(c); };
+      nrow.appendChild(labeled("NPC", nsel)); nrow.appendChild(nbtn);
+      p.appendChild(nrow);
+    }
+    // Custom
+    const crow = el("div", "gm-award-row");
+    const cname = el("input", "gm-input"); cname.type = "text"; cname.placeholder = "Name";
+    const chp = el("input", "gm-input gm-xp-amt"); chp.type = "number"; chp.min = "1"; chp.placeholder = "HP";
+    const cdef = el("input", "gm-input gm-xp-amt"); cdef.type = "number"; cdef.placeholder = "Def";
+    const cini = el("input", "gm-input gm-xp-amt"); cini.type = "number"; cini.placeholder = "Init";
+    const cbtn = el("button", "btn small", "＋ Custom");
+    cbtn.onclick = () => { if (!cname.value.trim()) { toast("Name the combatant."); return; } addCustomCombatant(c, cname.value.trim(), chp.value, cdef.value, cini.value); };
+    crow.appendChild(labeled("Custom", cname)); crow.appendChild(labeled("HP", chp)); crow.appendChild(labeled("Def", cdef)); crow.appendChild(labeled("Init", cini)); crow.appendChild(cbtn);
+    p.appendChild(crow);
+    return p;
   }
 
   function addToParty(c, id) {
