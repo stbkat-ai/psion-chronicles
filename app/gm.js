@@ -31,10 +31,11 @@
   /* ---------- view state (kept across this section's re-renders) ---------- */
   let mount = null, campaignId = null, tab = "party", expanded = null, xpAmount = "";
   let lootSearch = "", lootCat = "All"; // Loot-tab catalog browser state
+  let encounterId = null, encSearch = "", encBiome = "All"; // Encounters-tab state
 
   function render(host) { if (host) mount = host; campaigns = load(); draw(); }
-  function openCampaign(id) { campaignId = id; tab = "party"; expanded = null; draw(); window.scrollTo(0, 0); }
-  function goHome() { campaignId = null; expanded = null; draw(); }
+  function openCampaign(id) { campaignId = id; tab = "party"; expanded = null; encounterId = null; draw(); window.scrollTo(0, 0); }
+  function goHome() { campaignId = null; expanded = null; encounterId = null; draw(); }
 
   /* ---------- shared bits ---------- */
   function labeled(label, node) { const w = el("label", "gm-field"); w.appendChild(el("span", "gm-label", esc(label))); w.appendChild(node); return w; }
@@ -120,15 +121,16 @@
 
     // Tab bar
     const tabs = el("div", "gm-tabs");
-    [["party", `Party (${(c.party || []).length})`], ["loot", "Loot"], ["overview", "Overview"], ["sessions", `Sessions (${(c.sessions || []).length})`], ["npcs", `NPCs (${(c.npcs || []).length})`]].forEach(([k, lbl]) => {
+    [["party", `Party (${(c.party || []).length})`], ["loot", "Loot"], ["encounters", `Encounters (${(c.encounters || []).length})`], ["overview", "Overview"], ["sessions", `Sessions (${(c.sessions || []).length})`], ["npcs", `NPCs (${(c.npcs || []).length})`]].forEach(([k, lbl]) => {
       const b = el("button", "gm-tab" + (tab === k ? " active" : ""), lbl);
-      b.onclick = () => { tab = k; expanded = null; draw(); };
+      b.onclick = () => { tab = k; expanded = null; encounterId = null; draw(); };
       tabs.appendChild(b);
     });
     root.appendChild(tabs);
 
     if (tab === "party") root.appendChild(partyTab(c));
     else if (tab === "loot") root.appendChild(lootTab(c));
+    else if (tab === "encounters") root.appendChild(encountersTab(c));
     else if (tab === "overview") root.appendChild(overviewTab(c));
     else if (tab === "sessions") root.appendChild(sessionsTab(c));
     else root.appendChild(npcsTab(c));
@@ -389,6 +391,153 @@
     const hist = el("div"); root.appendChild(hist);
 
     renderResults(); renderHistory();
+    return root;
+  }
+
+  /* ----- Encounter Builder ----- */
+  // First-pass, tunable difficulty: adjusted encounter XP (with a crowd multiplier) vs a party budget of
+  // 25×(Soul Level²) per character. All numbers are shown so a GM can judge for themselves.
+  function encounterDifficulty(c, entries, roster) {
+    const party = (c.party || []).map((id) => roster.find((r) => r.id === id)).filter(Boolean);
+    const budget = party.reduce((s, r) => s + 25 * Math.pow(Number(r.level) || 1, 2), 0);
+    let count = 0, totalXp = 0;
+    (entries || []).forEach((e) => { const b = PC.bestiary && PC.bestiary(e.beastId); if (b) { count += e.count; totalXp += (Number(b.xp) || 0) * e.count; } });
+    const mult = count <= 1 ? 1 : count === 2 ? 1.5 : count <= 6 ? 2 : count <= 10 ? 2.5 : 3;
+    const adj = Math.round(totalXp * mult);
+    let band = "—", ratio = 0;
+    if (count && budget > 0) { ratio = adj / budget; band = ratio < 0.5 ? "Trivial" : ratio < 1 ? "Easy" : ratio < 1.6 ? "Standard" : ratio < 2.5 ? "Hard" : "Deadly"; }
+    return { count: count, totalXp: totalXp, adj: adj, mult: mult, budget: budget, ratio: ratio, band: band, partyN: party.length };
+  }
+  function addEncounter(c, name) { if (!Array.isArray(c.encounters)) c.encounters = []; const e = { id: uid("enc"), name: name, notes: "", entries: [], createdAt: Date.now() }; c.encounters.push(e); save(); encounterId = e.id; draw(); window.scrollTo(0, 0); }
+  function removeEncounter(c, id) { const i = c.encounters.findIndex((e) => e.id === id); if (i > -1) c.encounters.splice(i, 1); encounterId = null; save(); draw(); }
+  function addCreatureToEnc(enc, beastId) { if (!Array.isArray(enc.entries)) enc.entries = []; const ex = enc.entries.find((e) => e.beastId === beastId); if (ex) ex.count++; else enc.entries.push({ beastId: beastId, count: 1 }); save(); }
+
+  function encountersTab(c) {
+    if (!Array.isArray(c.encounters)) c.encounters = [];
+    const roster = App().loadRoster ? App().loadRoster() : [];
+    const enc = encounterId ? c.encounters.find((e) => e.id === encounterId) : null;
+    if (enc) return encounterEditor(c, enc, roster);
+
+    const root = el("div");
+    const intro = el("div", "panel");
+    intro.appendChild(el("div", "section-label", "⚔ Encounters"));
+    intro.appendChild(el("p", "hint", "Build fights from the Bestiary and see how hard they'll hit this campaign's party. <i>(Difficulty is a first-pass, tunable guide — the bestiary's XP values are still placeholders.)</i>"));
+    const form = el("div", "gm-newform");
+    const nameI = textInput("", "New encounter name", () => {});
+    const add = el("button", "btn small primary", "+ Create Encounter");
+    add.onclick = () => { const n = nameI.value.trim(); if (!n) { toast("Name the encounter."); return; } addEncounter(c, n); };
+    nameI.addEventListener("keydown", (e) => { if (e.key === "Enter") add.onclick(); });
+    form.appendChild(labeled("New encounter", nameI)); form.appendChild(add);
+    intro.appendChild(form);
+    root.appendChild(intro);
+
+    if (!c.encounters.length) { root.appendChild(el("div", "muted", "No encounters yet.")); return root; }
+    const grid = el("div", "gm-camp-list");
+    c.encounters.slice().sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)).forEach((e) => {
+      const d = encounterDifficulty(c, e.entries, roster);
+      const card = el("div", "panel gm-camp-card");
+      card.appendChild(el("div", "gm-camp-name", esc(e.name)));
+      const meta = el("div", "gm-camp-meta");
+      meta.innerHTML = `<span>👹 ${d.count} creature${d.count === 1 ? "" : "s"}</span><span>✨ ${d.totalXp.toLocaleString()} XP</span>` + (d.band !== "—" ? `<span class="gm-diff gm-diff-${d.band.toLowerCase()}">${d.band}</span>` : "");
+      card.appendChild(meta);
+      card.style.cursor = "pointer"; card.onclick = () => { encounterId = e.id; draw(); window.scrollTo(0, 0); };
+      grid.appendChild(card);
+    });
+    root.appendChild(grid);
+    return root;
+  }
+
+  function encounterEditor(c, enc, roster) {
+    if (!Array.isArray(enc.entries)) enc.entries = [];
+    const root = el("div");
+    const bar = el("div", "gm-topbar");
+    const back = el("button", "btn ghost small", "← All encounters");
+    back.onclick = () => { encounterId = null; draw(); };
+    bar.appendChild(back);
+    root.appendChild(bar);
+
+    const head = el("div", "panel");
+    head.appendChild(labeled("Encounter name", textInput(enc.name, "Encounter name", (v) => { enc.name = v; save(); })));
+    head.appendChild(labeled("Notes", area(enc.notes, "Terrain, tactics, triggers…", (v) => { enc.notes = v; save(); }, 3)));
+    root.appendChild(head);
+
+    const diffPanel = el("div", "panel"); root.appendChild(diffPanel);
+    const entriesPanel = el("div", "panel"); root.appendChild(entriesPanel);
+
+    const browse = el("div", "panel");
+    browse.appendChild(el("div", "section-label", "Add creatures"));
+    const srow = el("div", "gm-award-row");
+    const search = el("input", "gm-input"); search.type = "search"; search.placeholder = "Search the Bestiary…"; search.value = encSearch;
+    const biomeSel = el("select", "gm-input");
+    const biomes = ["All"].concat((PC.BIOMES || []).map((b) => b.name));
+    biomeSel.innerHTML = biomes.map((n) => `<option value="${esc(n)}" ${encBiome === n ? "selected" : ""}>${esc(n)}</option>`).join("");
+    srow.appendChild(labeled("Search", search)); srow.appendChild(labeled("Biome", biomeSel));
+    browse.appendChild(srow);
+    const results = el("div", "gm-loot-results"); browse.appendChild(results);
+    root.appendChild(browse);
+
+    function renderDiff() {
+      diffPanel.innerHTML = "";
+      const d = encounterDifficulty(c, enc.entries, roster);
+      diffPanel.appendChild(el("div", "section-label", "Difficulty"));
+      if (!d.count) { diffPanel.appendChild(el("div", "muted", "Add creatures below to gauge difficulty.")); return; }
+      const verdict = d.band !== "—" ? `<span class="gm-diff gm-diff-${d.band.toLowerCase()}">${d.band}</span>` : `<span class="muted">add a party to gauge</span>`;
+      const g = el("div", "gm-diff-grid");
+      g.innerHTML = `<div><span class="muted">Verdict</span>${verdict}</div>` +
+        `<div><span class="muted">Creatures</span><b>${d.count}</b></div>` +
+        `<div><span class="muted">Total XP</span><b>${d.totalXp.toLocaleString()}</b></div>` +
+        `<div><span class="muted">Adjusted (×${d.mult})</span><b>${d.adj.toLocaleString()}</b></div>` +
+        `<div><span class="muted">Party budget</span><b>${d.budget.toLocaleString()}</b></div>`;
+      diffPanel.appendChild(g);
+      diffPanel.appendChild(el("p", "hint", `Weighed against ${d.partyN} party character${d.partyN === 1 ? "" : "s"}. Rough guide: adjusted encounter XP vs a party budget of 25×(Soul Level²) per character, with a crowd multiplier for numbers. Tune once you've playtested.`));
+    }
+    function renderEntries() {
+      entriesPanel.innerHTML = "";
+      const n = enc.entries.reduce((s, e) => s + e.count, 0);
+      entriesPanel.appendChild(el("div", "section-label", `Creatures (${n})`));
+      if (!enc.entries.length) { entriesPanel.appendChild(el("div", "muted", "None yet — add from the Bestiary below.")); return; }
+      enc.entries.forEach((e, i) => {
+        const b = PC.bestiary && PC.bestiary(e.beastId);
+        const row = el("div", "gm-enc-row");
+        const nm = b ? `${b.emoji || "🐾"} ${esc(b.name)}` : "Unknown creature";
+        const sub = b ? `SL ${esc(b.slBand)} · ${esc(b.role)} · ${(Number(b.xp) || 0).toLocaleString()} XP ea` : "";
+        row.innerHTML = `<span class="gm-enc-name">${nm}<span class="gm-enc-sub muted">${sub}</span></span>`;
+        const ctr = el("div", "gm-enc-ctr");
+        const dec = el("button", "btn small ghost", "−"); dec.onclick = () => { e.count--; if (e.count <= 0) enc.entries.splice(i, 1); save(); renderEntries(); renderDiff(); };
+        const cnt = el("span", "gm-enc-count", "×" + e.count);
+        const inc = el("button", "btn small ghost", "+"); inc.onclick = () => { e.count++; save(); renderEntries(); renderDiff(); };
+        ctr.appendChild(dec); ctr.appendChild(cnt); ctr.appendChild(inc);
+        row.appendChild(ctr);
+        entriesPanel.appendChild(row);
+      });
+    }
+    function renderResults() {
+      results.innerHTML = "";
+      const q = encSearch.trim().toLowerCase();
+      let list = (PC.BESTIARY || []).filter((b) => { if (encBiome === "All") return true; const bi = (PC.BIOMES || []).find((x) => x.id === b.biome); return bi && bi.name === encBiome; });
+      if (q) list = list.filter((b) => (`${b.name} ${b.origin} ${b.role} ${b.slBand}`).toLowerCase().indexOf(q) > -1);
+      list = list.slice().sort((a, b) => a.name.localeCompare(b.name));
+      results.appendChild(el("div", "gm-loot-count muted", `${list.length} creature${list.length === 1 ? "" : "s"}`));
+      list.slice(0, 80).forEach((b) => {
+        const row = el("div", "gm-loot-row");
+        row.innerHTML = `<span class="gm-loot-name">${b.emoji || "🐾"} ${esc(b.name)}</span><span class="gm-loot-cat muted">SL ${esc(b.slBand)} · ${esc(b.role)} · ${(Number(b.xp) || 0).toLocaleString()} XP</span>`;
+        const add = el("button", "btn small primary", "＋ Add");
+        add.onclick = () => { addCreatureToEnc(enc, b.id); renderEntries(); renderDiff(); };
+        row.appendChild(add); results.appendChild(row);
+      });
+      if (list.length > 80) results.appendChild(el("div", "muted", "Showing the first 80 — refine your search."));
+    }
+    search.oninput = () => { encSearch = search.value; renderResults(); };
+    biomeSel.onchange = () => { encBiome = biomeSel.value; renderResults(); };
+
+    const foot = el("div", "gm-overview-foot");
+    foot.appendChild(el("span", "muted", ""));
+    const del = el("button", "btn ghost small danger", "Delete encounter");
+    del.onclick = () => { if (confirm(`Delete “${enc.name}”?`)) removeEncounter(c, enc.id); };
+    foot.appendChild(del);
+    root.appendChild(foot);
+
+    renderDiff(); renderEntries(); renderResults();
     return root;
   }
 

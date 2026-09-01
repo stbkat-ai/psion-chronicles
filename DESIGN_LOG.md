@@ -2443,6 +2443,28 @@ entries; **zero console errors**. Docs: README + CLAUDE.md (Loot tab / catalog�
 
 ---
 
+### 100. GM — the Encounter Builder
+**Decision.** Build encounters from the Bestiary and gauge how hard they'll hit the party — the next GM tool.
+**How.** New **Encounters** tab on the campaign (`campaign.encounters[]`, each `{name, notes, entries:[{beastId,
+count}]}`). An encounter list (name · creature count · total XP · difficulty band) opens an **editor**: name +
+notes, a **Bestiary browser** (search + biome filter, ＋ Add), an **entries list** with −/× count/＋ steppers, and
+a **live difficulty panel** — all re-rendering in place so the search box keeps focus.
+**Difficulty model (first-pass, tunable, transparent).** Adjusted encounter XP vs a party budget:
+- Encounter XP = Σ(`creature.xp` × count); **crowd multiplier** ×1 / ×1.5 / ×2 / ×2.5 / ×3 by monster count
+  (1 / 2 / 3–6 / 7–10 / 11+), D&D-style.
+- **Party budget** = Σ over the party of `25 × (Soul Level²)` per character.
+- **ratio = adjusted / budget** → Trivial (<0.5) · Easy (<1) · Standard (<1.6) · Hard (<2.5) · Deadly (≥2.5).
+- Every number is shown, and a hint spells out the formula — deliberately a **guide, not gospel**, since the
+  bestiary XP values are themselves placeholders. Easy to retune once Luke playtests.
+**Choices.** Scoped to the Bestiary (NPC↔encounter wiring and a live combat tracker are later). Kept the readout
+honest by surfacing total XP, the multiplier, adjusted XP, and the party budget rather than just a verdict.
+**Verified** (Playwright): 50-creature browser; search "wolf" → 2 hits; built Gray Wolf ×2 + Wendigo ×1 → Total
+2,500 XP, ×2 crowd → 5,000 adjusted vs an 800 budget (two SL-4 characters) → **Deadly**; entries and difficulty
+persisted; the list card shows the band; **zero console errors**. Docs: README + CLAUDE.md (Encounters tab).
+Cache-buster **v=128**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

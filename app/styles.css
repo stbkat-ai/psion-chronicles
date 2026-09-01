@@ -1127,6 +1127,25 @@ body.screen-home .wrap { max-width: none; margin: 0; padding: 0; }
 .gm-loot-cat { flex: 0 0 auto; font-size: .74rem; }
 .gm-loot-row .btn { flex: 0 0 auto; }
 
+/* GM — encounter builder */
+.gm-diff { font-size: .68rem; text-transform: uppercase; letter-spacing: .5px; font-weight: 700;
+  padding: 1px 8px; border-radius: 10px; border: 1px solid transparent; }
+.gm-diff-trivial { color: #9aa4b2; background: rgba(150, 160, 175, .14); border-color: rgba(150, 160, 175, .4); }
+.gm-diff-easy { color: #9be6b0; background: rgba(70, 196, 110, .14); border-color: rgba(70, 196, 110, .4); }
+.gm-diff-standard { color: #8ecbff; background: rgba(70, 150, 220, .14); border-color: rgba(70, 150, 220, .4); }
+.gm-diff-hard { color: #ffd58a; background: rgba(212, 160, 60, .14); border-color: rgba(212, 160, 60, .4); }
+.gm-diff-deadly { color: #ff9b9b; background: rgba(220, 80, 80, .16); border-color: rgba(220, 80, 80, .45); }
+.gm-diff-grid { display: flex; flex-wrap: wrap; gap: 16px; margin: 6px 0 8px; }
+.gm-diff-grid > div { display: flex; flex-direction: column; gap: 3px; }
+.gm-diff-grid > div > span.muted { font-size: .66rem; text-transform: uppercase; letter-spacing: .5px; }
+.gm-diff-grid > div > b { font-size: 1.05rem; }
+.gm-enc-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 7px;
+  background: var(--panel-2); border: 1px solid var(--border); margin-bottom: 5px; }
+.gm-enc-name { flex: 1 1 auto; display: flex; flex-direction: column; font-weight: 600; }
+.gm-enc-sub { font-weight: 400; font-size: .74rem; }
+.gm-enc-ctr { flex: 0 0 auto; display: flex; align-items: center; gap: 6px; }
+.gm-enc-count { min-width: 32px; text-align: center; font-weight: 700; }
+
 /* Bestiary → companions drop-in (Codex creature detail). */
 .codex-add-pet { margin-top: 10px; }
 .codex-pet-picker { margin-top: 8px; padding: 8px 10px; border-radius: 8px; background: var(--panel-2); border: 1px solid var(--border); }
