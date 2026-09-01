@@ -2516,6 +2516,34 @@ cleared it**; the PC card showed the "live" tag; **zero console errors**. Docs: 
 
 ---
 
+### 103. Player↔GM glue: campaign badge, roll feed, and manual dice everywhere
+**Decision (Luke).** Three connective asks: (1) players should see they're **active in a campaign**; (2) their
+**dice rolls should show on the GM screen**; (3) **manual dice** for everyone who prefers physical dice — on
+*every* roll in the app. And the player and GM screens should work together seamlessly.
+**Honest scope on (2).** Truly seamless *across two devices* needs the deferred online backend. Built the
+local-first version now: on one/shared device it works immediately, and the same feed becomes the live cross-device
+feed once Supabase lands.
+**How.**
+- **Manual dice (universal).** All rolls funnel through `PC.rollCheck` / `PC.rollDiceExpr`, so a central hook there
+  (`PC.manualDice` + a synchronous `PC.manualProvider`) covers the whole app in one place. app.js registers the
+  provider (a `prompt()` — synchronous by necessity, since rolls return inline: "enter your d20", "enter your 2d6
+  total"; blank/cancel falls back to a random roll) and persists the preference in a new `psion_chronicles_settings`
+  store. Toggle in ⚙ Account, on the play sheet (by the roll log), and in GM combat — all one device-wide flag.
+  Also routed play.js `rollRaw` (the quick dice roller, the one direct `PC.rollDie` caller) through `rollDiceExpr`
+  so it obeys manual mode too.
+- **"In campaign" badge.** gm.js exposes `campaignsForCharacter(id)`; the play-sheet header shows 🎲 In campaign: … .
+- **Player rolls on the GM screen.** play.js `announce()` mirrors every roll into each of the character's campaigns'
+  `rollFeed` via a new `PsionGM.postRoll(id, text, total)`; the GM Combat screen renders a **Player rolls** panel.
+**Choices.** Manual mode intercepts at the two public roll helpers (not `PC.rollDie`) so each *logical* roll is one
+prompt (roll your real dice, type the total) — the natural physical-dice flow. rules.js stays DOM-free: it only
+calls a provider the app installs. The feed lives on the campaign, capped at 100.
+**Verified** (Playwright): play sheet shows the campaign badge + a manual toggle; a random d20 landed in the
+campaign feed (`Roll 1d20 = [10]`); flipping manual on made the next d20 prompt → logged `Roll 1d20 = 15`; the GM
+Combat **Player rolls** panel showed "Rell · Bite: d20+5 = 18"; GM combat manual toggle present; **zero console
+errors**. Docs: README + CLAUDE.md (rules.js roll hook; gm.js feed/badge helpers). Cache-buster **v=131**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

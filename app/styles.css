@@ -1174,6 +1174,14 @@ body.screen-home .wrap { max-width: none; margin: 0; padding: 0; }
   border: 1px solid var(--ok, #46c46e); border-radius: 6px; padding: 0 4px; margin-left: 4px; }
 .gm-combat-log { display: flex; flex-direction: column; gap: 3px; max-height: 260px; overflow-y: auto; }
 .gm-log-line { font-size: .82rem; color: var(--text-dim); padding: 3px 6px; border-bottom: 1px solid var(--border); }
+.gm-log-line b { color: var(--text); }
+
+/* Manual-dice toggle + campaign membership badge */
+.hm-toggle { display: flex; align-items: center; gap: 8px; font-size: .88rem; cursor: pointer; margin: 4px 0; }
+.hm-toggle input { width: auto; }
+.manual-dice-row { margin: 8px 0; }
+.btn.manual-on, .btn.gm-manual-on { color: var(--gold); border-color: var(--gold); }
+.phead-camp { margin-top: 4px; font-size: .8rem; color: var(--psi-bright); }
 
 /* Bestiary → companions drop-in (Codex creature detail). */
 .codex-add-pet { margin-top: 10px; }

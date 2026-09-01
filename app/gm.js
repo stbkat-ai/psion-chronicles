@@ -692,7 +692,11 @@
     roll.onclick = () => rollInitiative(c);
     const next = el("button", "btn small", "Next turn →"); next.disabled = !cb.started || !cb.combatants.length; next.onclick = () => nextTurn(c);
     const end = el("button", "btn ghost small danger", "End combat"); end.onclick = () => endCombat(c);
-    btns.appendChild(roll); btns.appendChild(next); btns.appendChild(end);
+    const manualOn = App().isManualDice ? App().isManualDice() : false;
+    const manual = el("button", "btn ghost small" + (manualOn ? " gm-manual-on" : ""), manualOn ? "🎲 Manual dice: on" : "🎲 Manual dice: off");
+    manual.title = "Toggle entering dice results by hand (applies everywhere)";
+    manual.onclick = () => { if (App().setManualDice) App().setManualDice(!manualOn); draw(); };
+    btns.appendChild(roll); btns.appendChild(next); btns.appendChild(manual); btns.appendChild(end);
     ctl.appendChild(btns);
     root.appendChild(ctl);
 
@@ -711,6 +715,19 @@
     if (!log.length) logP.appendChild(el("div", "muted", "Rolls and HP changes will appear here."));
     else { const list = el("div", "gm-combat-log"); log.slice().reverse().forEach((L) => list.appendChild(el("div", "gm-log-line", esc(L.text)))); logP.appendChild(list); }
     root.appendChild(logP);
+
+    // Player rolls piped in from the party's play sheets (this device; cross-device arrives with online play).
+    const feedP = el("div", "panel");
+    feedP.appendChild(el("div", "section-label", "🎲 Player rolls"));
+    const feed = (c.rollFeed || []).slice().reverse().slice(0, 30);
+    if (!feed.length) feedP.appendChild(el("div", "muted", "Rolls your players make on their own sheets will show up here."));
+    else {
+      const roster = App().loadRoster ? App().loadRoster() : [];
+      const list = el("div", "gm-combat-log");
+      feed.forEach((f) => { const rec = roster.find((r) => r.id === f.who); const who = rec ? (rec.name || "Player") : "Player"; list.appendChild(el("div", "gm-log-line", `<b>${esc(who)}</b> · ${esc(f.text)}`)); });
+      feedP.appendChild(list);
+    }
+    root.appendChild(feedP);
     return root;
   }
   function combatantCard(c, m, idx, roster) {
@@ -948,5 +965,23 @@
   }
   function removeNpc(c, id) { const i = c.npcs.findIndex((n) => n.id === id); if (i < 0) return; c.npcs.splice(i, 1); if (expanded === id) expanded = null; save(); draw(); }
 
-  window.PsionGM = { render: render };
+  // Campaigns on this device whose party includes a given character — so the play sheet can show membership.
+  function campaignsForCharacter(charId) {
+    return load().filter((c) => (c.party || []).indexOf(charId) > -1).map((c) => ({ id: c.id, name: c.name }));
+  }
+  // Post a player's roll into the shared table feed of every campaign they're in, so the GM screen can see it.
+  // (On one device this is immediate; true cross-device delivery arrives with the online/backend phase.)
+  function postRoll(charId, text, total) {
+    const list = load(); let changed = false;
+    list.forEach((c) => {
+      if ((c.party || []).indexOf(charId) < 0) return;
+      if (!Array.isArray(c.rollFeed)) c.rollFeed = [];
+      c.rollFeed.push({ who: charId, text: String(text || ""), total: total, t: Date.now() });
+      if (c.rollFeed.length > 100) c.rollFeed = c.rollFeed.slice(-100);
+      changed = true;
+    });
+    if (changed) { campaigns = list; try { localStorage.setItem(STORE_KEY, JSON.stringify(list)); } catch (e) {} }
+  }
+
+  window.PsionGM = { render: render, campaignsForCharacter: campaignsForCharacter, postRoll: postRoll };
 })();

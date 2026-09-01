@@ -92,6 +92,33 @@
   function loadSession() { try { return JSON.parse(localStorage.getItem(SESSION_KEY)) || {}; } catch (e) { return {}; } }
   function saveSession(s) { try { localStorage.setItem(SESSION_KEY, JSON.stringify(s)); } catch (e) {} }
 
+  /* ---------- settings (device-wide) ---------- */
+  const SETTINGS_KEY = "psion_chronicles_settings";
+  function loadSettings() { try { return JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {}; } catch (e) { return {}; } }
+  function saveSettings(s) { try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); } catch (e) {} }
+  // Manual dice: physical-dice tables enter results by hand. Wired centrally in rules.js (PC.manualProvider),
+  // so one switch governs every roll in the app. Synchronous by necessity (rolls return inline) → uses prompt().
+  function applyManualDice() {
+    const on = !!loadSettings().manualDice;
+    PC.manualDice = on;
+    PC.manualProvider = function (spec) {
+      let msg;
+      if (spec && spec.kind === "d20") {
+        const modTxt = spec.mod ? " (before " + PC.fmtMod(spec.mod) + " modifier)" : "";
+        const modeTxt = spec.mode === "adv" ? " [advantage]" : spec.mode === "dis" ? " [disadvantage]" : "";
+        msg = "🎲 Manual roll" + modeTxt + " — enter your d20 result 1–20" + modTxt + ":";
+      } else if (spec && spec.kind === "dice") {
+        msg = "🎲 Manual roll — enter your " + spec.expr + " total:";
+      } else { msg = "🎲 Manual roll — enter the result:"; }
+      const raw = window.prompt(msg, "");
+      if (raw == null || raw.trim() === "") return null; // cancelled/blank → fall back to a random roll
+      const v = parseInt(raw, 10);
+      return isFinite(v) ? v : null;
+    };
+  }
+  function setManualDice(on) { const s = loadSettings(); s.manualDice = !!on; saveSettings(s); applyManualDice(); }
+  function isManualDice() { return !!loadSettings().manualDice; }
+
   function newState() {
     return {
       id: "pc_" + Date.now().toString(36),
@@ -372,6 +399,12 @@
     body.appendChild(name);
     body.appendChild(el("div", "hm-section-label", "Status"));
     body.appendChild(el("div", "hm-note", session.loggedIn ? (session.guest ? "Signed in as a guest (local only)." : "Signed in locally.") : "Not signed in."));
+    body.appendChild(el("div", "hm-section-label", "Dice"));
+    const dice = el("label", "hm-toggle");
+    const cbx = el("input"); cbx.type = "checkbox"; cbx.checked = isManualDice();
+    cbx.onchange = () => { setManualDice(cbx.checked); toast(cbx.checked ? "Manual dice on — enter every roll by hand." : "Manual dice off — the app rolls."); };
+    dice.appendChild(cbx); dice.appendChild(el("span", null, "Manual dice — enter every roll by hand (physical dice)"));
+    body.appendChild(dice);
     body.appendChild(el("div", "hm-section-label", "Account & sync"));
     body.appendChild(el("div", "hm-empty", "Profile, cloud save and cross-device sync arrive with the online service."));
     body.appendChild(el("div", "hm-soon", "🔒 Coming with the online service"));
@@ -1755,6 +1788,9 @@
     openLevelUp: function (id) { playId = null; state = null; levelUpId = id; levelUpKinTab = null; render(); },
     // Open a character's live play sheet by id (used by the GM section's party view).
     openPlay: function (id) { screen = "player"; playId = id; levelUpId = null; state = null; homeMenu = null; render(); },
+    // Manual-dice preference (device-wide), shared by the play sheet and GM combat toggles.
+    isManualDice: isManualDice,
+    setManualDice: setManualDice,
     render: render,
     el: el,
     // Description schema (shared with play.js so the creator + play tab stay in sync).
@@ -1765,6 +1801,7 @@
 
   /* ---------- boot ---------- */
   function boot() {
+    applyManualDice(); // restore the device's manual-dice preference and register the roll provider
     $("#new-btn").onclick = () => { screen = "player"; playId = null; levelUpId = null; startCreator(); };
     $("#home-btn").onclick = () => { screen = "player"; playId = null; levelUpId = null; state = null; render(); };
     // The header wordmark is a "back to Home" affordance everywhere outside Home itself.

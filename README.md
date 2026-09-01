@@ -41,8 +41,9 @@ The app opens on a **full-screen Home** — the launcher for the whole app. From
   note-only loot for coin and story items), an **Encounter Builder** (assemble fights from the Bestiary and see a
   live difficulty readout — Trivial → Deadly — weighed against your party's Soul Levels), a **Combat tracker** (run
   the fight: party + monsters/NPCs, rolled initiative order, HP and conditions for every combatant, and tap-to-roll
-  monster attacks, with a combat log — and a **player character's HP and conditions sync live to their own sheet**,
-  using the same model as the play-sheet Combat tab), a premise and freeform GM notes, a dated **session log** (recaps so you can
+  monster attacks, with a combat log — a **player character's HP and conditions sync live to their own sheet**
+  using the same model as the play-sheet Combat tab, and a **Player rolls** feed shows the dice your players roll
+  on their own sheets), a premise and freeform GM notes, a dated **session log** (recaps so you can
   pick the thread back up), and an **NPC roster** (name, role, location, disposition, notes — with an optional link
   to a **Bestiary** creature for a stat block). All saved on your device. *(Inviting players to bring their own
   characters over the network is a later online-play phase; for now the party is drawn from this device.)*
@@ -65,7 +66,12 @@ The app opens on a **full-screen Home** — the launcher for the whole app. From
   those four (Lycan, Vampire, Strigoi) are **civilized races**, not wild monsters; the Strigoi is famously rare
   (a few hundred in all the world), while vampires are common. The roster keeps growing.
 - **🧙 Player** — your characters: the creator, roster, level-up and live play sheet. **This is fully built** —
-  everything described below lives here.
+  everything described below lives here. The play sheet also shows an **"In campaign"** badge when the character
+  is in a GM's campaign party.
+
+**🎲 Manual dice (everywhere).** For tables that prefer physical dice, flip **Manual dice** on (⚙ Account, or the
+toggle on the play sheet / GM combat) and *every* roll in the app — attacks, skills, initiative, combat, damage —
+asks you to type your result instead of rolling. It's a device-wide setting.
 
 Home also has a **👥 Social** icon (top-left) and a **⚙ Account** icon (top-right), plus a centered **Sign-in**
 card. These are UI scaffolding today — real accounts, friends, messaging and cloud sync arrive with the online

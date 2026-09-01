@@ -126,11 +126,24 @@ PC.chakraEffect = function (hits) {
   }
 };
 
+/* Manual dice: when PC.manualDice is on and a provider is registered (by the app), every roll asks the
+   player/GM for the result instead of using the RNG — for tables that prefer physical dice. The provider is
+   synchronous (returns a number, or null to fall back to a random roll) and gets a spec describing the roll.
+   Wiring both public roll helpers here covers every roll in the app, since everything funnels through them. */
+PC.manualDice = false;
+PC.manualProvider = null; // set by the app: (spec) => number | null
+function _manualValue(spec) {
+  if (!PC.manualDice || typeof PC.manualProvider !== "function") return null;
+  try { const v = PC.manualProvider(spec); return (typeof v === "number" && isFinite(v)) ? v : null; } catch (e) { return null; }
+}
+
 /* Roll a dice expression like "2d6" → {rolls:[..], total, n, sides}. */
 PC.rollDiceExpr = function (expr) {
   const m = /^\s*(\d+)\s*d\s*(\d+)\s*$/i.exec(expr || "");
   if (!m) return null;
   const n = +m[1], sides = +m[2], rolls = [];
+  const manual = _manualValue({ kind: "dice", expr: (n + "d" + sides), n: n, sides: sides });
+  if (manual != null) { const t = Math.max(0, Math.round(manual)); return { rolls: [t], total: t, n, sides, manual: true }; }
   let total = 0;
   for (let i = 0; i < n; i++) { const r = PC.rollDie(sides); rolls.push(r); total += r; }
   return { rolls, total, n, sides };
@@ -139,6 +152,8 @@ PC.rollDiceExpr = function (expr) {
 /* Roll a d20 check with a modifier and optional advantage/disadvantage.
    mode: "normal" | "adv" | "dis". Returns {d20s:[..], picked, mod, total, mode}. */
 PC.rollCheck = function (mod, mode) {
+  const manual = _manualValue({ kind: "d20", mod: mod || 0, mode: mode || "normal" });
+  if (manual != null) { const f = Math.max(1, Math.min(20, Math.round(manual))); return { d20s: [f], picked: f, mod: mod || 0, total: f + (mod || 0), mode: mode || "normal", manual: true }; }
   const a = PC.rollDie(20), b = PC.rollDie(20);
   let picked, d20s;
   if (mode === "adv") { picked = Math.max(a, b); d20s = [a, b]; }

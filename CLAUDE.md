@@ -49,7 +49,9 @@ in the browser's `localStorage` (key `psion_chronicles_characters`), so saved da
   its parts' grades** (`PC.qualityFromGrades`). `PC.itemRecipe()` / `PC.itemSalvageYield()` / `PC.componentRecipe()` flow through
   components; `null` recipe = Legendary/raw/currency.
 - `rules.js` — pure calculation engine (modifiers, pools, derived stats, chakra effects, proficiency,
-  kinetic tier-completion proficiency/expertise). No DOM.
+  kinetic tier-completion proficiency/expertise). No DOM. **All rolls funnel through `PC.rollCheck` /
+  `PC.rollDiceExpr`**, which honor a **manual-dice** hook (`PC.manualDice` + `PC.manualProvider`, set by app.js) —
+  one switch makes every roll in the app hand-entered, for physical-dice tables.
 - `app.js` — `window.PsionApp`: the app shell (Home screen + three-section router: Player / GM / Codex),
   character creator flow, roster, level-up screen.
 - `codex.js` — `window.PsionCodex`: the **Codex** section (searchable reference). **Pure UI over `window.PC`** —
@@ -69,9 +71,12 @@ in the browser's `localStorage` (key `psion_chronicles_characters`), so saved da
   (`PC.CONDITIONS`, as `{key,turns}` with end-of-turn ticking), tap-to-roll monster/NPC **attacks**, and a combat
   log. **PC combatants are live proxies over their `rec.play`** — HP and conditions read/write straight through to
   the character (via `PsionApp.saveRoster`), so combat changes show on the player's own sheet; monsters keep
-  tracker-local HP/conditions. Note: gm.js loads **before** app.js,
-  so it resolves `window.PsionApp` lazily, never at load.
-  Networked/shared player-join (online play) is the next phase.
+  tracker-local HP/conditions. gm.js also exposes `campaignsForCharacter(id)` (so the play sheet can show an
+  "in campaign" badge) and `postRoll(id, text, total)` (the play sheet mirrors every roll into each of the
+  character's campaigns' `rollFeed`, shown on the GM Combat screen — a **Player rolls** panel). Note: gm.js loads
+  **before** app.js, so it resolves `window.PsionApp` lazily, never at load.
+  Networked/shared player-join (online play) is the next phase — it's what makes the player↔GM feed live across
+  devices; on one device it works today.
 - `play.js` — `window.PsionPlay`: the live play sheet. Tabs: **Sheet · Combat · Limbs · Chakras · Kinetics ·
   Skills · Traits · Description · Inventory · Crafting · Pets · Otherkin**.
 - `styles.css` — the "Post-Veil" dark theme (CSS variables: `--psi`, `--gold`, `--hp`, `--kp`,

@@ -533,7 +533,11 @@
   function logLine(text) { play.log.unshift({ t: text, turn: play.turn }); play.log = play.log.slice(0, 40); }
 
   // Log a roll AND flash a prominent on-screen result banner so users don't hunt in the log.
-  function announce(total, text) { logLine(text); flashRoll(total, text); }
+  function announce(total, text) {
+    logLine(text); flashRoll(total, text);
+    // Mirror the roll into the shared table feed of any campaign this character is in (so it shows on the GM screen).
+    if (window.PsionGM && window.PsionGM.postRoll) { try { window.PsionGM.postRoll(rec.id, text, total); } catch (e) {} }
+  }
   function flashRoll(total, text) {
     let pop = document.querySelector(".roll-popup");
     if (!pop) {
@@ -1344,9 +1348,10 @@
   }
 
   function rollRaw(sides, count) {
-    const n = count || 1; const rolls = []; let total = 0;
-    for (let i = 0; i < n; i++) { const x = PC.rollDie(sides); rolls.push(x); total += x; }
-    announce(total, `Roll ${n}d${sides} = [${rolls.join(",")}]${n > 1 ? " = " + total : ""}`);
+    const n = count || 1;
+    const r = PC.rollDiceExpr(n + "d" + sides) || { rolls: [], total: 0 };
+    const detail = r.manual ? String(r.total) : `[${r.rolls.join(",")}]${n > 1 ? " = " + r.total : ""}`;
+    announce(r.total, `Roll ${n}d${sides} = ${detail}`);
     save(); refresh();
   }
 
@@ -1402,6 +1407,13 @@
     const title = el("div", "phead-title");
     title.innerHTML = `<h2 style="margin:0">${rec.name || "Unnamed"}</h2>
       <div style="color:var(--text-dim);font-size:.86rem">${rec.background} · Soul Level ${rec.level} · Turn ${play.turn}</div>`;
+    // "Active in a campaign" — any campaign on this device whose party includes this character.
+    try {
+      if (window.PsionGM && window.PsionGM.campaignsForCharacter) {
+        const camps = window.PsionGM.campaignsForCharacter(rec.id);
+        if (camps.length) { const cb = el("div", "phead-camp"); cb.textContent = "🎲 In campaign: " + camps.map((c) => c.name).join(", "); title.appendChild(cb); }
+      }
+    } catch (e) {}
     const endTurnBtn = el("button", "btn small", `⏭ End Turn${activeUpkeep() ? " (−" + activeUpkeep() + " KP)" : ""}`);
     endTurnBtn.onclick = endTurn;
     head.appendChild(title); head.appendChild(endTurnBtn);
@@ -1717,6 +1729,16 @@
       drow.appendChild(b);
     });
     dice.appendChild(drow);
+    // Manual-dice toggle (device-wide) — for tables using physical dice; enter every roll by hand.
+    if (App.isManualDice) {
+      const md = App.isManualDice();
+      const mrow = el("div", "manual-dice-row");
+      const mbtn = el("button", "btn ghost small" + (md ? " manual-on" : ""), md ? "🎲 Manual dice: ON" : "🎲 Manual dice: off");
+      mbtn.title = "Enter every roll by hand instead of the app rolling (applies everywhere)";
+      mbtn.onclick = () => { App.setManualDice(!md); refresh(); };
+      mrow.appendChild(mbtn);
+      dice.appendChild(mrow);
+    }
     dice.appendChild(el("div", "section-label", "Log"));
     dice.appendChild(logElement());
     const clear = el("button", "btn ghost small", "Clear log");
