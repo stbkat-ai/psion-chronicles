@@ -2491,6 +2491,31 @@ console errors**. Docs: README + CLAUDE.md (Combat tab). Cache-buster **v=129**.
 
 ---
 
+### 102. GM combat — PC HP/conditions live-sync, same model as the play sheet
+**Decision (Luke).** Two corrections to the combat tracker: (1) a player character's HP must **reflect on their
+live sheet**, and (2) combat must **run identical to the player's Combat tab**.
+**How.** Reworked PC combatants into **live proxies over `rec.play`** (the very object play.js's Combat tab uses),
+rather than tracker-local copies:
+- **HP** — a PC combatant no longer stores its own hp; it reads/writes `rec.play.hp` (max from `PC.derive` +
+  `PC.bodyPool`), persisting through `PsionApp.saveRoster`. Damage/heal in the tracker now shows on the player's
+  sheet, and vice-versa. Monsters/NPCs/custom keep tracker-local HP.
+- **Conditions** — unified to the play sheet's exact **`{key, turns}`** model for *every* combatant (was a bare
+  key list). A PC's conditions read/write `rec.play.conditions`; the turns badge cycles ∞→1→2… (`cycleCondTurns`,
+  mirroring play.js `adjustConditionTurns`), and **Next turn ticks the ending combatant's timed conditions** and
+  expires them at 0 (mirroring play.js `tickConditions` at End Turn).
+- A `combatantView(m, roster)` helper resolves live HP/defense/initiative/conditions (PCs through their record),
+  `combatantView`/`condArrayOf`/`pcDerived`/`ensureRecPlay` keeping the GM side compatible with play.js's `rec.play`
+  shape without clobbering a real session. PC cards show a small **live** tag on HP.
+**Choices.** Left action-economy and weapon/technique attacks to the player's own sheet (the GM taps rolls for the
+monsters); "identical" here means the **shared** systems — HP and conditions — are literally the same data/model
+and stay in sync. `endCombat` no longer needed changes; monster conditions simply start `[]` of `{key,turns}`.
+**Verified** (Playwright): damaging a PC in combat wrote `rec.play.hp` 40→28; a condition landed on
+`rec.play.conditions` as `{key:"bleeding",turns:null}`; the turns badge cycled to 1; **Next turn ticked it to 0 and
+cleared it**; the PC card showed the "live" tag; **zero console errors**. Docs: README + CLAUDE.md. Cache-buster
+**v=130**.
+
+---
+
 ## Deferred / future ideas
 - **Networked play (the destination)** — shared characters, GM/player campaigns, and in-app chat (text + voice,
   private + group). A big backend effort (accounts, storage, real-time). Not being built yet — the current focus is

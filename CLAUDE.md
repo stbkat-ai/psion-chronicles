@@ -66,7 +66,10 @@ in the browser's `localStorage` (key `psion_chronicles_characters`), so saved da
   live, tunable **difficulty** readout weighed against the party's Soul Levels, and a **Combat** tracker
   (`campaign.combat`, one active per campaign) that runs a fight — party + encounter monsters/NPCs/custom
   combatants, **rolled initiative** order, round/turn advance, per-combatant **HP** and **conditions**
-  (`PC.CONDITIONS`), tap-to-roll monster/NPC **attacks**, and a combat log. Note: gm.js loads **before** app.js,
+  (`PC.CONDITIONS`, as `{key,turns}` with end-of-turn ticking), tap-to-roll monster/NPC **attacks**, and a combat
+  log. **PC combatants are live proxies over their `rec.play`** — HP and conditions read/write straight through to
+  the character (via `PsionApp.saveRoster`), so combat changes show on the player's own sheet; monsters keep
+  tracker-local HP/conditions. Note: gm.js loads **before** app.js,
   so it resolves `window.PsionApp` lazily, never at load.
   Networked/shared player-join (online play) is the next phase.
 - `play.js` — `window.PsionPlay`: the live play sheet. Tabs: **Sheet · Combat · Limbs · Chakras · Kinetics ·

@@ -1168,6 +1168,10 @@ body.screen-home .wrap { max-width: none; margin: 0; padding: 0; }
   background: rgba(220, 80, 80, .12); border: 1px solid rgba(220, 80, 80, .4); color: var(--text); }
 .gm-cond-add { font-size: .74rem; padding: 2px 6px; border-radius: 8px; background: var(--panel-2);
   border: 1px solid var(--border); color: var(--text-dim); }
+.gm-cond-lbl { cursor: pointer; }
+.gm-cond-turns { cursor: pointer; margin-left: 6px; font-weight: 700; opacity: .85; }
+.gm-cbt-sync { font-size: .6rem; text-transform: uppercase; letter-spacing: .5px; color: var(--ok, #46c46e);
+  border: 1px solid var(--ok, #46c46e); border-radius: 6px; padding: 0 4px; margin-left: 4px; }
 .gm-combat-log { display: flex; flex-direction: column; gap: 3px; max-height: 260px; overflow-y: auto; }
 .gm-log-line { font-size: .82rem; color: var(--text-dim); padding: 3px 6px; border-bottom: 1px solid var(--border); }
 

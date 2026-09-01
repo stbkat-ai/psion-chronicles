@@ -553,11 +553,28 @@
       init: null, initMod: Number(b.initMod) || 0, hp: Number(b.hp) || 10, hpMax: Number(b.hp) || 10, defense: Number(b.defense) || 10,
       conditions: [], attacks: (b.attacks || []).map((a) => ({ name: a.name, toHit: a.toHit, damage: a.damage, note: a.note })), down: false, notes: "" };
   }
-  function pcCombatant(rec) {
-    let hpMax = 10, def = 12, initMod = 0;
-    try { const eff = PC.effectiveScores(rec.baseScores, PC.charAttrBoosts(rec), null); const pb = PC.charPoolBoost(rec); const der = PC.derive(eff, rec.level); hpMax = PC.bodyPool(eff, pb); def = der.defenseScore; initMod = der.initiativeMod; } catch (e) {}
-    const cur = (rec.play && typeof rec.play.hp === "number") ? rec.play.hp : hpMax;
-    return { id: uid("cb"), kind: "pc", name: rec.name || "Unnamed", emoji: "🧙", refId: rec.id, init: null, initMod: initMod, hp: cur, hpMax: hpMax, defense: def, conditions: [], attacks: [], down: cur <= 0, notes: "" };
+  // A PC combatant is a live proxy over the character's own play session (rec.play): its HP and conditions
+  // are read from and written back to the character record, so combat changes appear on the player's sheet.
+  function pcCombatant(rec) { return { id: uid("cb"), kind: "pc", name: rec.name || "Unnamed", emoji: "🧙", refId: rec.id, init: null, attacks: [] }; }
+  function pcDerived(rec) { try { const eff = PC.effectiveScores(rec.baseScores, PC.charAttrBoosts(rec), null); const pb = PC.charPoolBoost(rec); const der = PC.derive(eff, rec.level); return { maxHP: PC.bodyPool(eff, pb), defense: der.defenseScore, initMod: der.initiativeMod }; } catch (e) { return { maxHP: 10, defense: 12, initMod: 0 }; } }
+  // Match play.js's rec.play shape enough to read/write HP + conditions without clobbering a real session.
+  function ensureRecPlay(rec, maxHP) { if (!rec.play) rec.play = {}; if (typeof rec.play.hp !== "number") rec.play.hp = maxHP; if (!Array.isArray(rec.play.conditions)) rec.play.conditions = []; }
+  // Live HP / defense / initiative / conditions for any combatant — PCs read through to their record.
+  function combatantView(m, roster) {
+    if (m.kind === "pc") {
+      const rec = (roster || []).find((r) => r.id === m.refId);
+      if (!rec) return { missing: true, hp: 0, max: 0, defense: "—", initMod: 0, conditions: [] };
+      const d = pcDerived(rec); ensureRecPlay(rec, d.maxHP);
+      return { missing: false, rec: rec, hp: rec.play.hp, max: d.maxHP, defense: d.defense, initMod: d.initMod, conditions: rec.play.conditions };
+    }
+    if (!Array.isArray(m.conditions)) m.conditions = [];
+    return { missing: false, hp: m.hp, max: m.hpMax, defense: m.defense, initMod: Number(m.initMod) || 0, conditions: m.conditions };
+  }
+  // The live conditions array for a combatant + a commit fn (PCs persist to the roster).
+  function condArrayOf(m) {
+    if (m.kind === "pc") { const list = App().loadRoster ? App().loadRoster() : []; const rec = list.find((r) => r.id === m.refId); if (!rec) return null; const d = pcDerived(rec); ensureRecPlay(rec, d.maxHP); return { arr: rec.play.conditions, commit: () => { if (App().saveRoster) App().saveRoster(list); } }; }
+    if (!Array.isArray(m.conditions)) m.conditions = [];
+    return { arr: m.conditions, commit: () => {} };
   }
   function startCombat(c, encId) {
     const roster = App().loadRoster ? App().loadRoster() : [];
@@ -572,32 +589,57 @@
   function endCombat(c) { if (confirm("End this combat? The tracker will be cleared.")) { delete c.combat; save(); draw(); } }
   function sortByInit(cb) { cb.combatants.sort((a, b) => { const av = a.init == null ? -Infinity : a.init, bv = b.init == null ? -Infinity : b.init; return bv - av; }); }
   function rollInitiative(c) {
-    const cb = c.combat;
-    cb.combatants.forEach((m) => { const r = PC.rollCheck(Number(m.initMod) || 0, "normal"); m.init = r.total; });
+    const cb = c.combat; const roster = App().loadRoster ? App().loadRoster() : [];
+    cb.combatants.forEach((m) => { const v = combatantView(m, roster); const r = PC.rollCheck(Number(v.initMod) || 0, "normal"); m.init = r.total; });
     sortByInit(cb); cb.turn = 0; cb.started = true;
     combatLog(c, "Initiative rolled. Order: " + cb.combatants.map((m) => `${m.name} (${m.init})`).join(", "));
     combatRefresh(c);
   }
   function nextTurn(c) {
     const cb = c.combat; if (!cb.combatants.length) return;
+    const ending = cb.combatants[cb.turn]; if (ending) tickCombatantConditions(c, ending); // End-of-turn tick, like the play sheet
     cb.turn = (cb.turn + 1) % cb.combatants.length;
     if (cb.turn === 0) { cb.round++; combatLog(c, `— Round ${cb.round} —`); }
     combatRefresh(c);
   }
-  function combatDamage(c, id, delta) {
-    const m = c.combat.combatants.find((x) => x.id === id); if (!m) return;
+  function combatDamage(c, m, delta) {
+    if (m.kind === "pc") {
+      const list = App().loadRoster ? App().loadRoster() : [];
+      const rec = list.find((r) => r.id === m.refId); if (!rec) { toast("That character isn't on this device."); return; }
+      const d = pcDerived(rec); ensureRecPlay(rec, d.maxHP);
+      const before = Number(rec.play.hp) || 0;
+      rec.play.hp = Math.max(0, Math.min(d.maxHP, before + delta));
+      if (App().saveRoster) App().saveRoster(list);
+      combatLog(c, `${m.emoji} ${m.name}: ${rec.play.hp - before >= 0 ? "+" : ""}${rec.play.hp - before} HP → ${rec.play.hp}/${d.maxHP}${rec.play.hp <= 0 ? " (down!)" : ""}`);
+      combatRefresh(c); return;
+    }
     const before = Number(m.hp) || 0;
     m.hp = Math.max(0, Math.min(Number(m.hpMax) || 0, before + delta));
     m.down = m.hp <= 0;
-    combatLog(c, `${m.emoji} ${m.name}: ${delta >= 0 ? "+" : ""}${m.hp - before} HP → ${m.hp}/${m.hpMax}${m.down ? " (down!)" : ""}`);
+    combatLog(c, `${m.emoji} ${m.name}: ${m.hp - before >= 0 ? "+" : ""}${m.hp - before} HP → ${m.hp}/${m.hpMax}${m.down ? " (down!)" : ""}`);
     combatRefresh(c);
   }
-  function toggleCond(c, id, key) {
-    const m = c.combat.combatants.find((x) => x.id === id); if (!m) return;
-    if (!Array.isArray(m.conditions)) m.conditions = [];
-    const i = m.conditions.indexOf(key);
-    if (i > -1) m.conditions.splice(i, 1); else m.conditions.push(key);
-    combatRefresh(c);
+  function toggleCond(c, m, key) {
+    const ca = condArrayOf(m); if (!ca) return;
+    const i = ca.arr.findIndex((x) => x.key === key);
+    if (i > -1) ca.arr.splice(i, 1); else { const cat = PC.condition && PC.condition(key); ca.arr.push({ key: key, turns: null }); if (cat) combatLog(c, `${m.emoji} ${m.name}: ${cat.emoji} ${cat.name}.`); }
+    ca.commit(); combatRefresh(c);
+  }
+  function cycleCondTurns(c, m, key, delta) {
+    const ca = condArrayOf(m); if (!ca) return;
+    const x = ca.arr.find((y) => y.key === key); if (!x) return;
+    const cur = typeof x.turns === "number" ? x.turns : 0; const next = cur + delta; x.turns = next <= 0 ? null : next;
+    ca.commit(); combatRefresh(c);
+  }
+  function tickCombatantConditions(c, m) {
+    const ca = condArrayOf(m); if (!ca || !ca.arr.length) return;
+    const expired = [];
+    ca.arr.forEach((x) => { if (typeof x.turns === "number") { x.turns -= 1; if (x.turns <= 0) expired.push(x.key); } });
+    if (expired.length) {
+      for (let i = ca.arr.length - 1; i >= 0; i--) if (expired.indexOf(ca.arr[i].key) > -1) ca.arr.splice(i, 1);
+      expired.forEach((k) => { const cat = PC.condition && PC.condition(k); combatLog(c, `${m.emoji} ${m.name}: ${cat ? cat.emoji + " " + cat.name : k} wore off.`); });
+      ca.commit();
+    }
   }
   function rollCombatAttack(c, m, atk) {
     const hit = PC.rollCheck(Number(atk.toHit) || 0, "normal");
@@ -654,9 +696,10 @@
     ctl.appendChild(btns);
     root.appendChild(ctl);
 
-    // Combatant list
+    // Combatant list (PCs read their live HP/conditions from their character record)
+    const roster = App().loadRoster ? App().loadRoster() : [];
     if (!cb.combatants.length) root.appendChild(el("div", "muted", "No combatants. Add some below."));
-    cb.combatants.forEach((m, idx) => root.appendChild(combatantCard(c, m, idx)));
+    cb.combatants.forEach((m, idx) => root.appendChild(combatantCard(c, m, idx, roster)));
 
     // Add combatants
     root.appendChild(addCombatantPanel(c));
@@ -670,10 +713,12 @@
     root.appendChild(logP);
     return root;
   }
-  function combatantCard(c, m, idx) {
+  function combatantCard(c, m, idx, roster) {
     const cb = c.combat;
+    const v = combatantView(m, roster);
     const active = cb.started && idx === cb.turn;
-    const card = el("div", "panel gm-cbt" + (active ? " gm-cbt-active" : "") + (m.down ? " gm-cbt-down" : ""));
+    const down = v.max > 0 && v.hp <= 0;
+    const card = el("div", "panel gm-cbt" + (active ? " gm-cbt-active" : "") + (down ? " gm-cbt-down" : ""));
     // Header row
     const head = el("div", "gm-cbt-head");
     const initBox = el("div", "gm-cbt-init");
@@ -682,24 +727,26 @@
     head.appendChild(initBox);
     head.appendChild(el("span", "gm-cbt-name", `${m.emoji} ${esc(m.name)}${active ? ' <span class="gm-cbt-turn">turn</span>' : ""}`));
     head.appendChild(el("span", "gm-cbt-kind muted", m.kind === "pc" ? "PC" : m.kind === "npc" ? "NPC" : m.kind === "custom" ? "" : "Monster"));
-    head.appendChild(el("span", "gm-cbt-def", `🎯 ${m.defense}`));
-    const rm = el("button", "btn ghost small", "✕"); rm.title = "Remove"; rm.onclick = () => removeCombatant(c, m.id);
+    head.appendChild(el("span", "gm-cbt-def", `🎯 ${v.defense}`));
+    const rm = el("button", "btn ghost small", "✕"); rm.title = "Remove from combat"; rm.onclick = () => removeCombatant(c, m.id);
     head.appendChild(rm);
     card.appendChild(head);
 
-    // HP row
-    const max = Number(m.hpMax) || 0, hp = Number(m.hp) || 0;
+    if (v.missing) { card.appendChild(el("div", "muted", "This character was removed from this device.")); return card; }
+
+    // HP row (PCs read/write their live sheet HP)
+    const max = Number(v.max) || 0, hp = Number(v.hp) || 0;
     const track = el("div", "bar-track"); const fill = el("div", "bar-fill hp"); fill.style.width = (max > 0 ? Math.min(100, hp / max * 100) : 0) + "%"; track.appendChild(fill);
-    const hpHead = el("div", "poolbar-head"); hpHead.innerHTML = `<span>HP</span><span class="poolbar-num">${hp} / ${max}${m.down ? " · down" : ""}</span>`;
+    const hpHead = el("div", "poolbar-head"); hpHead.innerHTML = `<span>HP${m.kind === "pc" ? ' <span class="gm-cbt-sync">live</span>' : ""}</span><span class="poolbar-num">${hp} / ${max}${down ? " · down" : ""}</span>`;
     card.appendChild(hpHead); card.appendChild(track);
     const hpCtl = el("div", "gm-cbt-hpctl");
     const amt = el("input", "pet-amt"); amt.type = "number"; amt.min = "1"; amt.value = "1";
-    const dmg = el("button", "btn small", "− Damage"); dmg.onclick = () => combatDamage(c, m.id, -Math.abs(parseInt(amt.value, 10) || 1));
-    const heal = el("button", "btn small", "+ Heal"); heal.onclick = () => combatDamage(c, m.id, Math.abs(parseInt(amt.value, 10) || 1));
+    const dmg = el("button", "btn small", "− Damage"); dmg.onclick = () => combatDamage(c, m, -Math.abs(parseInt(amt.value, 10) || 1));
+    const heal = el("button", "btn small", "+ Heal"); heal.onclick = () => combatDamage(c, m, Math.abs(parseInt(amt.value, 10) || 1));
     hpCtl.appendChild(amt); hpCtl.appendChild(dmg); hpCtl.appendChild(heal);
     card.appendChild(hpCtl);
 
-    // Attacks (monsters / NPCs with a stat block)
+    // Attacks (monsters / statted NPCs)
     if ((m.attacks || []).length) {
       const ag = el("div", "gm-cbt-atks");
       m.attacks.forEach((a) => {
@@ -710,12 +757,20 @@
       card.appendChild(ag);
     }
 
-    // Conditions
+    // Conditions ({key, turns}) — turns badge cycles ∞→1→2… and ticks down at end of turn, like the play sheet.
     const cw = el("div", "gm-cbt-conds");
-    (m.conditions || []).forEach((k) => { const cond = PC.condition ? PC.condition(k) : null; const chip = el("button", "gm-cond on", `${cond ? cond.emoji + " " + cond.name : k}`); chip.title = "Remove"; chip.onclick = () => toggleCond(c, m.id, k); cw.appendChild(chip); });
+    (v.conditions || []).forEach((cd) => {
+      const cat = PC.condition ? PC.condition(cd.key) : null;
+      const chip = el("span", "gm-cond on");
+      const lbl = el("span", "gm-cond-lbl", `${cat ? cat.emoji + " " + cat.name : cd.key}`); lbl.title = "Remove"; lbl.onclick = () => toggleCond(c, m, cd.key);
+      const t = el("span", "gm-cond-turns", typeof cd.turns === "number" ? cd.turns + "t" : "∞"); t.title = "Duration — click to add a turn"; t.onclick = () => cycleCondTurns(c, m, cd.key, 1);
+      chip.appendChild(lbl); chip.appendChild(t);
+      cw.appendChild(chip);
+    });
+    const has = (v.conditions || []).map((x) => x.key);
     const addCond = el("select", "gm-cond-add");
-    addCond.innerHTML = `<option value="">＋ condition</option>` + (PC.CONDITIONS || []).filter((cd) => (m.conditions || []).indexOf(cd.key) < 0).map((cd) => `<option value="${cd.key}">${cd.emoji} ${cd.name}</option>`).join("");
-    addCond.onchange = () => { if (addCond.value) toggleCond(c, m.id, addCond.value); };
+    addCond.innerHTML = `<option value="">＋ condition</option>` + (PC.CONDITIONS || []).filter((cdf) => has.indexOf(cdf.key) < 0).map((cdf) => `<option value="${cdf.key}">${cdf.emoji} ${cdf.name}</option>`).join("");
+    addCond.onchange = () => { if (addCond.value) toggleCond(c, m, addCond.value); };
     cw.appendChild(addCond);
     card.appendChild(cw);
     return card;
